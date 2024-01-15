@@ -7,8 +7,8 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 )
 
-func (cli *Client) MiningUserGet(ctx context.Context, req *types.MiningUserGetReq) (*types.MiningUserAddResp, error) {
-	resp := &types.MiningUserAddResp{}
+func (cli *Client) MiningUserGet(ctx context.Context, req *types.MiningUserGetReq) (*types.MiningUserGetResp, error) {
+	resp := &types.MiningUserGetResp{}
 	err := cli.post(ctx, types.MiningUserGet, req, resp)
 	return resp, err
 }

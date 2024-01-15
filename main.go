@@ -1,24 +1,24 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 )
 
 func main() {
-	url := "https://api.f2pool.com/v2/mining_user/get"
+	baseURL := "https://api.f2pool.com"
 
-	payload := `{
-		"mining_user_name": "coocoo"
-	}`
+	accessToken := "wyrhuvsac5iaej9s3q1qx3l2lwvuoso1sdxvxzx1rju6tr27bqiujey9sj5ng546"
 
-	authHead := make(map[string]string)
-	authHead["Content-Type"] = "application/json"
-	authHead["F2P-API-SECRET"] = "wyrhuvsac5iaej9s3q1qx3l2lwvuoso1sdxvxzx1rju6tr27bqiujey9sj5ng546"
+	cli := client.NewClient(baseURL, accessToken)
+	resp, err := cli.MiningUserGet(context.Background(), &types.MiningUserGetReq{
+		MiningUserName: "coocoo",
+	})
 
-	resp, err := utils.PostJSON(url, []byte(payload), authHead)
 	fmt.Println(utils.PrettyStruct(resp))
-	fmt.Println(string(resp.Body))
-	fmt.Println(utils.PrettyStruct(err))
+	fmt.Println(err)
 }

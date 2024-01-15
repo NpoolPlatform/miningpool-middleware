@@ -23,9 +23,9 @@ type ErrorResponse struct {
 // public struct
 
 type ReadOnlyPage struct {
-	Key         string       `json:"key"`
-	PageName    string       `json:"page_name"`
-	Permissions []Permission `json:"permissions"`
+	Key         string `json:"key"`
+	PageName    string `json:"page_name"`
+	Permissions string `json:"permissions"`
 }
 type Permission string
 

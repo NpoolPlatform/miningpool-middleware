@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -18,7 +19,7 @@ type Resp struct {
 	Body       []byte
 }
 
-func PostJSON(url string, reqBody []byte, headers map[string]string) (*Resp, error) {
+func PostJSON(ctx context.Context, url string, reqBody []byte, headers map[string]string) (*Resp, error) {
 	payload := bytes.NewReader(reqBody)
 
 	client := &http.Client{}
@@ -28,6 +29,7 @@ func PostJSON(url string, reqBody []byte, headers map[string]string) (*Resp, err
 		return nil, err
 	}
 
+	req = req.WithContext(ctx)
 	for headerK, headerV := range headers {
 		req.Header.Add(headerK, headerV)
 	}

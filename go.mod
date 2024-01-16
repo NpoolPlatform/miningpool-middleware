@@ -6,11 +6,9 @@ require (
 	entgo.io/ent v0.11.3
 	github.com/NpoolPlatform/go-service-framework v0.0.0-20231228071122-53a5febeea97
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20231008051607-f64457cf6ab6
-	github.com/NpoolPlatform/message v0.0.0-20240108094749-e66662761398
 	github.com/NpoolPlatform/order-middleware v0.0.0-20231207022847-d562f0898e06
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
-	github.com/shopspring/decimal v1.3.1
 	github.com/urfave/cli/v2 v2.4.0
 	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f
 	google.golang.org/grpc v1.55.0
@@ -19,6 +17,7 @@ require (
 require (
 	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	github.com/NpoolPlatform/message v0.0.0-20240108094749-e66662761398 // indirect
 	github.com/Shonminh/apollo-client v0.4.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
@@ -68,6 +67,7 @@ require (
 	github.com/prometheus/common v0.39.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

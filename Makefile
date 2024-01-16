@@ -70,6 +70,10 @@ generate-docker-images: ${SERVICES} ${SERVICEIMAGES}
 release-docker-images: ${generate-docker-images} ${SERVICEIMAGERELEASES}
 deploy-to-k8s-cluster: ${SERVICEK8SDEPLOYS}
 
+gen-ent:
+	go install entgo.io/ent/cmd/ent@v0.11.2
+	go run -mod=mod entgo.io/ent/cmd/ent generate --feature entql,sql/lock,sql/execquery,sql/upsert,privacy,schema/snapshot,sql/modifier ./pkg/db/ent/schema
+
 ##@ Tests
 
 .PHONY: test test-go-unit test-go-integration

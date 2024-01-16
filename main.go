@@ -16,7 +16,7 @@ func main() {
 
 	cli := client.NewClient(baseURL, accessToken)
 	resp, err := cli.MiningUserGet(context.Background(), &types.MiningUserGetReq{
-		MiningUserName: "coocoo",
+		MiningUserName: "cococonut3",
 	})
 
 	fmt.Println(utils.PrettyStruct(resp))

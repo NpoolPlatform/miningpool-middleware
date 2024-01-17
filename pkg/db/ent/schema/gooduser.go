@@ -36,7 +36,7 @@ func (GoodUser) Fields() []ent.Field {
 		field.
 			Uint32("end"),
 		field.
-			Float("hash_rate"),
+			Float("hash_rate").Optional().Default(0),
 		field.
 			String("read_page_link").Optional().Default(""),
 	}

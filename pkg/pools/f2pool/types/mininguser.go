@@ -36,9 +36,9 @@ const (
 )
 
 type Wallet struct {
-	Currency  string `json:"currency"`
-	Address   string `json:"address"`
-	Threshold string `json:"threshold"`
+	Currency  string  `json:"currency"`
+	Address   string  `json:"address"`
+	Threshold float64 `json:"threshold"`
 }
 
 type ExtraEntry struct {
@@ -157,10 +157,10 @@ type MiningUserPaymentResumeResp struct {
 }
 
 type MiningUserThresholdUpdateReq struct {
-	MiningUserName string `json:"mining_user_name"`
-	Currency       string `json:"currency"`
-	Threshold      string `json:"threshold"`
+	MiningUserName string  `json:"mining_user_name"`
+	Currency       string  `json:"currency"`
+	Threshold      float64 `json:"threshold"`
 }
 type MiningUserThresholdUpdateResp struct {
-	Threshold string `json:"threshold"`
+	Threshold float64 `json:"threshold"`
 }

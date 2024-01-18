@@ -262,6 +262,50 @@ func (mgr *F2PoolMgr) GetRevenueAddress(ctx context.Context, name string) (strin
 	return "", nil
 }
 
+func (mgr *F2PoolMgr) PausePayment(ctx context.Context, name string) (bool, error) {
+	pauseResp, err := mgr.cli.MiningUserPaymentPause(ctx, &types.MiningUserPaymentPauseReq{
+		MiningUserNames: []string{name},
+		Currency:        mgr.currency,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if pauseResp == nil {
+		return false, fmt.Errorf("failed to pause payment,have nil response")
+	}
+
+	for k, v := range pauseResp.Results {
+		if k == name && v == "ok" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (mgr *F2PoolMgr) ResumePayment(ctx context.Context, name string) (bool, error) {
+	resumeResp, err := mgr.cli.MiningUserPaymentResume(ctx, &types.MiningUserPaymentResumeReq{
+		MiningUserNames: []string{name},
+		Currency:        mgr.currency,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	if resumeResp == nil {
+		return false, fmt.Errorf("failed to resume payment,have nil response")
+	}
+
+	for k, v := range resumeResp.Results {
+		if k == name && v == "ok" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
 func getReadPageLink(key, user_name string) string {
 	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolAPI, key, user_name)
 }

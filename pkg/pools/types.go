@@ -3,20 +3,27 @@ package pools
 import "context"
 
 type PoolManager interface {
-	CheckAuth(context.Context) bool
-	AddMiningUser(context.Context) (string, string, error)
-	ExistMiningUser(context.Context, string) (bool, error)
-	DeleteMiningUser(context.Context, string) error
+	CheckAuth(ctx context.Context) bool
+	// mining user
+	AddMiningUser(ctx context.Context) (userName string, readPageLink string, err error)
+	ExistMiningUser(ctx context.Context, userName string) (bool, error)
+	DeleteMiningUser(ctx context.Context, userName string) error
 
-	AddReadPageLink(context.Context, string) (string, error)
-	GetReadPageLink(context.Context, string) (string, error)
-	DeleteReadPageLink(context.Context, string) error
+	// read page link
+	AddReadPageLink(ctx context.Context, userName string) (string, error)
+	GetReadPageLink(ctx context.Context, userName string) (string, error)
+	DeleteReadPageLink(ctx context.Context, userName string) error
 
-	SetRevenueProportion(context.Context, string, string, float64) error
-	GetRevenueProportion(context.Context, string, string) (float64, error)
+	// revenue
+	SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error
+	GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error)
+	SetRevenueAddress(ctx context.Context, userName string, address string) error
+	GetRevenueAddress(ctx context.Context, userName string) (string, error)
 
-	SetRevenueAddress(context.Context, string, string) error
-	GetRevenueAddress(context.Context, string) (string, error)
 	// auto pay
-	// praction
+	PausePayment(ctx context.Context, userName string) (bool, error)
+	ResumePayment(ctx context.Context, userName string) (bool, error)
+
+	// TODO support praction
+	// WithdrawPraction(ctx context.Context,userName string)()
 }

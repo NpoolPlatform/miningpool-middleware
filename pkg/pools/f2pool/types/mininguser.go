@@ -145,7 +145,7 @@ type MiningUserPaymentPauseReq struct {
 	MiningUserNames []string `json:"mining_user_names"`
 }
 type MiningUserPaymentPauseResp struct {
-	Results ResultsEntry `json:"results"`
+	Results map[string]string `json:"results"`
 }
 
 type MiningUserPaymentResumeReq struct {
@@ -153,7 +153,7 @@ type MiningUserPaymentResumeReq struct {
 	MiningUserNames []string `json:"mining_user_names"`
 }
 type MiningUserPaymentResumeResp struct {
-	Results []ResultsEntry `json:"results"`
+	Results map[string]string `json:"results"`
 }
 
 type MiningUserThresholdUpdateReq struct {

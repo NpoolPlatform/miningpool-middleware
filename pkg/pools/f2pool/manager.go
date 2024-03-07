@@ -93,29 +93,17 @@ func (mgr *F2PoolMgr) AddMiningUser(ctx context.Context) (string, string, error)
 func (mgr *F2PoolMgr) ExistMiningUser(ctx context.Context, name string) (bool, error) {
 	_, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
-		return true, err
+		return false, err
 	}
-	return false, nil
+	return true, nil
 }
 
+// not implement
 func (mgr *F2PoolMgr) DeleteMiningUser(ctx context.Context, name string) error {
 	return fmt.Errorf("f2pool has not yet implemented this method")
 }
 
 func (mgr *F2PoolMgr) AddReadPageLink(ctx context.Context, name string) (string, error) {
-	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
-	if err != nil {
-		return "", fmt.Errorf("have no user name %v or %v", name, err)
-	}
-
-	if getResp == nil {
-		return "", fmt.Errorf("have no user name %v", name)
-	}
-
-	if len(getResp.Pages) > 0 {
-		return getReadPageLink(getResp.Pages[0].Key, getResp.MiningUserName), nil
-	}
-
 	pageName := RandomF2PoolUser(MiningUserPageNameLen)
 	addResp, err := mgr.cli.MiningUserReadOnlyPageAdd(ctx, &types.MiningUserReadOnlyPageAddReq{
 		MiningUserName: name,
@@ -150,6 +138,8 @@ func (mgr *F2PoolMgr) GetReadPageLink(ctx context.Context, name string) (string,
 	return "", fmt.Errorf("have no read page link")
 }
 
+// not implement
+// f2pool cannot delete page link
 func (mgr *F2PoolMgr) DeleteReadPageLink(ctx context.Context, name string) error {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
@@ -164,18 +154,40 @@ func (mgr *F2PoolMgr) DeleteReadPageLink(ctx context.Context, name string) error
 		return nil
 	}
 
-	_, err = mgr.cli.MiningUserReadOnlyPageDelete(ctx, &types.MiningUserReadOnlyPageDeleteReq{
-		MiningUserName: getResp.MiningUserName,
-		Key:            getResp.Pages[0].Key,
-	})
+	for _, page := range getResp.Pages {
+		_, err = mgr.cli.MiningUserReadOnlyPageDelete(ctx, &types.MiningUserReadOnlyPageDeleteReq{
+			MiningUserName: getResp.MiningUserName,
+			Key:            page.Key,
+		})
 
-	if err != nil {
-		return fmt.Errorf("failed to delete read page link of %v, error: %v", name, err)
+		if err != nil {
+			return fmt.Errorf("failed to delete read page link of %v, error: %v", name, err)
+		}
 	}
+
 	return nil
 }
 
 func (mgr *F2PoolMgr) SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error {
+	infoResp, _ := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
+		Currency:    mgr.currency,
+		Distributor: distributor,
+		Recipient:   recipient,
+	})
+
+	if infoResp != nil {
+		for _, v := range infoResp.Data {
+			if v.Distributor != distributor {
+				continue
+			}
+			_, _ = mgr.cli.RevenueDistributionDelete(ctx, &types.RevenueDistributionDeleteReq{
+				ID:          v.ID,
+				Distributor: v.Distributor,
+			})
+		}
+
+	}
+
 	addResp, err := mgr.cli.RevenueDistributionAdd(ctx, &types.RevenueDistributionAddReq{
 		Currency:    mgr.currency,
 		Distributor: distributor,
@@ -207,7 +219,7 @@ func (mgr *F2PoolMgr) GetRevenueProportion(ctx context.Context, distributor stri
 	}
 
 	for _, v := range getResp.Data {
-		if v.Currency == mgr.currency && v.Description == distributor && v.Recipient == recipient {
+		if v.Currency == mgr.currency && v.Distributor == distributor && v.Recipient == recipient {
 			return v.Proportion, nil
 		}
 	}

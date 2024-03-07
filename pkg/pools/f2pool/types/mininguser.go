@@ -38,7 +38,7 @@ const (
 type Wallet struct {
 	Currency  string  `json:"currency"`
 	Address   string  `json:"address"`
-	Threshold float64 `json:"threshold"`
+	Threshold float64 `json:"threshold,string"`
 }
 
 type ExtraEntry struct {
@@ -111,7 +111,8 @@ type MiningUserWalletUpdateReq struct {
 	Params []WalletParams `json:"params"`
 }
 type MiningUserWalletUpdateResp struct {
-	Results []ResultsEntry `json:"results"`
+	// Results  []ResultsEntry                    `json:"results"`
+	Results map[string]MiningUserWalletResp `json:"results"`
 }
 
 type MiningUserReadOnlyPageAddReq struct {

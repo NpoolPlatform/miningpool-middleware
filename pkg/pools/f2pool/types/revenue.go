@@ -9,7 +9,7 @@ const (
 
 // public struct
 type RevenueDistribution struct {
-	ID          string  `json:"id"`
+	ID          int64   `json:"id,string"`
 	Currency    string  `json:"currency"`
 	Distributor string  `json:"distributor"`
 	Recipient   string  `json:"recipient"`

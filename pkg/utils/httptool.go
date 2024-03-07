@@ -45,6 +45,7 @@ func PostJSON(ctx context.Context, url string, reqBody []byte, headers map[strin
 	defer res.Body.Close()
 
 	respBody, err := io.ReadAll(res.Body)
+
 	if err != nil {
 		return nil, err
 	}

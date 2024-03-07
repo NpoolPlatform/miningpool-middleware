@@ -15,6 +15,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
@@ -35,6 +36,8 @@ type Client struct {
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
 	OrderUser *OrderUserClient
+	// RootUser is the client for interacting with the RootUser builders.
+	RootUser *RootUserClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -53,6 +56,7 @@ func (c *Client) init() {
 	c.FractionRule = NewFractionRuleClient(c.config)
 	c.GoodUser = NewGoodUserClient(c.config)
 	c.OrderUser = NewOrderUserClient(c.config)
+	c.RootUser = NewRootUserClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -91,6 +95,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		FractionRule: NewFractionRuleClient(cfg),
 		GoodUser:     NewGoodUserClient(cfg),
 		OrderUser:    NewOrderUserClient(cfg),
+		RootUser:     NewRootUserClient(cfg),
 	}, nil
 }
 
@@ -115,6 +120,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		FractionRule: NewFractionRuleClient(cfg),
 		GoodUser:     NewGoodUserClient(cfg),
 		OrderUser:    NewOrderUserClient(cfg),
+		RootUser:     NewRootUserClient(cfg),
 	}, nil
 }
 
@@ -149,6 +155,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.FractionRule.Use(hooks...)
 	c.GoodUser.Use(hooks...)
 	c.OrderUser.Use(hooks...)
+	c.RootUser.Use(hooks...)
 }
 
 // CoinClient is a client for the Coin schema.
@@ -604,4 +611,95 @@ func (c *OrderUserClient) GetX(ctx context.Context, id uint32) *OrderUser {
 func (c *OrderUserClient) Hooks() []Hook {
 	hooks := c.hooks.OrderUser
 	return append(hooks[:len(hooks):len(hooks)], orderuser.Hooks[:]...)
+}
+
+// RootUserClient is a client for the RootUser schema.
+type RootUserClient struct {
+	config
+}
+
+// NewRootUserClient returns a client for the RootUser from the given config.
+func NewRootUserClient(c config) *RootUserClient {
+	return &RootUserClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `rootuser.Hooks(f(g(h())))`.
+func (c *RootUserClient) Use(hooks ...Hook) {
+	c.hooks.RootUser = append(c.hooks.RootUser, hooks...)
+}
+
+// Create returns a builder for creating a RootUser entity.
+func (c *RootUserClient) Create() *RootUserCreate {
+	mutation := newRootUserMutation(c.config, OpCreate)
+	return &RootUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of RootUser entities.
+func (c *RootUserClient) CreateBulk(builders ...*RootUserCreate) *RootUserCreateBulk {
+	return &RootUserCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for RootUser.
+func (c *RootUserClient) Update() *RootUserUpdate {
+	mutation := newRootUserMutation(c.config, OpUpdate)
+	return &RootUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *RootUserClient) UpdateOne(ru *RootUser) *RootUserUpdateOne {
+	mutation := newRootUserMutation(c.config, OpUpdateOne, withRootUser(ru))
+	return &RootUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *RootUserClient) UpdateOneID(id uint32) *RootUserUpdateOne {
+	mutation := newRootUserMutation(c.config, OpUpdateOne, withRootUserID(id))
+	return &RootUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for RootUser.
+func (c *RootUserClient) Delete() *RootUserDelete {
+	mutation := newRootUserMutation(c.config, OpDelete)
+	return &RootUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *RootUserClient) DeleteOne(ru *RootUser) *RootUserDeleteOne {
+	return c.DeleteOneID(ru.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *RootUserClient) DeleteOneID(id uint32) *RootUserDeleteOne {
+	builder := c.Delete().Where(rootuser.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &RootUserDeleteOne{builder}
+}
+
+// Query returns a query builder for RootUser.
+func (c *RootUserClient) Query() *RootUserQuery {
+	return &RootUserQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a RootUser entity by its id.
+func (c *RootUserClient) Get(ctx context.Context, id uint32) (*RootUser, error) {
+	return c.Query().Where(rootuser.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *RootUserClient) GetX(ctx context.Context, id uint32) *RootUser {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *RootUserClient) Hooks() []Hook {
+	hooks := c.hooks.RootUser
+	return append(hooks[:len(hooks):len(hooks)], rootuser.Hooks[:]...)
 }

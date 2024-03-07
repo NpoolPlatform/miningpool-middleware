@@ -20,3 +20,6 @@ type GoodUser func(*sql.Selector)
 
 // OrderUser is the predicate function for orderuser builders.
 type OrderUser func(*sql.Selector)
+
+// RootUser is the predicate function for rootuser builders.
+type RootUser func(*sql.Selector)

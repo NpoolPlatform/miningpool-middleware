@@ -10,6 +10,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/schema"
 	"github.com/google/uuid"
 
@@ -169,6 +170,10 @@ func init() {
 	gooduserDescEntID := gooduserMixinFields1[1].Descriptor()
 	// gooduser.DefaultEntID holds the default value on creation for the ent_id field.
 	gooduser.DefaultEntID = gooduserDescEntID.Default.(func() uuid.UUID)
+	// gooduserDescHashRate is the schema descriptor for hash_rate field.
+	gooduserDescHashRate := gooduserFields[6].Descriptor()
+	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
+	gooduser.DefaultHashRate = gooduserDescHashRate.Default.(float64)
 	// gooduserDescReadPageLink is the schema descriptor for read_page_link field.
 	gooduserDescReadPageLink := gooduserFields[7].Descriptor()
 	// gooduser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
@@ -219,6 +224,40 @@ func init() {
 	orderuserDescReadPageLink := orderuserFields[10].Descriptor()
 	// orderuser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	orderuser.DefaultReadPageLink = orderuserDescReadPageLink.Default.(string)
+	rootuserMixin := schema.RootUser{}.Mixin()
+	rootuser.Policy = privacy.NewPolicies(rootuserMixin[0], schema.RootUser{})
+	rootuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := rootuser.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	rootuserMixinFields0 := rootuserMixin[0].Fields()
+	_ = rootuserMixinFields0
+	rootuserMixinFields1 := rootuserMixin[1].Fields()
+	_ = rootuserMixinFields1
+	rootuserFields := schema.RootUser{}.Fields()
+	_ = rootuserFields
+	// rootuserDescCreatedAt is the schema descriptor for created_at field.
+	rootuserDescCreatedAt := rootuserMixinFields0[0].Descriptor()
+	// rootuser.DefaultCreatedAt holds the default value on creation for the created_at field.
+	rootuser.DefaultCreatedAt = rootuserDescCreatedAt.Default.(func() uint32)
+	// rootuserDescUpdatedAt is the schema descriptor for updated_at field.
+	rootuserDescUpdatedAt := rootuserMixinFields0[1].Descriptor()
+	// rootuser.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	rootuser.DefaultUpdatedAt = rootuserDescUpdatedAt.Default.(func() uint32)
+	// rootuser.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	rootuser.UpdateDefaultUpdatedAt = rootuserDescUpdatedAt.UpdateDefault.(func() uint32)
+	// rootuserDescDeletedAt is the schema descriptor for deleted_at field.
+	rootuserDescDeletedAt := rootuserMixinFields0[2].Descriptor()
+	// rootuser.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	rootuser.DefaultDeletedAt = rootuserDescDeletedAt.Default.(func() uint32)
+	// rootuserDescEntID is the schema descriptor for ent_id field.
+	rootuserDescEntID := rootuserMixinFields1[1].Descriptor()
+	// rootuser.DefaultEntID holds the default value on creation for the ent_id field.
+	rootuser.DefaultEntID = rootuserDescEntID.Default.(func() uuid.UUID)
 }
 
 const (

@@ -15,6 +15,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -40,6 +41,7 @@ func columnChecker(table string) func(string) error {
 		fractionrule.Table: fractionrule.ValidColumn,
 		gooduser.Table:     gooduser.ValidColumn,
 		orderuser.Table:    orderuser.ValidColumn,
+		rootuser.Table:     rootuser.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

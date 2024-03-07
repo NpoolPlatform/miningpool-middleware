@@ -155,9 +155,23 @@ func (guu *GoodUserUpdate) SetHashRate(f float64) *GoodUserUpdate {
 	return guu
 }
 
+// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableHashRate(f *float64) *GoodUserUpdate {
+	if f != nil {
+		guu.SetHashRate(*f)
+	}
+	return guu
+}
+
 // AddHashRate adds f to the "hash_rate" field.
 func (guu *GoodUserUpdate) AddHashRate(f float64) *GoodUserUpdate {
 	guu.mutation.AddHashRate(f)
+	return guu
+}
+
+// ClearHashRate clears the value of the "hash_rate" field.
+func (guu *GoodUserUpdate) ClearHashRate() *GoodUserUpdate {
+	guu.mutation.ClearHashRate()
 	return guu
 }
 
@@ -398,6 +412,12 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldHashRate,
 		})
 	}
+	if guu.mutation.HashRateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
+			Column: gooduser.FieldHashRate,
+		})
+	}
 	if value, ok := guu.mutation.ReadPageLink(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -558,9 +578,23 @@ func (guuo *GoodUserUpdateOne) SetHashRate(f float64) *GoodUserUpdateOne {
 	return guuo
 }
 
+// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableHashRate(f *float64) *GoodUserUpdateOne {
+	if f != nil {
+		guuo.SetHashRate(*f)
+	}
+	return guuo
+}
+
 // AddHashRate adds f to the "hash_rate" field.
 func (guuo *GoodUserUpdateOne) AddHashRate(f float64) *GoodUserUpdateOne {
 	guuo.mutation.AddHashRate(f)
+	return guuo
+}
+
+// ClearHashRate clears the value of the "hash_rate" field.
+func (guuo *GoodUserUpdateOne) ClearHashRate() *GoodUserUpdateOne {
+	guuo.mutation.ClearHashRate()
 	return guuo
 }
 
@@ -828,6 +862,12 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat64,
 			Value:  value,
+			Column: gooduser.FieldHashRate,
+		})
+	}
+	if guuo.mutation.HashRateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat64,
 			Column: gooduser.FieldHashRate,
 		})
 	}

@@ -24,6 +24,8 @@ type Tx struct {
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
 	OrderUser *OrderUserClient
+	// RootUser is the client for interacting with the RootUser builders.
+	RootUser *RootUserClient
 
 	// lazily loaded.
 	client     *Client
@@ -164,6 +166,7 @@ func (tx *Tx) init() {
 	tx.FractionRule = NewFractionRuleClient(tx.config)
 	tx.GoodUser = NewGoodUserClient(tx.config)
 	tx.OrderUser = NewOrderUserClient(tx.config)
+	tx.RootUser = NewRootUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

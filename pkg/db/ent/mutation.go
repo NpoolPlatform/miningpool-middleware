@@ -14,6 +14,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/google/uuid"
 
 	"entgo.io/ent"
@@ -33,6 +34,7 @@ const (
 	TypeFractionRule = "FractionRule"
 	TypeGoodUser     = "GoodUser"
 	TypeOrderUser    = "OrderUser"
+	TypeRootUser     = "RootUser"
 )
 
 // CoinMutation represents an operation that mutates the Coin nodes in the graph.
@@ -3535,10 +3537,24 @@ func (m *GoodUserMutation) AddedHashRate() (r float64, exists bool) {
 	return *v, true
 }
 
+// ClearHashRate clears the value of the "hash_rate" field.
+func (m *GoodUserMutation) ClearHashRate() {
+	m.hash_rate = nil
+	m.addhash_rate = nil
+	m.clearedFields[gooduser.FieldHashRate] = struct{}{}
+}
+
+// HashRateCleared returns if the "hash_rate" field was cleared in this mutation.
+func (m *GoodUserMutation) HashRateCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldHashRate]
+	return ok
+}
+
 // ResetHashRate resets all changes to the "hash_rate" field.
 func (m *GoodUserMutation) ResetHashRate() {
 	m.hash_rate = nil
 	m.addhash_rate = nil
+	delete(m.clearedFields, gooduser.FieldHashRate)
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -3909,6 +3925,9 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *GoodUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(gooduser.FieldHashRate) {
+		fields = append(fields, gooduser.FieldHashRate)
+	}
 	if m.FieldCleared(gooduser.FieldReadPageLink) {
 		fields = append(fields, gooduser.FieldReadPageLink)
 	}
@@ -3926,6 +3945,9 @@ func (m *GoodUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *GoodUserMutation) ClearField(name string) error {
 	switch name {
+	case gooduser.FieldHashRate:
+		m.ClearHashRate()
+		return nil
 	case gooduser.FieldReadPageLink:
 		m.ClearReadPageLink()
 		return nil
@@ -5478,4 +5500,909 @@ func (m *OrderUserMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *OrderUserMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown OrderUser edge %s", name)
+}
+
+// RootUserMutation represents an operation that mutates the RootUser nodes in the graph.
+type RootUserMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *uint32
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	ent_id          *uuid.UUID
+	name            *string
+	miningpool_type *string
+	email           *string
+	auth_token      *string
+	authed          *bool
+	remark          *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*RootUser, error)
+	predicates      []predicate.RootUser
+}
+
+var _ ent.Mutation = (*RootUserMutation)(nil)
+
+// rootuserOption allows management of the mutation configuration using functional options.
+type rootuserOption func(*RootUserMutation)
+
+// newRootUserMutation creates new mutation for the RootUser entity.
+func newRootUserMutation(c config, op Op, opts ...rootuserOption) *RootUserMutation {
+	m := &RootUserMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeRootUser,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withRootUserID sets the ID field of the mutation.
+func withRootUserID(id uint32) rootuserOption {
+	return func(m *RootUserMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *RootUser
+		)
+		m.oldValue = func(ctx context.Context) (*RootUser, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().RootUser.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withRootUser sets the old RootUser of the mutation.
+func withRootUser(node *RootUser) rootuserOption {
+	return func(m *RootUserMutation) {
+		m.oldValue = func(context.Context) (*RootUser, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m RootUserMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m RootUserMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of RootUser entities.
+func (m *RootUserMutation) SetID(id uint32) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *RootUserMutation) ID() (id uint32, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *RootUserMutation) IDs(ctx context.Context) ([]uint32, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint32{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().RootUser.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *RootUserMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *RootUserMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *RootUserMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *RootUserMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *RootUserMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *RootUserMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *RootUserMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *RootUserMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *RootUserMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *RootUserMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *RootUserMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *RootUserMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *RootUserMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *RootUserMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *RootUserMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+}
+
+// SetEntID sets the "ent_id" field.
+func (m *RootUserMutation) SetEntID(u uuid.UUID) {
+	m.ent_id = &u
+}
+
+// EntID returns the value of the "ent_id" field in the mutation.
+func (m *RootUserMutation) EntID() (r uuid.UUID, exists bool) {
+	v := m.ent_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEntID returns the old "ent_id" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEntID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEntID: %w", err)
+	}
+	return oldValue.EntID, nil
+}
+
+// ResetEntID resets all changes to the "ent_id" field.
+func (m *RootUserMutation) ResetEntID() {
+	m.ent_id = nil
+}
+
+// SetName sets the "name" field.
+func (m *RootUserMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *RootUserMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *RootUserMutation) ResetName() {
+	m.name = nil
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (m *RootUserMutation) SetMiningpoolType(s string) {
+	m.miningpool_type = &s
+}
+
+// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
+func (m *RootUserMutation) MiningpoolType() (r string, exists bool) {
+	v := m.miningpool_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMiningpoolType returns the old "miningpool_type" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+	}
+	return oldValue.MiningpoolType, nil
+}
+
+// ResetMiningpoolType resets all changes to the "miningpool_type" field.
+func (m *RootUserMutation) ResetMiningpoolType() {
+	m.miningpool_type = nil
+}
+
+// SetEmail sets the "email" field.
+func (m *RootUserMutation) SetEmail(s string) {
+	m.email = &s
+}
+
+// Email returns the value of the "email" field in the mutation.
+func (m *RootUserMutation) Email() (r string, exists bool) {
+	v := m.email
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEmail returns the old "email" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldEmail(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEmail is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEmail requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEmail: %w", err)
+	}
+	return oldValue.Email, nil
+}
+
+// ResetEmail resets all changes to the "email" field.
+func (m *RootUserMutation) ResetEmail() {
+	m.email = nil
+}
+
+// SetAuthToken sets the "auth_token" field.
+func (m *RootUserMutation) SetAuthToken(s string) {
+	m.auth_token = &s
+}
+
+// AuthToken returns the value of the "auth_token" field in the mutation.
+func (m *RootUserMutation) AuthToken() (r string, exists bool) {
+	v := m.auth_token
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthToken returns the old "auth_token" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldAuthToken(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthToken is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthToken requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthToken: %w", err)
+	}
+	return oldValue.AuthToken, nil
+}
+
+// ResetAuthToken resets all changes to the "auth_token" field.
+func (m *RootUserMutation) ResetAuthToken() {
+	m.auth_token = nil
+}
+
+// SetAuthed sets the "authed" field.
+func (m *RootUserMutation) SetAuthed(b bool) {
+	m.authed = &b
+}
+
+// Authed returns the value of the "authed" field in the mutation.
+func (m *RootUserMutation) Authed() (r bool, exists bool) {
+	v := m.authed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthed returns the old "authed" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldAuthed(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthed: %w", err)
+	}
+	return oldValue.Authed, nil
+}
+
+// ResetAuthed resets all changes to the "authed" field.
+func (m *RootUserMutation) ResetAuthed() {
+	m.authed = nil
+}
+
+// SetRemark sets the "remark" field.
+func (m *RootUserMutation) SetRemark(s string) {
+	m.remark = &s
+}
+
+// Remark returns the value of the "remark" field in the mutation.
+func (m *RootUserMutation) Remark() (r string, exists bool) {
+	v := m.remark
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRemark returns the old "remark" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldRemark(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRemark is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRemark requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRemark: %w", err)
+	}
+	return oldValue.Remark, nil
+}
+
+// ResetRemark resets all changes to the "remark" field.
+func (m *RootUserMutation) ResetRemark() {
+	m.remark = nil
+}
+
+// Where appends a list predicates to the RootUserMutation builder.
+func (m *RootUserMutation) Where(ps ...predicate.RootUser) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *RootUserMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (RootUser).
+func (m *RootUserMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *RootUserMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.created_at != nil {
+		fields = append(fields, rootuser.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, rootuser.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, rootuser.FieldDeletedAt)
+	}
+	if m.ent_id != nil {
+		fields = append(fields, rootuser.FieldEntID)
+	}
+	if m.name != nil {
+		fields = append(fields, rootuser.FieldName)
+	}
+	if m.miningpool_type != nil {
+		fields = append(fields, rootuser.FieldMiningpoolType)
+	}
+	if m.email != nil {
+		fields = append(fields, rootuser.FieldEmail)
+	}
+	if m.auth_token != nil {
+		fields = append(fields, rootuser.FieldAuthToken)
+	}
+	if m.authed != nil {
+		fields = append(fields, rootuser.FieldAuthed)
+	}
+	if m.remark != nil {
+		fields = append(fields, rootuser.FieldRemark)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *RootUserMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		return m.CreatedAt()
+	case rootuser.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case rootuser.FieldDeletedAt:
+		return m.DeletedAt()
+	case rootuser.FieldEntID:
+		return m.EntID()
+	case rootuser.FieldName:
+		return m.Name()
+	case rootuser.FieldMiningpoolType:
+		return m.MiningpoolType()
+	case rootuser.FieldEmail:
+		return m.Email()
+	case rootuser.FieldAuthToken:
+		return m.AuthToken()
+	case rootuser.FieldAuthed:
+		return m.Authed()
+	case rootuser.FieldRemark:
+		return m.Remark()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *RootUserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case rootuser.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case rootuser.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case rootuser.FieldEntID:
+		return m.OldEntID(ctx)
+	case rootuser.FieldName:
+		return m.OldName(ctx)
+	case rootuser.FieldMiningpoolType:
+		return m.OldMiningpoolType(ctx)
+	case rootuser.FieldEmail:
+		return m.OldEmail(ctx)
+	case rootuser.FieldAuthToken:
+		return m.OldAuthToken(ctx)
+	case rootuser.FieldAuthed:
+		return m.OldAuthed(ctx)
+	case rootuser.FieldRemark:
+		return m.OldRemark(ctx)
+	}
+	return nil, fmt.Errorf("unknown RootUser field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RootUserMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case rootuser.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case rootuser.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case rootuser.FieldEntID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEntID(v)
+		return nil
+	case rootuser.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case rootuser.FieldMiningpoolType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMiningpoolType(v)
+		return nil
+	case rootuser.FieldEmail:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEmail(v)
+		return nil
+	case rootuser.FieldAuthToken:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthToken(v)
+		return nil
+	case rootuser.FieldAuthed:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthed(v)
+		return nil
+	case rootuser.FieldRemark:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRemark(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RootUser field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *RootUserMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_at != nil {
+		fields = append(fields, rootuser.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, rootuser.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, rootuser.FieldDeletedAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *RootUserMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case rootuser.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case rootuser.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *RootUserMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case rootuser.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case rootuser.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown RootUser numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *RootUserMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *RootUserMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *RootUserMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown RootUser nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *RootUserMutation) ResetField(name string) error {
+	switch name {
+	case rootuser.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case rootuser.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case rootuser.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case rootuser.FieldEntID:
+		m.ResetEntID()
+		return nil
+	case rootuser.FieldName:
+		m.ResetName()
+		return nil
+	case rootuser.FieldMiningpoolType:
+		m.ResetMiningpoolType()
+		return nil
+	case rootuser.FieldEmail:
+		m.ResetEmail()
+		return nil
+	case rootuser.FieldAuthToken:
+		m.ResetAuthToken()
+		return nil
+	case rootuser.FieldAuthed:
+		m.ResetAuthed()
+		return nil
+	case rootuser.FieldRemark:
+		m.ResetRemark()
+		return nil
+	}
+	return fmt.Errorf("unknown RootUser field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *RootUserMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *RootUserMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *RootUserMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *RootUserMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *RootUserMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *RootUserMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *RootUserMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown RootUser unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *RootUserMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown RootUser edge %s", name)
 }

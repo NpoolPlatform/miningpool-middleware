@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -17,7 +18,7 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 5)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 6)}
 	graph.Nodes[0] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   coin.Table,
@@ -137,6 +138,29 @@ var schemaGraph = func() *sqlgraph.Schema {
 			orderuser.FieldThreshold:        {Type: field.TypeFloat32, Column: orderuser.FieldThreshold},
 			orderuser.FieldReadPageLink:     {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
 			orderuser.FieldAutoPay:          {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
+		},
+	}
+	graph.Nodes[5] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   rootuser.Table,
+			Columns: rootuser.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUint32,
+				Column: rootuser.FieldID,
+			},
+		},
+		Type: "RootUser",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			rootuser.FieldCreatedAt:      {Type: field.TypeUint32, Column: rootuser.FieldCreatedAt},
+			rootuser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: rootuser.FieldUpdatedAt},
+			rootuser.FieldDeletedAt:      {Type: field.TypeUint32, Column: rootuser.FieldDeletedAt},
+			rootuser.FieldEntID:          {Type: field.TypeUUID, Column: rootuser.FieldEntID},
+			rootuser.FieldName:           {Type: field.TypeString, Column: rootuser.FieldName},
+			rootuser.FieldMiningpoolType: {Type: field.TypeString, Column: rootuser.FieldMiningpoolType},
+			rootuser.FieldEmail:          {Type: field.TypeString, Column: rootuser.FieldEmail},
+			rootuser.FieldAuthToken:      {Type: field.TypeString, Column: rootuser.FieldAuthToken},
+			rootuser.FieldAuthed:         {Type: field.TypeBool, Column: rootuser.FieldAuthed},
+			rootuser.FieldRemark:         {Type: field.TypeString, Column: rootuser.FieldRemark},
 		},
 	}
 	return graph
@@ -626,4 +650,94 @@ func (f *OrderUserFilter) WhereReadPageLink(p entql.StringP) {
 // WhereAutoPay applies the entql bool predicate on the auto_pay field.
 func (f *OrderUserFilter) WhereAutoPay(p entql.BoolP) {
 	f.Where(p.Field(orderuser.FieldAutoPay))
+}
+
+// addPredicate implements the predicateAdder interface.
+func (ruq *RootUserQuery) addPredicate(pred func(s *sql.Selector)) {
+	ruq.predicates = append(ruq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the RootUserQuery builder.
+func (ruq *RootUserQuery) Filter() *RootUserFilter {
+	return &RootUserFilter{config: ruq.config, predicateAdder: ruq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *RootUserMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the RootUserMutation builder.
+func (m *RootUserMutation) Filter() *RootUserFilter {
+	return &RootUserFilter{config: m.config, predicateAdder: m}
+}
+
+// RootUserFilter provides a generic filtering capability at runtime for RootUserQuery.
+type RootUserFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *RootUserFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql uint32 predicate on the id field.
+func (f *RootUserFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(rootuser.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *RootUserFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(rootuser.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *RootUserFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(rootuser.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *RootUserFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(rootuser.FieldDeletedAt))
+}
+
+// WhereEntID applies the entql [16]byte predicate on the ent_id field.
+func (f *RootUserFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(rootuser.FieldEntID))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *RootUserFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldName))
+}
+
+// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
+func (f *RootUserFilter) WhereMiningpoolType(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldMiningpoolType))
+}
+
+// WhereEmail applies the entql string predicate on the email field.
+func (f *RootUserFilter) WhereEmail(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldEmail))
+}
+
+// WhereAuthToken applies the entql string predicate on the auth_token field.
+func (f *RootUserFilter) WhereAuthToken(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldAuthToken))
+}
+
+// WhereAuthed applies the entql bool predicate on the authed field.
+func (f *RootUserFilter) WhereAuthed(p entql.BoolP) {
+	f.Where(p.Field(rootuser.FieldAuthed))
+}
+
+// WhereRemark applies the entql string predicate on the remark field.
+func (f *RootUserFilter) WhereRemark(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldRemark))
 }

@@ -120,6 +120,14 @@ func (guc *GoodUserCreate) SetHashRate(f float64) *GoodUserCreate {
 	return guc
 }
 
+// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableHashRate(f *float64) *GoodUserCreate {
+	if f != nil {
+		guc.SetHashRate(*f)
+	}
+	return guc
+}
+
 // SetReadPageLink sets the "read_page_link" field.
 func (guc *GoodUserCreate) SetReadPageLink(s string) *GoodUserCreate {
 	guc.mutation.SetReadPageLink(s)
@@ -247,6 +255,10 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultEntID()
 		guc.mutation.SetEntID(v)
 	}
+	if _, ok := guc.mutation.HashRate(); !ok {
+		v := gooduser.DefaultHashRate
+		guc.mutation.SetHashRate(v)
+	}
 	if _, ok := guc.mutation.ReadPageLink(); !ok {
 		v := gooduser.DefaultReadPageLink
 		guc.mutation.SetReadPageLink(v)
@@ -285,9 +297,6 @@ func (guc *GoodUserCreate) check() error {
 	}
 	if _, ok := guc.mutation.End(); !ok {
 		return &ValidationError{Name: "end", err: errors.New(`ent: missing required field "GoodUser.end"`)}
-	}
-	if _, ok := guc.mutation.HashRate(); !ok {
-		return &ValidationError{Name: "hash_rate", err: errors.New(`ent: missing required field "GoodUser.hash_rate"`)}
 	}
 	return nil
 }
@@ -641,6 +650,12 @@ func (u *GoodUserUpsert) AddHashRate(v float64) *GoodUserUpsert {
 	return u
 }
 
+// ClearHashRate clears the value of the "hash_rate" field.
+func (u *GoodUserUpsert) ClearHashRate() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldHashRate)
+	return u
+}
+
 // SetReadPageLink sets the "read_page_link" field.
 func (u *GoodUserUpsert) SetReadPageLink(v string) *GoodUserUpsert {
 	u.Set(gooduser.FieldReadPageLink, v)
@@ -902,6 +917,13 @@ func (u *GoodUserUpsertOne) AddHashRate(v float64) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateHashRate() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateHashRate()
+	})
+}
+
+// ClearHashRate clears the value of the "hash_rate" field.
+func (u *GoodUserUpsertOne) ClearHashRate() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearHashRate()
 	})
 }
 
@@ -1334,6 +1356,13 @@ func (u *GoodUserUpsertBulk) AddHashRate(v float64) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateHashRate() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateHashRate()
+	})
+}
+
+// ClearHashRate clears the value of the "hash_rate" field.
+func (u *GoodUserUpsertBulk) ClearHashRate() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearHashRate()
 	})
 }
 

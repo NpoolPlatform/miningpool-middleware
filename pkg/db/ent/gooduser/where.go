@@ -887,6 +887,20 @@ func HashRateLTE(v float64) predicate.GoodUser {
 	})
 }
 
+// HashRateIsNil applies the IsNil predicate on the "hash_rate" field.
+func HashRateIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldHashRate)))
+	})
+}
+
+// HashRateNotNil applies the NotNil predicate on the "hash_rate" field.
+func HashRateNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldHashRate)))
+	})
+}
+
 // ReadPageLinkEQ applies the EQ predicate on the "read_page_link" field.
 func ReadPageLinkEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {

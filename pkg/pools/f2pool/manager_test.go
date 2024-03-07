@@ -21,7 +21,7 @@ func TestAuth(t *testing.T) {
 	assert.NotNil(t, mgr)
 
 	authed := mgr.CheckAuth(context.Background())
-	assert.Equal(t, false, authed)
+	assert.Equal(t, nil, authed)
 }
 
 func TestMininguser(t *testing.T) {
@@ -139,6 +139,24 @@ func TestPayment(t *testing.T) {
 	resumed, err := mgr.ResumePayment(context.Background(), "cococonut2")
 	assert.Nil(t, err)
 	assert.Equal(t, true, resumed)
+	time.Sleep(time.Second)
+
+	// _link, err = mgr.GetReadPageLink(context.Background(), "cococonut2")
+	// assert.Nil(t, err)
+	// assert.NotEqual(t, link, _link)
+	// time.Sleep(time.Second)
+}
+
+func TestWithdrawPraction(t *testing.T) {
+	time.Sleep(time.Second)
+	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
+	assert.Nil(t, err)
+	assert.NotNil(t, mgr)
+
+	tx_time, err := mgr.WithdrawPraction(context.Background(), "cococonut1")
+	fmt.Println(tx_time)
+	assert.Nil(t, err)
+	assert.NotEqual(t, 0, tx_time)
 	time.Sleep(time.Second)
 
 	// _link, err = mgr.GetReadPageLink(context.Background(), "cococonut2")

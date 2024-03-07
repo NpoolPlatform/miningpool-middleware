@@ -86,6 +86,8 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultHashRate holds the default value on creation for the "hash_rate" field.
+	DefaultHashRate float64
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
 	DefaultReadPageLink string
 )

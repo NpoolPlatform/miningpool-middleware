@@ -100,7 +100,7 @@ var (
 		{Name: "authed", Type: field.TypeBool},
 		{Name: "start", Type: field.TypeUint32},
 		{Name: "end", Type: field.TypeUint32},
-		{Name: "hash_rate", Type: field.TypeFloat64},
+		{Name: "hash_rate", Type: field.TypeFloat64, Nullable: true, Default: 0},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.
@@ -149,6 +149,33 @@ var (
 			},
 		},
 	}
+	// RootUsersColumns holds the columns for the "root_users" table.
+	RootUsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "miningpool_type", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString},
+		{Name: "auth_token", Type: field.TypeString},
+		{Name: "authed", Type: field.TypeBool},
+		{Name: "remark", Type: field.TypeString},
+	}
+	// RootUsersTable holds the schema information for the "root_users" table.
+	RootUsersTable = &schema.Table{
+		Name:       "root_users",
+		Columns:    RootUsersColumns,
+		PrimaryKey: []*schema.Column{RootUsersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "rootuser_ent_id",
+				Unique:  true,
+				Columns: []*schema.Column{RootUsersColumns[4]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CoinsTable,
@@ -156,6 +183,7 @@ var (
 		FractionRulesTable,
 		GoodUsersTable,
 		OrderUsersTable,
+		RootUsersTable,
 	}
 )
 

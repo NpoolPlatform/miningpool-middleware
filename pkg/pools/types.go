@@ -3,7 +3,7 @@ package pools
 import "context"
 
 type PoolManager interface {
-	CheckAuth(ctx context.Context) bool
+	CheckAuth(ctx context.Context) error
 	// mining user
 	AddMiningUser(ctx context.Context) (userName string, readPageLink string, err error)
 	ExistMiningUser(ctx context.Context, userName string) (bool, error)
@@ -24,6 +24,6 @@ type PoolManager interface {
 	PausePayment(ctx context.Context, userName string) (bool, error)
 	ResumePayment(ctx context.Context, userName string) (bool, error)
 
-	// TODO support praction
-	// WithdrawPraction(ctx context.Context,userName string)()
+	// withdraw praction
+	WithdrawPraction(ctx context.Context, userName string) (int64, error)
 }

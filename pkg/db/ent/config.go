@@ -33,6 +33,7 @@ type hooks struct {
 	FractionRule []ent.Hook
 	GoodUser     []ent.Hook
 	OrderUser    []ent.Hook
+	RootUser     []ent.Hook
 }
 
 // Options applies the options on the config object.

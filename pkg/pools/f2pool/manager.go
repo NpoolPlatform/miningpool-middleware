@@ -47,15 +47,20 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*F2PoolMgr, erro
 	} else {
 		return nil, fmt.Errorf("have no pool manager for %v-%v", MiningPoolType, coinType)
 	}
-	return &F2PoolMgr{
+	mgr := &F2PoolMgr{
 		currency:  currency,
 		authToken: auth,
 		cli:       client.NewClient(F2PoolAPI, auth),
-	}, nil
+	}
+	if err := mgr.CheckAuth(context.Background()); err != nil {
+		return nil, err
+	}
+	return mgr, nil
 }
 
-func (mgr *F2PoolMgr) CheckAuth(ctx context.Context) bool {
-	return false
+func (mgr *F2PoolMgr) CheckAuth(ctx context.Context) error {
+	_, err := mgr.cli.MiningUserList(ctx, &types.MiningUserListReq{})
+	return err
 }
 
 func (mgr *F2PoolMgr) AddMiningUser(ctx context.Context) (string, string, error) {
@@ -316,6 +321,23 @@ func (mgr *F2PoolMgr) ResumePayment(ctx context.Context, name string) (bool, err
 	}
 
 	return false, nil
+}
+
+func (mgr *F2PoolMgr) WithdrawPraction(ctx context.Context, name string) (int64, error) {
+	resumeResp, err := mgr.cli.MiningUserBalanceWithdraw(ctx, &types.MiningUserBalanceWithdrawReq{
+		MiningUserName: name,
+		Currency:       mgr.currency,
+	})
+
+	if err != nil {
+		return 0, err
+	}
+
+	if resumeResp == nil {
+		return 0, fmt.Errorf("failed to resume payment,have nil response")
+	}
+
+	return resumeResp.PaidTime, nil
 }
 
 func getReadPageLink(key, user_name string) string {

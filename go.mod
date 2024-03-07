@@ -18,13 +18,15 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 )
 
 require (
 	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/NpoolPlatform/message v0.0.0-20240117070530-1f17cc9b80c9
+	github.com/NpoolPlatform/message v0.0.0-20240307071349-c92d4ae03f45
 	github.com/Shonminh/apollo-client v0.4.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect

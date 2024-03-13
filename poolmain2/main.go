@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	baseURL     = "https://api.f2pool.com"
 	accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
 )
 

@@ -1,4 +1,4 @@
-package tx
+package rootuser
 
 import (
 	"context"
@@ -81,6 +81,7 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 		return nil
 	}
 }
+
 func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if miningpooltype == nil {
@@ -96,6 +97,7 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 		return nil
 	}
 }
+
 func WithEmail(email *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if email == nil {
@@ -145,7 +147,7 @@ func WithRemark(remark *string, must bool) func(context.Context, *Handler) error
 	}
 }
 
-// nolint:gocyclo
+// nolint:gocognit
 func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		_reqs := []*rootusercrud.Req{}
@@ -186,7 +188,7 @@ func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handl
 	}
 }
 
-//nolint:gocyclo
+//nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		h.Conds = &rootusercrud.Conds{}

@@ -14,7 +14,7 @@ import (
 	"github.com/mr-tron/base58"
 )
 
-type F2PoolMgr struct {
+type Manager struct {
 	currency  string
 	authToken string
 	cli       *client.Client
@@ -40,14 +40,14 @@ const (
 	DefaultPermissions    = "1,2"
 )
 
-func NewF2PoolManager(coinType basetype.CoinType, auth string) (*F2PoolMgr, error) {
+func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error) {
 	currency := ""
 	if k, ok := CoinType2Currency[coinType]; ok {
 		currency = k
 	} else {
 		return nil, fmt.Errorf("have no pool manager for %v-%v", MiningPoolType, coinType)
 	}
-	mgr := &F2PoolMgr{
+	mgr := &Manager{
 		currency:  currency,
 		authToken: auth,
 		cli:       client.NewClient(F2PoolAPI, auth),
@@ -58,16 +58,19 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*F2PoolMgr, erro
 	return mgr, nil
 }
 
-func (mgr *F2PoolMgr) CheckAuth(ctx context.Context) error {
+func (mgr *Manager) CheckAuth(ctx context.Context) error {
 	_, err := mgr.cli.MiningUserList(ctx, &types.MiningUserListReq{})
 	return err
 }
 
-func (mgr *F2PoolMgr) AddMiningUser(ctx context.Context) (string, string, error) {
+func (mgr *Manager) AddMiningUser(ctx context.Context) (string, string, error) {
 	var resp *types.MiningUserAddResp
 	var err error
 	for i := 0; i < MaxRetries; i++ {
-		userName := RandomF2PoolUser(MiningUserLen)
+		userName, err := RandomF2PoolUser(MiningUserLen)
+		if err != nil {
+			return "", "", err
+		}
 		resp, err = mgr.cli.MiningUserAdd(ctx, &types.MiningUserAddReq{MiningUserName: userName})
 		if err != nil && !strings.Contains(err.Error(), "mining user name already exists") {
 			return "", "", err
@@ -95,7 +98,7 @@ func (mgr *F2PoolMgr) AddMiningUser(ctx context.Context) (string, string, error)
 }
 
 // just judge wheather mining user in the root-user of the auth token
-func (mgr *F2PoolMgr) ExistMiningUser(ctx context.Context, name string) (bool, error) {
+func (mgr *Manager) ExistMiningUser(ctx context.Context, name string) (bool, error) {
 	_, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
 		return false, err
@@ -104,12 +107,16 @@ func (mgr *F2PoolMgr) ExistMiningUser(ctx context.Context, name string) (bool, e
 }
 
 // not implement
-func (mgr *F2PoolMgr) DeleteMiningUser(ctx context.Context, name string) error {
+func (mgr *Manager) DeleteMiningUser(ctx context.Context, name string) error {
 	return fmt.Errorf("f2pool has not yet implemented this method")
 }
 
-func (mgr *F2PoolMgr) AddReadPageLink(ctx context.Context, name string) (string, error) {
-	pageName := RandomF2PoolUser(MiningUserPageNameLen)
+func (mgr *Manager) AddReadPageLink(ctx context.Context, name string) (string, error) {
+	pageName, err := RandomF2PoolUser(MiningUserPageNameLen)
+	if err != nil {
+		return "", err
+	}
+
 	addResp, err := mgr.cli.MiningUserReadOnlyPageAdd(ctx, &types.MiningUserReadOnlyPageAddReq{
 		MiningUserName: name,
 		PageName:       pageName,
@@ -126,7 +133,7 @@ func (mgr *F2PoolMgr) AddReadPageLink(ctx context.Context, name string) (string,
 	return getReadPageLink(addResp.Page.Key, addResp.MiningUserName), nil
 }
 
-func (mgr *F2PoolMgr) GetReadPageLink(ctx context.Context, name string) (string, error) {
+func (mgr *Manager) GetReadPageLink(ctx context.Context, name string) (string, error) {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
 		return "", fmt.Errorf("have no user name %v or %v", name, err)
@@ -145,7 +152,7 @@ func (mgr *F2PoolMgr) GetReadPageLink(ctx context.Context, name string) (string,
 
 // not implement
 // f2pool cannot delete page link
-func (mgr *F2PoolMgr) DeleteReadPageLink(ctx context.Context, name string) error {
+func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
 		return fmt.Errorf("have no user name %v or %v", name, err)
@@ -173,16 +180,16 @@ func (mgr *F2PoolMgr) DeleteReadPageLink(ctx context.Context, name string) error
 	return nil
 }
 
-func (mgr *F2PoolMgr) SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error {
-	infoResp, _ := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
+func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error {
+	infoResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Currency:    mgr.currency,
 		Distributor: distributor,
 		Recipient:   recipient,
 	})
 
-	if infoResp != nil {
+	if err != nil && infoResp != nil {
 		for _, v := range infoResp.Data {
-			if v.Distributor != distributor {
+			if v.Distributor != distributor || v.Currency != mgr.currency {
 				continue
 			}
 			_, _ = mgr.cli.RevenueDistributionDelete(ctx, &types.RevenueDistributionDeleteReq{
@@ -209,7 +216,7 @@ func (mgr *F2PoolMgr) SetRevenueProportion(ctx context.Context, distributor stri
 	return nil
 }
 
-func (mgr *F2PoolMgr) GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error) {
+func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error) {
 	getResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Distributor: distributor,
 		Recipient:   recipient,
@@ -232,7 +239,7 @@ func (mgr *F2PoolMgr) GetRevenueProportion(ctx context.Context, distributor stri
 	return 0, nil
 }
 
-func (mgr *F2PoolMgr) SetRevenueAddress(ctx context.Context, name string, address string) error {
+func (mgr *Manager) SetRevenueAddress(ctx context.Context, name string, address string) error {
 	setResp, err := mgr.cli.MiningUserWalletUpdate(ctx, &types.MiningUserWalletUpdateReq{
 		Params: []types.WalletParams{
 			{
@@ -257,7 +264,7 @@ func (mgr *F2PoolMgr) SetRevenueAddress(ctx context.Context, name string, addres
 	return nil
 }
 
-func (mgr *F2PoolMgr) GetRevenueAddress(ctx context.Context, name string) (string, error) {
+func (mgr *Manager) GetRevenueAddress(ctx context.Context, name string) (string, error) {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{
 		MiningUserName: name,
 	})
@@ -279,7 +286,7 @@ func (mgr *F2PoolMgr) GetRevenueAddress(ctx context.Context, name string) (strin
 	return "", nil
 }
 
-func (mgr *F2PoolMgr) PausePayment(ctx context.Context, name string) (bool, error) {
+func (mgr *Manager) PausePayment(ctx context.Context, name string) (bool, error) {
 	pauseResp, err := mgr.cli.MiningUserPaymentPause(ctx, &types.MiningUserPaymentPauseReq{
 		MiningUserNames: []string{name},
 		Currency:        mgr.currency,
@@ -301,7 +308,7 @@ func (mgr *F2PoolMgr) PausePayment(ctx context.Context, name string) (bool, erro
 	return false, nil
 }
 
-func (mgr *F2PoolMgr) ResumePayment(ctx context.Context, name string) (bool, error) {
+func (mgr *Manager) ResumePayment(ctx context.Context, name string) (bool, error) {
 	resumeResp, err := mgr.cli.MiningUserPaymentResume(ctx, &types.MiningUserPaymentResumeReq{
 		MiningUserNames: []string{name},
 		Currency:        mgr.currency,
@@ -323,7 +330,7 @@ func (mgr *F2PoolMgr) ResumePayment(ctx context.Context, name string) (bool, err
 	return false, nil
 }
 
-func (mgr *F2PoolMgr) WithdrawPraction(ctx context.Context, name string) (int64, error) {
+func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, error) {
 	resumeResp, err := mgr.cli.MiningUserBalanceWithdraw(ctx, &types.MiningUserBalanceWithdrawReq{
 		MiningUserName: name,
 		Currency:       mgr.currency,
@@ -346,14 +353,17 @@ func getReadPageLink(key, user_name string) string {
 
 // can only be a combination of lowercase characters and numbers
 // start with letter
-func RandomF2PoolUser(n int) string {
+func RandomF2PoolUser(n int) (string, error) {
 	startLetters := []rune("abcdefghijklmnopqretuvwxyz")
-	randn, _ := rand.Int(rand.Reader, big.NewInt(int64(len(startLetters))))
+	randn, err := rand.Int(rand.Reader, big.NewInt(int64(len(startLetters))))
+	if err != nil {
+		return "", err
+	}
 	target := string(startLetters[randn.Int64()])
 	for {
 		randn, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
 		if len(target) >= n {
-			return strings.ToLower(target[:n])
+			return strings.ToLower(target[:n]), nil
 		}
 		target += base58.Encode(randn.Bytes())
 	}

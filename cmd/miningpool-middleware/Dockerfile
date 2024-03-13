@@ -1,5 +1,5 @@
 FROM uhub.service.ucloud.cn/entropypool/alpine:3.16
 
-COPY service-sample /usr/local/bin/service-sample
+COPY miningpool-middleware /usr/local/bin/miningpool-middleware
 
-CMD ["service-sample", "run"]
+CMD ["miningpool-middleware", "run"]

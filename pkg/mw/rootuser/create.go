@@ -1,4 +1,4 @@
-package tx
+package rootuser
 
 import (
 	"context"
@@ -20,7 +20,7 @@ func (h *Handler) CreateRootUser(ctx context.Context) (*npool.RootUser, error) {
 	}
 
 	err := db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
-		if _, err := rootusercrud.CreateSet(
+		info, err := rootusercrud.CreateSet(
 			cli.RootUser.Create(),
 			&rootusercrud.Req{
 				EntID:          h.EntID,
@@ -31,9 +31,11 @@ func (h *Handler) CreateRootUser(ctx context.Context) (*npool.RootUser, error) {
 				Authed:         h.Authed,
 				Remark:         h.Remark,
 			},
-		).Save(ctx); err != nil {
+		).Save(ctx)
+		if err != nil {
 			return err
 		}
+		h.ID = &info.ID
 		return nil
 	})
 	if err != nil {

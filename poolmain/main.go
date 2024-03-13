@@ -2,16 +2,11 @@ package main
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
-	"math"
-	"math/big"
-	"strings"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
-	"github.com/mr-tron/base58"
 )
 
 func main() {
@@ -23,17 +18,4 @@ func main() {
 	})
 	fmt.Println(err)
 	fmt.Println(utils.PrettyStruct(resp))
-}
-
-func RandomF2PoolUser(n int) string {
-	startLetters := []rune("abcdefghijklmnopqretuvwxyz")
-	randn, _ := rand.Int(rand.Reader, big.NewInt(int64(len(startLetters))))
-	target := string(startLetters[randn.Int64()])
-	for {
-		randn, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
-		if len(target) >= n {
-			return strings.ToLower(target[:n])
-		}
-		target += base58.Encode(randn.Bytes())
-	}
 }

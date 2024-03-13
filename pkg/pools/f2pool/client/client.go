@@ -5,18 +5,36 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 )
 
+const (
+	F2PoolRps = 2
+)
+
 type Client struct {
-	BaseURL     string
-	AccessToken string
+	BaseURL         string
+	AccessToken     string
+	TimeTokenBucket chan struct{}
 }
 
+var client *Client
+
 func NewClient(baseURL, accessToken string) *Client {
-	return &Client{BaseURL: baseURL, AccessToken: accessToken}
+	if client == nil {
+		client = &Client{BaseURL: baseURL, AccessToken: accessToken}
+		client.TimeTokenBucket = make(chan struct{})
+		go func() {
+			for {
+				client.TimeTokenBucket <- struct{}{}
+				time.Sleep(time.Second / F2PoolRps)
+			}
+		}()
+	}
+	return client
 }
 
 func (cli *Client) post(ctx context.Context, path string, req, resp interface{}) error {
@@ -24,6 +42,7 @@ func (cli *Client) post(ctx context.Context, path string, req, resp interface{})
 	if err != nil {
 		return err
 	}
+	<-cli.TimeTokenBucket
 
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"

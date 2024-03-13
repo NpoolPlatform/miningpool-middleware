@@ -1,4 +1,4 @@
-package tx
+package rootuser
 
 import (
 	"context"
@@ -19,10 +19,7 @@ type updateHandler struct {
 
 //nolint:gocyclo
 func (h *updateHandler) validateState(info *ent.RootUser) error {
-	if h.MiningpoolType == nil {
-		return nil
-	}
-	if h.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
+	if info.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.String() {
 		return fmt.Errorf("invalid miningpooltype")
 	}
 	return nil

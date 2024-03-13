@@ -1,4 +1,4 @@
-package tx
+package rootuser
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	rootuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 )
 
-func (h *Handler) ExistTx(ctx context.Context) (bool, error) {
+func (h *Handler) ExistRootUser(ctx context.Context) (bool, error) {
 	exist := false
 	var err error
 
@@ -33,7 +33,7 @@ func (h *Handler) ExistTx(ctx context.Context) (bool, error) {
 	return exist, nil
 }
 
-func (h *Handler) ExistTxConds(ctx context.Context) (bool, error) {
+func (h *Handler) ExistRootUserConds(ctx context.Context) (bool, error) {
 	exist := false
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := rootusercrud.SetQueryConds(cli.RootUser.Query(), h.Conds)

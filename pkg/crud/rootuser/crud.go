@@ -19,6 +19,7 @@ type Req struct {
 	AuthToken      *string
 	Authed         *bool
 	Remark         *string
+	DeleteAt       *uint32
 }
 
 func CreateSet(c *ent.RootUserCreate, req *Req) *ent.RootUserCreate {
@@ -65,7 +66,9 @@ func UpdateSet(u *ent.RootUserUpdateOne, req *Req) (*ent.RootUserUpdateOne, erro
 	if req.Remark != nil {
 		u = u.SetRemark(*req.Remark)
 	}
-
+	if req.DeleteAt != nil {
+		u = u.SetDeletedAt(*req.DeleteAt)
+	}
 	return u, nil
 }
 
@@ -81,6 +84,9 @@ type Conds struct {
 }
 
 func SetQueryConds(q *ent.RootUserQuery, conds *Conds) (*ent.RootUserQuery, error) { //nolint
+	if conds == nil {
+		return nil, fmt.Errorf("have no any conds")
+	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
 		if !ok {

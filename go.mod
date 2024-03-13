@@ -3,29 +3,40 @@ module github.com/NpoolPlatform/miningpool-middleware
 go 1.17
 
 require (
+	bou.ke/monkey v1.0.2
 	entgo.io/ent v0.11.3
+	github.com/NpoolPlatform/basal-middleware v0.0.0-20240228105108-f00107969a4f
 	github.com/NpoolPlatform/go-service-framework v0.0.0-20231228071122-53a5febeea97
 	github.com/NpoolPlatform/libent-cruder v0.0.0-20231008051607-f64457cf6ab6
-	github.com/NpoolPlatform/order-middleware v0.0.0-20231207022847-d562f0898e06
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0
 	github.com/mr-tron/base58 v1.2.0
 	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli/v2 v2.4.0
-	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f
 	google.golang.org/grpc v1.55.0
 )
 
 require (
+	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/ThreeDotsLabs/watermill v1.2.0 // indirect
+	github.com/ThreeDotsLabs/watermill-amqp/v2 v2.0.7 // indirect
+	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
+	github.com/kylelemons/godebug v1.1.0 // indirect
+	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
+	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rabbitmq/amqp091-go v1.2.0 // indirect
+	github.com/sergi/go-diff v1.1.0 // indirect
+	github.com/spaolacci/murmur3 v1.1.0 // indirect
+	golang.org/x/xerrors v0.0.0-20220411194840-2f41105eb62f // indirect
 )
 
 require (
 	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
-	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/NpoolPlatform/message v0.0.0-20240307071349-c92d4ae03f45
 	github.com/Shonminh/apollo-client v0.4.0 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
@@ -60,7 +71,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/hashicorp/serf v0.9.7 // indirect
-	github.com/kr/pretty v0.3.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -76,14 +86,12 @@ require (
 	github.com/prometheus/common v0.39.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.11.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	github.com/ugorji/go/codec v1.2.12 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.31.0 // indirect
 	go.opentelemetry.io/otel v1.8.0 // indirect
@@ -99,7 +107,7 @@ require (
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.30.0
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

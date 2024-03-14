@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -30,14 +31,16 @@ type Coin struct {
 	Site string `json:"site,omitempty"`
 	// CoinType holds the value of the "coin_type" field.
 	CoinType string `json:"coin_type,omitempty"`
-	// RevenueType holds the value of the "revenue_type" field.
-	RevenueType string `json:"revenue_type,omitempty"`
+	// RevenueTypes holds the value of the "revenue_types" field.
+	RevenueTypes []string `json:"revenue_types,omitempty"`
 	// FeeRate holds the value of the "fee_rate" field.
 	FeeRate float32 `json:"fee_rate,omitempty"`
 	// FixedRevenueAble holds the value of the "fixed_revenue_able" field.
 	FixedRevenueAble bool `json:"fixed_revenue_able,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
+	// Threshold holds the value of the "threshold" field.
+	Threshold float32 `json:"threshold,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -45,13 +48,15 @@ func (*Coin) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case coin.FieldRevenueTypes:
+			values[i] = new([]byte)
 		case coin.FieldFixedRevenueAble:
 			values[i] = new(sql.NullBool)
-		case coin.FieldFeeRate:
+		case coin.FieldFeeRate, coin.FieldThreshold:
 			values[i] = new(sql.NullFloat64)
 		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case coin.FieldMiningpoolType, coin.FieldSite, coin.FieldCoinType, coin.FieldRevenueType, coin.FieldRemark:
+		case coin.FieldMiningpoolType, coin.FieldSite, coin.FieldCoinType, coin.FieldRemark:
 			values[i] = new(sql.NullString)
 		case coin.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -118,11 +123,13 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				c.CoinType = value.String
 			}
-		case coin.FieldRevenueType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_type", values[i])
-			} else if value.Valid {
-				c.RevenueType = value.String
+		case coin.FieldRevenueTypes:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field revenue_types", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &c.RevenueTypes); err != nil {
+					return fmt.Errorf("unmarshal field revenue_types: %w", err)
+				}
 			}
 		case coin.FieldFeeRate:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
@@ -141,6 +148,12 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
 			} else if value.Valid {
 				c.Remark = value.String
+			}
+		case coin.FieldThreshold:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field threshold", values[i])
+			} else if value.Valid {
+				c.Threshold = float32(value.Float64)
 			}
 		}
 	}
@@ -191,8 +204,8 @@ func (c *Coin) String() string {
 	builder.WriteString("coin_type=")
 	builder.WriteString(c.CoinType)
 	builder.WriteString(", ")
-	builder.WriteString("revenue_type=")
-	builder.WriteString(c.RevenueType)
+	builder.WriteString("revenue_types=")
+	builder.WriteString(fmt.Sprintf("%v", c.RevenueTypes))
 	builder.WriteString(", ")
 	builder.WriteString("fee_rate=")
 	builder.WriteString(fmt.Sprintf("%v", c.FeeRate))
@@ -202,6 +215,9 @@ func (c *Coin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(c.Remark)
+	builder.WriteString(", ")
+	builder.WriteString("threshold=")
+	builder.WriteString(fmt.Sprintf("%v", c.Threshold))
 	builder.WriteByte(')')
 	return builder.String()
 }

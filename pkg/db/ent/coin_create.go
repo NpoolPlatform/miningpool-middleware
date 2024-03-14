@@ -104,9 +104,9 @@ func (cc *CoinCreate) SetCoinType(s string) *CoinCreate {
 	return cc
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cc *CoinCreate) SetRevenueType(s string) *CoinCreate {
-	cc.mutation.SetRevenueType(s)
+// SetRevenueTypes sets the "revenue_types" field.
+func (cc *CoinCreate) SetRevenueTypes(s []string) *CoinCreate {
+	cc.mutation.SetRevenueTypes(s)
 	return cc
 }
 
@@ -130,6 +130,14 @@ func (cc *CoinCreate) SetFixedRevenueAble(b bool) *CoinCreate {
 	return cc
 }
 
+// SetNillableFixedRevenueAble sets the "fixed_revenue_able" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableFixedRevenueAble(b *bool) *CoinCreate {
+	if b != nil {
+		cc.SetFixedRevenueAble(*b)
+	}
+	return cc
+}
+
 // SetRemark sets the "remark" field.
 func (cc *CoinCreate) SetRemark(s string) *CoinCreate {
 	cc.mutation.SetRemark(s)
@@ -140,6 +148,20 @@ func (cc *CoinCreate) SetRemark(s string) *CoinCreate {
 func (cc *CoinCreate) SetNillableRemark(s *string) *CoinCreate {
 	if s != nil {
 		cc.SetRemark(*s)
+	}
+	return cc
+}
+
+// SetThreshold sets the "threshold" field.
+func (cc *CoinCreate) SetThreshold(f float32) *CoinCreate {
+	cc.mutation.SetThreshold(f)
+	return cc
+}
+
+// SetNillableThreshold sets the "threshold" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableThreshold(f *float32) *CoinCreate {
+	if f != nil {
+		cc.SetThreshold(*f)
 	}
 	return cc
 }
@@ -261,13 +283,25 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultSite
 		cc.mutation.SetSite(v)
 	}
+	if _, ok := cc.mutation.RevenueTypes(); !ok {
+		v := coin.DefaultRevenueTypes
+		cc.mutation.SetRevenueTypes(v)
+	}
 	if _, ok := cc.mutation.FeeRate(); !ok {
 		v := coin.DefaultFeeRate
 		cc.mutation.SetFeeRate(v)
 	}
+	if _, ok := cc.mutation.FixedRevenueAble(); !ok {
+		v := coin.DefaultFixedRevenueAble
+		cc.mutation.SetFixedRevenueAble(v)
+	}
 	if _, ok := cc.mutation.Remark(); !ok {
 		v := coin.DefaultRemark
 		cc.mutation.SetRemark(v)
+	}
+	if _, ok := cc.mutation.Threshold(); !ok {
+		v := coin.DefaultThreshold
+		cc.mutation.SetThreshold(v)
 	}
 	return nil
 }
@@ -291,12 +325,6 @@ func (cc *CoinCreate) check() error {
 	}
 	if _, ok := cc.mutation.CoinType(); !ok {
 		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "Coin.coin_type"`)}
-	}
-	if _, ok := cc.mutation.RevenueType(); !ok {
-		return &ValidationError{Name: "revenue_type", err: errors.New(`ent: missing required field "Coin.revenue_type"`)}
-	}
-	if _, ok := cc.mutation.FixedRevenueAble(); !ok {
-		return &ValidationError{Name: "fixed_revenue_able", err: errors.New(`ent: missing required field "Coin.fixed_revenue_able"`)}
 	}
 	return nil
 }
@@ -388,13 +416,13 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.CoinType = value
 	}
-	if value, ok := cc.mutation.RevenueType(); ok {
+	if value, ok := cc.mutation.RevenueTypes(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeJSON,
 			Value:  value,
-			Column: coin.FieldRevenueType,
+			Column: coin.FieldRevenueTypes,
 		})
-		_node.RevenueType = value
+		_node.RevenueTypes = value
 	}
 	if value, ok := cc.mutation.FeeRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -419,6 +447,14 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 			Column: coin.FieldRemark,
 		})
 		_node.Remark = value
+	}
+	if value, ok := cc.mutation.Threshold(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Value:  value,
+			Column: coin.FieldThreshold,
+		})
+		_node.Threshold = value
 	}
 	return _node, _spec
 }
@@ -582,15 +618,21 @@ func (u *CoinUpsert) UpdateCoinType() *CoinUpsert {
 	return u
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsert) SetRevenueType(v string) *CoinUpsert {
-	u.Set(coin.FieldRevenueType, v)
+// SetRevenueTypes sets the "revenue_types" field.
+func (u *CoinUpsert) SetRevenueTypes(v []string) *CoinUpsert {
+	u.Set(coin.FieldRevenueTypes, v)
 	return u
 }
 
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateRevenueType() *CoinUpsert {
-	u.SetExcluded(coin.FieldRevenueType)
+// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateRevenueTypes() *CoinUpsert {
+	u.SetExcluded(coin.FieldRevenueTypes)
+	return u
+}
+
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (u *CoinUpsert) ClearRevenueTypes() *CoinUpsert {
+	u.SetNull(coin.FieldRevenueTypes)
 	return u
 }
 
@@ -630,6 +672,12 @@ func (u *CoinUpsert) UpdateFixedRevenueAble() *CoinUpsert {
 	return u
 }
 
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (u *CoinUpsert) ClearFixedRevenueAble() *CoinUpsert {
+	u.SetNull(coin.FieldFixedRevenueAble)
+	return u
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsert) SetRemark(v string) *CoinUpsert {
 	u.Set(coin.FieldRemark, v)
@@ -645,6 +693,30 @@ func (u *CoinUpsert) UpdateRemark() *CoinUpsert {
 // ClearRemark clears the value of the "remark" field.
 func (u *CoinUpsert) ClearRemark() *CoinUpsert {
 	u.SetNull(coin.FieldRemark)
+	return u
+}
+
+// SetThreshold sets the "threshold" field.
+func (u *CoinUpsert) SetThreshold(v float32) *CoinUpsert {
+	u.Set(coin.FieldThreshold, v)
+	return u
+}
+
+// UpdateThreshold sets the "threshold" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateThreshold() *CoinUpsert {
+	u.SetExcluded(coin.FieldThreshold)
+	return u
+}
+
+// AddThreshold adds v to the "threshold" field.
+func (u *CoinUpsert) AddThreshold(v float32) *CoinUpsert {
+	u.Add(coin.FieldThreshold, v)
+	return u
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (u *CoinUpsert) ClearThreshold() *CoinUpsert {
+	u.SetNull(coin.FieldThreshold)
 	return u
 }
 
@@ -824,17 +896,24 @@ func (u *CoinUpsertOne) UpdateCoinType() *CoinUpsertOne {
 	})
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertOne) SetRevenueType(v string) *CoinUpsertOne {
+// SetRevenueTypes sets the "revenue_types" field.
+func (u *CoinUpsertOne) SetRevenueTypes(v []string) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
+		s.SetRevenueTypes(v)
 	})
 }
 
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateRevenueType() *CoinUpsertOne {
+// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateRevenueTypes() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
+		s.UpdateRevenueTypes()
+	})
+}
+
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (u *CoinUpsertOne) ClearRevenueTypes() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearRevenueTypes()
 	})
 }
 
@@ -880,6 +959,13 @@ func (u *CoinUpsertOne) UpdateFixedRevenueAble() *CoinUpsertOne {
 	})
 }
 
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (u *CoinUpsertOne) ClearFixedRevenueAble() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearFixedRevenueAble()
+	})
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsertOne) SetRemark(v string) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
@@ -898,6 +984,34 @@ func (u *CoinUpsertOne) UpdateRemark() *CoinUpsertOne {
 func (u *CoinUpsertOne) ClearRemark() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearRemark()
+	})
+}
+
+// SetThreshold sets the "threshold" field.
+func (u *CoinUpsertOne) SetThreshold(v float32) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetThreshold(v)
+	})
+}
+
+// AddThreshold adds v to the "threshold" field.
+func (u *CoinUpsertOne) AddThreshold(v float32) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.AddThreshold(v)
+	})
+}
+
+// UpdateThreshold sets the "threshold" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateThreshold() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateThreshold()
+	})
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (u *CoinUpsertOne) ClearThreshold() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearThreshold()
 	})
 }
 
@@ -1242,17 +1356,24 @@ func (u *CoinUpsertBulk) UpdateCoinType() *CoinUpsertBulk {
 	})
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertBulk) SetRevenueType(v string) *CoinUpsertBulk {
+// SetRevenueTypes sets the "revenue_types" field.
+func (u *CoinUpsertBulk) SetRevenueTypes(v []string) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
+		s.SetRevenueTypes(v)
 	})
 }
 
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateRevenueType() *CoinUpsertBulk {
+// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateRevenueTypes() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
+		s.UpdateRevenueTypes()
+	})
+}
+
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (u *CoinUpsertBulk) ClearRevenueTypes() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearRevenueTypes()
 	})
 }
 
@@ -1298,6 +1419,13 @@ func (u *CoinUpsertBulk) UpdateFixedRevenueAble() *CoinUpsertBulk {
 	})
 }
 
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (u *CoinUpsertBulk) ClearFixedRevenueAble() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearFixedRevenueAble()
+	})
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsertBulk) SetRemark(v string) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
@@ -1316,6 +1444,34 @@ func (u *CoinUpsertBulk) UpdateRemark() *CoinUpsertBulk {
 func (u *CoinUpsertBulk) ClearRemark() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearRemark()
+	})
+}
+
+// SetThreshold sets the "threshold" field.
+func (u *CoinUpsertBulk) SetThreshold(v float32) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetThreshold(v)
+	})
+}
+
+// AddThreshold adds v to the "threshold" field.
+func (u *CoinUpsertBulk) AddThreshold(v float32) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.AddThreshold(v)
+	})
+}
+
+// UpdateThreshold sets the "threshold" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateThreshold() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateThreshold()
+	})
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (u *CoinUpsertBulk) ClearThreshold() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearThreshold()
 	})
 }
 

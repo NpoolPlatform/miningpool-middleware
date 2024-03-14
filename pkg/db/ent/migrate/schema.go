@@ -18,10 +18,11 @@ var (
 		{Name: "miningpool_type", Type: field.TypeString},
 		{Name: "site", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "coin_type", Type: field.TypeString},
-		{Name: "revenue_type", Type: field.TypeString},
+		{Name: "revenue_types", Type: field.TypeJSON, Nullable: true},
 		{Name: "fee_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
-		{Name: "fixed_revenue_able", Type: field.TypeBool},
+		{Name: "fixed_revenue_able", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "threshold", Type: field.TypeFloat32, Nullable: true, Default: 0},
 	}
 	// CoinsTable holds the schema information for the "coins" table.
 	CoinsTable = &schema.Table{

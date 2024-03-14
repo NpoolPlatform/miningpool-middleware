@@ -32,6 +32,7 @@ func TestAuth(t *testing.T) {
 	assert.Equal(t, nil, authed)
 }
 
+//nolint:gocritic
 func TestMininguser(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
@@ -59,11 +60,9 @@ func TestMininguser(t *testing.T) {
 	// f2pool have not implment the method
 	// err = mgr.DeleteMiningUser(context.Background(), username)
 	// assert.Nil(t, err)
-
 	// ret, err = mgr.ExistMiningUser(context.Background(), username)
 	// assert.NotNil(t, err)
 	// assert.Equal(t, false, ret)
-
 	// _, err = mgr.GetReadPageLink(context.Background(), username)
 	// assert.NotNil(t, err)
 }
@@ -97,11 +96,13 @@ func TestRevenueAddress(t *testing.T) {
 	assert.Equal(t, addr, _addr)
 }
 
+//nolint:gocritic
 func TestPageLink(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 
+	// f2pool api have bug,
 	// link, err := mgr.AddReadPageLink(context.Background(), "cococonut2")
 	// assert.Nil(t, err)
 

@@ -51,20 +51,6 @@ func shutdown(ctx context.Context) {
 	)
 }
 
-func _watch(ctx context.Context, cancel context.CancelFunc, w func(ctx context.Context)) {
-	defer func() {
-		if err := recover(); err != nil {
-			logger.Sugar().Errorw(
-				"Watch",
-				"State", "Panic",
-				"Error", err,
-			)
-			cancel()
-		}
-	}()
-	w(ctx)
-}
-
 func watch(ctx context.Context, cancel context.CancelFunc) error {
 	go shutdown(ctx)
 	return nil

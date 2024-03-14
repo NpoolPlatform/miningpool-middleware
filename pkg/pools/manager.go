@@ -6,8 +6,7 @@ import (
 )
 
 func NewPoolManager(poolType basetype.MiningpoolType, coinType basetype.CoinType, auth string) (PoolManager, error) {
-	switch poolType {
-	case basetype.MiningpoolType_F2Pool:
+	if poolType == basetype.MiningpoolType_F2Pool {
 		return f2pool.NewF2PoolManager(coinType, auth)
 	}
 	return nil, nil

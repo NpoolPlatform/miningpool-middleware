@@ -1,13 +1,13 @@
-package rootuser
+package coin
 
 import (
 	"context"
 	"fmt"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
-	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
+	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -15,18 +15,20 @@ import (
 )
 
 type Handler struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
-	Email          *string
-	AuthToken      *string
-	Authed         *bool
-	Remark         *string
-	Reqs           []*rootusercrud.Req
-	Conds          *rootusercrud.Conds
-	Offset         int32
-	Limit          int32
+	ID               *uint32
+	EntID            *uuid.UUID
+	CoinType         *basetypes.CoinType
+	MiningpoolType   *basetypes.MiningpoolType
+	RevenueTypes     *[]basetypes.RevenueType
+	Site             *string
+	FeeRate          *float32
+	FixedRevenueAble *bool
+	Threshold        *float32
+	Remark           *string
+	Reqs             []*coincrud.Req
+	Conds            *coincrud.Conds
+	Offset           int32
+	Limit            int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {
@@ -69,15 +71,18 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-func WithName(name *string, must bool) func(context.Context, *Handler) error {
+func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if name == nil {
+		if cointype == nil {
 			if must {
-				return fmt.Errorf("invalid name")
+				return fmt.Errorf("invalid cointype")
 			}
 			return nil
 		}
-		h.Name = name
+		if cointype == basetypes.CoinType_DefaultCoinType.Enum() {
+			return fmt.Errorf("invalid cointype,not allow be default type")
+		}
+		h.CoinType = cointype
 		return nil
 	}
 }
@@ -98,44 +103,71 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 	}
 }
 
-func WithEmail(email *string, must bool) func(context.Context, *Handler) error {
+func WithRevenueTypes(revenuetypes *[]basetypes.RevenueType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if email == nil {
+		if revenuetypes == nil {
 			if must {
-				return fmt.Errorf("invalid email")
+				return fmt.Errorf("invalid revenuetypes")
 			}
 			return nil
 		}
-		h.Email = email
+		h.RevenueTypes = revenuetypes
 		return nil
 	}
 }
 
-func WithAuthToken(authtoken *string, must bool) func(context.Context, *Handler) error {
+func WithSite(site *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if authtoken == nil {
+		if site == nil {
 			if must {
-				return fmt.Errorf("invalid authtoken")
+				return fmt.Errorf("invalid site")
 			}
 			return nil
 		}
-		h.AuthToken = authtoken
+		h.Site = site
 		return nil
 	}
 }
 
-func WithAuthed(authed *bool, must bool) func(context.Context, *Handler) error {
+func WithFeeRate(feerate *float32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if authed == nil {
+		if feerate == nil {
 			if must {
-				return fmt.Errorf("invalid authed")
+				return fmt.Errorf("invalid feerate")
 			}
 			return nil
 		}
-		h.Authed = authed
+		h.FeeRate = feerate
 		return nil
 	}
 }
+
+func WithFixedRevenueAble(fixedrevenueable *bool, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if fixedrevenueable == nil {
+			if must {
+				return fmt.Errorf("invalid fixedrevenueable")
+			}
+			return nil
+		}
+		h.FixedRevenueAble = fixedrevenueable
+		return nil
+	}
+}
+
+func WithThreshold(threshold *float32, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if threshold == nil {
+			if must {
+				return fmt.Errorf("invalid threshold")
+			}
+			return nil
+		}
+		h.Threshold = threshold
+		return nil
+	}
+}
+
 func WithRemark(remark *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if remark == nil {
@@ -150,11 +182,11 @@ func WithRemark(remark *string, must bool) func(context.Context, *Handler) error
 }
 
 // nolint:gocognit
-func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handler) error {
+func WithReqs(reqs []*npool.CoinReq, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*rootusercrud.Req{}
+		_reqs := []*coincrud.Req{}
 		for _, req := range reqs {
-			_req := &rootusercrud.Req{}
+			_req := &coincrud.Req{}
 			if req.EntID != nil {
 				id, err := uuid.Parse(req.GetEntID())
 				if err != nil {
@@ -162,8 +194,11 @@ func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handl
 				}
 				_req.EntID = &id
 			}
-			if req.Name != nil {
-				_req.Name = req.Name
+			if req.CoinType != nil {
+				if req.CoinType == basetypes.CoinType_DefaultCoinType.Enum() {
+					return fmt.Errorf("invalid cointype,not allow be default type")
+				}
+				_req.CoinType = req.CoinType
 			}
 			if req.MiningpoolType != nil {
 				if req.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
@@ -171,14 +206,20 @@ func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handl
 				}
 				_req.MiningpoolType = req.MiningpoolType
 			}
-			if req.Email != nil {
-				_req.Email = req.Email
+			if req.RevenueTypes != nil {
+				_req.RevenueTypes = &req.RevenueTypes
 			}
-			if req.AuthToken != nil {
-				_req.AuthToken = req.AuthToken
+			if req.Site != nil {
+				_req.Site = req.Site
 			}
-			if req.Authed != nil {
-				_req.Authed = req.Authed
+			if req.FeeRate != nil {
+				_req.FeeRate = req.FeeRate
+			}
+			if req.FixedRevenueAble != nil {
+				_req.FixedRevenueAble = req.FixedRevenueAble
+			}
+			if req.Threshold != nil {
+				_req.Threshold = req.Threshold
 			}
 			if req.Remark != nil {
 				_req.Remark = req.Remark
@@ -193,7 +234,7 @@ func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handl
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		h.Conds = &rootusercrud.Conds{}
+		h.Conds = &coincrud.Conds{}
 		if conds == nil {
 			return nil
 		}
@@ -221,10 +262,10 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: ids,
 			}
 		}
-		if conds.Name != nil {
-			h.Conds.Name = &cruder.Cond{
-				Op:  conds.GetName().GetOp(),
-				Val: conds.GetName().GetValue(),
+		if conds.CoinType != nil {
+			h.Conds.CoinType = &cruder.Cond{
+				Op:  conds.GetCoinType().GetOp(),
+				Val: conds.GetCoinType().GetValue(),
 			}
 		}
 		if conds.MiningpoolType != nil {
@@ -233,16 +274,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: conds.GetMiningpoolType().GetValue(),
 			}
 		}
-		if conds.Email != nil {
-			h.Conds.Email = &cruder.Cond{
-				Op:  conds.GetEmail().GetOp(),
-				Val: conds.GetEmail().GetValue(),
+		if conds.Site != nil {
+			h.Conds.Site = &cruder.Cond{
+				Op:  conds.GetSite().GetOp(),
+				Val: conds.GetSite().GetValue(),
 			}
 		}
-		if conds.Authed != nil {
-			h.Conds.Authed = &cruder.Cond{
-				Op:  conds.GetAuthed().GetOp(),
-				Val: conds.GetAuthed().GetValue(),
+		if conds.FixedRevenueAble != nil {
+			h.Conds.FixedRevenueAble = &cruder.Cond{
+				Op:  conds.GetFixedRevenueAble().GetOp(),
+				Val: conds.GetFixedRevenueAble().GetValue(),
 			}
 		}
 		return nil

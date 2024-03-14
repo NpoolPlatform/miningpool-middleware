@@ -130,9 +130,15 @@ func (cu *CoinUpdate) SetCoinType(s string) *CoinUpdate {
 	return cu
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cu *CoinUpdate) SetRevenueType(s string) *CoinUpdate {
-	cu.mutation.SetRevenueType(s)
+// SetRevenueTypes sets the "revenue_types" field.
+func (cu *CoinUpdate) SetRevenueTypes(s []string) *CoinUpdate {
+	cu.mutation.SetRevenueTypes(s)
+	return cu
+}
+
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (cu *CoinUpdate) ClearRevenueTypes() *CoinUpdate {
+	cu.mutation.ClearRevenueTypes()
 	return cu
 }
 
@@ -169,6 +175,20 @@ func (cu *CoinUpdate) SetFixedRevenueAble(b bool) *CoinUpdate {
 	return cu
 }
 
+// SetNillableFixedRevenueAble sets the "fixed_revenue_able" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableFixedRevenueAble(b *bool) *CoinUpdate {
+	if b != nil {
+		cu.SetFixedRevenueAble(*b)
+	}
+	return cu
+}
+
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (cu *CoinUpdate) ClearFixedRevenueAble() *CoinUpdate {
+	cu.mutation.ClearFixedRevenueAble()
+	return cu
+}
+
 // SetRemark sets the "remark" field.
 func (cu *CoinUpdate) SetRemark(s string) *CoinUpdate {
 	cu.mutation.SetRemark(s)
@@ -186,6 +206,33 @@ func (cu *CoinUpdate) SetNillableRemark(s *string) *CoinUpdate {
 // ClearRemark clears the value of the "remark" field.
 func (cu *CoinUpdate) ClearRemark() *CoinUpdate {
 	cu.mutation.ClearRemark()
+	return cu
+}
+
+// SetThreshold sets the "threshold" field.
+func (cu *CoinUpdate) SetThreshold(f float32) *CoinUpdate {
+	cu.mutation.ResetThreshold()
+	cu.mutation.SetThreshold(f)
+	return cu
+}
+
+// SetNillableThreshold sets the "threshold" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableThreshold(f *float32) *CoinUpdate {
+	if f != nil {
+		cu.SetThreshold(*f)
+	}
+	return cu
+}
+
+// AddThreshold adds f to the "threshold" field.
+func (cu *CoinUpdate) AddThreshold(f float32) *CoinUpdate {
+	cu.mutation.AddThreshold(f)
+	return cu
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (cu *CoinUpdate) ClearThreshold() *CoinUpdate {
+	cu.mutation.ClearThreshold()
 	return cu
 }
 
@@ -363,11 +410,17 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldCoinType,
 		})
 	}
-	if value, ok := cu.mutation.RevenueType(); ok {
+	if value, ok := cu.mutation.RevenueTypes(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeJSON,
 			Value:  value,
-			Column: coin.FieldRevenueType,
+			Column: coin.FieldRevenueTypes,
+		})
+	}
+	if cu.mutation.RevenueTypesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: coin.FieldRevenueTypes,
 		})
 	}
 	if value, ok := cu.mutation.FeeRate(); ok {
@@ -397,6 +450,12 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldFixedRevenueAble,
 		})
 	}
+	if cu.mutation.FixedRevenueAbleCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coin.FieldFixedRevenueAble,
+		})
+	}
 	if value, ok := cu.mutation.Remark(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -408,6 +467,26 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coin.FieldRemark,
+		})
+	}
+	if value, ok := cu.mutation.Threshold(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Value:  value,
+			Column: coin.FieldThreshold,
+		})
+	}
+	if value, ok := cu.mutation.AddedThreshold(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Value:  value,
+			Column: coin.FieldThreshold,
+		})
+	}
+	if cu.mutation.ThresholdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: coin.FieldThreshold,
 		})
 	}
 	_spec.Modifiers = cu.modifiers
@@ -532,9 +611,15 @@ func (cuo *CoinUpdateOne) SetCoinType(s string) *CoinUpdateOne {
 	return cuo
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cuo *CoinUpdateOne) SetRevenueType(s string) *CoinUpdateOne {
-	cuo.mutation.SetRevenueType(s)
+// SetRevenueTypes sets the "revenue_types" field.
+func (cuo *CoinUpdateOne) SetRevenueTypes(s []string) *CoinUpdateOne {
+	cuo.mutation.SetRevenueTypes(s)
+	return cuo
+}
+
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (cuo *CoinUpdateOne) ClearRevenueTypes() *CoinUpdateOne {
+	cuo.mutation.ClearRevenueTypes()
 	return cuo
 }
 
@@ -571,6 +656,20 @@ func (cuo *CoinUpdateOne) SetFixedRevenueAble(b bool) *CoinUpdateOne {
 	return cuo
 }
 
+// SetNillableFixedRevenueAble sets the "fixed_revenue_able" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableFixedRevenueAble(b *bool) *CoinUpdateOne {
+	if b != nil {
+		cuo.SetFixedRevenueAble(*b)
+	}
+	return cuo
+}
+
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (cuo *CoinUpdateOne) ClearFixedRevenueAble() *CoinUpdateOne {
+	cuo.mutation.ClearFixedRevenueAble()
+	return cuo
+}
+
 // SetRemark sets the "remark" field.
 func (cuo *CoinUpdateOne) SetRemark(s string) *CoinUpdateOne {
 	cuo.mutation.SetRemark(s)
@@ -588,6 +687,33 @@ func (cuo *CoinUpdateOne) SetNillableRemark(s *string) *CoinUpdateOne {
 // ClearRemark clears the value of the "remark" field.
 func (cuo *CoinUpdateOne) ClearRemark() *CoinUpdateOne {
 	cuo.mutation.ClearRemark()
+	return cuo
+}
+
+// SetThreshold sets the "threshold" field.
+func (cuo *CoinUpdateOne) SetThreshold(f float32) *CoinUpdateOne {
+	cuo.mutation.ResetThreshold()
+	cuo.mutation.SetThreshold(f)
+	return cuo
+}
+
+// SetNillableThreshold sets the "threshold" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableThreshold(f *float32) *CoinUpdateOne {
+	if f != nil {
+		cuo.SetThreshold(*f)
+	}
+	return cuo
+}
+
+// AddThreshold adds f to the "threshold" field.
+func (cuo *CoinUpdateOne) AddThreshold(f float32) *CoinUpdateOne {
+	cuo.mutation.AddThreshold(f)
+	return cuo
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (cuo *CoinUpdateOne) ClearThreshold() *CoinUpdateOne {
+	cuo.mutation.ClearThreshold()
 	return cuo
 }
 
@@ -795,11 +921,17 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldCoinType,
 		})
 	}
-	if value, ok := cuo.mutation.RevenueType(); ok {
+	if value, ok := cuo.mutation.RevenueTypes(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeJSON,
 			Value:  value,
-			Column: coin.FieldRevenueType,
+			Column: coin.FieldRevenueTypes,
+		})
+	}
+	if cuo.mutation.RevenueTypesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
+			Column: coin.FieldRevenueTypes,
 		})
 	}
 	if value, ok := cuo.mutation.FeeRate(); ok {
@@ -829,6 +961,12 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldFixedRevenueAble,
 		})
 	}
+	if cuo.mutation.FixedRevenueAbleCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: coin.FieldFixedRevenueAble,
+		})
+	}
 	if value, ok := cuo.mutation.Remark(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -840,6 +978,26 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coin.FieldRemark,
+		})
+	}
+	if value, ok := cuo.mutation.Threshold(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Value:  value,
+			Column: coin.FieldThreshold,
+		})
+	}
+	if value, ok := cuo.mutation.AddedThreshold(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Value:  value,
+			Column: coin.FieldThreshold,
+		})
+	}
+	if cuo.mutation.ThresholdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: coin.FieldThreshold,
 		})
 	}
 	_spec.Modifiers = cuo.modifiers

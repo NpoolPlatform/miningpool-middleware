@@ -3,8 +3,9 @@ package api
 import (
 	"context"
 
-	chainmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1"
+	mw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1"
 
+	coin "github.com/NpoolPlatform/miningpool-middleware/api/coin"
 	rootuser "github.com/NpoolPlatform/miningpool-middleware/api/rootuser"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -12,15 +13,17 @@ import (
 )
 
 type Server struct {
-	chainmw.UnimplementedMiddlewareServer
+	mw.UnimplementedMiddlewareServer
 }
 
 func Register(server grpc.ServiceRegistrar) {
+	mw.RegisterMiddlewareServer(server, &Server{})
+	coin.Register(server)
 	rootuser.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	if err := chainmw.RegisterMiddlewareHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+	if err := mw.RegisterMiddlewareHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
 		return err
 	}
 	return nil

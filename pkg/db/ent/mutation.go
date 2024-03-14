@@ -53,11 +53,13 @@ type CoinMutation struct {
 	miningpool_type    *string
 	site               *string
 	coin_type          *string
-	revenue_type       *string
+	revenue_types      *[]string
 	fee_rate           *float32
 	addfee_rate        *float32
 	fixed_revenue_able *bool
 	remark             *string
+	threshold          *float32
+	addthreshold       *float32
 	clearedFields      map[string]struct{}
 	done               bool
 	oldValue           func(context.Context) (*Coin, error)
@@ -493,40 +495,53 @@ func (m *CoinMutation) ResetCoinType() {
 	m.coin_type = nil
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (m *CoinMutation) SetRevenueType(s string) {
-	m.revenue_type = &s
+// SetRevenueTypes sets the "revenue_types" field.
+func (m *CoinMutation) SetRevenueTypes(s []string) {
+	m.revenue_types = &s
 }
 
-// RevenueType returns the value of the "revenue_type" field in the mutation.
-func (m *CoinMutation) RevenueType() (r string, exists bool) {
-	v := m.revenue_type
+// RevenueTypes returns the value of the "revenue_types" field in the mutation.
+func (m *CoinMutation) RevenueTypes() (r []string, exists bool) {
+	v := m.revenue_types
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRevenueType returns the old "revenue_type" field's value of the Coin entity.
+// OldRevenueTypes returns the old "revenue_types" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldRevenueType(ctx context.Context) (v string, err error) {
+func (m *CoinMutation) OldRevenueTypes(ctx context.Context) (v []string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
+		return v, errors.New("OldRevenueTypes is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueType requires an ID field in the mutation")
+		return v, errors.New("OldRevenueTypes requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
+		return v, fmt.Errorf("querying old value for OldRevenueTypes: %w", err)
 	}
-	return oldValue.RevenueType, nil
+	return oldValue.RevenueTypes, nil
 }
 
-// ResetRevenueType resets all changes to the "revenue_type" field.
-func (m *CoinMutation) ResetRevenueType() {
-	m.revenue_type = nil
+// ClearRevenueTypes clears the value of the "revenue_types" field.
+func (m *CoinMutation) ClearRevenueTypes() {
+	m.revenue_types = nil
+	m.clearedFields[coin.FieldRevenueTypes] = struct{}{}
+}
+
+// RevenueTypesCleared returns if the "revenue_types" field was cleared in this mutation.
+func (m *CoinMutation) RevenueTypesCleared() bool {
+	_, ok := m.clearedFields[coin.FieldRevenueTypes]
+	return ok
+}
+
+// ResetRevenueTypes resets all changes to the "revenue_types" field.
+func (m *CoinMutation) ResetRevenueTypes() {
+	m.revenue_types = nil
+	delete(m.clearedFields, coin.FieldRevenueTypes)
 }
 
 // SetFeeRate sets the "fee_rate" field.
@@ -630,9 +645,22 @@ func (m *CoinMutation) OldFixedRevenueAble(ctx context.Context) (v bool, err err
 	return oldValue.FixedRevenueAble, nil
 }
 
+// ClearFixedRevenueAble clears the value of the "fixed_revenue_able" field.
+func (m *CoinMutation) ClearFixedRevenueAble() {
+	m.fixed_revenue_able = nil
+	m.clearedFields[coin.FieldFixedRevenueAble] = struct{}{}
+}
+
+// FixedRevenueAbleCleared returns if the "fixed_revenue_able" field was cleared in this mutation.
+func (m *CoinMutation) FixedRevenueAbleCleared() bool {
+	_, ok := m.clearedFields[coin.FieldFixedRevenueAble]
+	return ok
+}
+
 // ResetFixedRevenueAble resets all changes to the "fixed_revenue_able" field.
 func (m *CoinMutation) ResetFixedRevenueAble() {
 	m.fixed_revenue_able = nil
+	delete(m.clearedFields, coin.FieldFixedRevenueAble)
 }
 
 // SetRemark sets the "remark" field.
@@ -684,6 +712,76 @@ func (m *CoinMutation) ResetRemark() {
 	delete(m.clearedFields, coin.FieldRemark)
 }
 
+// SetThreshold sets the "threshold" field.
+func (m *CoinMutation) SetThreshold(f float32) {
+	m.threshold = &f
+	m.addthreshold = nil
+}
+
+// Threshold returns the value of the "threshold" field in the mutation.
+func (m *CoinMutation) Threshold() (r float32, exists bool) {
+	v := m.threshold
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldThreshold returns the old "threshold" field's value of the Coin entity.
+// If the Coin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinMutation) OldThreshold(ctx context.Context) (v float32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldThreshold is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldThreshold requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldThreshold: %w", err)
+	}
+	return oldValue.Threshold, nil
+}
+
+// AddThreshold adds f to the "threshold" field.
+func (m *CoinMutation) AddThreshold(f float32) {
+	if m.addthreshold != nil {
+		*m.addthreshold += f
+	} else {
+		m.addthreshold = &f
+	}
+}
+
+// AddedThreshold returns the value that was added to the "threshold" field in this mutation.
+func (m *CoinMutation) AddedThreshold() (r float32, exists bool) {
+	v := m.addthreshold
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearThreshold clears the value of the "threshold" field.
+func (m *CoinMutation) ClearThreshold() {
+	m.threshold = nil
+	m.addthreshold = nil
+	m.clearedFields[coin.FieldThreshold] = struct{}{}
+}
+
+// ThresholdCleared returns if the "threshold" field was cleared in this mutation.
+func (m *CoinMutation) ThresholdCleared() bool {
+	_, ok := m.clearedFields[coin.FieldThreshold]
+	return ok
+}
+
+// ResetThreshold resets all changes to the "threshold" field.
+func (m *CoinMutation) ResetThreshold() {
+	m.threshold = nil
+	m.addthreshold = nil
+	delete(m.clearedFields, coin.FieldThreshold)
+}
+
 // Where appends a list predicates to the CoinMutation builder.
 func (m *CoinMutation) Where(ps ...predicate.Coin) {
 	m.predicates = append(m.predicates, ps...)
@@ -703,7 +801,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -725,8 +823,8 @@ func (m *CoinMutation) Fields() []string {
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
 	}
-	if m.revenue_type != nil {
-		fields = append(fields, coin.FieldRevenueType)
+	if m.revenue_types != nil {
+		fields = append(fields, coin.FieldRevenueTypes)
 	}
 	if m.fee_rate != nil {
 		fields = append(fields, coin.FieldFeeRate)
@@ -736,6 +834,9 @@ func (m *CoinMutation) Fields() []string {
 	}
 	if m.remark != nil {
 		fields = append(fields, coin.FieldRemark)
+	}
+	if m.threshold != nil {
+		fields = append(fields, coin.FieldThreshold)
 	}
 	return fields
 }
@@ -759,14 +860,16 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.Site()
 	case coin.FieldCoinType:
 		return m.CoinType()
-	case coin.FieldRevenueType:
-		return m.RevenueType()
+	case coin.FieldRevenueTypes:
+		return m.RevenueTypes()
 	case coin.FieldFeeRate:
 		return m.FeeRate()
 	case coin.FieldFixedRevenueAble:
 		return m.FixedRevenueAble()
 	case coin.FieldRemark:
 		return m.Remark()
+	case coin.FieldThreshold:
+		return m.Threshold()
 	}
 	return nil, false
 }
@@ -790,14 +893,16 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSite(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
-	case coin.FieldRevenueType:
-		return m.OldRevenueType(ctx)
+	case coin.FieldRevenueTypes:
+		return m.OldRevenueTypes(ctx)
 	case coin.FieldFeeRate:
 		return m.OldFeeRate(ctx)
 	case coin.FieldFixedRevenueAble:
 		return m.OldFixedRevenueAble(ctx)
 	case coin.FieldRemark:
 		return m.OldRemark(ctx)
+	case coin.FieldThreshold:
+		return m.OldThreshold(ctx)
 	}
 	return nil, fmt.Errorf("unknown Coin field %s", name)
 }
@@ -856,12 +961,12 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCoinType(v)
 		return nil
-	case coin.FieldRevenueType:
-		v, ok := value.(string)
+	case coin.FieldRevenueTypes:
+		v, ok := value.([]string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRevenueType(v)
+		m.SetRevenueTypes(v)
 		return nil
 	case coin.FieldFeeRate:
 		v, ok := value.(float32)
@@ -884,6 +989,13 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRemark(v)
 		return nil
+	case coin.FieldThreshold:
+		v, ok := value.(float32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetThreshold(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Coin field %s", name)
 }
@@ -904,6 +1016,9 @@ func (m *CoinMutation) AddedFields() []string {
 	if m.addfee_rate != nil {
 		fields = append(fields, coin.FieldFeeRate)
 	}
+	if m.addthreshold != nil {
+		fields = append(fields, coin.FieldThreshold)
+	}
 	return fields
 }
 
@@ -920,6 +1035,8 @@ func (m *CoinMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedDeletedAt()
 	case coin.FieldFeeRate:
 		return m.AddedFeeRate()
+	case coin.FieldThreshold:
+		return m.AddedThreshold()
 	}
 	return nil, false
 }
@@ -957,6 +1074,13 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddFeeRate(v)
 		return nil
+	case coin.FieldThreshold:
+		v, ok := value.(float32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddThreshold(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Coin numeric field %s", name)
 }
@@ -968,11 +1092,20 @@ func (m *CoinMutation) ClearedFields() []string {
 	if m.FieldCleared(coin.FieldSite) {
 		fields = append(fields, coin.FieldSite)
 	}
+	if m.FieldCleared(coin.FieldRevenueTypes) {
+		fields = append(fields, coin.FieldRevenueTypes)
+	}
 	if m.FieldCleared(coin.FieldFeeRate) {
 		fields = append(fields, coin.FieldFeeRate)
 	}
+	if m.FieldCleared(coin.FieldFixedRevenueAble) {
+		fields = append(fields, coin.FieldFixedRevenueAble)
+	}
 	if m.FieldCleared(coin.FieldRemark) {
 		fields = append(fields, coin.FieldRemark)
+	}
+	if m.FieldCleared(coin.FieldThreshold) {
+		fields = append(fields, coin.FieldThreshold)
 	}
 	return fields
 }
@@ -991,11 +1124,20 @@ func (m *CoinMutation) ClearField(name string) error {
 	case coin.FieldSite:
 		m.ClearSite()
 		return nil
+	case coin.FieldRevenueTypes:
+		m.ClearRevenueTypes()
+		return nil
 	case coin.FieldFeeRate:
 		m.ClearFeeRate()
 		return nil
+	case coin.FieldFixedRevenueAble:
+		m.ClearFixedRevenueAble()
+		return nil
 	case coin.FieldRemark:
 		m.ClearRemark()
+		return nil
+	case coin.FieldThreshold:
+		m.ClearThreshold()
 		return nil
 	}
 	return fmt.Errorf("unknown Coin nullable field %s", name)
@@ -1026,8 +1168,8 @@ func (m *CoinMutation) ResetField(name string) error {
 	case coin.FieldCoinType:
 		m.ResetCoinType()
 		return nil
-	case coin.FieldRevenueType:
-		m.ResetRevenueType()
+	case coin.FieldRevenueTypes:
+		m.ResetRevenueTypes()
 		return nil
 	case coin.FieldFeeRate:
 		m.ResetFeeRate()
@@ -1037,6 +1179,9 @@ func (m *CoinMutation) ResetField(name string) error {
 		return nil
 	case coin.FieldRemark:
 		m.ResetRemark()
+		return nil
+	case coin.FieldThreshold:
+		m.ResetThreshold()
 		return nil
 	}
 	return fmt.Errorf("unknown Coin field %s", name)

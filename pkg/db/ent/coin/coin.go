@@ -26,14 +26,16 @@ const (
 	FieldSite = "site"
 	// FieldCoinType holds the string denoting the coin_type field in the database.
 	FieldCoinType = "coin_type"
-	// FieldRevenueType holds the string denoting the revenue_type field in the database.
-	FieldRevenueType = "revenue_type"
+	// FieldRevenueTypes holds the string denoting the revenue_types field in the database.
+	FieldRevenueTypes = "revenue_types"
 	// FieldFeeRate holds the string denoting the fee_rate field in the database.
 	FieldFeeRate = "fee_rate"
 	// FieldFixedRevenueAble holds the string denoting the fixed_revenue_able field in the database.
 	FieldFixedRevenueAble = "fixed_revenue_able"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
+	// FieldThreshold holds the string denoting the threshold field in the database.
+	FieldThreshold = "threshold"
 	// Table holds the table name of the coin in the database.
 	Table = "coins"
 )
@@ -48,10 +50,11 @@ var Columns = []string{
 	FieldMiningpoolType,
 	FieldSite,
 	FieldCoinType,
-	FieldRevenueType,
+	FieldRevenueTypes,
 	FieldFeeRate,
 	FieldFixedRevenueAble,
 	FieldRemark,
+	FieldThreshold,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -85,8 +88,14 @@ var (
 	DefaultEntID func() uuid.UUID
 	// DefaultSite holds the default value on creation for the "site" field.
 	DefaultSite string
+	// DefaultRevenueTypes holds the default value on creation for the "revenue_types" field.
+	DefaultRevenueTypes []string
 	// DefaultFeeRate holds the default value on creation for the "fee_rate" field.
 	DefaultFeeRate float32
+	// DefaultFixedRevenueAble holds the default value on creation for the "fixed_revenue_able" field.
+	DefaultFixedRevenueAble bool
 	// DefaultRemark holds the default value on creation for the "remark" field.
 	DefaultRemark string
+	// DefaultThreshold holds the default value on creation for the "threshold" field.
+	DefaultThreshold float32
 )

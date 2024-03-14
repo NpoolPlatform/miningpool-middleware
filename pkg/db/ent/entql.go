@@ -37,10 +37,11 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldMiningpoolType:   {Type: field.TypeString, Column: coin.FieldMiningpoolType},
 			coin.FieldSite:             {Type: field.TypeString, Column: coin.FieldSite},
 			coin.FieldCoinType:         {Type: field.TypeString, Column: coin.FieldCoinType},
-			coin.FieldRevenueType:      {Type: field.TypeString, Column: coin.FieldRevenueType},
+			coin.FieldRevenueTypes:     {Type: field.TypeJSON, Column: coin.FieldRevenueTypes},
 			coin.FieldFeeRate:          {Type: field.TypeFloat32, Column: coin.FieldFeeRate},
 			coin.FieldFixedRevenueAble: {Type: field.TypeBool, Column: coin.FieldFixedRevenueAble},
 			coin.FieldRemark:           {Type: field.TypeString, Column: coin.FieldRemark},
+			coin.FieldThreshold:        {Type: field.TypeFloat32, Column: coin.FieldThreshold},
 		},
 	}
 	graph.Nodes[1] = &sqlgraph.Node{
@@ -247,9 +248,9 @@ func (f *CoinFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(coin.FieldCoinType))
 }
 
-// WhereRevenueType applies the entql string predicate on the revenue_type field.
-func (f *CoinFilter) WhereRevenueType(p entql.StringP) {
-	f.Where(p.Field(coin.FieldRevenueType))
+// WhereRevenueTypes applies the entql json.RawMessage predicate on the revenue_types field.
+func (f *CoinFilter) WhereRevenueTypes(p entql.BytesP) {
+	f.Where(p.Field(coin.FieldRevenueTypes))
 }
 
 // WhereFeeRate applies the entql float32 predicate on the fee_rate field.
@@ -265,6 +266,11 @@ func (f *CoinFilter) WhereFixedRevenueAble(p entql.BoolP) {
 // WhereRemark applies the entql string predicate on the remark field.
 func (f *CoinFilter) WhereRemark(p entql.StringP) {
 	f.Where(p.Field(coin.FieldRemark))
+}
+
+// WhereThreshold applies the entql float32 predicate on the threshold field.
+func (f *CoinFilter) WhereThreshold(p entql.Float32P) {
+	f.Where(p.Field(coin.FieldThreshold))
 }
 
 // addPredicate implements the predicateAdder interface.

@@ -8,6 +8,7 @@ import (
 	"math/big"
 	"strings"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	basetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
@@ -34,7 +35,7 @@ var (
 )
 
 const (
-	//2-15 characters
+	// 2-15 characters
 	MiningUserLen         = 15
 	MiningUserPageNameLen = 20
 	DefaultPermissions    = "1,2"
@@ -63,9 +64,8 @@ func (mgr *Manager) CheckAuth(ctx context.Context) error {
 	return err
 }
 
-func (mgr *Manager) AddMiningUser(ctx context.Context) (string, string, error) {
+func (mgr *Manager) AddMiningUser(ctx context.Context) (userName, readPageLink string, err error) {
 	var resp *types.MiningUserAddResp
-	var err error
 	for i := 0; i < MaxRetries; i++ {
 		userName, err := RandomF2PoolUser(MiningUserLen)
 		if err != nil {
@@ -89,8 +89,8 @@ func (mgr *Manager) AddMiningUser(ctx context.Context) (string, string, error) {
 		return "", "", fmt.Errorf("failed to add mining user,have nil response")
 	}
 
-	userName := resp.MiningUserName
-	readPageLink := ""
+	userName = resp.MiningUserName
+	readPageLink = ""
 	if len(resp.Pages) > 0 {
 		readPageLink = getReadPageLink(resp.Pages[0].Key, resp.MiningUserName)
 	}
@@ -180,7 +180,7 @@ func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 	return nil
 }
 
-func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error {
+func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recipient string, proportion float64) error {
 	infoResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Currency:    mgr.currency,
 		Distributor: distributor,
@@ -192,10 +192,13 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor string
 			if v.Distributor != distributor || v.Currency != mgr.currency {
 				continue
 			}
-			_, _ = mgr.cli.RevenueDistributionDelete(ctx, &types.RevenueDistributionDeleteReq{
+			_, err = mgr.cli.RevenueDistributionDelete(ctx, &types.RevenueDistributionDeleteReq{
 				ID:          v.ID,
 				Distributor: v.Distributor,
 			})
+			if err != nil {
+				logger.Sugar().Warn(err)
+			}
 		}
 
 	}
@@ -216,7 +219,7 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor string
 	return nil
 }
 
-func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error) {
+func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor, recipient string) (float64, error) {
 	getResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Distributor: distributor,
 		Recipient:   recipient,
@@ -239,7 +242,7 @@ func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor string
 	return 0, nil
 }
 
-func (mgr *Manager) SetRevenueAddress(ctx context.Context, name string, address string) error {
+func (mgr *Manager) SetRevenueAddress(ctx context.Context, name, address string) error {
 	setResp, err := mgr.cli.MiningUserWalletUpdate(ctx, &types.MiningUserWalletUpdateReq{
 		Params: []types.WalletParams{
 			{
@@ -347,8 +350,8 @@ func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, e
 	return resumeResp.PaidTime, nil
 }
 
-func getReadPageLink(key, user_name string) string {
-	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolAPI, key, user_name)
+func getReadPageLink(key, userName string) string {
+	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolAPI, key, userName)
 }
 
 // can only be a combination of lowercase characters and numbers
@@ -361,7 +364,10 @@ func RandomF2PoolUser(n int) (string, error) {
 	}
 	target := string(startLetters[randn.Int64()])
 	for {
-		randn, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
+		randn, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
+		if err != nil {
+			return "", err
+		}
 		if len(target) >= n {
 			return strings.ToLower(target[:n]), nil
 		}

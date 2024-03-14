@@ -29,13 +29,15 @@ func (Coin) Fields() []ent.Field {
 		field.
 			String("coin_type"),
 		field.
-			String("revenue_type"),
+			JSON("revenue_types", []string{}).Optional().Default([]string{}),
 		field.
 			Float32("fee_rate").Optional().Default(0),
 		field.
-			Bool("fixed_revenue_able"),
+			Bool("fixed_revenue_able").Optional().Default(false),
 		field.
 			String("remark").Optional().Default(""),
+		field.
+			Float32("threshold").Optional().Default(0),
 	}
 }
 

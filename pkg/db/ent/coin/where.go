@@ -128,13 +128,6 @@ func CoinType(v string) predicate.Coin {
 	})
 }
 
-// RevenueType applies equality check predicate on the "revenue_type" field. It's identical to RevenueTypeEQ.
-func RevenueType(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
-	})
-}
-
 // FeeRate applies equality check predicate on the "fee_rate" field. It's identical to FeeRateEQ.
 func FeeRate(v float32) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
@@ -153,6 +146,13 @@ func FixedRevenueAble(v bool) predicate.Coin {
 func Remark(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRemark), v))
+	})
+}
+
+// Threshold applies equality check predicate on the "threshold" field. It's identical to ThresholdEQ.
+func Threshold(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldThreshold), v))
 	})
 }
 
@@ -723,102 +723,17 @@ func CoinTypeContainsFold(v string) predicate.Coin {
 	})
 }
 
-// RevenueTypeEQ applies the EQ predicate on the "revenue_type" field.
-func RevenueTypeEQ(v string) predicate.Coin {
+// RevenueTypesIsNil applies the IsNil predicate on the "revenue_types" field.
+func RevenueTypesIsNil() predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
+		s.Where(sql.IsNull(s.C(FieldRevenueTypes)))
 	})
 }
 
-// RevenueTypeNEQ applies the NEQ predicate on the "revenue_type" field.
-func RevenueTypeNEQ(v string) predicate.Coin {
+// RevenueTypesNotNil applies the NotNil predicate on the "revenue_types" field.
+func RevenueTypesNotNil() predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeIn applies the In predicate on the "revenue_type" field.
-func RevenueTypeIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeNotIn applies the NotIn predicate on the "revenue_type" field.
-func RevenueTypeNotIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeGT applies the GT predicate on the "revenue_type" field.
-func RevenueTypeGT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeGTE applies the GTE predicate on the "revenue_type" field.
-func RevenueTypeGTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLT applies the LT predicate on the "revenue_type" field.
-func RevenueTypeLT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLTE applies the LTE predicate on the "revenue_type" field.
-func RevenueTypeLTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContains applies the Contains predicate on the "revenue_type" field.
-func RevenueTypeContains(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasPrefix applies the HasPrefix predicate on the "revenue_type" field.
-func RevenueTypeHasPrefix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasSuffix applies the HasSuffix predicate on the "revenue_type" field.
-func RevenueTypeHasSuffix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeEqualFold applies the EqualFold predicate on the "revenue_type" field.
-func RevenueTypeEqualFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContainsFold applies the ContainsFold predicate on the "revenue_type" field.
-func RevenueTypeContainsFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldRevenueType), v))
+		s.Where(sql.NotNull(s.C(FieldRevenueTypes)))
 	})
 }
 
@@ -911,6 +826,20 @@ func FixedRevenueAbleEQ(v bool) predicate.Coin {
 func FixedRevenueAbleNEQ(v bool) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldFixedRevenueAble), v))
+	})
+}
+
+// FixedRevenueAbleIsNil applies the IsNil predicate on the "fixed_revenue_able" field.
+func FixedRevenueAbleIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldFixedRevenueAble)))
+	})
+}
+
+// FixedRevenueAbleNotNil applies the NotNil predicate on the "fixed_revenue_able" field.
+func FixedRevenueAbleNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldFixedRevenueAble)))
 	})
 }
 
@@ -1024,6 +953,84 @@ func RemarkEqualFold(v string) predicate.Coin {
 func RemarkContainsFold(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldRemark), v))
+	})
+}
+
+// ThresholdEQ applies the EQ predicate on the "threshold" field.
+func ThresholdEQ(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdNEQ applies the NEQ predicate on the "threshold" field.
+func ThresholdNEQ(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdIn applies the In predicate on the "threshold" field.
+func ThresholdIn(vs ...float32) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldThreshold), v...))
+	})
+}
+
+// ThresholdNotIn applies the NotIn predicate on the "threshold" field.
+func ThresholdNotIn(vs ...float32) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldThreshold), v...))
+	})
+}
+
+// ThresholdGT applies the GT predicate on the "threshold" field.
+func ThresholdGT(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdGTE applies the GTE predicate on the "threshold" field.
+func ThresholdGTE(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdLT applies the LT predicate on the "threshold" field.
+func ThresholdLT(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdLTE applies the LTE predicate on the "threshold" field.
+func ThresholdLTE(v float32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldThreshold), v))
+	})
+}
+
+// ThresholdIsNil applies the IsNil predicate on the "threshold" field.
+func ThresholdIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldThreshold)))
+	})
+}
+
+// ThresholdNotNil applies the NotNil predicate on the "threshold" field.
+func ThresholdNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldThreshold)))
 	})
 }
 

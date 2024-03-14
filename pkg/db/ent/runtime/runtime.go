@@ -60,14 +60,26 @@ func init() {
 	coinDescSite := coinFields[1].Descriptor()
 	// coin.DefaultSite holds the default value on creation for the site field.
 	coin.DefaultSite = coinDescSite.Default.(string)
+	// coinDescRevenueTypes is the schema descriptor for revenue_types field.
+	coinDescRevenueTypes := coinFields[3].Descriptor()
+	// coin.DefaultRevenueTypes holds the default value on creation for the revenue_types field.
+	coin.DefaultRevenueTypes = coinDescRevenueTypes.Default.([]string)
 	// coinDescFeeRate is the schema descriptor for fee_rate field.
 	coinDescFeeRate := coinFields[4].Descriptor()
 	// coin.DefaultFeeRate holds the default value on creation for the fee_rate field.
 	coin.DefaultFeeRate = coinDescFeeRate.Default.(float32)
+	// coinDescFixedRevenueAble is the schema descriptor for fixed_revenue_able field.
+	coinDescFixedRevenueAble := coinFields[5].Descriptor()
+	// coin.DefaultFixedRevenueAble holds the default value on creation for the fixed_revenue_able field.
+	coin.DefaultFixedRevenueAble = coinDescFixedRevenueAble.Default.(bool)
 	// coinDescRemark is the schema descriptor for remark field.
 	coinDescRemark := coinFields[6].Descriptor()
 	// coin.DefaultRemark holds the default value on creation for the remark field.
 	coin.DefaultRemark = coinDescRemark.Default.(string)
+	// coinDescThreshold is the schema descriptor for threshold field.
+	coinDescThreshold := coinFields[7].Descriptor()
+	// coin.DefaultThreshold holds the default value on creation for the threshold field.
+	coin.DefaultThreshold = coinDescThreshold.Default.(float32)
 	fractionMixin := schema.Fraction{}.Mixin()
 	fraction.Policy = privacy.NewPolicies(fractionMixin[0], schema.Fraction{})
 	fraction.Hooks[0] = func(next ent.Mutator) ent.Mutator {

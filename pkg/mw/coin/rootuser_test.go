@@ -1,4 +1,4 @@
-package rootuser
+package coin
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
@@ -26,61 +26,69 @@ func init() {
 	}
 }
 
-var ret = &npool.RootUser{
-	Name:           "miningpool_middleware_mw_rootuser_test_data",
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
-	Email:          "gggogo",
-	AuthToken:      "asdfasdf",
-	Authed:         false,
-	Remark:         "asdfaf",
+var ret = &npool.Coin{
+	CoinType:         basetypes.CoinType_BitCoin,
+	MiningpoolType:   basetypes.MiningpoolType_AntPool,
+	RevenueTypes:     []basetypes.RevenueType{basetypes.RevenueType_FPPS, basetypes.RevenueType_PPLNS},
+	Site:             "asdfasdf",
+	FeeRate:          5.4,
+	FixedRevenueAble: false,
+	Threshold:        5.4,
+	Remark:           "asdfaf",
 }
 
-var req = &npool.RootUserReq{
-	Name:           &ret.Name,
-	MiningpoolType: &ret.MiningpoolType,
-	Email:          &ret.Email,
-	AuthToken:      &ret.AuthToken,
-	Authed:         &ret.Authed,
-	Remark:         &ret.Remark,
+var req = &npool.CoinReq{
+	CoinType:         &ret.CoinType,
+	MiningpoolType:   &ret.MiningpoolType,
+	RevenueTypes:     ret.RevenueTypes,
+	Site:             &ret.Site,
+	FeeRate:          &ret.FeeRate,
+	FixedRevenueAble: &ret.FixedRevenueAble,
+	Threshold:        &ret.Threshold,
+	Remark:           &ret.Remark,
 }
 
 func create(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
-		WithName(req.Name, true),
+		WithCoinType(req.CoinType, true),
 		WithMiningpoolType(req.MiningpoolType, true),
-		WithEmail(req.Email, true),
-		WithAuthToken(req.AuthToken, true),
-		WithAuthed(req.Authed, true),
+		WithRevenueTypes(&req.RevenueTypes, true),
+		WithSite(req.Site, true),
+		WithFeeRate(req.FeeRate, true),
+		WithFixedRevenueAble(req.FixedRevenueAble, true),
+		WithThreshold(req.Threshold, true),
 		WithRemark(req.Remark, true),
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.CreateRootUser(context.Background())
+	info, err := handler.CreateCoin(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.CoinTypeStr = info.CoinTypeStr
+		ret.RevenueTypesStr = info.RevenueTypesStr
 		ret.ID = info.ID
 		ret.EntID = info.EntID
-		assert.Equal(t, info, ret)
+		assert.Equal(t, ret, info)
 	}
 }
 
 func update(t *testing.T) {
 	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
-	ret.Authed = !ret.Authed
+	ret.FeeRate = 6.0
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithAuthed(&ret.Authed, false),
-		WithEmail(nil, false),
+		WithFeeRate(&ret.FeeRate, false),
+		WithRevenueTypes(nil, false),
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdateRootUser(context.Background())
+	info, err := handler.UpdateCoin(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.UpdatedAt = info.UpdatedAt
@@ -88,18 +96,16 @@ func update(t *testing.T) {
 	}
 
 	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
-	ret.Authed = !ret.Authed
-
 	handler, err = NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithAuthed(&ret.Authed, false),
-		WithEmail(nil, false),
+		WithFeeRate(&ret.FeeRate, false),
+		WithRevenueTypes(nil, false),
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdateRootUser(context.Background())
+	_, err = handler.UpdateCoin(context.Background())
 	assert.Nil(t, err)
 }
 
@@ -119,7 +125,7 @@ func delete(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	infos, total, err := handler.GetRootUsers(context.Background())
+	infos, total, err := handler.GetCoins(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
 		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
@@ -136,7 +142,7 @@ func delete(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	exist, err := handler.ExistRootUser(context.Background())
+	exist, err := handler.ExistCoin(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, true, exist)
 	}
@@ -148,7 +154,7 @@ func delete(t *testing.T) {
 		WithLimit(2),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteRootUser(context.Background())
+	deletedItem, err := handler.DeleteCoin(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, true, exist)
 		assert.Equal(t, deletedItem, ret)
@@ -165,13 +171,13 @@ func delete(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	exist, err = handler.ExistRootUserConds(context.Background())
+	exist, err = handler.ExistCoinConds(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, false, exist)
 	}
 }
 
-func TestRootUser(t *testing.T) {
+func TestCoin(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}

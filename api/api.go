@@ -9,6 +9,7 @@ import (
 	fraction "github.com/NpoolPlatform/miningpool-middleware/api/fraction"
 	fractionrule "github.com/NpoolPlatform/miningpool-middleware/api/fractionrule"
 	gooduser "github.com/NpoolPlatform/miningpool-middleware/api/gooduser"
+	orderuser "github.com/NpoolPlatform/miningpool-middleware/api/orderuser"
 	rootuser "github.com/NpoolPlatform/miningpool-middleware/api/rootuser"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -26,6 +27,7 @@ func Register(server grpc.ServiceRegistrar) {
 	fractionrule.Register(server)
 	fraction.Register(server)
 	gooduser.Register(server)
+	orderuser.Register(server)
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {

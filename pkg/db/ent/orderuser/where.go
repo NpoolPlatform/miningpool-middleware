@@ -107,24 +107,24 @@ func EntID(v uuid.UUID) predicate.OrderUser {
 	})
 }
 
-// OrderID applies equality check predicate on the "order_id" field. It's identical to OrderIDEQ.
-func OrderID(v uuid.UUID) predicate.OrderUser {
+// RootUserID applies equality check predicate on the "root_user_id" field. It's identical to RootUserIDEQ.
+func RootUserID(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldOrderID), v))
+		s.Where(sql.EQ(s.C(FieldRootUserID), v))
 	})
 }
 
 // GoodUserID applies equality check predicate on the "good_user_id" field. It's identical to GoodUserIDEQ.
-func GoodUserID(v string) predicate.OrderUser {
+func GoodUserID(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldGoodUserID), v))
 	})
 }
 
-// CoinID applies equality check predicate on the "coin_id" field. It's identical to CoinIDEQ.
-func CoinID(v string) predicate.OrderUser {
+// OrderID applies equality check predicate on the "order_id" field. It's identical to OrderIDEQ.
+func OrderID(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinID), v))
+		s.Where(sql.EQ(s.C(FieldOrderID), v))
 	})
 }
 
@@ -135,6 +135,20 @@ func Name(v string) predicate.OrderUser {
 	})
 }
 
+// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
+func MiningpoolType(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// CoinType applies equality check predicate on the "Coin_Type" field. It's identical to CoinTypeEQ.
+func CoinType(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCoinType), v))
+	})
+}
+
 // Proportion applies equality check predicate on the "proportion" field. It's identical to ProportionEQ.
 func Proportion(v float32) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -142,38 +156,10 @@ func Proportion(v float32) predicate.OrderUser {
 	})
 }
 
-// Start applies equality check predicate on the "start" field. It's identical to StartEQ.
-func Start(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStart), v))
-	})
-}
-
-// End applies equality check predicate on the "end" field. It's identical to EndEQ.
-func End(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldEnd), v))
-	})
-}
-
-// CompensationTime applies equality check predicate on the "compensation_time" field. It's identical to CompensationTimeEQ.
-func CompensationTime(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCompensationTime), v))
-	})
-}
-
 // RevenueAddress applies equality check predicate on the "revenue_address" field. It's identical to RevenueAddressEQ.
 func RevenueAddress(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// Threshold applies equality check predicate on the "threshold" field. It's identical to ThresholdEQ.
-func Threshold(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldThreshold), v))
 	})
 }
 
@@ -447,6 +433,134 @@ func EntIDLTE(v uuid.UUID) predicate.OrderUser {
 	})
 }
 
+// RootUserIDEQ applies the EQ predicate on the "root_user_id" field.
+func RootUserIDEQ(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDNEQ applies the NEQ predicate on the "root_user_id" field.
+func RootUserIDNEQ(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDIn applies the In predicate on the "root_user_id" field.
+func RootUserIDIn(vs ...uuid.UUID) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRootUserID), v...))
+	})
+}
+
+// RootUserIDNotIn applies the NotIn predicate on the "root_user_id" field.
+func RootUserIDNotIn(vs ...uuid.UUID) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRootUserID), v...))
+	})
+}
+
+// RootUserIDGT applies the GT predicate on the "root_user_id" field.
+func RootUserIDGT(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDGTE applies the GTE predicate on the "root_user_id" field.
+func RootUserIDGTE(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDLT applies the LT predicate on the "root_user_id" field.
+func RootUserIDLT(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDLTE applies the LTE predicate on the "root_user_id" field.
+func RootUserIDLTE(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRootUserID), v))
+	})
+}
+
+// GoodUserIDEQ applies the EQ predicate on the "good_user_id" field.
+func GoodUserIDEQ(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDNEQ applies the NEQ predicate on the "good_user_id" field.
+func GoodUserIDNEQ(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDIn applies the In predicate on the "good_user_id" field.
+func GoodUserIDIn(vs ...uuid.UUID) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldGoodUserID), v...))
+	})
+}
+
+// GoodUserIDNotIn applies the NotIn predicate on the "good_user_id" field.
+func GoodUserIDNotIn(vs ...uuid.UUID) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldGoodUserID), v...))
+	})
+}
+
+// GoodUserIDGT applies the GT predicate on the "good_user_id" field.
+func GoodUserIDGT(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDGTE applies the GTE predicate on the "good_user_id" field.
+func GoodUserIDGTE(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDLT applies the LT predicate on the "good_user_id" field.
+func GoodUserIDLT(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDLTE applies the LTE predicate on the "good_user_id" field.
+func GoodUserIDLTE(v uuid.UUID) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldGoodUserID), v))
+	})
+}
+
 // OrderIDEQ applies the EQ predicate on the "order_id" field.
 func OrderIDEQ(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -508,204 +622,6 @@ func OrderIDLT(v uuid.UUID) predicate.OrderUser {
 func OrderIDLTE(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldOrderID), v))
-	})
-}
-
-// GoodUserIDEQ applies the EQ predicate on the "good_user_id" field.
-func GoodUserIDEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDNEQ applies the NEQ predicate on the "good_user_id" field.
-func GoodUserIDNEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDIn applies the In predicate on the "good_user_id" field.
-func GoodUserIDIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldGoodUserID), v...))
-	})
-}
-
-// GoodUserIDNotIn applies the NotIn predicate on the "good_user_id" field.
-func GoodUserIDNotIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldGoodUserID), v...))
-	})
-}
-
-// GoodUserIDGT applies the GT predicate on the "good_user_id" field.
-func GoodUserIDGT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDGTE applies the GTE predicate on the "good_user_id" field.
-func GoodUserIDGTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDLT applies the LT predicate on the "good_user_id" field.
-func GoodUserIDLT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDLTE applies the LTE predicate on the "good_user_id" field.
-func GoodUserIDLTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDContains applies the Contains predicate on the "good_user_id" field.
-func GoodUserIDContains(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDHasPrefix applies the HasPrefix predicate on the "good_user_id" field.
-func GoodUserIDHasPrefix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDHasSuffix applies the HasSuffix predicate on the "good_user_id" field.
-func GoodUserIDHasSuffix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDEqualFold applies the EqualFold predicate on the "good_user_id" field.
-func GoodUserIDEqualFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldGoodUserID), v))
-	})
-}
-
-// GoodUserIDContainsFold applies the ContainsFold predicate on the "good_user_id" field.
-func GoodUserIDContainsFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldGoodUserID), v))
-	})
-}
-
-// CoinIDEQ applies the EQ predicate on the "coin_id" field.
-func CoinIDEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDNEQ applies the NEQ predicate on the "coin_id" field.
-func CoinIDNEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDIn applies the In predicate on the "coin_id" field.
-func CoinIDIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCoinID), v...))
-	})
-}
-
-// CoinIDNotIn applies the NotIn predicate on the "coin_id" field.
-func CoinIDNotIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCoinID), v...))
-	})
-}
-
-// CoinIDGT applies the GT predicate on the "coin_id" field.
-func CoinIDGT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDGTE applies the GTE predicate on the "coin_id" field.
-func CoinIDGTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDLT applies the LT predicate on the "coin_id" field.
-func CoinIDLT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDLTE applies the LTE predicate on the "coin_id" field.
-func CoinIDLTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDContains applies the Contains predicate on the "coin_id" field.
-func CoinIDContains(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDHasPrefix applies the HasPrefix predicate on the "coin_id" field.
-func CoinIDHasPrefix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDHasSuffix applies the HasSuffix predicate on the "coin_id" field.
-func CoinIDHasSuffix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDEqualFold applies the EqualFold predicate on the "coin_id" field.
-func CoinIDEqualFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldCoinID), v))
-	})
-}
-
-// CoinIDContainsFold applies the ContainsFold predicate on the "coin_id" field.
-func CoinIDContainsFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldCoinID), v))
 	})
 }
 
@@ -808,6 +724,204 @@ func NameContainsFold(v string) predicate.OrderUser {
 	})
 }
 
+// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
+func MiningpoolTypeEQ(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
+func MiningpoolTypeNEQ(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
+func MiningpoolTypeIn(vs ...string) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+	})
+}
+
+// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
+func MiningpoolTypeNotIn(vs ...string) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+	})
+}
+
+// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
+func MiningpoolTypeGT(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
+func MiningpoolTypeGTE(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
+func MiningpoolTypeLT(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
+func MiningpoolTypeLTE(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
+func MiningpoolTypeContains(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
+func MiningpoolTypeHasPrefix(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
+func MiningpoolTypeHasSuffix(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
+func MiningpoolTypeEqualFold(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
+func MiningpoolTypeContainsFold(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// CoinTypeEQ applies the EQ predicate on the "Coin_Type" field.
+func CoinTypeEQ(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeNEQ applies the NEQ predicate on the "Coin_Type" field.
+func CoinTypeNEQ(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeIn applies the In predicate on the "Coin_Type" field.
+func CoinTypeIn(vs ...string) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldCoinType), v...))
+	})
+}
+
+// CoinTypeNotIn applies the NotIn predicate on the "Coin_Type" field.
+func CoinTypeNotIn(vs ...string) predicate.OrderUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldCoinType), v...))
+	})
+}
+
+// CoinTypeGT applies the GT predicate on the "Coin_Type" field.
+func CoinTypeGT(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeGTE applies the GTE predicate on the "Coin_Type" field.
+func CoinTypeGTE(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeLT applies the LT predicate on the "Coin_Type" field.
+func CoinTypeLT(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeLTE applies the LTE predicate on the "Coin_Type" field.
+func CoinTypeLTE(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeContains applies the Contains predicate on the "Coin_Type" field.
+func CoinTypeContains(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeHasPrefix applies the HasPrefix predicate on the "Coin_Type" field.
+func CoinTypeHasPrefix(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeHasSuffix applies the HasSuffix predicate on the "Coin_Type" field.
+func CoinTypeHasSuffix(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeEqualFold applies the EqualFold predicate on the "Coin_Type" field.
+func CoinTypeEqualFold(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeContainsFold applies the ContainsFold predicate on the "Coin_Type" field.
+func CoinTypeContainsFold(v string) predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
+	})
+}
+
 // ProportionEQ applies the EQ predicate on the "proportion" field.
 func ProportionEQ(v float32) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -869,212 +983,6 @@ func ProportionLT(v float32) predicate.OrderUser {
 func ProportionLTE(v float32) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldProportion), v))
-	})
-}
-
-// StartEQ applies the EQ predicate on the "start" field.
-func StartEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStart), v))
-	})
-}
-
-// StartNEQ applies the NEQ predicate on the "start" field.
-func StartNEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldStart), v))
-	})
-}
-
-// StartIn applies the In predicate on the "start" field.
-func StartIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldStart), v...))
-	})
-}
-
-// StartNotIn applies the NotIn predicate on the "start" field.
-func StartNotIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldStart), v...))
-	})
-}
-
-// StartGT applies the GT predicate on the "start" field.
-func StartGT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldStart), v))
-	})
-}
-
-// StartGTE applies the GTE predicate on the "start" field.
-func StartGTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldStart), v))
-	})
-}
-
-// StartLT applies the LT predicate on the "start" field.
-func StartLT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldStart), v))
-	})
-}
-
-// StartLTE applies the LTE predicate on the "start" field.
-func StartLTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldStart), v))
-	})
-}
-
-// EndEQ applies the EQ predicate on the "end" field.
-func EndEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldEnd), v))
-	})
-}
-
-// EndNEQ applies the NEQ predicate on the "end" field.
-func EndNEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldEnd), v))
-	})
-}
-
-// EndIn applies the In predicate on the "end" field.
-func EndIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldEnd), v...))
-	})
-}
-
-// EndNotIn applies the NotIn predicate on the "end" field.
-func EndNotIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldEnd), v...))
-	})
-}
-
-// EndGT applies the GT predicate on the "end" field.
-func EndGT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldEnd), v))
-	})
-}
-
-// EndGTE applies the GTE predicate on the "end" field.
-func EndGTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldEnd), v))
-	})
-}
-
-// EndLT applies the LT predicate on the "end" field.
-func EndLT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldEnd), v))
-	})
-}
-
-// EndLTE applies the LTE predicate on the "end" field.
-func EndLTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldEnd), v))
-	})
-}
-
-// CompensationTimeEQ applies the EQ predicate on the "compensation_time" field.
-func CompensationTimeEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeNEQ applies the NEQ predicate on the "compensation_time" field.
-func CompensationTimeNEQ(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeIn applies the In predicate on the "compensation_time" field.
-func CompensationTimeIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCompensationTime), v...))
-	})
-}
-
-// CompensationTimeNotIn applies the NotIn predicate on the "compensation_time" field.
-func CompensationTimeNotIn(vs ...uint32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCompensationTime), v...))
-	})
-}
-
-// CompensationTimeGT applies the GT predicate on the "compensation_time" field.
-func CompensationTimeGT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeGTE applies the GTE predicate on the "compensation_time" field.
-func CompensationTimeGTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeLT applies the LT predicate on the "compensation_time" field.
-func CompensationTimeLT(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeLTE applies the LTE predicate on the "compensation_time" field.
-func CompensationTimeLTE(v uint32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCompensationTime), v))
-	})
-}
-
-// CompensationTimeIsNil applies the IsNil predicate on the "compensation_time" field.
-func CompensationTimeIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCompensationTime)))
-	})
-}
-
-// CompensationTimeNotNil applies the NotNil predicate on the "compensation_time" field.
-func CompensationTimeNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCompensationTime)))
 	})
 }
 
@@ -1163,20 +1071,6 @@ func RevenueAddressHasSuffix(v string) predicate.OrderUser {
 	})
 }
 
-// RevenueAddressIsNil applies the IsNil predicate on the "revenue_address" field.
-func RevenueAddressIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueAddress)))
-	})
-}
-
-// RevenueAddressNotNil applies the NotNil predicate on the "revenue_address" field.
-func RevenueAddressNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueAddress)))
-	})
-}
-
 // RevenueAddressEqualFold applies the EqualFold predicate on the "revenue_address" field.
 func RevenueAddressEqualFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -1188,70 +1082,6 @@ func RevenueAddressEqualFold(v string) predicate.OrderUser {
 func RevenueAddressContainsFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// ThresholdEQ applies the EQ predicate on the "threshold" field.
-func ThresholdEQ(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdNEQ applies the NEQ predicate on the "threshold" field.
-func ThresholdNEQ(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdIn applies the In predicate on the "threshold" field.
-func ThresholdIn(vs ...float32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldThreshold), v...))
-	})
-}
-
-// ThresholdNotIn applies the NotIn predicate on the "threshold" field.
-func ThresholdNotIn(vs ...float32) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldThreshold), v...))
-	})
-}
-
-// ThresholdGT applies the GT predicate on the "threshold" field.
-func ThresholdGT(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdGTE applies the GTE predicate on the "threshold" field.
-func ThresholdGTE(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdLT applies the LT predicate on the "threshold" field.
-func ThresholdLT(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdLTE applies the LTE predicate on the "threshold" field.
-func ThresholdLTE(v float32) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldThreshold), v))
 	})
 }
 
@@ -1340,20 +1170,6 @@ func ReadPageLinkHasSuffix(v string) predicate.OrderUser {
 	})
 }
 
-// ReadPageLinkIsNil applies the IsNil predicate on the "read_page_link" field.
-func ReadPageLinkIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldReadPageLink)))
-	})
-}
-
-// ReadPageLinkNotNil applies the NotNil predicate on the "read_page_link" field.
-func ReadPageLinkNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldReadPageLink)))
-	})
-}
-
 // ReadPageLinkEqualFold applies the EqualFold predicate on the "read_page_link" field.
 func ReadPageLinkEqualFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -1379,6 +1195,20 @@ func AutoPayEQ(v bool) predicate.OrderUser {
 func AutoPayNEQ(v bool) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldAutoPay), v))
+	})
+}
+
+// AutoPayIsNil applies the IsNil predicate on the "auto_pay" field.
+func AutoPayIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAutoPay)))
+	})
+}
+
+// AutoPayNotNil applies the NotNil predicate on the "auto_pay" field.
+func AutoPayNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAutoPay)))
 	})
 }
 

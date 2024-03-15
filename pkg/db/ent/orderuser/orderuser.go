@@ -20,26 +20,22 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldOrderID holds the string denoting the order_id field in the database.
-	FieldOrderID = "order_id"
+	// FieldRootUserID holds the string denoting the root_user_id field in the database.
+	FieldRootUserID = "root_user_id"
 	// FieldGoodUserID holds the string denoting the good_user_id field in the database.
 	FieldGoodUserID = "good_user_id"
-	// FieldCoinID holds the string denoting the coin_id field in the database.
-	FieldCoinID = "coin_id"
+	// FieldOrderID holds the string denoting the order_id field in the database.
+	FieldOrderID = "order_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
+	FieldMiningpoolType = "miningpool_type"
+	// FieldCoinType holds the string denoting the coin_type field in the database.
+	FieldCoinType = "coin_type"
 	// FieldProportion holds the string denoting the proportion field in the database.
 	FieldProportion = "proportion"
-	// FieldStart holds the string denoting the start field in the database.
-	FieldStart = "start"
-	// FieldEnd holds the string denoting the end field in the database.
-	FieldEnd = "end"
-	// FieldCompensationTime holds the string denoting the compensation_time field in the database.
-	FieldCompensationTime = "compensation_time"
 	// FieldRevenueAddress holds the string denoting the revenue_address field in the database.
 	FieldRevenueAddress = "revenue_address"
-	// FieldThreshold holds the string denoting the threshold field in the database.
-	FieldThreshold = "threshold"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
 	FieldReadPageLink = "read_page_link"
 	// FieldAutoPay holds the string denoting the auto_pay field in the database.
@@ -55,16 +51,14 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldOrderID,
+	FieldRootUserID,
 	FieldGoodUserID,
-	FieldCoinID,
+	FieldOrderID,
 	FieldName,
+	FieldMiningpoolType,
+	FieldCoinType,
 	FieldProportion,
-	FieldStart,
-	FieldEnd,
-	FieldCompensationTime,
 	FieldRevenueAddress,
-	FieldThreshold,
 	FieldReadPageLink,
 	FieldAutoPay,
 }
@@ -98,10 +92,6 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultCompensationTime holds the default value on creation for the "compensation_time" field.
-	DefaultCompensationTime uint32
-	// DefaultRevenueAddress holds the default value on creation for the "revenue_address" field.
-	DefaultRevenueAddress string
-	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
-	DefaultReadPageLink string
+	// DefaultAutoPay holds the default value on creation for the "auto_pay" field.
+	DefaultAutoPay bool
 )

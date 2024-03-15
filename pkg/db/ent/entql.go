@@ -123,22 +123,20 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "OrderUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			orderuser.FieldCreatedAt:        {Type: field.TypeUint32, Column: orderuser.FieldCreatedAt},
-			orderuser.FieldUpdatedAt:        {Type: field.TypeUint32, Column: orderuser.FieldUpdatedAt},
-			orderuser.FieldDeletedAt:        {Type: field.TypeUint32, Column: orderuser.FieldDeletedAt},
-			orderuser.FieldEntID:            {Type: field.TypeUUID, Column: orderuser.FieldEntID},
-			orderuser.FieldOrderID:          {Type: field.TypeUUID, Column: orderuser.FieldOrderID},
-			orderuser.FieldGoodUserID:       {Type: field.TypeString, Column: orderuser.FieldGoodUserID},
-			orderuser.FieldCoinID:           {Type: field.TypeString, Column: orderuser.FieldCoinID},
-			orderuser.FieldName:             {Type: field.TypeString, Column: orderuser.FieldName},
-			orderuser.FieldProportion:       {Type: field.TypeFloat32, Column: orderuser.FieldProportion},
-			orderuser.FieldStart:            {Type: field.TypeUint32, Column: orderuser.FieldStart},
-			orderuser.FieldEnd:              {Type: field.TypeUint32, Column: orderuser.FieldEnd},
-			orderuser.FieldCompensationTime: {Type: field.TypeUint32, Column: orderuser.FieldCompensationTime},
-			orderuser.FieldRevenueAddress:   {Type: field.TypeString, Column: orderuser.FieldRevenueAddress},
-			orderuser.FieldThreshold:        {Type: field.TypeFloat32, Column: orderuser.FieldThreshold},
-			orderuser.FieldReadPageLink:     {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
-			orderuser.FieldAutoPay:          {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
+			orderuser.FieldCreatedAt:      {Type: field.TypeUint32, Column: orderuser.FieldCreatedAt},
+			orderuser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: orderuser.FieldUpdatedAt},
+			orderuser.FieldDeletedAt:      {Type: field.TypeUint32, Column: orderuser.FieldDeletedAt},
+			orderuser.FieldEntID:          {Type: field.TypeUUID, Column: orderuser.FieldEntID},
+			orderuser.FieldRootUserID:     {Type: field.TypeUUID, Column: orderuser.FieldRootUserID},
+			orderuser.FieldGoodUserID:     {Type: field.TypeUUID, Column: orderuser.FieldGoodUserID},
+			orderuser.FieldOrderID:        {Type: field.TypeUUID, Column: orderuser.FieldOrderID},
+			orderuser.FieldName:           {Type: field.TypeString, Column: orderuser.FieldName},
+			orderuser.FieldMiningpoolType: {Type: field.TypeString, Column: orderuser.FieldMiningpoolType},
+			orderuser.FieldCoinType:       {Type: field.TypeString, Column: orderuser.FieldCoinType},
+			orderuser.FieldProportion:     {Type: field.TypeFloat32, Column: orderuser.FieldProportion},
+			orderuser.FieldRevenueAddress: {Type: field.TypeString, Column: orderuser.FieldRevenueAddress},
+			orderuser.FieldReadPageLink:   {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
+			orderuser.FieldAutoPay:        {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -598,19 +596,19 @@ func (f *OrderUserFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(orderuser.FieldEntID))
 }
 
-// WhereOrderID applies the entql [16]byte predicate on the order_id field.
-func (f *OrderUserFilter) WhereOrderID(p entql.ValueP) {
-	f.Where(p.Field(orderuser.FieldOrderID))
+// WhereRootUserID applies the entql [16]byte predicate on the root_user_id field.
+func (f *OrderUserFilter) WhereRootUserID(p entql.ValueP) {
+	f.Where(p.Field(orderuser.FieldRootUserID))
 }
 
-// WhereGoodUserID applies the entql string predicate on the good_user_id field.
-func (f *OrderUserFilter) WhereGoodUserID(p entql.StringP) {
+// WhereGoodUserID applies the entql [16]byte predicate on the good_user_id field.
+func (f *OrderUserFilter) WhereGoodUserID(p entql.ValueP) {
 	f.Where(p.Field(orderuser.FieldGoodUserID))
 }
 
-// WhereCoinID applies the entql string predicate on the coin_id field.
-func (f *OrderUserFilter) WhereCoinID(p entql.StringP) {
-	f.Where(p.Field(orderuser.FieldCoinID))
+// WhereOrderID applies the entql [16]byte predicate on the order_id field.
+func (f *OrderUserFilter) WhereOrderID(p entql.ValueP) {
+	f.Where(p.Field(orderuser.FieldOrderID))
 }
 
 // WhereName applies the entql string predicate on the name field.
@@ -618,34 +616,24 @@ func (f *OrderUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldName))
 }
 
+// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
+func (f *OrderUserFilter) WhereMiningpoolType(p entql.StringP) {
+	f.Where(p.Field(orderuser.FieldMiningpoolType))
+}
+
+// WhereCoinType applies the entql string predicate on the Coin_Type field.
+func (f *OrderUserFilter) WhereCoinType(p entql.StringP) {
+	f.Where(p.Field(orderuser.FieldCoinType))
+}
+
 // WhereProportion applies the entql float32 predicate on the proportion field.
 func (f *OrderUserFilter) WhereProportion(p entql.Float32P) {
 	f.Where(p.Field(orderuser.FieldProportion))
 }
 
-// WhereStart applies the entql uint32 predicate on the start field.
-func (f *OrderUserFilter) WhereStart(p entql.Uint32P) {
-	f.Where(p.Field(orderuser.FieldStart))
-}
-
-// WhereEnd applies the entql uint32 predicate on the end field.
-func (f *OrderUserFilter) WhereEnd(p entql.Uint32P) {
-	f.Where(p.Field(orderuser.FieldEnd))
-}
-
-// WhereCompensationTime applies the entql uint32 predicate on the compensation_time field.
-func (f *OrderUserFilter) WhereCompensationTime(p entql.Uint32P) {
-	f.Where(p.Field(orderuser.FieldCompensationTime))
-}
-
 // WhereRevenueAddress applies the entql string predicate on the revenue_address field.
 func (f *OrderUserFilter) WhereRevenueAddress(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldRevenueAddress))
-}
-
-// WhereThreshold applies the entql float32 predicate on the threshold field.
-func (f *OrderUserFilter) WhereThreshold(p entql.Float32P) {
-	f.Where(p.Field(orderuser.FieldThreshold))
 }
 
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.

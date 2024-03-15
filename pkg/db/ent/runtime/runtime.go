@@ -216,18 +216,10 @@ func init() {
 	orderuserDescEntID := orderuserMixinFields1[1].Descriptor()
 	// orderuser.DefaultEntID holds the default value on creation for the ent_id field.
 	orderuser.DefaultEntID = orderuserDescEntID.Default.(func() uuid.UUID)
-	// orderuserDescCompensationTime is the schema descriptor for compensation_time field.
-	orderuserDescCompensationTime := orderuserFields[7].Descriptor()
-	// orderuser.DefaultCompensationTime holds the default value on creation for the compensation_time field.
-	orderuser.DefaultCompensationTime = orderuserDescCompensationTime.Default.(uint32)
-	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
-	orderuserDescRevenueAddress := orderuserFields[8].Descriptor()
-	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.
-	orderuser.DefaultRevenueAddress = orderuserDescRevenueAddress.Default.(string)
-	// orderuserDescReadPageLink is the schema descriptor for read_page_link field.
-	orderuserDescReadPageLink := orderuserFields[10].Descriptor()
-	// orderuser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
-	orderuser.DefaultReadPageLink = orderuserDescReadPageLink.Default.(string)
+	// orderuserDescAutoPay is the schema descriptor for auto_pay field.
+	orderuserDescAutoPay := orderuserFields[9].Descriptor()
+	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
+	orderuser.DefaultAutoPay = orderuserDescAutoPay.Default.(bool)
 	rootuserMixin := schema.RootUser{}.Mixin()
 	rootuser.Policy = privacy.NewPolicies(rootuserMixin[0], schema.RootUser{})
 	rootuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {

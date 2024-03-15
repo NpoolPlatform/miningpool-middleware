@@ -168,13 +168,13 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 		}
 	}
 	if conds.FixedRevenueAble != nil {
-		fixedrevenueable, ok := conds.FixedRevenueAble.Val.(string)
+		fixedrevenueable, ok := conds.FixedRevenueAble.Val.(bool)
 		if !ok {
 			return nil, fmt.Errorf("invalid fixedrevenueable")
 		}
 		switch conds.FixedRevenueAble.Op {
 		case cruder.EQ:
-			q.Where(coinent.Site(fixedrevenueable))
+			q.Where(coinent.FixedRevenueAble(fixedrevenueable))
 		default:
 			return nil, fmt.Errorf("invalid fixedrevenueable field")
 		}

@@ -98,27 +98,39 @@ func (ouu *OrderUserUpdate) SetNillableEntID(u *uuid.UUID) *OrderUserUpdate {
 	return ouu
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (ouu *OrderUserUpdate) SetRootUserID(u uuid.UUID) *OrderUserUpdate {
+	ouu.mutation.SetRootUserID(u)
+	return ouu
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (ouu *OrderUserUpdate) SetGoodUserID(u uuid.UUID) *OrderUserUpdate {
+	ouu.mutation.SetGoodUserID(u)
+	return ouu
+}
+
 // SetOrderID sets the "order_id" field.
 func (ouu *OrderUserUpdate) SetOrderID(u uuid.UUID) *OrderUserUpdate {
 	ouu.mutation.SetOrderID(u)
 	return ouu
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (ouu *OrderUserUpdate) SetGoodUserID(s string) *OrderUserUpdate {
-	ouu.mutation.SetGoodUserID(s)
-	return ouu
-}
-
-// SetCoinID sets the "coin_id" field.
-func (ouu *OrderUserUpdate) SetCoinID(s string) *OrderUserUpdate {
-	ouu.mutation.SetCoinID(s)
-	return ouu
-}
-
 // SetName sets the "name" field.
 func (ouu *OrderUserUpdate) SetName(s string) *OrderUserUpdate {
 	ouu.mutation.SetName(s)
+	return ouu
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (ouu *OrderUserUpdate) SetMiningpoolType(s string) *OrderUserUpdate {
+	ouu.mutation.SetMiningpoolType(s)
+	return ouu
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (ouu *OrderUserUpdate) SetCoinType(s string) *OrderUserUpdate {
+	ouu.mutation.SetCoinType(s)
 	return ouu
 }
 
@@ -135,89 +147,9 @@ func (ouu *OrderUserUpdate) AddProportion(f float32) *OrderUserUpdate {
 	return ouu
 }
 
-// SetStart sets the "start" field.
-func (ouu *OrderUserUpdate) SetStart(u uint32) *OrderUserUpdate {
-	ouu.mutation.ResetStart()
-	ouu.mutation.SetStart(u)
-	return ouu
-}
-
-// AddStart adds u to the "start" field.
-func (ouu *OrderUserUpdate) AddStart(u int32) *OrderUserUpdate {
-	ouu.mutation.AddStart(u)
-	return ouu
-}
-
-// SetEnd sets the "end" field.
-func (ouu *OrderUserUpdate) SetEnd(u uint32) *OrderUserUpdate {
-	ouu.mutation.ResetEnd()
-	ouu.mutation.SetEnd(u)
-	return ouu
-}
-
-// AddEnd adds u to the "end" field.
-func (ouu *OrderUserUpdate) AddEnd(u int32) *OrderUserUpdate {
-	ouu.mutation.AddEnd(u)
-	return ouu
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (ouu *OrderUserUpdate) SetCompensationTime(u uint32) *OrderUserUpdate {
-	ouu.mutation.ResetCompensationTime()
-	ouu.mutation.SetCompensationTime(u)
-	return ouu
-}
-
-// SetNillableCompensationTime sets the "compensation_time" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableCompensationTime(u *uint32) *OrderUserUpdate {
-	if u != nil {
-		ouu.SetCompensationTime(*u)
-	}
-	return ouu
-}
-
-// AddCompensationTime adds u to the "compensation_time" field.
-func (ouu *OrderUserUpdate) AddCompensationTime(u int32) *OrderUserUpdate {
-	ouu.mutation.AddCompensationTime(u)
-	return ouu
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (ouu *OrderUserUpdate) ClearCompensationTime() *OrderUserUpdate {
-	ouu.mutation.ClearCompensationTime()
-	return ouu
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (ouu *OrderUserUpdate) SetRevenueAddress(s string) *OrderUserUpdate {
 	ouu.mutation.SetRevenueAddress(s)
-	return ouu
-}
-
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableRevenueAddress(s *string) *OrderUserUpdate {
-	if s != nil {
-		ouu.SetRevenueAddress(*s)
-	}
-	return ouu
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (ouu *OrderUserUpdate) ClearRevenueAddress() *OrderUserUpdate {
-	ouu.mutation.ClearRevenueAddress()
-	return ouu
-}
-
-// SetThreshold sets the "threshold" field.
-func (ouu *OrderUserUpdate) SetThreshold(f float32) *OrderUserUpdate {
-	ouu.mutation.ResetThreshold()
-	ouu.mutation.SetThreshold(f)
-	return ouu
-}
-
-// AddThreshold adds f to the "threshold" field.
-func (ouu *OrderUserUpdate) AddThreshold(f float32) *OrderUserUpdate {
-	ouu.mutation.AddThreshold(f)
 	return ouu
 }
 
@@ -227,23 +159,23 @@ func (ouu *OrderUserUpdate) SetReadPageLink(s string) *OrderUserUpdate {
 	return ouu
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableReadPageLink(s *string) *OrderUserUpdate {
-	if s != nil {
-		ouu.SetReadPageLink(*s)
+// SetAutoPay sets the "auto_pay" field.
+func (ouu *OrderUserUpdate) SetAutoPay(b bool) *OrderUserUpdate {
+	ouu.mutation.SetAutoPay(b)
+	return ouu
+}
+
+// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableAutoPay(b *bool) *OrderUserUpdate {
+	if b != nil {
+		ouu.SetAutoPay(*b)
 	}
 	return ouu
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (ouu *OrderUserUpdate) ClearReadPageLink() *OrderUserUpdate {
-	ouu.mutation.ClearReadPageLink()
-	return ouu
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (ouu *OrderUserUpdate) SetAutoPay(b bool) *OrderUserUpdate {
-	ouu.mutation.SetAutoPay(b)
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (ouu *OrderUserUpdate) ClearAutoPay() *OrderUserUpdate {
+	ouu.mutation.ClearAutoPay()
 	return ouu
 }
 
@@ -394,6 +326,20 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldEntID,
 		})
 	}
+	if value, ok := ouu.mutation.RootUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldRootUserID,
+		})
+	}
+	if value, ok := ouu.mutation.GoodUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldGoodUserID,
+		})
+	}
 	if value, ok := ouu.mutation.OrderID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -401,25 +347,25 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldOrderID,
 		})
 	}
-	if value, ok := ouu.mutation.GoodUserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldGoodUserID,
-		})
-	}
-	if value, ok := ouu.mutation.CoinID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinID,
-		})
-	}
 	if value, ok := ouu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: orderuser.FieldName,
+		})
+	}
+	if value, ok := ouu.mutation.MiningpoolType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldMiningpoolType,
+		})
+	}
+	if value, ok := ouu.mutation.CoinType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldCoinType,
 		})
 	}
 	if value, ok := ouu.mutation.Proportion(); ok {
@@ -436,79 +382,11 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldProportion,
 		})
 	}
-	if value, ok := ouu.mutation.Start(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldStart,
-		})
-	}
-	if value, ok := ouu.mutation.AddedStart(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldStart,
-		})
-	}
-	if value, ok := ouu.mutation.End(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldEnd,
-		})
-	}
-	if value, ok := ouu.mutation.AddedEnd(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldEnd,
-		})
-	}
-	if value, ok := ouu.mutation.CompensationTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
-	if value, ok := ouu.mutation.AddedCompensationTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
-	if ouu.mutation.CompensationTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
 	if value, ok := ouu.mutation.RevenueAddress(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if ouu.mutation.RevenueAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if value, ok := ouu.mutation.Threshold(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldThreshold,
-		})
-	}
-	if value, ok := ouu.mutation.AddedThreshold(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldThreshold,
 		})
 	}
 	if value, ok := ouu.mutation.ReadPageLink(); ok {
@@ -518,16 +396,16 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldReadPageLink,
 		})
 	}
-	if ouu.mutation.ReadPageLinkCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldReadPageLink,
-		})
-	}
 	if value, ok := ouu.mutation.AutoPay(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Value:  value,
+			Column: orderuser.FieldAutoPay,
+		})
+	}
+	if ouu.mutation.AutoPayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
 			Column: orderuser.FieldAutoPay,
 		})
 	}
@@ -621,27 +499,39 @@ func (ouuo *OrderUserUpdateOne) SetNillableEntID(u *uuid.UUID) *OrderUserUpdateO
 	return ouuo
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (ouuo *OrderUserUpdateOne) SetRootUserID(u uuid.UUID) *OrderUserUpdateOne {
+	ouuo.mutation.SetRootUserID(u)
+	return ouuo
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (ouuo *OrderUserUpdateOne) SetGoodUserID(u uuid.UUID) *OrderUserUpdateOne {
+	ouuo.mutation.SetGoodUserID(u)
+	return ouuo
+}
+
 // SetOrderID sets the "order_id" field.
 func (ouuo *OrderUserUpdateOne) SetOrderID(u uuid.UUID) *OrderUserUpdateOne {
 	ouuo.mutation.SetOrderID(u)
 	return ouuo
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (ouuo *OrderUserUpdateOne) SetGoodUserID(s string) *OrderUserUpdateOne {
-	ouuo.mutation.SetGoodUserID(s)
-	return ouuo
-}
-
-// SetCoinID sets the "coin_id" field.
-func (ouuo *OrderUserUpdateOne) SetCoinID(s string) *OrderUserUpdateOne {
-	ouuo.mutation.SetCoinID(s)
-	return ouuo
-}
-
 // SetName sets the "name" field.
 func (ouuo *OrderUserUpdateOne) SetName(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetName(s)
+	return ouuo
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (ouuo *OrderUserUpdateOne) SetMiningpoolType(s string) *OrderUserUpdateOne {
+	ouuo.mutation.SetMiningpoolType(s)
+	return ouuo
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (ouuo *OrderUserUpdateOne) SetCoinType(s string) *OrderUserUpdateOne {
+	ouuo.mutation.SetCoinType(s)
 	return ouuo
 }
 
@@ -658,89 +548,9 @@ func (ouuo *OrderUserUpdateOne) AddProportion(f float32) *OrderUserUpdateOne {
 	return ouuo
 }
 
-// SetStart sets the "start" field.
-func (ouuo *OrderUserUpdateOne) SetStart(u uint32) *OrderUserUpdateOne {
-	ouuo.mutation.ResetStart()
-	ouuo.mutation.SetStart(u)
-	return ouuo
-}
-
-// AddStart adds u to the "start" field.
-func (ouuo *OrderUserUpdateOne) AddStart(u int32) *OrderUserUpdateOne {
-	ouuo.mutation.AddStart(u)
-	return ouuo
-}
-
-// SetEnd sets the "end" field.
-func (ouuo *OrderUserUpdateOne) SetEnd(u uint32) *OrderUserUpdateOne {
-	ouuo.mutation.ResetEnd()
-	ouuo.mutation.SetEnd(u)
-	return ouuo
-}
-
-// AddEnd adds u to the "end" field.
-func (ouuo *OrderUserUpdateOne) AddEnd(u int32) *OrderUserUpdateOne {
-	ouuo.mutation.AddEnd(u)
-	return ouuo
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (ouuo *OrderUserUpdateOne) SetCompensationTime(u uint32) *OrderUserUpdateOne {
-	ouuo.mutation.ResetCompensationTime()
-	ouuo.mutation.SetCompensationTime(u)
-	return ouuo
-}
-
-// SetNillableCompensationTime sets the "compensation_time" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableCompensationTime(u *uint32) *OrderUserUpdateOne {
-	if u != nil {
-		ouuo.SetCompensationTime(*u)
-	}
-	return ouuo
-}
-
-// AddCompensationTime adds u to the "compensation_time" field.
-func (ouuo *OrderUserUpdateOne) AddCompensationTime(u int32) *OrderUserUpdateOne {
-	ouuo.mutation.AddCompensationTime(u)
-	return ouuo
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (ouuo *OrderUserUpdateOne) ClearCompensationTime() *OrderUserUpdateOne {
-	ouuo.mutation.ClearCompensationTime()
-	return ouuo
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (ouuo *OrderUserUpdateOne) SetRevenueAddress(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetRevenueAddress(s)
-	return ouuo
-}
-
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableRevenueAddress(s *string) *OrderUserUpdateOne {
-	if s != nil {
-		ouuo.SetRevenueAddress(*s)
-	}
-	return ouuo
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (ouuo *OrderUserUpdateOne) ClearRevenueAddress() *OrderUserUpdateOne {
-	ouuo.mutation.ClearRevenueAddress()
-	return ouuo
-}
-
-// SetThreshold sets the "threshold" field.
-func (ouuo *OrderUserUpdateOne) SetThreshold(f float32) *OrderUserUpdateOne {
-	ouuo.mutation.ResetThreshold()
-	ouuo.mutation.SetThreshold(f)
-	return ouuo
-}
-
-// AddThreshold adds f to the "threshold" field.
-func (ouuo *OrderUserUpdateOne) AddThreshold(f float32) *OrderUserUpdateOne {
-	ouuo.mutation.AddThreshold(f)
 	return ouuo
 }
 
@@ -750,23 +560,23 @@ func (ouuo *OrderUserUpdateOne) SetReadPageLink(s string) *OrderUserUpdateOne {
 	return ouuo
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableReadPageLink(s *string) *OrderUserUpdateOne {
-	if s != nil {
-		ouuo.SetReadPageLink(*s)
+// SetAutoPay sets the "auto_pay" field.
+func (ouuo *OrderUserUpdateOne) SetAutoPay(b bool) *OrderUserUpdateOne {
+	ouuo.mutation.SetAutoPay(b)
+	return ouuo
+}
+
+// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableAutoPay(b *bool) *OrderUserUpdateOne {
+	if b != nil {
+		ouuo.SetAutoPay(*b)
 	}
 	return ouuo
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (ouuo *OrderUserUpdateOne) ClearReadPageLink() *OrderUserUpdateOne {
-	ouuo.mutation.ClearReadPageLink()
-	return ouuo
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (ouuo *OrderUserUpdateOne) SetAutoPay(b bool) *OrderUserUpdateOne {
-	ouuo.mutation.SetAutoPay(b)
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (ouuo *OrderUserUpdateOne) ClearAutoPay() *OrderUserUpdateOne {
+	ouuo.mutation.ClearAutoPay()
 	return ouuo
 }
 
@@ -947,6 +757,20 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldEntID,
 		})
 	}
+	if value, ok := ouuo.mutation.RootUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldRootUserID,
+		})
+	}
+	if value, ok := ouuo.mutation.GoodUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldGoodUserID,
+		})
+	}
 	if value, ok := ouuo.mutation.OrderID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -954,25 +778,25 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldOrderID,
 		})
 	}
-	if value, ok := ouuo.mutation.GoodUserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldGoodUserID,
-		})
-	}
-	if value, ok := ouuo.mutation.CoinID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinID,
-		})
-	}
 	if value, ok := ouuo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: orderuser.FieldName,
+		})
+	}
+	if value, ok := ouuo.mutation.MiningpoolType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldMiningpoolType,
+		})
+	}
+	if value, ok := ouuo.mutation.CoinType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldCoinType,
 		})
 	}
 	if value, ok := ouuo.mutation.Proportion(); ok {
@@ -989,79 +813,11 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldProportion,
 		})
 	}
-	if value, ok := ouuo.mutation.Start(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldStart,
-		})
-	}
-	if value, ok := ouuo.mutation.AddedStart(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldStart,
-		})
-	}
-	if value, ok := ouuo.mutation.End(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldEnd,
-		})
-	}
-	if value, ok := ouuo.mutation.AddedEnd(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldEnd,
-		})
-	}
-	if value, ok := ouuo.mutation.CompensationTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
-	if value, ok := ouuo.mutation.AddedCompensationTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
-	if ouuo.mutation.CompensationTimeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Column: orderuser.FieldCompensationTime,
-		})
-	}
 	if value, ok := ouuo.mutation.RevenueAddress(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
 			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if ouuo.mutation.RevenueAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if value, ok := ouuo.mutation.Threshold(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldThreshold,
-		})
-	}
-	if value, ok := ouuo.mutation.AddedThreshold(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldThreshold,
 		})
 	}
 	if value, ok := ouuo.mutation.ReadPageLink(); ok {
@@ -1071,16 +827,16 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldReadPageLink,
 		})
 	}
-	if ouuo.mutation.ReadPageLinkCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldReadPageLink,
-		})
-	}
 	if value, ok := ouuo.mutation.AutoPay(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Value:  value,
+			Column: orderuser.FieldAutoPay,
+		})
+	}
+	if ouuo.mutation.AutoPayCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
 			Column: orderuser.FieldAutoPay,
 		})
 	}

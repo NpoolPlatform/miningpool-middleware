@@ -4120,37 +4120,31 @@ func (m *GoodUserMutation) ResetEdge(name string) error {
 // OrderUserMutation represents an operation that mutates the OrderUser nodes in the graph.
 type OrderUserMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *uint32
-	created_at           *uint32
-	addcreated_at        *int32
-	updated_at           *uint32
-	addupdated_at        *int32
-	deleted_at           *uint32
-	adddeleted_at        *int32
-	ent_id               *uuid.UUID
-	order_id             *uuid.UUID
-	good_user_id         *string
-	coin_id              *string
-	name                 *string
-	proportion           *float32
-	addproportion        *float32
-	start                *uint32
-	addstart             *int32
-	end                  *uint32
-	addend               *int32
-	compensation_time    *uint32
-	addcompensation_time *int32
-	revenue_address      *string
-	threshold            *float32
-	addthreshold         *float32
-	read_page_link       *string
-	auto_pay             *bool
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*OrderUser, error)
-	predicates           []predicate.OrderUser
+	op              Op
+	typ             string
+	id              *uint32
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	ent_id          *uuid.UUID
+	root_user_id    *uuid.UUID
+	good_user_id    *uuid.UUID
+	order_id        *uuid.UUID
+	name            *string
+	miningpool_type *string
+	_Coin_Type      *string
+	proportion      *float32
+	addproportion   *float32
+	revenue_address *string
+	read_page_link  *string
+	auto_pay        *bool
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*OrderUser, error)
+	predicates      []predicate.OrderUser
 }
 
 var _ ent.Mutation = (*OrderUserMutation)(nil)
@@ -4461,6 +4455,78 @@ func (m *OrderUserMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (m *OrderUserMutation) SetRootUserID(u uuid.UUID) {
+	m.root_user_id = &u
+}
+
+// RootUserID returns the value of the "root_user_id" field in the mutation.
+func (m *OrderUserMutation) RootUserID() (r uuid.UUID, exists bool) {
+	v := m.root_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRootUserID returns the old "root_user_id" field's value of the OrderUser entity.
+// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderUserMutation) OldRootUserID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRootUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRootUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRootUserID: %w", err)
+	}
+	return oldValue.RootUserID, nil
+}
+
+// ResetRootUserID resets all changes to the "root_user_id" field.
+func (m *OrderUserMutation) ResetRootUserID() {
+	m.root_user_id = nil
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (m *OrderUserMutation) SetGoodUserID(u uuid.UUID) {
+	m.good_user_id = &u
+}
+
+// GoodUserID returns the value of the "good_user_id" field in the mutation.
+func (m *OrderUserMutation) GoodUserID() (r uuid.UUID, exists bool) {
+	v := m.good_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGoodUserID returns the old "good_user_id" field's value of the OrderUser entity.
+// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderUserMutation) OldGoodUserID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGoodUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGoodUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGoodUserID: %w", err)
+	}
+	return oldValue.GoodUserID, nil
+}
+
+// ResetGoodUserID resets all changes to the "good_user_id" field.
+func (m *OrderUserMutation) ResetGoodUserID() {
+	m.good_user_id = nil
+}
+
 // SetOrderID sets the "order_id" field.
 func (m *OrderUserMutation) SetOrderID(u uuid.UUID) {
 	m.order_id = &u
@@ -4497,78 +4563,6 @@ func (m *OrderUserMutation) ResetOrderID() {
 	m.order_id = nil
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (m *OrderUserMutation) SetGoodUserID(s string) {
-	m.good_user_id = &s
-}
-
-// GoodUserID returns the value of the "good_user_id" field in the mutation.
-func (m *OrderUserMutation) GoodUserID() (r string, exists bool) {
-	v := m.good_user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldGoodUserID returns the old "good_user_id" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldGoodUserID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGoodUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGoodUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGoodUserID: %w", err)
-	}
-	return oldValue.GoodUserID, nil
-}
-
-// ResetGoodUserID resets all changes to the "good_user_id" field.
-func (m *OrderUserMutation) ResetGoodUserID() {
-	m.good_user_id = nil
-}
-
-// SetCoinID sets the "coin_id" field.
-func (m *OrderUserMutation) SetCoinID(s string) {
-	m.coin_id = &s
-}
-
-// CoinID returns the value of the "coin_id" field in the mutation.
-func (m *OrderUserMutation) CoinID() (r string, exists bool) {
-	v := m.coin_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCoinID returns the old "coin_id" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldCoinID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinID: %w", err)
-	}
-	return oldValue.CoinID, nil
-}
-
-// ResetCoinID resets all changes to the "coin_id" field.
-func (m *OrderUserMutation) ResetCoinID() {
-	m.coin_id = nil
-}
-
 // SetName sets the "name" field.
 func (m *OrderUserMutation) SetName(s string) {
 	m.name = &s
@@ -4603,6 +4597,78 @@ func (m *OrderUserMutation) OldName(ctx context.Context) (v string, err error) {
 // ResetName resets all changes to the "name" field.
 func (m *OrderUserMutation) ResetName() {
 	m.name = nil
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (m *OrderUserMutation) SetMiningpoolType(s string) {
+	m.miningpool_type = &s
+}
+
+// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
+func (m *OrderUserMutation) MiningpoolType() (r string, exists bool) {
+	v := m.miningpool_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMiningpoolType returns the old "miningpool_type" field's value of the OrderUser entity.
+// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+	}
+	return oldValue.MiningpoolType, nil
+}
+
+// ResetMiningpoolType resets all changes to the "miningpool_type" field.
+func (m *OrderUserMutation) ResetMiningpoolType() {
+	m.miningpool_type = nil
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (m *OrderUserMutation) SetCoinType(s string) {
+	m._Coin_Type = &s
+}
+
+// CoinType returns the value of the "Coin_Type" field in the mutation.
+func (m *OrderUserMutation) CoinType() (r string, exists bool) {
+	v := m._Coin_Type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinType returns the old "Coin_Type" field's value of the OrderUser entity.
+// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *OrderUserMutation) OldCoinType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
+	}
+	return oldValue.CoinType, nil
+}
+
+// ResetCoinType resets all changes to the "Coin_Type" field.
+func (m *OrderUserMutation) ResetCoinType() {
+	m._Coin_Type = nil
 }
 
 // SetProportion sets the "proportion" field.
@@ -4661,188 +4727,6 @@ func (m *OrderUserMutation) ResetProportion() {
 	m.addproportion = nil
 }
 
-// SetStart sets the "start" field.
-func (m *OrderUserMutation) SetStart(u uint32) {
-	m.start = &u
-	m.addstart = nil
-}
-
-// Start returns the value of the "start" field in the mutation.
-func (m *OrderUserMutation) Start() (r uint32, exists bool) {
-	v := m.start
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStart returns the old "start" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldStart(ctx context.Context) (v uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStart is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStart requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStart: %w", err)
-	}
-	return oldValue.Start, nil
-}
-
-// AddStart adds u to the "start" field.
-func (m *OrderUserMutation) AddStart(u int32) {
-	if m.addstart != nil {
-		*m.addstart += u
-	} else {
-		m.addstart = &u
-	}
-}
-
-// AddedStart returns the value that was added to the "start" field in this mutation.
-func (m *OrderUserMutation) AddedStart() (r int32, exists bool) {
-	v := m.addstart
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetStart resets all changes to the "start" field.
-func (m *OrderUserMutation) ResetStart() {
-	m.start = nil
-	m.addstart = nil
-}
-
-// SetEnd sets the "end" field.
-func (m *OrderUserMutation) SetEnd(u uint32) {
-	m.end = &u
-	m.addend = nil
-}
-
-// End returns the value of the "end" field in the mutation.
-func (m *OrderUserMutation) End() (r uint32, exists bool) {
-	v := m.end
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEnd returns the old "end" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldEnd(ctx context.Context) (v uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEnd is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEnd requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEnd: %w", err)
-	}
-	return oldValue.End, nil
-}
-
-// AddEnd adds u to the "end" field.
-func (m *OrderUserMutation) AddEnd(u int32) {
-	if m.addend != nil {
-		*m.addend += u
-	} else {
-		m.addend = &u
-	}
-}
-
-// AddedEnd returns the value that was added to the "end" field in this mutation.
-func (m *OrderUserMutation) AddedEnd() (r int32, exists bool) {
-	v := m.addend
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetEnd resets all changes to the "end" field.
-func (m *OrderUserMutation) ResetEnd() {
-	m.end = nil
-	m.addend = nil
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (m *OrderUserMutation) SetCompensationTime(u uint32) {
-	m.compensation_time = &u
-	m.addcompensation_time = nil
-}
-
-// CompensationTime returns the value of the "compensation_time" field in the mutation.
-func (m *OrderUserMutation) CompensationTime() (r uint32, exists bool) {
-	v := m.compensation_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCompensationTime returns the old "compensation_time" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldCompensationTime(ctx context.Context) (v uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCompensationTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCompensationTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCompensationTime: %w", err)
-	}
-	return oldValue.CompensationTime, nil
-}
-
-// AddCompensationTime adds u to the "compensation_time" field.
-func (m *OrderUserMutation) AddCompensationTime(u int32) {
-	if m.addcompensation_time != nil {
-		*m.addcompensation_time += u
-	} else {
-		m.addcompensation_time = &u
-	}
-}
-
-// AddedCompensationTime returns the value that was added to the "compensation_time" field in this mutation.
-func (m *OrderUserMutation) AddedCompensationTime() (r int32, exists bool) {
-	v := m.addcompensation_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (m *OrderUserMutation) ClearCompensationTime() {
-	m.compensation_time = nil
-	m.addcompensation_time = nil
-	m.clearedFields[orderuser.FieldCompensationTime] = struct{}{}
-}
-
-// CompensationTimeCleared returns if the "compensation_time" field was cleared in this mutation.
-func (m *OrderUserMutation) CompensationTimeCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldCompensationTime]
-	return ok
-}
-
-// ResetCompensationTime resets all changes to the "compensation_time" field.
-func (m *OrderUserMutation) ResetCompensationTime() {
-	m.compensation_time = nil
-	m.addcompensation_time = nil
-	delete(m.clearedFields, orderuser.FieldCompensationTime)
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (m *OrderUserMutation) SetRevenueAddress(s string) {
 	m.revenue_address = &s
@@ -4874,78 +4758,9 @@ func (m *OrderUserMutation) OldRevenueAddress(ctx context.Context) (v string, er
 	return oldValue.RevenueAddress, nil
 }
 
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (m *OrderUserMutation) ClearRevenueAddress() {
-	m.revenue_address = nil
-	m.clearedFields[orderuser.FieldRevenueAddress] = struct{}{}
-}
-
-// RevenueAddressCleared returns if the "revenue_address" field was cleared in this mutation.
-func (m *OrderUserMutation) RevenueAddressCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldRevenueAddress]
-	return ok
-}
-
 // ResetRevenueAddress resets all changes to the "revenue_address" field.
 func (m *OrderUserMutation) ResetRevenueAddress() {
 	m.revenue_address = nil
-	delete(m.clearedFields, orderuser.FieldRevenueAddress)
-}
-
-// SetThreshold sets the "threshold" field.
-func (m *OrderUserMutation) SetThreshold(f float32) {
-	m.threshold = &f
-	m.addthreshold = nil
-}
-
-// Threshold returns the value of the "threshold" field in the mutation.
-func (m *OrderUserMutation) Threshold() (r float32, exists bool) {
-	v := m.threshold
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldThreshold returns the old "threshold" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldThreshold(ctx context.Context) (v float32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldThreshold is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldThreshold requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldThreshold: %w", err)
-	}
-	return oldValue.Threshold, nil
-}
-
-// AddThreshold adds f to the "threshold" field.
-func (m *OrderUserMutation) AddThreshold(f float32) {
-	if m.addthreshold != nil {
-		*m.addthreshold += f
-	} else {
-		m.addthreshold = &f
-	}
-}
-
-// AddedThreshold returns the value that was added to the "threshold" field in this mutation.
-func (m *OrderUserMutation) AddedThreshold() (r float32, exists bool) {
-	v := m.addthreshold
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetThreshold resets all changes to the "threshold" field.
-func (m *OrderUserMutation) ResetThreshold() {
-	m.threshold = nil
-	m.addthreshold = nil
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -4979,22 +4794,9 @@ func (m *OrderUserMutation) OldReadPageLink(ctx context.Context) (v string, err 
 	return oldValue.ReadPageLink, nil
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (m *OrderUserMutation) ClearReadPageLink() {
-	m.read_page_link = nil
-	m.clearedFields[orderuser.FieldReadPageLink] = struct{}{}
-}
-
-// ReadPageLinkCleared returns if the "read_page_link" field was cleared in this mutation.
-func (m *OrderUserMutation) ReadPageLinkCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldReadPageLink]
-	return ok
-}
-
 // ResetReadPageLink resets all changes to the "read_page_link" field.
 func (m *OrderUserMutation) ResetReadPageLink() {
 	m.read_page_link = nil
-	delete(m.clearedFields, orderuser.FieldReadPageLink)
 }
 
 // SetAutoPay sets the "auto_pay" field.
@@ -5028,9 +4830,22 @@ func (m *OrderUserMutation) OldAutoPay(ctx context.Context) (v bool, err error) 
 	return oldValue.AutoPay, nil
 }
 
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (m *OrderUserMutation) ClearAutoPay() {
+	m.auto_pay = nil
+	m.clearedFields[orderuser.FieldAutoPay] = struct{}{}
+}
+
+// AutoPayCleared returns if the "auto_pay" field was cleared in this mutation.
+func (m *OrderUserMutation) AutoPayCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldAutoPay]
+	return ok
+}
+
 // ResetAutoPay resets all changes to the "auto_pay" field.
 func (m *OrderUserMutation) ResetAutoPay() {
 	m.auto_pay = nil
+	delete(m.clearedFields, orderuser.FieldAutoPay)
 }
 
 // Where appends a list predicates to the OrderUserMutation builder.
@@ -5052,7 +4867,7 @@ func (m *OrderUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderUserMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 14)
 	if m.created_at != nil {
 		fields = append(fields, orderuser.FieldCreatedAt)
 	}
@@ -5065,35 +4880,29 @@ func (m *OrderUserMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, orderuser.FieldEntID)
 	}
-	if m.order_id != nil {
-		fields = append(fields, orderuser.FieldOrderID)
+	if m.root_user_id != nil {
+		fields = append(fields, orderuser.FieldRootUserID)
 	}
 	if m.good_user_id != nil {
 		fields = append(fields, orderuser.FieldGoodUserID)
 	}
-	if m.coin_id != nil {
-		fields = append(fields, orderuser.FieldCoinID)
+	if m.order_id != nil {
+		fields = append(fields, orderuser.FieldOrderID)
 	}
 	if m.name != nil {
 		fields = append(fields, orderuser.FieldName)
 	}
+	if m.miningpool_type != nil {
+		fields = append(fields, orderuser.FieldMiningpoolType)
+	}
+	if m._Coin_Type != nil {
+		fields = append(fields, orderuser.FieldCoinType)
+	}
 	if m.proportion != nil {
 		fields = append(fields, orderuser.FieldProportion)
 	}
-	if m.start != nil {
-		fields = append(fields, orderuser.FieldStart)
-	}
-	if m.end != nil {
-		fields = append(fields, orderuser.FieldEnd)
-	}
-	if m.compensation_time != nil {
-		fields = append(fields, orderuser.FieldCompensationTime)
-	}
 	if m.revenue_address != nil {
 		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
-	if m.threshold != nil {
-		fields = append(fields, orderuser.FieldThreshold)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, orderuser.FieldReadPageLink)
@@ -5117,26 +4926,22 @@ func (m *OrderUserMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case orderuser.FieldEntID:
 		return m.EntID()
-	case orderuser.FieldOrderID:
-		return m.OrderID()
+	case orderuser.FieldRootUserID:
+		return m.RootUserID()
 	case orderuser.FieldGoodUserID:
 		return m.GoodUserID()
-	case orderuser.FieldCoinID:
-		return m.CoinID()
+	case orderuser.FieldOrderID:
+		return m.OrderID()
 	case orderuser.FieldName:
 		return m.Name()
+	case orderuser.FieldMiningpoolType:
+		return m.MiningpoolType()
+	case orderuser.FieldCoinType:
+		return m.CoinType()
 	case orderuser.FieldProportion:
 		return m.Proportion()
-	case orderuser.FieldStart:
-		return m.Start()
-	case orderuser.FieldEnd:
-		return m.End()
-	case orderuser.FieldCompensationTime:
-		return m.CompensationTime()
 	case orderuser.FieldRevenueAddress:
 		return m.RevenueAddress()
-	case orderuser.FieldThreshold:
-		return m.Threshold()
 	case orderuser.FieldReadPageLink:
 		return m.ReadPageLink()
 	case orderuser.FieldAutoPay:
@@ -5158,26 +4963,22 @@ func (m *OrderUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldDeletedAt(ctx)
 	case orderuser.FieldEntID:
 		return m.OldEntID(ctx)
-	case orderuser.FieldOrderID:
-		return m.OldOrderID(ctx)
+	case orderuser.FieldRootUserID:
+		return m.OldRootUserID(ctx)
 	case orderuser.FieldGoodUserID:
 		return m.OldGoodUserID(ctx)
-	case orderuser.FieldCoinID:
-		return m.OldCoinID(ctx)
+	case orderuser.FieldOrderID:
+		return m.OldOrderID(ctx)
 	case orderuser.FieldName:
 		return m.OldName(ctx)
+	case orderuser.FieldMiningpoolType:
+		return m.OldMiningpoolType(ctx)
+	case orderuser.FieldCoinType:
+		return m.OldCoinType(ctx)
 	case orderuser.FieldProportion:
 		return m.OldProportion(ctx)
-	case orderuser.FieldStart:
-		return m.OldStart(ctx)
-	case orderuser.FieldEnd:
-		return m.OldEnd(ctx)
-	case orderuser.FieldCompensationTime:
-		return m.OldCompensationTime(ctx)
 	case orderuser.FieldRevenueAddress:
 		return m.OldRevenueAddress(ctx)
-	case orderuser.FieldThreshold:
-		return m.OldThreshold(ctx)
 	case orderuser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
 	case orderuser.FieldAutoPay:
@@ -5219,26 +5020,26 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
+	case orderuser.FieldRootUserID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRootUserID(v)
+		return nil
+	case orderuser.FieldGoodUserID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGoodUserID(v)
+		return nil
 	case orderuser.FieldOrderID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOrderID(v)
-		return nil
-	case orderuser.FieldGoodUserID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetGoodUserID(v)
-		return nil
-	case orderuser.FieldCoinID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoinID(v)
 		return nil
 	case orderuser.FieldName:
 		v, ok := value.(string)
@@ -5247,6 +5048,20 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
+	case orderuser.FieldMiningpoolType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMiningpoolType(v)
+		return nil
+	case orderuser.FieldCoinType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinType(v)
+		return nil
 	case orderuser.FieldProportion:
 		v, ok := value.(float32)
 		if !ok {
@@ -5254,40 +5069,12 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProportion(v)
 		return nil
-	case orderuser.FieldStart:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStart(v)
-		return nil
-	case orderuser.FieldEnd:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEnd(v)
-		return nil
-	case orderuser.FieldCompensationTime:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCompensationTime(v)
-		return nil
 	case orderuser.FieldRevenueAddress:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRevenueAddress(v)
-		return nil
-	case orderuser.FieldThreshold:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetThreshold(v)
 		return nil
 	case orderuser.FieldReadPageLink:
 		v, ok := value.(string)
@@ -5323,18 +5110,6 @@ func (m *OrderUserMutation) AddedFields() []string {
 	if m.addproportion != nil {
 		fields = append(fields, orderuser.FieldProportion)
 	}
-	if m.addstart != nil {
-		fields = append(fields, orderuser.FieldStart)
-	}
-	if m.addend != nil {
-		fields = append(fields, orderuser.FieldEnd)
-	}
-	if m.addcompensation_time != nil {
-		fields = append(fields, orderuser.FieldCompensationTime)
-	}
-	if m.addthreshold != nil {
-		fields = append(fields, orderuser.FieldThreshold)
-	}
 	return fields
 }
 
@@ -5351,14 +5126,6 @@ func (m *OrderUserMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedDeletedAt()
 	case orderuser.FieldProportion:
 		return m.AddedProportion()
-	case orderuser.FieldStart:
-		return m.AddedStart()
-	case orderuser.FieldEnd:
-		return m.AddedEnd()
-	case orderuser.FieldCompensationTime:
-		return m.AddedCompensationTime()
-	case orderuser.FieldThreshold:
-		return m.AddedThreshold()
 	}
 	return nil, false
 }
@@ -5396,34 +5163,6 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddProportion(v)
 		return nil
-	case orderuser.FieldStart:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStart(v)
-		return nil
-	case orderuser.FieldEnd:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddEnd(v)
-		return nil
-	case orderuser.FieldCompensationTime:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCompensationTime(v)
-		return nil
-	case orderuser.FieldThreshold:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddThreshold(v)
-		return nil
 	}
 	return fmt.Errorf("unknown OrderUser numeric field %s", name)
 }
@@ -5432,14 +5171,8 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *OrderUserMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(orderuser.FieldCompensationTime) {
-		fields = append(fields, orderuser.FieldCompensationTime)
-	}
-	if m.FieldCleared(orderuser.FieldRevenueAddress) {
-		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
-	if m.FieldCleared(orderuser.FieldReadPageLink) {
-		fields = append(fields, orderuser.FieldReadPageLink)
+	if m.FieldCleared(orderuser.FieldAutoPay) {
+		fields = append(fields, orderuser.FieldAutoPay)
 	}
 	return fields
 }
@@ -5455,14 +5188,8 @@ func (m *OrderUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *OrderUserMutation) ClearField(name string) error {
 	switch name {
-	case orderuser.FieldCompensationTime:
-		m.ClearCompensationTime()
-		return nil
-	case orderuser.FieldRevenueAddress:
-		m.ClearRevenueAddress()
-		return nil
-	case orderuser.FieldReadPageLink:
-		m.ClearReadPageLink()
+	case orderuser.FieldAutoPay:
+		m.ClearAutoPay()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser nullable field %s", name)
@@ -5484,35 +5211,29 @@ func (m *OrderUserMutation) ResetField(name string) error {
 	case orderuser.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case orderuser.FieldOrderID:
-		m.ResetOrderID()
+	case orderuser.FieldRootUserID:
+		m.ResetRootUserID()
 		return nil
 	case orderuser.FieldGoodUserID:
 		m.ResetGoodUserID()
 		return nil
-	case orderuser.FieldCoinID:
-		m.ResetCoinID()
+	case orderuser.FieldOrderID:
+		m.ResetOrderID()
 		return nil
 	case orderuser.FieldName:
 		m.ResetName()
 		return nil
+	case orderuser.FieldMiningpoolType:
+		m.ResetMiningpoolType()
+		return nil
+	case orderuser.FieldCoinType:
+		m.ResetCoinType()
+		return nil
 	case orderuser.FieldProportion:
 		m.ResetProportion()
 		return nil
-	case orderuser.FieldStart:
-		m.ResetStart()
-		return nil
-	case orderuser.FieldEnd:
-		m.ResetEnd()
-		return nil
-	case orderuser.FieldCompensationTime:
-		m.ResetCompensationTime()
-		return nil
 	case orderuser.FieldRevenueAddress:
 		m.ResetRevenueAddress()
-		return nil
-	case orderuser.FieldThreshold:
-		m.ResetThreshold()
 		return nil
 	case orderuser.FieldReadPageLink:
 		m.ResetReadPageLink()

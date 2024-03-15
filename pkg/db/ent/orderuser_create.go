@@ -78,21 +78,21 @@ func (ouc *OrderUserCreate) SetNillableEntID(u *uuid.UUID) *OrderUserCreate {
 	return ouc
 }
 
-// SetOrderID sets the "order_id" field.
-func (ouc *OrderUserCreate) SetOrderID(u uuid.UUID) *OrderUserCreate {
-	ouc.mutation.SetOrderID(u)
+// SetRootUserID sets the "root_user_id" field.
+func (ouc *OrderUserCreate) SetRootUserID(u uuid.UUID) *OrderUserCreate {
+	ouc.mutation.SetRootUserID(u)
 	return ouc
 }
 
 // SetGoodUserID sets the "good_user_id" field.
-func (ouc *OrderUserCreate) SetGoodUserID(s string) *OrderUserCreate {
-	ouc.mutation.SetGoodUserID(s)
+func (ouc *OrderUserCreate) SetGoodUserID(u uuid.UUID) *OrderUserCreate {
+	ouc.mutation.SetGoodUserID(u)
 	return ouc
 }
 
-// SetCoinID sets the "coin_id" field.
-func (ouc *OrderUserCreate) SetCoinID(s string) *OrderUserCreate {
-	ouc.mutation.SetCoinID(s)
+// SetOrderID sets the "order_id" field.
+func (ouc *OrderUserCreate) SetOrderID(u uuid.UUID) *OrderUserCreate {
+	ouc.mutation.SetOrderID(u)
 	return ouc
 }
 
@@ -102,35 +102,21 @@ func (ouc *OrderUserCreate) SetName(s string) *OrderUserCreate {
 	return ouc
 }
 
+// SetMiningpoolType sets the "miningpool_type" field.
+func (ouc *OrderUserCreate) SetMiningpoolType(s string) *OrderUserCreate {
+	ouc.mutation.SetMiningpoolType(s)
+	return ouc
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (ouc *OrderUserCreate) SetCoinType(s string) *OrderUserCreate {
+	ouc.mutation.SetCoinType(s)
+	return ouc
+}
+
 // SetProportion sets the "proportion" field.
 func (ouc *OrderUserCreate) SetProportion(f float32) *OrderUserCreate {
 	ouc.mutation.SetProportion(f)
-	return ouc
-}
-
-// SetStart sets the "start" field.
-func (ouc *OrderUserCreate) SetStart(u uint32) *OrderUserCreate {
-	ouc.mutation.SetStart(u)
-	return ouc
-}
-
-// SetEnd sets the "end" field.
-func (ouc *OrderUserCreate) SetEnd(u uint32) *OrderUserCreate {
-	ouc.mutation.SetEnd(u)
-	return ouc
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (ouc *OrderUserCreate) SetCompensationTime(u uint32) *OrderUserCreate {
-	ouc.mutation.SetCompensationTime(u)
-	return ouc
-}
-
-// SetNillableCompensationTime sets the "compensation_time" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableCompensationTime(u *uint32) *OrderUserCreate {
-	if u != nil {
-		ouc.SetCompensationTime(*u)
-	}
 	return ouc
 }
 
@@ -140,37 +126,23 @@ func (ouc *OrderUserCreate) SetRevenueAddress(s string) *OrderUserCreate {
 	return ouc
 }
 
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableRevenueAddress(s *string) *OrderUserCreate {
-	if s != nil {
-		ouc.SetRevenueAddress(*s)
-	}
-	return ouc
-}
-
-// SetThreshold sets the "threshold" field.
-func (ouc *OrderUserCreate) SetThreshold(f float32) *OrderUserCreate {
-	ouc.mutation.SetThreshold(f)
-	return ouc
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (ouc *OrderUserCreate) SetReadPageLink(s string) *OrderUserCreate {
 	ouc.mutation.SetReadPageLink(s)
 	return ouc
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableReadPageLink(s *string) *OrderUserCreate {
-	if s != nil {
-		ouc.SetReadPageLink(*s)
-	}
-	return ouc
-}
-
 // SetAutoPay sets the "auto_pay" field.
 func (ouc *OrderUserCreate) SetAutoPay(b bool) *OrderUserCreate {
 	ouc.mutation.SetAutoPay(b)
+	return ouc
+}
+
+// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableAutoPay(b *bool) *OrderUserCreate {
+	if b != nil {
+		ouc.SetAutoPay(*b)
+	}
 	return ouc
 }
 
@@ -287,17 +259,9 @@ func (ouc *OrderUserCreate) defaults() error {
 		v := orderuser.DefaultEntID()
 		ouc.mutation.SetEntID(v)
 	}
-	if _, ok := ouc.mutation.CompensationTime(); !ok {
-		v := orderuser.DefaultCompensationTime
-		ouc.mutation.SetCompensationTime(v)
-	}
-	if _, ok := ouc.mutation.RevenueAddress(); !ok {
-		v := orderuser.DefaultRevenueAddress
-		ouc.mutation.SetRevenueAddress(v)
-	}
-	if _, ok := ouc.mutation.ReadPageLink(); !ok {
-		v := orderuser.DefaultReadPageLink
-		ouc.mutation.SetReadPageLink(v)
+	if _, ok := ouc.mutation.AutoPay(); !ok {
+		v := orderuser.DefaultAutoPay
+		ouc.mutation.SetAutoPay(v)
 	}
 	return nil
 }
@@ -316,32 +280,32 @@ func (ouc *OrderUserCreate) check() error {
 	if _, ok := ouc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "OrderUser.ent_id"`)}
 	}
-	if _, ok := ouc.mutation.OrderID(); !ok {
-		return &ValidationError{Name: "order_id", err: errors.New(`ent: missing required field "OrderUser.order_id"`)}
+	if _, ok := ouc.mutation.RootUserID(); !ok {
+		return &ValidationError{Name: "root_user_id", err: errors.New(`ent: missing required field "OrderUser.root_user_id"`)}
 	}
 	if _, ok := ouc.mutation.GoodUserID(); !ok {
 		return &ValidationError{Name: "good_user_id", err: errors.New(`ent: missing required field "OrderUser.good_user_id"`)}
 	}
-	if _, ok := ouc.mutation.CoinID(); !ok {
-		return &ValidationError{Name: "coin_id", err: errors.New(`ent: missing required field "OrderUser.coin_id"`)}
+	if _, ok := ouc.mutation.OrderID(); !ok {
+		return &ValidationError{Name: "order_id", err: errors.New(`ent: missing required field "OrderUser.order_id"`)}
 	}
 	if _, ok := ouc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrderUser.name"`)}
 	}
+	if _, ok := ouc.mutation.MiningpoolType(); !ok {
+		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "OrderUser.miningpool_type"`)}
+	}
+	if _, ok := ouc.mutation.CoinType(); !ok {
+		return &ValidationError{Name: "Coin_Type", err: errors.New(`ent: missing required field "OrderUser.Coin_Type"`)}
+	}
 	if _, ok := ouc.mutation.Proportion(); !ok {
 		return &ValidationError{Name: "proportion", err: errors.New(`ent: missing required field "OrderUser.proportion"`)}
 	}
-	if _, ok := ouc.mutation.Start(); !ok {
-		return &ValidationError{Name: "start", err: errors.New(`ent: missing required field "OrderUser.start"`)}
+	if _, ok := ouc.mutation.RevenueAddress(); !ok {
+		return &ValidationError{Name: "revenue_address", err: errors.New(`ent: missing required field "OrderUser.revenue_address"`)}
 	}
-	if _, ok := ouc.mutation.End(); !ok {
-		return &ValidationError{Name: "end", err: errors.New(`ent: missing required field "OrderUser.end"`)}
-	}
-	if _, ok := ouc.mutation.Threshold(); !ok {
-		return &ValidationError{Name: "threshold", err: errors.New(`ent: missing required field "OrderUser.threshold"`)}
-	}
-	if _, ok := ouc.mutation.AutoPay(); !ok {
-		return &ValidationError{Name: "auto_pay", err: errors.New(`ent: missing required field "OrderUser.auto_pay"`)}
+	if _, ok := ouc.mutation.ReadPageLink(); !ok {
+		return &ValidationError{Name: "read_page_link", err: errors.New(`ent: missing required field "OrderUser.read_page_link"`)}
 	}
 	return nil
 }
@@ -409,6 +373,22 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
+	if value, ok := ouc.mutation.RootUserID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldRootUserID,
+		})
+		_node.RootUserID = value
+	}
+	if value, ok := ouc.mutation.GoodUserID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldGoodUserID,
+		})
+		_node.GoodUserID = value
+	}
 	if value, ok := ouc.mutation.OrderID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -416,22 +396,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 			Column: orderuser.FieldOrderID,
 		})
 		_node.OrderID = value
-	}
-	if value, ok := ouc.mutation.GoodUserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldGoodUserID,
-		})
-		_node.GoodUserID = value
-	}
-	if value, ok := ouc.mutation.CoinID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinID,
-		})
-		_node.CoinID = value
 	}
 	if value, ok := ouc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -441,6 +405,22 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
+	if value, ok := ouc.mutation.MiningpoolType(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldMiningpoolType,
+		})
+		_node.MiningpoolType = value
+	}
+	if value, ok := ouc.mutation.CoinType(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: orderuser.FieldCoinType,
+		})
+		_node.CoinType = value
+	}
 	if value, ok := ouc.mutation.Proportion(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -449,30 +429,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Proportion = value
 	}
-	if value, ok := ouc.mutation.Start(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldStart,
-		})
-		_node.Start = value
-	}
-	if value, ok := ouc.mutation.End(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldEnd,
-		})
-		_node.End = value
-	}
-	if value, ok := ouc.mutation.CompensationTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: orderuser.FieldCompensationTime,
-		})
-		_node.CompensationTime = value
-	}
 	if value, ok := ouc.mutation.RevenueAddress(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -480,14 +436,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 			Column: orderuser.FieldRevenueAddress,
 		})
 		_node.RevenueAddress = value
-	}
-	if value, ok := ouc.mutation.Threshold(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldThreshold,
-		})
-		_node.Threshold = value
 	}
 	if value, ok := ouc.mutation.ReadPageLink(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -625,6 +573,30 @@ func (u *OrderUserUpsert) UpdateEntID() *OrderUserUpsert {
 	return u
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *OrderUserUpsert) SetRootUserID(v uuid.UUID) *OrderUserUpsert {
+	u.Set(orderuser.FieldRootUserID, v)
+	return u
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateRootUserID() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldRootUserID)
+	return u
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (u *OrderUserUpsert) SetGoodUserID(v uuid.UUID) *OrderUserUpsert {
+	u.Set(orderuser.FieldGoodUserID, v)
+	return u
+}
+
+// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateGoodUserID() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldGoodUserID)
+	return u
+}
+
 // SetOrderID sets the "order_id" field.
 func (u *OrderUserUpsert) SetOrderID(v uuid.UUID) *OrderUserUpsert {
 	u.Set(orderuser.FieldOrderID, v)
@@ -637,30 +609,6 @@ func (u *OrderUserUpsert) UpdateOrderID() *OrderUserUpsert {
 	return u
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (u *OrderUserUpsert) SetGoodUserID(v string) *OrderUserUpsert {
-	u.Set(orderuser.FieldGoodUserID, v)
-	return u
-}
-
-// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateGoodUserID() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldGoodUserID)
-	return u
-}
-
-// SetCoinID sets the "coin_id" field.
-func (u *OrderUserUpsert) SetCoinID(v string) *OrderUserUpsert {
-	u.Set(orderuser.FieldCoinID, v)
-	return u
-}
-
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateCoinID() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldCoinID)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *OrderUserUpsert) SetName(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldName, v)
@@ -670,6 +618,30 @@ func (u *OrderUserUpsert) SetName(v string) *OrderUserUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateName() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldName)
+	return u
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *OrderUserUpsert) SetMiningpoolType(v string) *OrderUserUpsert {
+	u.Set(orderuser.FieldMiningpoolType, v)
+	return u
+}
+
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateMiningpoolType() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldMiningpoolType)
+	return u
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (u *OrderUserUpsert) SetCoinType(v string) *OrderUserUpsert {
+	u.Set(orderuser.FieldCoinType, v)
+	return u
+}
+
+// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateCoinType() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldCoinType)
 	return u
 }
 
@@ -691,66 +663,6 @@ func (u *OrderUserUpsert) AddProportion(v float32) *OrderUserUpsert {
 	return u
 }
 
-// SetStart sets the "start" field.
-func (u *OrderUserUpsert) SetStart(v uint32) *OrderUserUpsert {
-	u.Set(orderuser.FieldStart, v)
-	return u
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateStart() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldStart)
-	return u
-}
-
-// AddStart adds v to the "start" field.
-func (u *OrderUserUpsert) AddStart(v uint32) *OrderUserUpsert {
-	u.Add(orderuser.FieldStart, v)
-	return u
-}
-
-// SetEnd sets the "end" field.
-func (u *OrderUserUpsert) SetEnd(v uint32) *OrderUserUpsert {
-	u.Set(orderuser.FieldEnd, v)
-	return u
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateEnd() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldEnd)
-	return u
-}
-
-// AddEnd adds v to the "end" field.
-func (u *OrderUserUpsert) AddEnd(v uint32) *OrderUserUpsert {
-	u.Add(orderuser.FieldEnd, v)
-	return u
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (u *OrderUserUpsert) SetCompensationTime(v uint32) *OrderUserUpsert {
-	u.Set(orderuser.FieldCompensationTime, v)
-	return u
-}
-
-// UpdateCompensationTime sets the "compensation_time" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateCompensationTime() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldCompensationTime)
-	return u
-}
-
-// AddCompensationTime adds v to the "compensation_time" field.
-func (u *OrderUserUpsert) AddCompensationTime(v uint32) *OrderUserUpsert {
-	u.Add(orderuser.FieldCompensationTime, v)
-	return u
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (u *OrderUserUpsert) ClearCompensationTime() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldCompensationTime)
-	return u
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsert) SetRevenueAddress(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldRevenueAddress, v)
@@ -760,30 +672,6 @@ func (u *OrderUserUpsert) SetRevenueAddress(v string) *OrderUserUpsert {
 // UpdateRevenueAddress sets the "revenue_address" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateRevenueAddress() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldRevenueAddress)
-	return u
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsert) ClearRevenueAddress() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldRevenueAddress)
-	return u
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *OrderUserUpsert) SetThreshold(v float32) *OrderUserUpsert {
-	u.Set(orderuser.FieldThreshold, v)
-	return u
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateThreshold() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldThreshold)
-	return u
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *OrderUserUpsert) AddThreshold(v float32) *OrderUserUpsert {
-	u.Add(orderuser.FieldThreshold, v)
 	return u
 }
 
@@ -799,12 +687,6 @@ func (u *OrderUserUpsert) UpdateReadPageLink() *OrderUserUpsert {
 	return u
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *OrderUserUpsert) ClearReadPageLink() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldReadPageLink)
-	return u
-}
-
 // SetAutoPay sets the "auto_pay" field.
 func (u *OrderUserUpsert) SetAutoPay(v bool) *OrderUserUpsert {
 	u.Set(orderuser.FieldAutoPay, v)
@@ -814,6 +696,12 @@ func (u *OrderUserUpsert) SetAutoPay(v bool) *OrderUserUpsert {
 // UpdateAutoPay sets the "auto_pay" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateAutoPay() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldAutoPay)
+	return u
+}
+
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (u *OrderUserUpsert) ClearAutoPay() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldAutoPay)
 	return u
 }
 
@@ -944,6 +832,34 @@ func (u *OrderUserUpsertOne) UpdateEntID() *OrderUserUpsertOne {
 	})
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *OrderUserUpsertOne) SetRootUserID(v uuid.UUID) *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetRootUserID(v)
+	})
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateRootUserID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateRootUserID()
+	})
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (u *OrderUserUpsertOne) SetGoodUserID(v uuid.UUID) *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetGoodUserID(v)
+	})
+}
+
+// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateGoodUserID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateGoodUserID()
+	})
+}
+
 // SetOrderID sets the "order_id" field.
 func (u *OrderUserUpsertOne) SetOrderID(v uuid.UUID) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -958,34 +874,6 @@ func (u *OrderUserUpsertOne) UpdateOrderID() *OrderUserUpsertOne {
 	})
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (u *OrderUserUpsertOne) SetGoodUserID(v string) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetGoodUserID(v)
-	})
-}
-
-// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateGoodUserID() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateGoodUserID()
-	})
-}
-
-// SetCoinID sets the "coin_id" field.
-func (u *OrderUserUpsertOne) SetCoinID(v string) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCoinID(v)
-	})
-}
-
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateCoinID() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCoinID()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *OrderUserUpsertOne) SetName(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -997,6 +885,34 @@ func (u *OrderUserUpsertOne) SetName(v string) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateName() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *OrderUserUpsertOne) SetMiningpoolType(v string) *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetMiningpoolType(v)
+	})
+}
+
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateMiningpoolType() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateMiningpoolType()
+	})
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (u *OrderUserUpsertOne) SetCoinType(v string) *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetCoinType(v)
+	})
+}
+
+// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateCoinType() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateCoinType()
 	})
 }
 
@@ -1021,76 +937,6 @@ func (u *OrderUserUpsertOne) UpdateProportion() *OrderUserUpsertOne {
 	})
 }
 
-// SetStart sets the "start" field.
-func (u *OrderUserUpsertOne) SetStart(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetStart(v)
-	})
-}
-
-// AddStart adds v to the "start" field.
-func (u *OrderUserUpsertOne) AddStart(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddStart(v)
-	})
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateStart() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateStart()
-	})
-}
-
-// SetEnd sets the "end" field.
-func (u *OrderUserUpsertOne) SetEnd(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetEnd(v)
-	})
-}
-
-// AddEnd adds v to the "end" field.
-func (u *OrderUserUpsertOne) AddEnd(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddEnd(v)
-	})
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateEnd() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateEnd()
-	})
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (u *OrderUserUpsertOne) SetCompensationTime(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCompensationTime(v)
-	})
-}
-
-// AddCompensationTime adds v to the "compensation_time" field.
-func (u *OrderUserUpsertOne) AddCompensationTime(v uint32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddCompensationTime(v)
-	})
-}
-
-// UpdateCompensationTime sets the "compensation_time" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateCompensationTime() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCompensationTime()
-	})
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (u *OrderUserUpsertOne) ClearCompensationTime() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearCompensationTime()
-	})
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsertOne) SetRevenueAddress(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1102,34 +948,6 @@ func (u *OrderUserUpsertOne) SetRevenueAddress(v string) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateRevenueAddress() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateRevenueAddress()
-	})
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsertOne) ClearRevenueAddress() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRevenueAddress()
-	})
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *OrderUserUpsertOne) SetThreshold(v float32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetThreshold(v)
-	})
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *OrderUserUpsertOne) AddThreshold(v float32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddThreshold(v)
-	})
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateThreshold() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateThreshold()
 	})
 }
 
@@ -1147,13 +965,6 @@ func (u *OrderUserUpsertOne) UpdateReadPageLink() *OrderUserUpsertOne {
 	})
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *OrderUserUpsertOne) ClearReadPageLink() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearReadPageLink()
-	})
-}
-
 // SetAutoPay sets the "auto_pay" field.
 func (u *OrderUserUpsertOne) SetAutoPay(v bool) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1165,6 +976,13 @@ func (u *OrderUserUpsertOne) SetAutoPay(v bool) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateAutoPay() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateAutoPay()
+	})
+}
+
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (u *OrderUserUpsertOne) ClearAutoPay() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearAutoPay()
 	})
 }
 
@@ -1460,6 +1278,34 @@ func (u *OrderUserUpsertBulk) UpdateEntID() *OrderUserUpsertBulk {
 	})
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *OrderUserUpsertBulk) SetRootUserID(v uuid.UUID) *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetRootUserID(v)
+	})
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateRootUserID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateRootUserID()
+	})
+}
+
+// SetGoodUserID sets the "good_user_id" field.
+func (u *OrderUserUpsertBulk) SetGoodUserID(v uuid.UUID) *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetGoodUserID(v)
+	})
+}
+
+// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateGoodUserID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateGoodUserID()
+	})
+}
+
 // SetOrderID sets the "order_id" field.
 func (u *OrderUserUpsertBulk) SetOrderID(v uuid.UUID) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1474,34 +1320,6 @@ func (u *OrderUserUpsertBulk) UpdateOrderID() *OrderUserUpsertBulk {
 	})
 }
 
-// SetGoodUserID sets the "good_user_id" field.
-func (u *OrderUserUpsertBulk) SetGoodUserID(v string) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetGoodUserID(v)
-	})
-}
-
-// UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateGoodUserID() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateGoodUserID()
-	})
-}
-
-// SetCoinID sets the "coin_id" field.
-func (u *OrderUserUpsertBulk) SetCoinID(v string) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCoinID(v)
-	})
-}
-
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateCoinID() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCoinID()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *OrderUserUpsertBulk) SetName(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1513,6 +1331,34 @@ func (u *OrderUserUpsertBulk) SetName(v string) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateName() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *OrderUserUpsertBulk) SetMiningpoolType(v string) *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetMiningpoolType(v)
+	})
+}
+
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateMiningpoolType() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateMiningpoolType()
+	})
+}
+
+// SetCoinType sets the "Coin_Type" field.
+func (u *OrderUserUpsertBulk) SetCoinType(v string) *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetCoinType(v)
+	})
+}
+
+// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateCoinType() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateCoinType()
 	})
 }
 
@@ -1537,76 +1383,6 @@ func (u *OrderUserUpsertBulk) UpdateProportion() *OrderUserUpsertBulk {
 	})
 }
 
-// SetStart sets the "start" field.
-func (u *OrderUserUpsertBulk) SetStart(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetStart(v)
-	})
-}
-
-// AddStart adds v to the "start" field.
-func (u *OrderUserUpsertBulk) AddStart(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddStart(v)
-	})
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateStart() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateStart()
-	})
-}
-
-// SetEnd sets the "end" field.
-func (u *OrderUserUpsertBulk) SetEnd(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetEnd(v)
-	})
-}
-
-// AddEnd adds v to the "end" field.
-func (u *OrderUserUpsertBulk) AddEnd(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddEnd(v)
-	})
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateEnd() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateEnd()
-	})
-}
-
-// SetCompensationTime sets the "compensation_time" field.
-func (u *OrderUserUpsertBulk) SetCompensationTime(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCompensationTime(v)
-	})
-}
-
-// AddCompensationTime adds v to the "compensation_time" field.
-func (u *OrderUserUpsertBulk) AddCompensationTime(v uint32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddCompensationTime(v)
-	})
-}
-
-// UpdateCompensationTime sets the "compensation_time" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateCompensationTime() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCompensationTime()
-	})
-}
-
-// ClearCompensationTime clears the value of the "compensation_time" field.
-func (u *OrderUserUpsertBulk) ClearCompensationTime() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearCompensationTime()
-	})
-}
-
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsertBulk) SetRevenueAddress(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1618,34 +1394,6 @@ func (u *OrderUserUpsertBulk) SetRevenueAddress(v string) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateRevenueAddress() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateRevenueAddress()
-	})
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsertBulk) ClearRevenueAddress() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRevenueAddress()
-	})
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *OrderUserUpsertBulk) SetThreshold(v float32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetThreshold(v)
-	})
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *OrderUserUpsertBulk) AddThreshold(v float32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddThreshold(v)
-	})
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateThreshold() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateThreshold()
 	})
 }
 
@@ -1663,13 +1411,6 @@ func (u *OrderUserUpsertBulk) UpdateReadPageLink() *OrderUserUpsertBulk {
 	})
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *OrderUserUpsertBulk) ClearReadPageLink() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearReadPageLink()
-	})
-}
-
 // SetAutoPay sets the "auto_pay" field.
 func (u *OrderUserUpsertBulk) SetAutoPay(v bool) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1681,6 +1422,13 @@ func (u *OrderUserUpsertBulk) SetAutoPay(v bool) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateAutoPay() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateAutoPay()
+	})
+}
+
+// ClearAutoPay clears the value of the "auto_pay" field.
+func (u *OrderUserUpsertBulk) ClearAutoPay() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearAutoPay()
 	})
 }
 

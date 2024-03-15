@@ -24,26 +24,22 @@ type OrderUser struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
+	// RootUserID holds the value of the "root_user_id" field.
+	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
+	// GoodUserID holds the value of the "good_user_id" field.
+	GoodUserID uuid.UUID `json:"good_user_id,omitempty"`
 	// OrderID holds the value of the "order_id" field.
 	OrderID uuid.UUID `json:"order_id,omitempty"`
-	// GoodUserID holds the value of the "good_user_id" field.
-	GoodUserID string `json:"good_user_id,omitempty"`
-	// CoinID holds the value of the "coin_id" field.
-	CoinID string `json:"coin_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// MiningpoolType holds the value of the "miningpool_type" field.
+	MiningpoolType string `json:"miningpool_type,omitempty"`
+	// CoinType holds the value of the "Coin_Type" field.
+	CoinType string `json:"Coin_Type,omitempty"`
 	// Proportion holds the value of the "proportion" field.
 	Proportion float32 `json:"proportion,omitempty"`
-	// Start holds the value of the "start" field.
-	Start uint32 `json:"start,omitempty"`
-	// End holds the value of the "end" field.
-	End uint32 `json:"end,omitempty"`
-	// CompensationTime holds the value of the "compensation_time" field.
-	CompensationTime uint32 `json:"compensation_time,omitempty"`
 	// RevenueAddress holds the value of the "revenue_address" field.
 	RevenueAddress string `json:"revenue_address,omitempty"`
-	// Threshold holds the value of the "threshold" field.
-	Threshold float32 `json:"threshold,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
 	// AutoPay holds the value of the "auto_pay" field.
@@ -57,13 +53,13 @@ func (*OrderUser) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case orderuser.FieldAutoPay:
 			values[i] = new(sql.NullBool)
-		case orderuser.FieldProportion, orderuser.FieldThreshold:
+		case orderuser.FieldProportion:
 			values[i] = new(sql.NullFloat64)
-		case orderuser.FieldID, orderuser.FieldCreatedAt, orderuser.FieldUpdatedAt, orderuser.FieldDeletedAt, orderuser.FieldStart, orderuser.FieldEnd, orderuser.FieldCompensationTime:
+		case orderuser.FieldID, orderuser.FieldCreatedAt, orderuser.FieldUpdatedAt, orderuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case orderuser.FieldGoodUserID, orderuser.FieldCoinID, orderuser.FieldName, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
+		case orderuser.FieldName, orderuser.FieldMiningpoolType, orderuser.FieldCoinType, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case orderuser.FieldEntID, orderuser.FieldOrderID:
+		case orderuser.FieldEntID, orderuser.FieldRootUserID, orderuser.FieldGoodUserID, orderuser.FieldOrderID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderUser", columns[i])
@@ -110,23 +106,23 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			} else if value != nil {
 				ou.EntID = *value
 			}
+		case orderuser.FieldRootUserID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field root_user_id", values[i])
+			} else if value != nil {
+				ou.RootUserID = *value
+			}
+		case orderuser.FieldGoodUserID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field good_user_id", values[i])
+			} else if value != nil {
+				ou.GoodUserID = *value
+			}
 		case orderuser.FieldOrderID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field order_id", values[i])
 			} else if value != nil {
 				ou.OrderID = *value
-			}
-		case orderuser.FieldGoodUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field good_user_id", values[i])
-			} else if value.Valid {
-				ou.GoodUserID = value.String
-			}
-		case orderuser.FieldCoinID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_id", values[i])
-			} else if value.Valid {
-				ou.CoinID = value.String
 			}
 		case orderuser.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -134,41 +130,29 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				ou.Name = value.String
 			}
+		case orderuser.FieldMiningpoolType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
+			} else if value.Valid {
+				ou.MiningpoolType = value.String
+			}
+		case orderuser.FieldCoinType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field Coin_Type", values[i])
+			} else if value.Valid {
+				ou.CoinType = value.String
+			}
 		case orderuser.FieldProportion:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field proportion", values[i])
 			} else if value.Valid {
 				ou.Proportion = float32(value.Float64)
 			}
-		case orderuser.FieldStart:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start", values[i])
-			} else if value.Valid {
-				ou.Start = uint32(value.Int64)
-			}
-		case orderuser.FieldEnd:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field end", values[i])
-			} else if value.Valid {
-				ou.End = uint32(value.Int64)
-			}
-		case orderuser.FieldCompensationTime:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field compensation_time", values[i])
-			} else if value.Valid {
-				ou.CompensationTime = uint32(value.Int64)
-			}
 		case orderuser.FieldRevenueAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field revenue_address", values[i])
 			} else if value.Valid {
 				ou.RevenueAddress = value.String
-			}
-		case orderuser.FieldThreshold:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
-				return fmt.Errorf("unexpected type %T for field threshold", values[i])
-			} else if value.Valid {
-				ou.Threshold = float32(value.Float64)
 			}
 		case orderuser.FieldReadPageLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -222,35 +206,29 @@ func (ou *OrderUser) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", ou.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("order_id=")
-	builder.WriteString(fmt.Sprintf("%v", ou.OrderID))
+	builder.WriteString("root_user_id=")
+	builder.WriteString(fmt.Sprintf("%v", ou.RootUserID))
 	builder.WriteString(", ")
 	builder.WriteString("good_user_id=")
-	builder.WriteString(ou.GoodUserID)
+	builder.WriteString(fmt.Sprintf("%v", ou.GoodUserID))
 	builder.WriteString(", ")
-	builder.WriteString("coin_id=")
-	builder.WriteString(ou.CoinID)
+	builder.WriteString("order_id=")
+	builder.WriteString(fmt.Sprintf("%v", ou.OrderID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ou.Name)
 	builder.WriteString(", ")
+	builder.WriteString("miningpool_type=")
+	builder.WriteString(ou.MiningpoolType)
+	builder.WriteString(", ")
+	builder.WriteString("Coin_Type=")
+	builder.WriteString(ou.CoinType)
+	builder.WriteString(", ")
 	builder.WriteString("proportion=")
 	builder.WriteString(fmt.Sprintf("%v", ou.Proportion))
 	builder.WriteString(", ")
-	builder.WriteString("start=")
-	builder.WriteString(fmt.Sprintf("%v", ou.Start))
-	builder.WriteString(", ")
-	builder.WriteString("end=")
-	builder.WriteString(fmt.Sprintf("%v", ou.End))
-	builder.WriteString(", ")
-	builder.WriteString("compensation_time=")
-	builder.WriteString(fmt.Sprintf("%v", ou.CompensationTime))
-	builder.WriteString(", ")
 	builder.WriteString("revenue_address=")
 	builder.WriteString(ou.RevenueAddress)
-	builder.WriteString(", ")
-	builder.WriteString("threshold=")
-	builder.WriteString(fmt.Sprintf("%v", ou.Threshold))
 	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(ou.ReadPageLink)

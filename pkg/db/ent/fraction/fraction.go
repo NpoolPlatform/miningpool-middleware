@@ -20,8 +20,8 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldOrderMininguserID holds the string denoting the order_mininguser_id field in the database.
-	FieldOrderMininguserID = "order_mininguser_id"
+	// FieldOrderUserID holds the string denoting the order_user_id field in the database.
+	FieldOrderUserID = "order_user_id"
 	// FieldWithdrawState holds the string denoting the withdraw_state field in the database.
 	FieldWithdrawState = "withdraw_state"
 	// FieldWithdrawTime holds the string denoting the withdraw_time field in the database.
@@ -39,7 +39,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldOrderMininguserID,
+	FieldOrderUserID,
 	FieldWithdrawState,
 	FieldWithdrawTime,
 	FieldPayTime,

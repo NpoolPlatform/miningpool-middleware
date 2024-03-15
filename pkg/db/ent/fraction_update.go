@@ -98,9 +98,9 @@ func (fu *FractionUpdate) SetNillableEntID(u *uuid.UUID) *FractionUpdate {
 	return fu
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (fu *FractionUpdate) SetOrderMininguserID(u uuid.UUID) *FractionUpdate {
-	fu.mutation.SetOrderMininguserID(u)
+// SetOrderUserID sets the "order_user_id" field.
+func (fu *FractionUpdate) SetOrderUserID(u uuid.UUID) *FractionUpdate {
+	fu.mutation.SetOrderUserID(u)
 	return fu
 }
 
@@ -111,8 +111,15 @@ func (fu *FractionUpdate) SetWithdrawState(s string) *FractionUpdate {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (fu *FractionUpdate) SetWithdrawTime(s string) *FractionUpdate {
-	fu.mutation.SetWithdrawTime(s)
+func (fu *FractionUpdate) SetWithdrawTime(u uint32) *FractionUpdate {
+	fu.mutation.ResetWithdrawTime()
+	fu.mutation.SetWithdrawTime(u)
+	return fu
+}
+
+// AddWithdrawTime adds u to the "withdraw_time" field.
+func (fu *FractionUpdate) AddWithdrawTime(u int32) *FractionUpdate {
+	fu.mutation.AddWithdrawTime(u)
 	return fu
 }
 
@@ -290,11 +297,11 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldEntID,
 		})
 	}
-	if value, ok := fu.mutation.OrderMininguserID(); ok {
+	if value, ok := fu.mutation.OrderUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fraction.FieldOrderMininguserID,
+			Column: fraction.FieldOrderUserID,
 		})
 	}
 	if value, ok := fu.mutation.WithdrawState(); ok {
@@ -306,7 +313,14 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fu.mutation.WithdrawTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: fraction.FieldWithdrawTime,
+		})
+	}
+	if value, ok := fu.mutation.AddedWithdrawTime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: fraction.FieldWithdrawTime,
 		})
@@ -421,9 +435,9 @@ func (fuo *FractionUpdateOne) SetNillableEntID(u *uuid.UUID) *FractionUpdateOne 
 	return fuo
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (fuo *FractionUpdateOne) SetOrderMininguserID(u uuid.UUID) *FractionUpdateOne {
-	fuo.mutation.SetOrderMininguserID(u)
+// SetOrderUserID sets the "order_user_id" field.
+func (fuo *FractionUpdateOne) SetOrderUserID(u uuid.UUID) *FractionUpdateOne {
+	fuo.mutation.SetOrderUserID(u)
 	return fuo
 }
 
@@ -434,8 +448,15 @@ func (fuo *FractionUpdateOne) SetWithdrawState(s string) *FractionUpdateOne {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (fuo *FractionUpdateOne) SetWithdrawTime(s string) *FractionUpdateOne {
-	fuo.mutation.SetWithdrawTime(s)
+func (fuo *FractionUpdateOne) SetWithdrawTime(u uint32) *FractionUpdateOne {
+	fuo.mutation.ResetWithdrawTime()
+	fuo.mutation.SetWithdrawTime(u)
+	return fuo
+}
+
+// AddWithdrawTime adds u to the "withdraw_time" field.
+func (fuo *FractionUpdateOne) AddWithdrawTime(u int32) *FractionUpdateOne {
+	fuo.mutation.AddWithdrawTime(u)
 	return fuo
 }
 
@@ -643,11 +664,11 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 			Column: fraction.FieldEntID,
 		})
 	}
-	if value, ok := fuo.mutation.OrderMininguserID(); ok {
+	if value, ok := fuo.mutation.OrderUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fraction.FieldOrderMininguserID,
+			Column: fraction.FieldOrderUserID,
 		})
 	}
 	if value, ok := fuo.mutation.WithdrawState(); ok {
@@ -659,7 +680,14 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 	}
 	if value, ok := fuo.mutation.WithdrawTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: fraction.FieldWithdrawTime,
+		})
+	}
+	if value, ok := fuo.mutation.AddedWithdrawTime(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: fraction.FieldWithdrawTime,
 		})

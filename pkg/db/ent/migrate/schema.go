@@ -44,9 +44,9 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "order_mininguser_id", Type: field.TypeUUID},
+		{Name: "order_user_id", Type: field.TypeUUID},
 		{Name: "withdraw_state", Type: field.TypeString},
-		{Name: "withdraw_time", Type: field.TypeString},
+		{Name: "withdraw_time", Type: field.TypeUint32},
 		{Name: "pay_time", Type: field.TypeUint32, Nullable: true},
 	}
 	// FractionsTable holds the schema information for the "fractions" table.

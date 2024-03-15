@@ -1,4 +1,4 @@
-package rootuser
+package fraction
 
 import (
 	"context"
@@ -19,7 +19,7 @@ import (
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 
 	"github.com/google/uuid"
 )
@@ -33,31 +33,27 @@ func init() {
 	}
 }
 
-var ret = &npool.RootUser{
-	EntID:          uuid.NewString(),
-	Name:           "mininpool_middleware_client_rootuser_test",
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	Email:          "sssss",
-	AuthToken:      "sadfasdf",
-	Authed:         false,
-	Remark:         "sdfasdfasdf",
+var ret = &npool.Fraction{
+	EntID:         uuid.NewString(),
+	OrderUserID:   uuid.NewString(),
+	WithdrawState: basetypes.WithdrawState_WithdrawStateProccessing,
+	WithdrawTime:  555,
+	PayTime:       666,
 }
 
-var req = &npool.RootUserReq{
-	EntID:          &ret.EntID,
-	Name:           &ret.Name,
-	MiningpoolType: &ret.MiningpoolType,
-	Email:          &ret.Email,
-	AuthToken:      &ret.AuthToken,
-	Authed:         &ret.Authed,
-	Remark:         &ret.Remark,
+var req = &npool.FractionReq{
+	EntID:         &ret.EntID,
+	OrderUserID:   &ret.OrderUserID,
+	WithdrawState: &ret.WithdrawState,
+	WithdrawTime:  &ret.WithdrawTime,
+	PayTime:       &ret.PayTime,
 }
 
-func createRootUser(t *testing.T) {
-	info, err := CreateRootUser(context.Background(), req)
+func createFraction(t *testing.T) {
+	info, err := CreateFraction(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.WithdrawStateStr = info.WithdrawStateStr
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -65,39 +61,39 @@ func createRootUser(t *testing.T) {
 	}
 }
 
-func updateRootUser(t *testing.T) {
-	pooltype := basetypes.MiningpoolType_AntPool
-	ret.MiningpoolTypeStr = pooltype.String()
-	ret.MiningpoolType = pooltype
+func updateFraction(t *testing.T) {
+	state := basetypes.WithdrawState_WithdrawStateFailed
+	ret.WithdrawStateStr = state.String()
+	ret.WithdrawState = state
 	req.ID = &ret.ID
-	req.MiningpoolType = &pooltype
+	req.WithdrawState = &state
 
-	info, err := UpdateRootUser(context.Background(), req)
+	info, err := UpdateFraction(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
 
-	pooltype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = pooltype
-	ret.MiningpoolTypeStr = pooltype.String()
-	req.MiningpoolType = &pooltype
-	info, err = UpdateRootUser(context.Background(), req)
+	state = basetypes.WithdrawState_WithdrawStateSuccess
+	ret.WithdrawState = state
+	ret.WithdrawStateStr = state.String()
+	req.WithdrawState = &state
+	info, err = UpdateFraction(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
 }
 
-func getRootUser(t *testing.T) {
-	info, err := GetRootUser(context.Background(), ret.EntID)
+func getFraction(t *testing.T) {
+	info, err := GetFraction(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}
 }
 
-func getRootUsers(t *testing.T) {
-	infos, total, err := GetRootUsers(context.Background(), &npool.Conds{
+func getFractions(t *testing.T) {
+	infos, total, err := GetFractions(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{Op: cruder.EQ, Value: ret.EntID},
 	}, 0, 1)
 	if assert.Nil(t, err) {
@@ -107,8 +103,8 @@ func getRootUsers(t *testing.T) {
 	}
 }
 
-func deleteRootUser(t *testing.T) {
-	exist, err := ExistRootUserConds(context.Background(), &npool.Conds{
+func deleteFraction(t *testing.T) {
+	exist, err := ExistFractionConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
@@ -118,14 +114,14 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteRootUser(context.Background(), &npool.RootUserReq{
+	info, err := DeleteFraction(context.Background(), &npool.FractionReq{
 		ID: &ret.ID,
 	})
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}
 
-	exist, err = ExistRootUserConds(context.Background(), &npool.Conds{
+	exist, err = ExistFractionConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
@@ -151,9 +147,9 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
-	t.Run("createRootUser", createRootUser)
-	t.Run("updateRootUser", updateRootUser)
-	t.Run("getRootUser", getRootUser)
-	t.Run("getRootUsers", getRootUsers)
-	t.Run("deleteRootUser", deleteRootUser)
+	t.Run("createFraction", createFraction)
+	t.Run("updateFraction", updateFraction)
+	t.Run("getFraction", getFraction)
+	t.Run("getFractions", getFractions)
+	t.Run("deleteFraction", deleteFraction)
 }

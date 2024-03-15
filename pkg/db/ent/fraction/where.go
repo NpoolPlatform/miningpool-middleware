@@ -107,10 +107,10 @@ func EntID(v uuid.UUID) predicate.Fraction {
 	})
 }
 
-// OrderMininguserID applies equality check predicate on the "order_mininguser_id" field. It's identical to OrderMininguserIDEQ.
-func OrderMininguserID(v uuid.UUID) predicate.Fraction {
+// OrderUserID applies equality check predicate on the "order_user_id" field. It's identical to OrderUserIDEQ.
+func OrderUserID(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.EQ(s.C(FieldOrderUserID), v))
 	})
 }
 
@@ -122,7 +122,7 @@ func WithdrawState(v string) predicate.Fraction {
 }
 
 // WithdrawTime applies equality check predicate on the "withdraw_time" field. It's identical to WithdrawTimeEQ.
-func WithdrawTime(v string) predicate.Fraction {
+func WithdrawTime(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldWithdrawTime), v))
 	})
@@ -391,67 +391,67 @@ func EntIDLTE(v uuid.UUID) predicate.Fraction {
 	})
 }
 
-// OrderMininguserIDEQ applies the EQ predicate on the "order_mininguser_id" field.
-func OrderMininguserIDEQ(v uuid.UUID) predicate.Fraction {
+// OrderUserIDEQ applies the EQ predicate on the "order_user_id" field.
+func OrderUserIDEQ(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.EQ(s.C(FieldOrderUserID), v))
 	})
 }
 
-// OrderMininguserIDNEQ applies the NEQ predicate on the "order_mininguser_id" field.
-func OrderMininguserIDNEQ(v uuid.UUID) predicate.Fraction {
+// OrderUserIDNEQ applies the NEQ predicate on the "order_user_id" field.
+func OrderUserIDNEQ(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.NEQ(s.C(FieldOrderUserID), v))
 	})
 }
 
-// OrderMininguserIDIn applies the In predicate on the "order_mininguser_id" field.
-func OrderMininguserIDIn(vs ...uuid.UUID) predicate.Fraction {
+// OrderUserIDIn applies the In predicate on the "order_user_id" field.
+func OrderUserIDIn(vs ...uuid.UUID) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldOrderMininguserID), v...))
+		s.Where(sql.In(s.C(FieldOrderUserID), v...))
 	})
 }
 
-// OrderMininguserIDNotIn applies the NotIn predicate on the "order_mininguser_id" field.
-func OrderMininguserIDNotIn(vs ...uuid.UUID) predicate.Fraction {
+// OrderUserIDNotIn applies the NotIn predicate on the "order_user_id" field.
+func OrderUserIDNotIn(vs ...uuid.UUID) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldOrderMininguserID), v...))
+		s.Where(sql.NotIn(s.C(FieldOrderUserID), v...))
 	})
 }
 
-// OrderMininguserIDGT applies the GT predicate on the "order_mininguser_id" field.
-func OrderMininguserIDGT(v uuid.UUID) predicate.Fraction {
+// OrderUserIDGT applies the GT predicate on the "order_user_id" field.
+func OrderUserIDGT(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.GT(s.C(FieldOrderUserID), v))
 	})
 }
 
-// OrderMininguserIDGTE applies the GTE predicate on the "order_mininguser_id" field.
-func OrderMininguserIDGTE(v uuid.UUID) predicate.Fraction {
+// OrderUserIDGTE applies the GTE predicate on the "order_user_id" field.
+func OrderUserIDGTE(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.GTE(s.C(FieldOrderUserID), v))
 	})
 }
 
-// OrderMininguserIDLT applies the LT predicate on the "order_mininguser_id" field.
-func OrderMininguserIDLT(v uuid.UUID) predicate.Fraction {
+// OrderUserIDLT applies the LT predicate on the "order_user_id" field.
+func OrderUserIDLT(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.LT(s.C(FieldOrderUserID), v))
 	})
 }
 
-// OrderMininguserIDLTE applies the LTE predicate on the "order_mininguser_id" field.
-func OrderMininguserIDLTE(v uuid.UUID) predicate.Fraction {
+// OrderUserIDLTE applies the LTE predicate on the "order_user_id" field.
+func OrderUserIDLTE(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldOrderMininguserID), v))
+		s.Where(sql.LTE(s.C(FieldOrderUserID), v))
 	})
 }
 
@@ -555,21 +555,21 @@ func WithdrawStateContainsFold(v string) predicate.Fraction {
 }
 
 // WithdrawTimeEQ applies the EQ predicate on the "withdraw_time" field.
-func WithdrawTimeEQ(v string) predicate.Fraction {
+func WithdrawTimeEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldWithdrawTime), v))
 	})
 }
 
 // WithdrawTimeNEQ applies the NEQ predicate on the "withdraw_time" field.
-func WithdrawTimeNEQ(v string) predicate.Fraction {
+func WithdrawTimeNEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldWithdrawTime), v))
 	})
 }
 
 // WithdrawTimeIn applies the In predicate on the "withdraw_time" field.
-func WithdrawTimeIn(vs ...string) predicate.Fraction {
+func WithdrawTimeIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -580,7 +580,7 @@ func WithdrawTimeIn(vs ...string) predicate.Fraction {
 }
 
 // WithdrawTimeNotIn applies the NotIn predicate on the "withdraw_time" field.
-func WithdrawTimeNotIn(vs ...string) predicate.Fraction {
+func WithdrawTimeNotIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -591,65 +591,30 @@ func WithdrawTimeNotIn(vs ...string) predicate.Fraction {
 }
 
 // WithdrawTimeGT applies the GT predicate on the "withdraw_time" field.
-func WithdrawTimeGT(v string) predicate.Fraction {
+func WithdrawTimeGT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldWithdrawTime), v))
 	})
 }
 
 // WithdrawTimeGTE applies the GTE predicate on the "withdraw_time" field.
-func WithdrawTimeGTE(v string) predicate.Fraction {
+func WithdrawTimeGTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldWithdrawTime), v))
 	})
 }
 
 // WithdrawTimeLT applies the LT predicate on the "withdraw_time" field.
-func WithdrawTimeLT(v string) predicate.Fraction {
+func WithdrawTimeLT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldWithdrawTime), v))
 	})
 }
 
 // WithdrawTimeLTE applies the LTE predicate on the "withdraw_time" field.
-func WithdrawTimeLTE(v string) predicate.Fraction {
+func WithdrawTimeLTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldWithdrawTime), v))
-	})
-}
-
-// WithdrawTimeContains applies the Contains predicate on the "withdraw_time" field.
-func WithdrawTimeContains(v string) predicate.Fraction {
-	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldWithdrawTime), v))
-	})
-}
-
-// WithdrawTimeHasPrefix applies the HasPrefix predicate on the "withdraw_time" field.
-func WithdrawTimeHasPrefix(v string) predicate.Fraction {
-	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldWithdrawTime), v))
-	})
-}
-
-// WithdrawTimeHasSuffix applies the HasSuffix predicate on the "withdraw_time" field.
-func WithdrawTimeHasSuffix(v string) predicate.Fraction {
-	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldWithdrawTime), v))
-	})
-}
-
-// WithdrawTimeEqualFold applies the EqualFold predicate on the "withdraw_time" field.
-func WithdrawTimeEqualFold(v string) predicate.Fraction {
-	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldWithdrawTime), v))
-	})
-}
-
-// WithdrawTimeContainsFold applies the ContainsFold predicate on the "withdraw_time" field.
-func WithdrawTimeContainsFold(v string) predicate.Fraction {
-	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldWithdrawTime), v))
 	})
 }
 

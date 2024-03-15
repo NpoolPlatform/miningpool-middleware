@@ -200,7 +200,6 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 				logger.Sugar().Warn(err)
 			}
 		}
-
 	}
 
 	addResp, err := mgr.cli.RevenueDistributionAdd(ctx, &types.RevenueDistributionAddReq{
@@ -271,7 +270,6 @@ func (mgr *Manager) GetRevenueAddress(ctx context.Context, name string) (string,
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{
 		MiningUserName: name,
 	})
-
 	if err != nil {
 		return "", err
 	}
@@ -338,7 +336,6 @@ func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, e
 		MiningUserName: name,
 		Currency:       mgr.currency,
 	})
-
 	if err != nil {
 		return 0, err
 	}

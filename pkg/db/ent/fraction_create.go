@@ -78,9 +78,9 @@ func (fc *FractionCreate) SetNillableEntID(u *uuid.UUID) *FractionCreate {
 	return fc
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (fc *FractionCreate) SetOrderMininguserID(u uuid.UUID) *FractionCreate {
-	fc.mutation.SetOrderMininguserID(u)
+// SetOrderUserID sets the "order_user_id" field.
+func (fc *FractionCreate) SetOrderUserID(u uuid.UUID) *FractionCreate {
+	fc.mutation.SetOrderUserID(u)
 	return fc
 }
 
@@ -91,8 +91,8 @@ func (fc *FractionCreate) SetWithdrawState(s string) *FractionCreate {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (fc *FractionCreate) SetWithdrawTime(s string) *FractionCreate {
-	fc.mutation.SetWithdrawTime(s)
+func (fc *FractionCreate) SetWithdrawTime(u uint32) *FractionCreate {
+	fc.mutation.SetWithdrawTime(u)
 	return fc
 }
 
@@ -240,8 +240,8 @@ func (fc *FractionCreate) check() error {
 	if _, ok := fc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "Fraction.ent_id"`)}
 	}
-	if _, ok := fc.mutation.OrderMininguserID(); !ok {
-		return &ValidationError{Name: "order_mininguser_id", err: errors.New(`ent: missing required field "Fraction.order_mininguser_id"`)}
+	if _, ok := fc.mutation.OrderUserID(); !ok {
+		return &ValidationError{Name: "order_user_id", err: errors.New(`ent: missing required field "Fraction.order_user_id"`)}
 	}
 	if _, ok := fc.mutation.WithdrawState(); !ok {
 		return &ValidationError{Name: "withdraw_state", err: errors.New(`ent: missing required field "Fraction.withdraw_state"`)}
@@ -315,13 +315,13 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
-	if value, ok := fc.mutation.OrderMininguserID(); ok {
+	if value, ok := fc.mutation.OrderUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fraction.FieldOrderMininguserID,
+			Column: fraction.FieldOrderUserID,
 		})
-		_node.OrderMininguserID = value
+		_node.OrderUserID = value
 	}
 	if value, ok := fc.mutation.WithdrawState(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -333,7 +333,7 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := fc.mutation.WithdrawTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUint32,
 			Value:  value,
 			Column: fraction.FieldWithdrawTime,
 		})
@@ -467,15 +467,15 @@ func (u *FractionUpsert) UpdateEntID() *FractionUpsert {
 	return u
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (u *FractionUpsert) SetOrderMininguserID(v uuid.UUID) *FractionUpsert {
-	u.Set(fraction.FieldOrderMininguserID, v)
+// SetOrderUserID sets the "order_user_id" field.
+func (u *FractionUpsert) SetOrderUserID(v uuid.UUID) *FractionUpsert {
+	u.Set(fraction.FieldOrderUserID, v)
 	return u
 }
 
-// UpdateOrderMininguserID sets the "order_mininguser_id" field to the value that was provided on create.
-func (u *FractionUpsert) UpdateOrderMininguserID() *FractionUpsert {
-	u.SetExcluded(fraction.FieldOrderMininguserID)
+// UpdateOrderUserID sets the "order_user_id" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateOrderUserID() *FractionUpsert {
+	u.SetExcluded(fraction.FieldOrderUserID)
 	return u
 }
 
@@ -492,7 +492,7 @@ func (u *FractionUpsert) UpdateWithdrawState() *FractionUpsert {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsert) SetWithdrawTime(v string) *FractionUpsert {
+func (u *FractionUpsert) SetWithdrawTime(v uint32) *FractionUpsert {
 	u.Set(fraction.FieldWithdrawTime, v)
 	return u
 }
@@ -500,6 +500,12 @@ func (u *FractionUpsert) SetWithdrawTime(v string) *FractionUpsert {
 // UpdateWithdrawTime sets the "withdraw_time" field to the value that was provided on create.
 func (u *FractionUpsert) UpdateWithdrawTime() *FractionUpsert {
 	u.SetExcluded(fraction.FieldWithdrawTime)
+	return u
+}
+
+// AddWithdrawTime adds v to the "withdraw_time" field.
+func (u *FractionUpsert) AddWithdrawTime(v uint32) *FractionUpsert {
+	u.Add(fraction.FieldWithdrawTime, v)
 	return u
 }
 
@@ -654,17 +660,17 @@ func (u *FractionUpsertOne) UpdateEntID() *FractionUpsertOne {
 	})
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (u *FractionUpsertOne) SetOrderMininguserID(v uuid.UUID) *FractionUpsertOne {
+// SetOrderUserID sets the "order_user_id" field.
+func (u *FractionUpsertOne) SetOrderUserID(v uuid.UUID) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetOrderMininguserID(v)
+		s.SetOrderUserID(v)
 	})
 }
 
-// UpdateOrderMininguserID sets the "order_mininguser_id" field to the value that was provided on create.
-func (u *FractionUpsertOne) UpdateOrderMininguserID() *FractionUpsertOne {
+// UpdateOrderUserID sets the "order_user_id" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateOrderUserID() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdateOrderMininguserID()
+		s.UpdateOrderUserID()
 	})
 }
 
@@ -683,9 +689,16 @@ func (u *FractionUpsertOne) UpdateWithdrawState() *FractionUpsertOne {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsertOne) SetWithdrawTime(v string) *FractionUpsertOne {
+func (u *FractionUpsertOne) SetWithdrawTime(v uint32) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.SetWithdrawTime(v)
+	})
+}
+
+// AddWithdrawTime adds v to the "withdraw_time" field.
+func (u *FractionUpsertOne) AddWithdrawTime(v uint32) *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.AddWithdrawTime(v)
 	})
 }
 
@@ -1016,17 +1029,17 @@ func (u *FractionUpsertBulk) UpdateEntID() *FractionUpsertBulk {
 	})
 }
 
-// SetOrderMininguserID sets the "order_mininguser_id" field.
-func (u *FractionUpsertBulk) SetOrderMininguserID(v uuid.UUID) *FractionUpsertBulk {
+// SetOrderUserID sets the "order_user_id" field.
+func (u *FractionUpsertBulk) SetOrderUserID(v uuid.UUID) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetOrderMininguserID(v)
+		s.SetOrderUserID(v)
 	})
 }
 
-// UpdateOrderMininguserID sets the "order_mininguser_id" field to the value that was provided on create.
-func (u *FractionUpsertBulk) UpdateOrderMininguserID() *FractionUpsertBulk {
+// UpdateOrderUserID sets the "order_user_id" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateOrderUserID() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdateOrderMininguserID()
+		s.UpdateOrderUserID()
 	})
 }
 
@@ -1045,9 +1058,16 @@ func (u *FractionUpsertBulk) UpdateWithdrawState() *FractionUpsertBulk {
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsertBulk) SetWithdrawTime(v string) *FractionUpsertBulk {
+func (u *FractionUpsertBulk) SetWithdrawTime(v uint32) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.SetWithdrawTime(v)
+	})
+}
+
+// AddWithdrawTime adds v to the "withdraw_time" field.
+func (u *FractionUpsertBulk) AddWithdrawTime(v uint32) *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.AddWithdrawTime(v)
 	})
 }
 

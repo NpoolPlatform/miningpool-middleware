@@ -24,11 +24,11 @@ func (Fraction) Mixin() []ent.Mixin {
 func (Fraction) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("order_mininguser_id", uuid.UUID{}),
+			UUID("order_user_id", uuid.UUID{}),
 		field.
 			String("withdraw_state"),
 		field.
-			String("withdraw_time"),
+			Uint32("withdraw_time"),
 		field.
 			Uint32("pay_time").Optional(),
 	}

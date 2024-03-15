@@ -59,7 +59,6 @@ var req = &npool.CoinReq{
 
 func createCoin(t *testing.T) {
 	info, err := CreateCoin(context.Background(), req)
-	fmt.Println(err)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
@@ -114,6 +113,35 @@ func getCoins(t *testing.T) {
 	}
 }
 
+func deleteCoin(t *testing.T) {
+	exist, err := ExistCoinConds(context.Background(), &npool.Conds{
+		EntID: &v1.StringVal{
+			Op:    cruder.EQ,
+			Value: ret.EntID,
+		},
+	})
+	if assert.Nil(t, err) {
+		assert.Equal(t, true, exist)
+	}
+
+	info, err := DeleteCoin(context.Background(), &npool.CoinReq{
+		ID: &ret.ID,
+	})
+	if assert.Nil(t, err) {
+		assert.Equal(t, info, ret)
+	}
+
+	exist, err = ExistCoinConds(context.Background(), &npool.Conds{
+		EntID: &v1.StringVal{
+			Op:    cruder.EQ,
+			Value: ret.EntID,
+		},
+	})
+	if assert.Nil(t, err) {
+		assert.Equal(t, false, exist)
+	}
+}
+
 func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
@@ -133,4 +161,5 @@ func TestClient(t *testing.T) {
 	t.Run("updateCoin", updateCoin)
 	t.Run("getCoin", getCoin)
 	t.Run("getCoins", getCoins)
+	t.Run("deleteCoin", deleteCoin)
 }

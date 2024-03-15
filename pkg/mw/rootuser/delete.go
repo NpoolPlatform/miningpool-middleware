@@ -22,7 +22,7 @@ type deleteHandler struct {
 
 func (h *deleteHandler) deleteRootUserBase(ctx context.Context, tx *ent.Tx) error {
 	now := uint32(time.Now().Unix())
-	updateOne, err := crud.UpdateSet(tx.RootUser.UpdateOneID(*h.ID), &crud.Req{DeleteAt: &now})
+	updateOne, err := crud.UpdateSet(tx.RootUser.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
 		return err
 	}

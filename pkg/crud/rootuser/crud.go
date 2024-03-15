@@ -19,7 +19,7 @@ type Req struct {
 	AuthToken      *string
 	Authed         *bool
 	Remark         *string
-	DeleteAt       *uint32
+	DeletedAt      *uint32
 }
 
 func CreateSet(c *ent.RootUserCreate, req *Req) *ent.RootUserCreate {
@@ -66,8 +66,8 @@ func UpdateSet(u *ent.RootUserUpdateOne, req *Req) (*ent.RootUserUpdateOne, erro
 	if req.Remark != nil {
 		u = u.SetRemark(*req.Remark)
 	}
-	if req.DeleteAt != nil {
-		u = u.SetDeletedAt(*req.DeleteAt)
+	if req.DeletedAt != nil {
+		u = u.SetDeletedAt(*req.DeletedAt)
 	}
 	return u, nil
 }

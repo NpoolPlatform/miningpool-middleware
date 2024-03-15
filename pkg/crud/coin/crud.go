@@ -21,7 +21,7 @@ type Req struct {
 	FixedRevenueAble *bool
 	Threshold        *float32
 	Remark           *string
-	DeleteAt         *uint32
+	DeletedAt        *uint32
 }
 
 func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
@@ -88,8 +88,8 @@ func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 	if req.Remark != nil {
 		u = u.SetRemark(*req.Remark)
 	}
-	if req.DeleteAt != nil {
-		u = u.SetDeletedAt(*req.DeleteAt)
+	if req.DeletedAt != nil {
+		u = u.SetDeletedAt(*req.DeletedAt)
 	}
 	return u, nil
 }

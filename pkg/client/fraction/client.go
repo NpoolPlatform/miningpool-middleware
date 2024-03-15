@@ -1,4 +1,4 @@
-package rootuser
+package fraction
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 
 	servicename "github.com/NpoolPlatform/miningpool-middleware/pkg/servicename"
 )
@@ -32,9 +32,9 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
+func CreateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateRootUser(ctx, &npool.CreateRootUserRequest{
+		resp, err := cli.CreateFraction(ctx, &npool.CreateFractionRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -45,12 +45,12 @@ func CreateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.RootUser), nil
+	return info.(*npool.Fraction), nil
 }
 
-func CreateRootUsers(ctx context.Context, in []*npool.RootUserReq) ([]*npool.RootUser, error) {
+func CreateFractions(ctx context.Context, in []*npool.FractionReq) ([]*npool.Fraction, error) {
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateRootUsers(ctx, &npool.CreateRootUsersRequest{
+		resp, err := cli.CreateFractions(ctx, &npool.CreateFractionsRequest{
 			Infos: in,
 		})
 		if err != nil {
@@ -61,12 +61,12 @@ func CreateRootUsers(ctx context.Context, in []*npool.RootUserReq) ([]*npool.Roo
 	if err != nil {
 		return nil, err
 	}
-	return infos.([]*npool.RootUser), nil
+	return infos.([]*npool.Fraction), nil
 }
 
-func GetRootUser(ctx context.Context, id string) (*npool.RootUser, error) {
+func GetFraction(ctx context.Context, id string) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetRootUser(ctx, &npool.GetRootUserRequest{
+		resp, err := cli.GetFraction(ctx, &npool.GetFractionRequest{
 			EntID: id,
 		})
 		if err != nil {
@@ -77,14 +77,14 @@ func GetRootUser(ctx context.Context, id string) (*npool.RootUser, error) {
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.RootUser), nil
+	return info.(*npool.Fraction), nil
 }
 
-func GetRootUsers(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.RootUser, uint32, error) {
+func GetFractions(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.Fraction, uint32, error) {
 	var total uint32
 
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetRootUsers(ctx, &npool.GetRootUsersRequest{
+		resp, err := cli.GetFractions(ctx, &npool.GetFractionsRequest{
 			Conds:  conds,
 			Offset: offset,
 			Limit:  limit,
@@ -100,12 +100,12 @@ func GetRootUsers(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	if err != nil {
 		return nil, 0, err
 	}
-	return infos.([]*npool.RootUser), total, nil
+	return infos.([]*npool.Fraction), total, nil
 }
 
-func UpdateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
+func UpdateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateRootUser(ctx, &npool.UpdateRootUserRequest{
+		resp, err := cli.UpdateFraction(ctx, &npool.UpdateFractionRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -116,12 +116,12 @@ func UpdateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.RootUser), nil
+	return info.(*npool.Fraction), nil
 }
 
-func ExistRootUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
+func ExistFractionConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.ExistRootUserConds(ctx, &npool.ExistRootUserCondsRequest{
+		resp, err := cli.ExistFractionConds(ctx, &npool.ExistFractionCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -135,9 +135,9 @@ func ExistRootUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return info.(bool), nil
 }
 
-func DeleteRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
+func DeleteFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteRootUser(ctx, &npool.DeleteRootUserRequest{
+		resp, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
 			Info: in,
 		})
 		if err != nil {
@@ -148,5 +148,5 @@ func DeleteRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.RootUser), nil
+	return info.(*npool.Fraction), nil
 }

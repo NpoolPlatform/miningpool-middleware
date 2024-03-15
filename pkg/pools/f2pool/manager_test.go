@@ -12,9 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var (
-	accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
-)
+var accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
 
 func init() {
 	//nolint
@@ -118,6 +116,7 @@ func TestPageLink(t *testing.T) {
 	// assert.NotEqual(t, link, _link)
 }
 
+//nolint:gocritic
 func TestPayment(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
@@ -130,23 +129,16 @@ func TestPayment(t *testing.T) {
 	resumed, err := mgr.ResumePayment(context.Background(), "cococonut2")
 	assert.Nil(t, err)
 	assert.Equal(t, true, resumed)
-
-	// _link, err = mgr.GetReadPageLink(context.Background(), "cococonut2")
-	// assert.Nil(t, err)
-	// assert.NotEqual(t, link, _link)
 }
 
+//nolint:gocritic
 func TestWithdrawPraction(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 
-	tx_time, err := mgr.WithdrawPraction(context.Background(), "cococonut1")
-	fmt.Println(tx_time)
+	txTime, err := mgr.WithdrawPraction(context.Background(), "cococonut1")
+	fmt.Println(txTime)
 	assert.Nil(t, err)
-	assert.NotEqual(t, 0, tx_time)
-
-	// _link, err = mgr.GetReadPageLink(context.Background(), "cococonut2")
-	// assert.Nil(t, err)
-	// assert.NotEqual(t, link, _link)
+	assert.NotEqual(t, 0, txTime)
 }

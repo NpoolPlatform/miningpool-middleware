@@ -55,14 +55,14 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Fraction",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			fraction.FieldCreatedAt:         {Type: field.TypeUint32, Column: fraction.FieldCreatedAt},
-			fraction.FieldUpdatedAt:         {Type: field.TypeUint32, Column: fraction.FieldUpdatedAt},
-			fraction.FieldDeletedAt:         {Type: field.TypeUint32, Column: fraction.FieldDeletedAt},
-			fraction.FieldEntID:             {Type: field.TypeUUID, Column: fraction.FieldEntID},
-			fraction.FieldOrderMininguserID: {Type: field.TypeUUID, Column: fraction.FieldOrderMininguserID},
-			fraction.FieldWithdrawState:     {Type: field.TypeString, Column: fraction.FieldWithdrawState},
-			fraction.FieldWithdrawTime:      {Type: field.TypeString, Column: fraction.FieldWithdrawTime},
-			fraction.FieldPayTime:           {Type: field.TypeUint32, Column: fraction.FieldPayTime},
+			fraction.FieldCreatedAt:     {Type: field.TypeUint32, Column: fraction.FieldCreatedAt},
+			fraction.FieldUpdatedAt:     {Type: field.TypeUint32, Column: fraction.FieldUpdatedAt},
+			fraction.FieldDeletedAt:     {Type: field.TypeUint32, Column: fraction.FieldDeletedAt},
+			fraction.FieldEntID:         {Type: field.TypeUUID, Column: fraction.FieldEntID},
+			fraction.FieldOrderUserID:   {Type: field.TypeUUID, Column: fraction.FieldOrderUserID},
+			fraction.FieldWithdrawState: {Type: field.TypeString, Column: fraction.FieldWithdrawState},
+			fraction.FieldWithdrawTime:  {Type: field.TypeUint32, Column: fraction.FieldWithdrawTime},
+			fraction.FieldPayTime:       {Type: field.TypeUint32, Column: fraction.FieldPayTime},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -333,9 +333,9 @@ func (f *FractionFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(fraction.FieldEntID))
 }
 
-// WhereOrderMininguserID applies the entql [16]byte predicate on the order_mininguser_id field.
-func (f *FractionFilter) WhereOrderMininguserID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldOrderMininguserID))
+// WhereOrderUserID applies the entql [16]byte predicate on the order_user_id field.
+func (f *FractionFilter) WhereOrderUserID(p entql.ValueP) {
+	f.Where(p.Field(fraction.FieldOrderUserID))
 }
 
 // WhereWithdrawState applies the entql string predicate on the withdraw_state field.
@@ -343,8 +343,8 @@ func (f *FractionFilter) WhereWithdrawState(p entql.StringP) {
 	f.Where(p.Field(fraction.FieldWithdrawState))
 }
 
-// WhereWithdrawTime applies the entql string predicate on the withdraw_time field.
-func (f *FractionFilter) WhereWithdrawTime(p entql.StringP) {
+// WhereWithdrawTime applies the entql uint32 predicate on the withdraw_time field.
+func (f *FractionFilter) WhereWithdrawTime(p entql.Uint32P) {
 	f.Where(p.Field(fraction.FieldWithdrawTime))
 }
 

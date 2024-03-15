@@ -3074,31 +3074,29 @@ func (m *FractionRuleMutation) ResetEdge(name string) error {
 // GoodUserMutation represents an operation that mutates the GoodUser nodes in the graph.
 type GoodUserMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *uint32
-	created_at     *uint32
-	addcreated_at  *int32
-	updated_at     *uint32
-	addupdated_at  *int32
-	deleted_at     *uint32
-	adddeleted_at  *int32
-	ent_id         *uuid.UUID
-	good_id        *uuid.UUID
-	name           *string
-	auth_token     *string
-	authed         *bool
-	start          *uint32
-	addstart       *int32
-	end            *uint32
-	addend         *int32
-	hash_rate      *float64
-	addhash_rate   *float64
-	read_page_link *string
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*GoodUser, error)
-	predicates     []predicate.GoodUser
+	op              Op
+	typ             string
+	id              *uint32
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	ent_id          *uuid.UUID
+	good_id         *uuid.UUID
+	root_user_id    *uuid.UUID
+	name            *string
+	miningpool_type *string
+	coin_type       *string
+	hash_rate       *float32
+	addhash_rate    *float32
+	read_page_link  *string
+	revenue_type    *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*GoodUser, error)
+	predicates      []predicate.GoodUser
 }
 
 var _ ent.Mutation = (*GoodUserMutation)(nil)
@@ -3445,6 +3443,42 @@ func (m *GoodUserMutation) ResetGoodID() {
 	m.good_id = nil
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (m *GoodUserMutation) SetRootUserID(u uuid.UUID) {
+	m.root_user_id = &u
+}
+
+// RootUserID returns the value of the "root_user_id" field in the mutation.
+func (m *GoodUserMutation) RootUserID() (r uuid.UUID, exists bool) {
+	v := m.root_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRootUserID returns the old "root_user_id" field's value of the GoodUser entity.
+// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GoodUserMutation) OldRootUserID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRootUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRootUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRootUserID: %w", err)
+	}
+	return oldValue.RootUserID, nil
+}
+
+// ResetRootUserID resets all changes to the "root_user_id" field.
+func (m *GoodUserMutation) ResetRootUserID() {
+	m.root_user_id = nil
+}
+
 // SetName sets the "name" field.
 func (m *GoodUserMutation) SetName(s string) {
 	m.name = &s
@@ -3481,198 +3515,86 @@ func (m *GoodUserMutation) ResetName() {
 	m.name = nil
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (m *GoodUserMutation) SetAuthToken(s string) {
-	m.auth_token = &s
+// SetMiningpoolType sets the "miningpool_type" field.
+func (m *GoodUserMutation) SetMiningpoolType(s string) {
+	m.miningpool_type = &s
 }
 
-// AuthToken returns the value of the "auth_token" field in the mutation.
-func (m *GoodUserMutation) AuthToken() (r string, exists bool) {
-	v := m.auth_token
+// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
+func (m *GoodUserMutation) MiningpoolType() (r string, exists bool) {
+	v := m.miningpool_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAuthToken returns the old "auth_token" field's value of the GoodUser entity.
+// OldMiningpoolType returns the old "miningpool_type" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldAuthToken(ctx context.Context) (v string, err error) {
+func (m *GoodUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAuthToken is only allowed on UpdateOne operations")
+		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAuthToken requires an ID field in the mutation")
+		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAuthToken: %w", err)
+		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
 	}
-	return oldValue.AuthToken, nil
+	return oldValue.MiningpoolType, nil
 }
 
-// ResetAuthToken resets all changes to the "auth_token" field.
-func (m *GoodUserMutation) ResetAuthToken() {
-	m.auth_token = nil
+// ResetMiningpoolType resets all changes to the "miningpool_type" field.
+func (m *GoodUserMutation) ResetMiningpoolType() {
+	m.miningpool_type = nil
 }
 
-// SetAuthed sets the "authed" field.
-func (m *GoodUserMutation) SetAuthed(b bool) {
-	m.authed = &b
+// SetCoinType sets the "coin_type" field.
+func (m *GoodUserMutation) SetCoinType(s string) {
+	m.coin_type = &s
 }
 
-// Authed returns the value of the "authed" field in the mutation.
-func (m *GoodUserMutation) Authed() (r bool, exists bool) {
-	v := m.authed
+// CoinType returns the value of the "coin_type" field in the mutation.
+func (m *GoodUserMutation) CoinType() (r string, exists bool) {
+	v := m.coin_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAuthed returns the old "authed" field's value of the GoodUser entity.
+// OldCoinType returns the old "coin_type" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldAuthed(ctx context.Context) (v bool, err error) {
+func (m *GoodUserMutation) OldCoinType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAuthed is only allowed on UpdateOne operations")
+		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAuthed requires an ID field in the mutation")
+		return v, errors.New("OldCoinType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAuthed: %w", err)
+		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
 	}
-	return oldValue.Authed, nil
+	return oldValue.CoinType, nil
 }
 
-// ResetAuthed resets all changes to the "authed" field.
-func (m *GoodUserMutation) ResetAuthed() {
-	m.authed = nil
-}
-
-// SetStart sets the "start" field.
-func (m *GoodUserMutation) SetStart(u uint32) {
-	m.start = &u
-	m.addstart = nil
-}
-
-// Start returns the value of the "start" field in the mutation.
-func (m *GoodUserMutation) Start() (r uint32, exists bool) {
-	v := m.start
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStart returns the old "start" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldStart(ctx context.Context) (v uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStart is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStart requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStart: %w", err)
-	}
-	return oldValue.Start, nil
-}
-
-// AddStart adds u to the "start" field.
-func (m *GoodUserMutation) AddStart(u int32) {
-	if m.addstart != nil {
-		*m.addstart += u
-	} else {
-		m.addstart = &u
-	}
-}
-
-// AddedStart returns the value that was added to the "start" field in this mutation.
-func (m *GoodUserMutation) AddedStart() (r int32, exists bool) {
-	v := m.addstart
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetStart resets all changes to the "start" field.
-func (m *GoodUserMutation) ResetStart() {
-	m.start = nil
-	m.addstart = nil
-}
-
-// SetEnd sets the "end" field.
-func (m *GoodUserMutation) SetEnd(u uint32) {
-	m.end = &u
-	m.addend = nil
-}
-
-// End returns the value of the "end" field in the mutation.
-func (m *GoodUserMutation) End() (r uint32, exists bool) {
-	v := m.end
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEnd returns the old "end" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldEnd(ctx context.Context) (v uint32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEnd is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEnd requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEnd: %w", err)
-	}
-	return oldValue.End, nil
-}
-
-// AddEnd adds u to the "end" field.
-func (m *GoodUserMutation) AddEnd(u int32) {
-	if m.addend != nil {
-		*m.addend += u
-	} else {
-		m.addend = &u
-	}
-}
-
-// AddedEnd returns the value that was added to the "end" field in this mutation.
-func (m *GoodUserMutation) AddedEnd() (r int32, exists bool) {
-	v := m.addend
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetEnd resets all changes to the "end" field.
-func (m *GoodUserMutation) ResetEnd() {
-	m.end = nil
-	m.addend = nil
+// ResetCoinType resets all changes to the "coin_type" field.
+func (m *GoodUserMutation) ResetCoinType() {
+	m.coin_type = nil
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (m *GoodUserMutation) SetHashRate(f float64) {
+func (m *GoodUserMutation) SetHashRate(f float32) {
 	m.hash_rate = &f
 	m.addhash_rate = nil
 }
 
 // HashRate returns the value of the "hash_rate" field in the mutation.
-func (m *GoodUserMutation) HashRate() (r float64, exists bool) {
+func (m *GoodUserMutation) HashRate() (r float32, exists bool) {
 	v := m.hash_rate
 	if v == nil {
 		return
@@ -3683,7 +3605,7 @@ func (m *GoodUserMutation) HashRate() (r float64, exists bool) {
 // OldHashRate returns the old "hash_rate" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldHashRate(ctx context.Context) (v float64, err error) {
+func (m *GoodUserMutation) OldHashRate(ctx context.Context) (v float32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldHashRate is only allowed on UpdateOne operations")
 	}
@@ -3698,7 +3620,7 @@ func (m *GoodUserMutation) OldHashRate(ctx context.Context) (v float64, err erro
 }
 
 // AddHashRate adds f to the "hash_rate" field.
-func (m *GoodUserMutation) AddHashRate(f float64) {
+func (m *GoodUserMutation) AddHashRate(f float32) {
 	if m.addhash_rate != nil {
 		*m.addhash_rate += f
 	} else {
@@ -3707,7 +3629,7 @@ func (m *GoodUserMutation) AddHashRate(f float64) {
 }
 
 // AddedHashRate returns the value that was added to the "hash_rate" field in this mutation.
-func (m *GoodUserMutation) AddedHashRate() (r float64, exists bool) {
+func (m *GoodUserMutation) AddedHashRate() (r float32, exists bool) {
 	v := m.addhash_rate
 	if v == nil {
 		return
@@ -3715,24 +3637,10 @@ func (m *GoodUserMutation) AddedHashRate() (r float64, exists bool) {
 	return *v, true
 }
 
-// ClearHashRate clears the value of the "hash_rate" field.
-func (m *GoodUserMutation) ClearHashRate() {
-	m.hash_rate = nil
-	m.addhash_rate = nil
-	m.clearedFields[gooduser.FieldHashRate] = struct{}{}
-}
-
-// HashRateCleared returns if the "hash_rate" field was cleared in this mutation.
-func (m *GoodUserMutation) HashRateCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldHashRate]
-	return ok
-}
-
 // ResetHashRate resets all changes to the "hash_rate" field.
 func (m *GoodUserMutation) ResetHashRate() {
 	m.hash_rate = nil
 	m.addhash_rate = nil
-	delete(m.clearedFields, gooduser.FieldHashRate)
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -3766,22 +3674,45 @@ func (m *GoodUserMutation) OldReadPageLink(ctx context.Context) (v string, err e
 	return oldValue.ReadPageLink, nil
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (m *GoodUserMutation) ClearReadPageLink() {
-	m.read_page_link = nil
-	m.clearedFields[gooduser.FieldReadPageLink] = struct{}{}
-}
-
-// ReadPageLinkCleared returns if the "read_page_link" field was cleared in this mutation.
-func (m *GoodUserMutation) ReadPageLinkCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldReadPageLink]
-	return ok
-}
-
 // ResetReadPageLink resets all changes to the "read_page_link" field.
 func (m *GoodUserMutation) ResetReadPageLink() {
 	m.read_page_link = nil
-	delete(m.clearedFields, gooduser.FieldReadPageLink)
+}
+
+// SetRevenueType sets the "revenue_type" field.
+func (m *GoodUserMutation) SetRevenueType(s string) {
+	m.revenue_type = &s
+}
+
+// RevenueType returns the value of the "revenue_type" field in the mutation.
+func (m *GoodUserMutation) RevenueType() (r string, exists bool) {
+	v := m.revenue_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRevenueType returns the old "revenue_type" field's value of the GoodUser entity.
+// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *GoodUserMutation) OldRevenueType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRevenueType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
+	}
+	return oldValue.RevenueType, nil
+}
+
+// ResetRevenueType resets all changes to the "revenue_type" field.
+func (m *GoodUserMutation) ResetRevenueType() {
+	m.revenue_type = nil
 }
 
 // Where appends a list predicates to the GoodUserMutation builder.
@@ -3819,26 +3750,26 @@ func (m *GoodUserMutation) Fields() []string {
 	if m.good_id != nil {
 		fields = append(fields, gooduser.FieldGoodID)
 	}
+	if m.root_user_id != nil {
+		fields = append(fields, gooduser.FieldRootUserID)
+	}
 	if m.name != nil {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.auth_token != nil {
-		fields = append(fields, gooduser.FieldAuthToken)
+	if m.miningpool_type != nil {
+		fields = append(fields, gooduser.FieldMiningpoolType)
 	}
-	if m.authed != nil {
-		fields = append(fields, gooduser.FieldAuthed)
-	}
-	if m.start != nil {
-		fields = append(fields, gooduser.FieldStart)
-	}
-	if m.end != nil {
-		fields = append(fields, gooduser.FieldEnd)
+	if m.coin_type != nil {
+		fields = append(fields, gooduser.FieldCoinType)
 	}
 	if m.hash_rate != nil {
 		fields = append(fields, gooduser.FieldHashRate)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, gooduser.FieldReadPageLink)
+	}
+	if m.revenue_type != nil {
+		fields = append(fields, gooduser.FieldRevenueType)
 	}
 	return fields
 }
@@ -3858,20 +3789,20 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.EntID()
 	case gooduser.FieldGoodID:
 		return m.GoodID()
+	case gooduser.FieldRootUserID:
+		return m.RootUserID()
 	case gooduser.FieldName:
 		return m.Name()
-	case gooduser.FieldAuthToken:
-		return m.AuthToken()
-	case gooduser.FieldAuthed:
-		return m.Authed()
-	case gooduser.FieldStart:
-		return m.Start()
-	case gooduser.FieldEnd:
-		return m.End()
+	case gooduser.FieldMiningpoolType:
+		return m.MiningpoolType()
+	case gooduser.FieldCoinType:
+		return m.CoinType()
 	case gooduser.FieldHashRate:
 		return m.HashRate()
 	case gooduser.FieldReadPageLink:
 		return m.ReadPageLink()
+	case gooduser.FieldRevenueType:
+		return m.RevenueType()
 	}
 	return nil, false
 }
@@ -3891,20 +3822,20 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEntID(ctx)
 	case gooduser.FieldGoodID:
 		return m.OldGoodID(ctx)
+	case gooduser.FieldRootUserID:
+		return m.OldRootUserID(ctx)
 	case gooduser.FieldName:
 		return m.OldName(ctx)
-	case gooduser.FieldAuthToken:
-		return m.OldAuthToken(ctx)
-	case gooduser.FieldAuthed:
-		return m.OldAuthed(ctx)
-	case gooduser.FieldStart:
-		return m.OldStart(ctx)
-	case gooduser.FieldEnd:
-		return m.OldEnd(ctx)
+	case gooduser.FieldMiningpoolType:
+		return m.OldMiningpoolType(ctx)
+	case gooduser.FieldCoinType:
+		return m.OldCoinType(ctx)
 	case gooduser.FieldHashRate:
 		return m.OldHashRate(ctx)
 	case gooduser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
+	case gooduser.FieldRevenueType:
+		return m.OldRevenueType(ctx)
 	}
 	return nil, fmt.Errorf("unknown GoodUser field %s", name)
 }
@@ -3949,6 +3880,13 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGoodID(v)
 		return nil
+	case gooduser.FieldRootUserID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRootUserID(v)
+		return nil
 	case gooduser.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -3956,36 +3894,22 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case gooduser.FieldAuthToken:
+	case gooduser.FieldMiningpoolType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAuthToken(v)
+		m.SetMiningpoolType(v)
 		return nil
-	case gooduser.FieldAuthed:
-		v, ok := value.(bool)
+	case gooduser.FieldCoinType:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAuthed(v)
-		return nil
-	case gooduser.FieldStart:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStart(v)
-		return nil
-	case gooduser.FieldEnd:
-		v, ok := value.(uint32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEnd(v)
+		m.SetCoinType(v)
 		return nil
 	case gooduser.FieldHashRate:
-		v, ok := value.(float64)
+		v, ok := value.(float32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3997,6 +3921,13 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReadPageLink(v)
+		return nil
+	case gooduser.FieldRevenueType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRevenueType(v)
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser field %s", name)
@@ -4015,12 +3946,6 @@ func (m *GoodUserMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, gooduser.FieldDeletedAt)
 	}
-	if m.addstart != nil {
-		fields = append(fields, gooduser.FieldStart)
-	}
-	if m.addend != nil {
-		fields = append(fields, gooduser.FieldEnd)
-	}
 	if m.addhash_rate != nil {
 		fields = append(fields, gooduser.FieldHashRate)
 	}
@@ -4038,10 +3963,6 @@ func (m *GoodUserMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case gooduser.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case gooduser.FieldStart:
-		return m.AddedStart()
-	case gooduser.FieldEnd:
-		return m.AddedEnd()
 	case gooduser.FieldHashRate:
 		return m.AddedHashRate()
 	}
@@ -4074,22 +3995,8 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddDeletedAt(v)
 		return nil
-	case gooduser.FieldStart:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStart(v)
-		return nil
-	case gooduser.FieldEnd:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddEnd(v)
-		return nil
 	case gooduser.FieldHashRate:
-		v, ok := value.(float64)
+		v, ok := value.(float32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -4102,14 +4009,7 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *GoodUserMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(gooduser.FieldHashRate) {
-		fields = append(fields, gooduser.FieldHashRate)
-	}
-	if m.FieldCleared(gooduser.FieldReadPageLink) {
-		fields = append(fields, gooduser.FieldReadPageLink)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -4122,14 +4022,6 @@ func (m *GoodUserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *GoodUserMutation) ClearField(name string) error {
-	switch name {
-	case gooduser.FieldHashRate:
-		m.ClearHashRate()
-		return nil
-	case gooduser.FieldReadPageLink:
-		m.ClearReadPageLink()
-		return nil
-	}
 	return fmt.Errorf("unknown GoodUser nullable field %s", name)
 }
 
@@ -4152,26 +4044,26 @@ func (m *GoodUserMutation) ResetField(name string) error {
 	case gooduser.FieldGoodID:
 		m.ResetGoodID()
 		return nil
+	case gooduser.FieldRootUserID:
+		m.ResetRootUserID()
+		return nil
 	case gooduser.FieldName:
 		m.ResetName()
 		return nil
-	case gooduser.FieldAuthToken:
-		m.ResetAuthToken()
+	case gooduser.FieldMiningpoolType:
+		m.ResetMiningpoolType()
 		return nil
-	case gooduser.FieldAuthed:
-		m.ResetAuthed()
-		return nil
-	case gooduser.FieldStart:
-		m.ResetStart()
-		return nil
-	case gooduser.FieldEnd:
-		m.ResetEnd()
+	case gooduser.FieldCoinType:
+		m.ResetCoinType()
 		return nil
 	case gooduser.FieldHashRate:
 		m.ResetHashRate()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ResetReadPageLink()
+		return nil
+	case gooduser.FieldRevenueType:
+		m.ResetRevenueType()
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser field %s", name)

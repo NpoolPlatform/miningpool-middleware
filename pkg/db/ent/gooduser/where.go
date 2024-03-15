@@ -114,6 +114,13 @@ func GoodID(v uuid.UUID) predicate.GoodUser {
 	})
 }
 
+// RootUserID applies equality check predicate on the "root_user_id" field. It's identical to RootUserIDEQ.
+func RootUserID(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRootUserID), v))
+	})
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -121,36 +128,22 @@ func Name(v string) predicate.GoodUser {
 	})
 }
 
-// AuthToken applies equality check predicate on the "auth_token" field. It's identical to AuthTokenEQ.
-func AuthToken(v string) predicate.GoodUser {
+// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
+func MiningpoolType(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAuthToken), v))
+		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// Authed applies equality check predicate on the "authed" field. It's identical to AuthedEQ.
-func Authed(v bool) predicate.GoodUser {
+// CoinType applies equality check predicate on the "coin_type" field. It's identical to CoinTypeEQ.
+func CoinType(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAuthed), v))
-	})
-}
-
-// Start applies equality check predicate on the "start" field. It's identical to StartEQ.
-func Start(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStart), v))
-	})
-}
-
-// End applies equality check predicate on the "end" field. It's identical to EndEQ.
-func End(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldEnd), v))
+		s.Where(sql.EQ(s.C(FieldCoinType), v))
 	})
 }
 
 // HashRate applies equality check predicate on the "hash_rate" field. It's identical to HashRateEQ.
-func HashRate(v float64) predicate.GoodUser {
+func HashRate(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldHashRate), v))
 	})
@@ -160,6 +153,13 @@ func HashRate(v float64) predicate.GoodUser {
 func ReadPageLink(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldReadPageLink), v))
+	})
+}
+
+// RevenueType applies equality check predicate on the "revenue_type" field. It's identical to RevenueTypeEQ.
+func RevenueType(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRevenueType), v))
 	})
 }
 
@@ -483,6 +483,70 @@ func GoodIDLTE(v uuid.UUID) predicate.GoodUser {
 	})
 }
 
+// RootUserIDEQ applies the EQ predicate on the "root_user_id" field.
+func RootUserIDEQ(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDNEQ applies the NEQ predicate on the "root_user_id" field.
+func RootUserIDNEQ(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDIn applies the In predicate on the "root_user_id" field.
+func RootUserIDIn(vs ...uuid.UUID) predicate.GoodUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRootUserID), v...))
+	})
+}
+
+// RootUserIDNotIn applies the NotIn predicate on the "root_user_id" field.
+func RootUserIDNotIn(vs ...uuid.UUID) predicate.GoodUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRootUserID), v...))
+	})
+}
+
+// RootUserIDGT applies the GT predicate on the "root_user_id" field.
+func RootUserIDGT(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDGTE applies the GTE predicate on the "root_user_id" field.
+func RootUserIDGTE(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDLT applies the LT predicate on the "root_user_id" field.
+func RootUserIDLT(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRootUserID), v))
+	})
+}
+
+// RootUserIDLTE applies the LTE predicate on the "root_user_id" field.
+func RootUserIDLTE(v uuid.UUID) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRootUserID), v))
+	})
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -582,263 +646,220 @@ func NameContainsFold(v string) predicate.GoodUser {
 	})
 }
 
-// AuthTokenEQ applies the EQ predicate on the "auth_token" field.
-func AuthTokenEQ(v string) predicate.GoodUser {
+// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
+func MiningpoolTypeEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAuthToken), v))
+		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenNEQ applies the NEQ predicate on the "auth_token" field.
-func AuthTokenNEQ(v string) predicate.GoodUser {
+// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
+func MiningpoolTypeNEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAuthToken), v))
+		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenIn applies the In predicate on the "auth_token" field.
-func AuthTokenIn(vs ...string) predicate.GoodUser {
+// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
+func MiningpoolTypeIn(vs ...string) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldAuthToken), v...))
+		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
 	})
 }
 
-// AuthTokenNotIn applies the NotIn predicate on the "auth_token" field.
-func AuthTokenNotIn(vs ...string) predicate.GoodUser {
+// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
+func MiningpoolTypeNotIn(vs ...string) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldAuthToken), v...))
+		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
 	})
 }
 
-// AuthTokenGT applies the GT predicate on the "auth_token" field.
-func AuthTokenGT(v string) predicate.GoodUser {
+// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
+func MiningpoolTypeGT(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldAuthToken), v))
+		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenGTE applies the GTE predicate on the "auth_token" field.
-func AuthTokenGTE(v string) predicate.GoodUser {
+// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
+func MiningpoolTypeGTE(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldAuthToken), v))
+		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenLT applies the LT predicate on the "auth_token" field.
-func AuthTokenLT(v string) predicate.GoodUser {
+// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
+func MiningpoolTypeLT(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldAuthToken), v))
+		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenLTE applies the LTE predicate on the "auth_token" field.
-func AuthTokenLTE(v string) predicate.GoodUser {
+// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
+func MiningpoolTypeLTE(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldAuthToken), v))
+		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenContains applies the Contains predicate on the "auth_token" field.
-func AuthTokenContains(v string) predicate.GoodUser {
+// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
+func MiningpoolTypeContains(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldAuthToken), v))
+		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenHasPrefix applies the HasPrefix predicate on the "auth_token" field.
-func AuthTokenHasPrefix(v string) predicate.GoodUser {
+// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
+func MiningpoolTypeHasPrefix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldAuthToken), v))
+		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenHasSuffix applies the HasSuffix predicate on the "auth_token" field.
-func AuthTokenHasSuffix(v string) predicate.GoodUser {
+// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
+func MiningpoolTypeHasSuffix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldAuthToken), v))
+		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenEqualFold applies the EqualFold predicate on the "auth_token" field.
-func AuthTokenEqualFold(v string) predicate.GoodUser {
+// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
+func MiningpoolTypeEqualFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldAuthToken), v))
+		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthTokenContainsFold applies the ContainsFold predicate on the "auth_token" field.
-func AuthTokenContainsFold(v string) predicate.GoodUser {
+// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
+func MiningpoolTypeContainsFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldAuthToken), v))
+		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
 	})
 }
 
-// AuthedEQ applies the EQ predicate on the "authed" field.
-func AuthedEQ(v bool) predicate.GoodUser {
+// CoinTypeEQ applies the EQ predicate on the "coin_type" field.
+func CoinTypeEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAuthed), v))
+		s.Where(sql.EQ(s.C(FieldCoinType), v))
 	})
 }
 
-// AuthedNEQ applies the NEQ predicate on the "authed" field.
-func AuthedNEQ(v bool) predicate.GoodUser {
+// CoinTypeNEQ applies the NEQ predicate on the "coin_type" field.
+func CoinTypeNEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAuthed), v))
+		s.Where(sql.NEQ(s.C(FieldCoinType), v))
 	})
 }
 
-// StartEQ applies the EQ predicate on the "start" field.
-func StartEQ(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStart), v))
-	})
-}
-
-// StartNEQ applies the NEQ predicate on the "start" field.
-func StartNEQ(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldStart), v))
-	})
-}
-
-// StartIn applies the In predicate on the "start" field.
-func StartIn(vs ...uint32) predicate.GoodUser {
+// CoinTypeIn applies the In predicate on the "coin_type" field.
+func CoinTypeIn(vs ...string) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldStart), v...))
+		s.Where(sql.In(s.C(FieldCoinType), v...))
 	})
 }
 
-// StartNotIn applies the NotIn predicate on the "start" field.
-func StartNotIn(vs ...uint32) predicate.GoodUser {
+// CoinTypeNotIn applies the NotIn predicate on the "coin_type" field.
+func CoinTypeNotIn(vs ...string) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldStart), v...))
+		s.Where(sql.NotIn(s.C(FieldCoinType), v...))
 	})
 }
 
-// StartGT applies the GT predicate on the "start" field.
-func StartGT(v uint32) predicate.GoodUser {
+// CoinTypeGT applies the GT predicate on the "coin_type" field.
+func CoinTypeGT(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldStart), v))
+		s.Where(sql.GT(s.C(FieldCoinType), v))
 	})
 }
 
-// StartGTE applies the GTE predicate on the "start" field.
-func StartGTE(v uint32) predicate.GoodUser {
+// CoinTypeGTE applies the GTE predicate on the "coin_type" field.
+func CoinTypeGTE(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldStart), v))
+		s.Where(sql.GTE(s.C(FieldCoinType), v))
 	})
 }
 
-// StartLT applies the LT predicate on the "start" field.
-func StartLT(v uint32) predicate.GoodUser {
+// CoinTypeLT applies the LT predicate on the "coin_type" field.
+func CoinTypeLT(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldStart), v))
+		s.Where(sql.LT(s.C(FieldCoinType), v))
 	})
 }
 
-// StartLTE applies the LTE predicate on the "start" field.
-func StartLTE(v uint32) predicate.GoodUser {
+// CoinTypeLTE applies the LTE predicate on the "coin_type" field.
+func CoinTypeLTE(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldStart), v))
+		s.Where(sql.LTE(s.C(FieldCoinType), v))
 	})
 }
 
-// EndEQ applies the EQ predicate on the "end" field.
-func EndEQ(v uint32) predicate.GoodUser {
+// CoinTypeContains applies the Contains predicate on the "coin_type" field.
+func CoinTypeContains(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldEnd), v))
+		s.Where(sql.Contains(s.C(FieldCoinType), v))
 	})
 }
 
-// EndNEQ applies the NEQ predicate on the "end" field.
-func EndNEQ(v uint32) predicate.GoodUser {
+// CoinTypeHasPrefix applies the HasPrefix predicate on the "coin_type" field.
+func CoinTypeHasPrefix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldEnd), v))
+		s.Where(sql.HasPrefix(s.C(FieldCoinType), v))
 	})
 }
 
-// EndIn applies the In predicate on the "end" field.
-func EndIn(vs ...uint32) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
+// CoinTypeHasSuffix applies the HasSuffix predicate on the "coin_type" field.
+func CoinTypeHasSuffix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldEnd), v...))
+		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
 	})
 }
 
-// EndNotIn applies the NotIn predicate on the "end" field.
-func EndNotIn(vs ...uint32) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
+// CoinTypeEqualFold applies the EqualFold predicate on the "coin_type" field.
+func CoinTypeEqualFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldEnd), v...))
+		s.Where(sql.EqualFold(s.C(FieldCoinType), v))
 	})
 }
 
-// EndGT applies the GT predicate on the "end" field.
-func EndGT(v uint32) predicate.GoodUser {
+// CoinTypeContainsFold applies the ContainsFold predicate on the "coin_type" field.
+func CoinTypeContainsFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldEnd), v))
-	})
-}
-
-// EndGTE applies the GTE predicate on the "end" field.
-func EndGTE(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldEnd), v))
-	})
-}
-
-// EndLT applies the LT predicate on the "end" field.
-func EndLT(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldEnd), v))
-	})
-}
-
-// EndLTE applies the LTE predicate on the "end" field.
-func EndLTE(v uint32) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldEnd), v))
+		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
 	})
 }
 
 // HashRateEQ applies the EQ predicate on the "hash_rate" field.
-func HashRateEQ(v float64) predicate.GoodUser {
+func HashRateEQ(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldHashRate), v))
 	})
 }
 
 // HashRateNEQ applies the NEQ predicate on the "hash_rate" field.
-func HashRateNEQ(v float64) predicate.GoodUser {
+func HashRateNEQ(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldHashRate), v))
 	})
 }
 
 // HashRateIn applies the In predicate on the "hash_rate" field.
-func HashRateIn(vs ...float64) predicate.GoodUser {
+func HashRateIn(vs ...float32) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -849,7 +870,7 @@ func HashRateIn(vs ...float64) predicate.GoodUser {
 }
 
 // HashRateNotIn applies the NotIn predicate on the "hash_rate" field.
-func HashRateNotIn(vs ...float64) predicate.GoodUser {
+func HashRateNotIn(vs ...float32) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -860,44 +881,30 @@ func HashRateNotIn(vs ...float64) predicate.GoodUser {
 }
 
 // HashRateGT applies the GT predicate on the "hash_rate" field.
-func HashRateGT(v float64) predicate.GoodUser {
+func HashRateGT(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldHashRate), v))
 	})
 }
 
 // HashRateGTE applies the GTE predicate on the "hash_rate" field.
-func HashRateGTE(v float64) predicate.GoodUser {
+func HashRateGTE(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldHashRate), v))
 	})
 }
 
 // HashRateLT applies the LT predicate on the "hash_rate" field.
-func HashRateLT(v float64) predicate.GoodUser {
+func HashRateLT(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldHashRate), v))
 	})
 }
 
 // HashRateLTE applies the LTE predicate on the "hash_rate" field.
-func HashRateLTE(v float64) predicate.GoodUser {
+func HashRateLTE(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldHashRate), v))
-	})
-}
-
-// HashRateIsNil applies the IsNil predicate on the "hash_rate" field.
-func HashRateIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldHashRate)))
-	})
-}
-
-// HashRateNotNil applies the NotNil predicate on the "hash_rate" field.
-func HashRateNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldHashRate)))
 	})
 }
 
@@ -986,20 +993,6 @@ func ReadPageLinkHasSuffix(v string) predicate.GoodUser {
 	})
 }
 
-// ReadPageLinkIsNil applies the IsNil predicate on the "read_page_link" field.
-func ReadPageLinkIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldReadPageLink)))
-	})
-}
-
-// ReadPageLinkNotNil applies the NotNil predicate on the "read_page_link" field.
-func ReadPageLinkNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldReadPageLink)))
-	})
-}
-
 // ReadPageLinkEqualFold applies the EqualFold predicate on the "read_page_link" field.
 func ReadPageLinkEqualFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -1011,6 +1004,105 @@ func ReadPageLinkEqualFold(v string) predicate.GoodUser {
 func ReadPageLinkContainsFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldReadPageLink), v))
+	})
+}
+
+// RevenueTypeEQ applies the EQ predicate on the "revenue_type" field.
+func RevenueTypeEQ(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeNEQ applies the NEQ predicate on the "revenue_type" field.
+func RevenueTypeNEQ(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeIn applies the In predicate on the "revenue_type" field.
+func RevenueTypeIn(vs ...string) predicate.GoodUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldRevenueType), v...))
+	})
+}
+
+// RevenueTypeNotIn applies the NotIn predicate on the "revenue_type" field.
+func RevenueTypeNotIn(vs ...string) predicate.GoodUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldRevenueType), v...))
+	})
+}
+
+// RevenueTypeGT applies the GT predicate on the "revenue_type" field.
+func RevenueTypeGT(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeGTE applies the GTE predicate on the "revenue_type" field.
+func RevenueTypeGTE(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeLT applies the LT predicate on the "revenue_type" field.
+func RevenueTypeLT(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeLTE applies the LTE predicate on the "revenue_type" field.
+func RevenueTypeLTE(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeContains applies the Contains predicate on the "revenue_type" field.
+func RevenueTypeContains(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeHasPrefix applies the HasPrefix predicate on the "revenue_type" field.
+func RevenueTypeHasPrefix(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeHasSuffix applies the HasSuffix predicate on the "revenue_type" field.
+func RevenueTypeHasSuffix(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeEqualFold applies the EqualFold predicate on the "revenue_type" field.
+func RevenueTypeEqualFold(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeContainsFold applies the ContainsFold predicate on the "revenue_type" field.
+func RevenueTypeContainsFold(v string) predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRevenueType), v))
 	})
 }
 

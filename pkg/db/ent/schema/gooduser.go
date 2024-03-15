@@ -26,19 +26,19 @@ func (GoodUser) Fields() []ent.Field {
 		field.
 			UUID("good_id", uuid.UUID{}),
 		field.
+			UUID("root_user_id", uuid.UUID{}),
+		field.
 			String("name"),
 		field.
-			String("auth_token"),
+			String("miningpool_type"),
 		field.
-			Bool("authed"),
+			String("coin_type"),
 		field.
-			Uint32("start"),
+			Float32("hash_rate"),
 		field.
-			Uint32("end"),
+			String("read_page_link"),
 		field.
-			Float("hash_rate").Optional().Default(0),
-		field.
-			String("read_page_link").Optional().Default(""),
+			String("revenue_type"),
 	}
 }
 

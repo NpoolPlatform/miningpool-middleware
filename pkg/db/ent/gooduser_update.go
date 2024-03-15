@@ -104,74 +104,40 @@ func (guu *GoodUserUpdate) SetGoodID(u uuid.UUID) *GoodUserUpdate {
 	return guu
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (guu *GoodUserUpdate) SetRootUserID(u uuid.UUID) *GoodUserUpdate {
+	guu.mutation.SetRootUserID(u)
+	return guu
+}
+
 // SetName sets the "name" field.
 func (guu *GoodUserUpdate) SetName(s string) *GoodUserUpdate {
 	guu.mutation.SetName(s)
 	return guu
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (guu *GoodUserUpdate) SetAuthToken(s string) *GoodUserUpdate {
-	guu.mutation.SetAuthToken(s)
+// SetMiningpoolType sets the "miningpool_type" field.
+func (guu *GoodUserUpdate) SetMiningpoolType(s string) *GoodUserUpdate {
+	guu.mutation.SetMiningpoolType(s)
 	return guu
 }
 
-// SetAuthed sets the "authed" field.
-func (guu *GoodUserUpdate) SetAuthed(b bool) *GoodUserUpdate {
-	guu.mutation.SetAuthed(b)
-	return guu
-}
-
-// SetStart sets the "start" field.
-func (guu *GoodUserUpdate) SetStart(u uint32) *GoodUserUpdate {
-	guu.mutation.ResetStart()
-	guu.mutation.SetStart(u)
-	return guu
-}
-
-// AddStart adds u to the "start" field.
-func (guu *GoodUserUpdate) AddStart(u int32) *GoodUserUpdate {
-	guu.mutation.AddStart(u)
-	return guu
-}
-
-// SetEnd sets the "end" field.
-func (guu *GoodUserUpdate) SetEnd(u uint32) *GoodUserUpdate {
-	guu.mutation.ResetEnd()
-	guu.mutation.SetEnd(u)
-	return guu
-}
-
-// AddEnd adds u to the "end" field.
-func (guu *GoodUserUpdate) AddEnd(u int32) *GoodUserUpdate {
-	guu.mutation.AddEnd(u)
+// SetCoinType sets the "coin_type" field.
+func (guu *GoodUserUpdate) SetCoinType(s string) *GoodUserUpdate {
+	guu.mutation.SetCoinType(s)
 	return guu
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (guu *GoodUserUpdate) SetHashRate(f float64) *GoodUserUpdate {
+func (guu *GoodUserUpdate) SetHashRate(f float32) *GoodUserUpdate {
 	guu.mutation.ResetHashRate()
 	guu.mutation.SetHashRate(f)
 	return guu
 }
 
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillableHashRate(f *float64) *GoodUserUpdate {
-	if f != nil {
-		guu.SetHashRate(*f)
-	}
-	return guu
-}
-
 // AddHashRate adds f to the "hash_rate" field.
-func (guu *GoodUserUpdate) AddHashRate(f float64) *GoodUserUpdate {
+func (guu *GoodUserUpdate) AddHashRate(f float32) *GoodUserUpdate {
 	guu.mutation.AddHashRate(f)
-	return guu
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (guu *GoodUserUpdate) ClearHashRate() *GoodUserUpdate {
-	guu.mutation.ClearHashRate()
 	return guu
 }
 
@@ -181,17 +147,9 @@ func (guu *GoodUserUpdate) SetReadPageLink(s string) *GoodUserUpdate {
 	return guu
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillableReadPageLink(s *string) *GoodUserUpdate {
-	if s != nil {
-		guu.SetReadPageLink(*s)
-	}
-	return guu
-}
-
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (guu *GoodUserUpdate) ClearReadPageLink() *GoodUserUpdate {
-	guu.mutation.ClearReadPageLink()
+// SetRevenueType sets the "revenue_type" field.
+func (guu *GoodUserUpdate) SetRevenueType(s string) *GoodUserUpdate {
+	guu.mutation.SetRevenueType(s)
 	return guu
 }
 
@@ -349,6 +307,13 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldGoodID,
 		})
 	}
+	if value, ok := guu.mutation.RootUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: gooduser.FieldRootUserID,
+		})
+	}
 	if value, ok := guu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -356,65 +321,31 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldName,
 		})
 	}
-	if value, ok := guu.mutation.AuthToken(); ok {
+	if value, ok := guu.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthToken,
+			Column: gooduser.FieldMiningpoolType,
 		})
 	}
-	if value, ok := guu.mutation.Authed(); ok {
+	if value, ok := guu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthed,
-		})
-	}
-	if value, ok := guu.mutation.Start(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldStart,
-		})
-	}
-	if value, ok := guu.mutation.AddedStart(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldStart,
-		})
-	}
-	if value, ok := guu.mutation.End(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldEnd,
-		})
-	}
-	if value, ok := guu.mutation.AddedEnd(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldEnd,
+			Column: gooduser.FieldCoinType,
 		})
 	}
 	if value, ok := guu.mutation.HashRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeFloat32,
 			Value:  value,
 			Column: gooduser.FieldHashRate,
 		})
 	}
 	if value, ok := guu.mutation.AddedHashRate(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeFloat32,
 			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if guu.mutation.HashRateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
 			Column: gooduser.FieldHashRate,
 		})
 	}
@@ -425,10 +356,11 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldReadPageLink,
 		})
 	}
-	if guu.mutation.ReadPageLinkCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+	if value, ok := guu.mutation.RevenueType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: gooduser.FieldReadPageLink,
+			Value:  value,
+			Column: gooduser.FieldRevenueType,
 		})
 	}
 	_spec.Modifiers = guu.modifiers
@@ -527,74 +459,40 @@ func (guuo *GoodUserUpdateOne) SetGoodID(u uuid.UUID) *GoodUserUpdateOne {
 	return guuo
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (guuo *GoodUserUpdateOne) SetRootUserID(u uuid.UUID) *GoodUserUpdateOne {
+	guuo.mutation.SetRootUserID(u)
+	return guuo
+}
+
 // SetName sets the "name" field.
 func (guuo *GoodUserUpdateOne) SetName(s string) *GoodUserUpdateOne {
 	guuo.mutation.SetName(s)
 	return guuo
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (guuo *GoodUserUpdateOne) SetAuthToken(s string) *GoodUserUpdateOne {
-	guuo.mutation.SetAuthToken(s)
+// SetMiningpoolType sets the "miningpool_type" field.
+func (guuo *GoodUserUpdateOne) SetMiningpoolType(s string) *GoodUserUpdateOne {
+	guuo.mutation.SetMiningpoolType(s)
 	return guuo
 }
 
-// SetAuthed sets the "authed" field.
-func (guuo *GoodUserUpdateOne) SetAuthed(b bool) *GoodUserUpdateOne {
-	guuo.mutation.SetAuthed(b)
-	return guuo
-}
-
-// SetStart sets the "start" field.
-func (guuo *GoodUserUpdateOne) SetStart(u uint32) *GoodUserUpdateOne {
-	guuo.mutation.ResetStart()
-	guuo.mutation.SetStart(u)
-	return guuo
-}
-
-// AddStart adds u to the "start" field.
-func (guuo *GoodUserUpdateOne) AddStart(u int32) *GoodUserUpdateOne {
-	guuo.mutation.AddStart(u)
-	return guuo
-}
-
-// SetEnd sets the "end" field.
-func (guuo *GoodUserUpdateOne) SetEnd(u uint32) *GoodUserUpdateOne {
-	guuo.mutation.ResetEnd()
-	guuo.mutation.SetEnd(u)
-	return guuo
-}
-
-// AddEnd adds u to the "end" field.
-func (guuo *GoodUserUpdateOne) AddEnd(u int32) *GoodUserUpdateOne {
-	guuo.mutation.AddEnd(u)
+// SetCoinType sets the "coin_type" field.
+func (guuo *GoodUserUpdateOne) SetCoinType(s string) *GoodUserUpdateOne {
+	guuo.mutation.SetCoinType(s)
 	return guuo
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) SetHashRate(f float64) *GoodUserUpdateOne {
+func (guuo *GoodUserUpdateOne) SetHashRate(f float32) *GoodUserUpdateOne {
 	guuo.mutation.ResetHashRate()
 	guuo.mutation.SetHashRate(f)
 	return guuo
 }
 
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillableHashRate(f *float64) *GoodUserUpdateOne {
-	if f != nil {
-		guuo.SetHashRate(*f)
-	}
-	return guuo
-}
-
 // AddHashRate adds f to the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) AddHashRate(f float64) *GoodUserUpdateOne {
+func (guuo *GoodUserUpdateOne) AddHashRate(f float32) *GoodUserUpdateOne {
 	guuo.mutation.AddHashRate(f)
-	return guuo
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) ClearHashRate() *GoodUserUpdateOne {
-	guuo.mutation.ClearHashRate()
 	return guuo
 }
 
@@ -604,17 +502,9 @@ func (guuo *GoodUserUpdateOne) SetReadPageLink(s string) *GoodUserUpdateOne {
 	return guuo
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillableReadPageLink(s *string) *GoodUserUpdateOne {
-	if s != nil {
-		guuo.SetReadPageLink(*s)
-	}
-	return guuo
-}
-
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (guuo *GoodUserUpdateOne) ClearReadPageLink() *GoodUserUpdateOne {
-	guuo.mutation.ClearReadPageLink()
+// SetRevenueType sets the "revenue_type" field.
+func (guuo *GoodUserUpdateOne) SetRevenueType(s string) *GoodUserUpdateOne {
+	guuo.mutation.SetRevenueType(s)
 	return guuo
 }
 
@@ -802,6 +692,13 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldGoodID,
 		})
 	}
+	if value, ok := guuo.mutation.RootUserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: gooduser.FieldRootUserID,
+		})
+	}
 	if value, ok := guuo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -809,65 +706,31 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldName,
 		})
 	}
-	if value, ok := guuo.mutation.AuthToken(); ok {
+	if value, ok := guuo.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthToken,
+			Column: gooduser.FieldMiningpoolType,
 		})
 	}
-	if value, ok := guuo.mutation.Authed(); ok {
+	if value, ok := guuo.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthed,
-		})
-	}
-	if value, ok := guuo.mutation.Start(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldStart,
-		})
-	}
-	if value, ok := guuo.mutation.AddedStart(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldStart,
-		})
-	}
-	if value, ok := guuo.mutation.End(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldEnd,
-		})
-	}
-	if value, ok := guuo.mutation.AddedEnd(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldEnd,
+			Column: gooduser.FieldCoinType,
 		})
 	}
 	if value, ok := guuo.mutation.HashRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeFloat32,
 			Value:  value,
 			Column: gooduser.FieldHashRate,
 		})
 	}
 	if value, ok := guuo.mutation.AddedHashRate(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeFloat32,
 			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if guuo.mutation.HashRateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
 			Column: gooduser.FieldHashRate,
 		})
 	}
@@ -878,10 +741,11 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldReadPageLink,
 		})
 	}
-	if guuo.mutation.ReadPageLinkCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+	if value, ok := guuo.mutation.RevenueType(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: gooduser.FieldReadPageLink,
+			Value:  value,
+			Column: gooduser.FieldRevenueType,
 		})
 	}
 	_spec.Modifiers = guuo.modifiers

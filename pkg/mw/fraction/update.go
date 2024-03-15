@@ -20,7 +20,7 @@ type updateHandler struct {
 //nolint:gocyclo
 func (h *updateHandler) validateState(info *ent.Fraction) error {
 	if info.WithdrawState == basetypes.WithdrawState_DefaultWithdrawState.String() {
-		return fmt.Errorf("invalid miningpooltype")
+		return fmt.Errorf("invalid withdrawstate")
 	}
 	return nil
 }

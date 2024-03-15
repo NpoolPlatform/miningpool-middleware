@@ -98,18 +98,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "GoodUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			gooduser.FieldCreatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
-			gooduser.FieldUpdatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
-			gooduser.FieldDeletedAt:    {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
-			gooduser.FieldEntID:        {Type: field.TypeUUID, Column: gooduser.FieldEntID},
-			gooduser.FieldGoodID:       {Type: field.TypeUUID, Column: gooduser.FieldGoodID},
-			gooduser.FieldName:         {Type: field.TypeString, Column: gooduser.FieldName},
-			gooduser.FieldAuthToken:    {Type: field.TypeString, Column: gooduser.FieldAuthToken},
-			gooduser.FieldAuthed:       {Type: field.TypeBool, Column: gooduser.FieldAuthed},
-			gooduser.FieldStart:        {Type: field.TypeUint32, Column: gooduser.FieldStart},
-			gooduser.FieldEnd:          {Type: field.TypeUint32, Column: gooduser.FieldEnd},
-			gooduser.FieldHashRate:     {Type: field.TypeFloat64, Column: gooduser.FieldHashRate},
-			gooduser.FieldReadPageLink: {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
+			gooduser.FieldCreatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
+			gooduser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
+			gooduser.FieldDeletedAt:      {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
+			gooduser.FieldEntID:          {Type: field.TypeUUID, Column: gooduser.FieldEntID},
+			gooduser.FieldGoodID:         {Type: field.TypeUUID, Column: gooduser.FieldGoodID},
+			gooduser.FieldRootUserID:     {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
+			gooduser.FieldName:           {Type: field.TypeString, Column: gooduser.FieldName},
+			gooduser.FieldMiningpoolType: {Type: field.TypeString, Column: gooduser.FieldMiningpoolType},
+			gooduser.FieldCoinType:       {Type: field.TypeString, Column: gooduser.FieldCoinType},
+			gooduser.FieldHashRate:       {Type: field.TypeFloat32, Column: gooduser.FieldHashRate},
+			gooduser.FieldReadPageLink:   {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
+			gooduser.FieldRevenueType:    {Type: field.TypeString, Column: gooduser.FieldRevenueType},
 		},
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
@@ -503,39 +503,39 @@ func (f *GoodUserFilter) WhereGoodID(p entql.ValueP) {
 	f.Where(p.Field(gooduser.FieldGoodID))
 }
 
+// WhereRootUserID applies the entql [16]byte predicate on the root_user_id field.
+func (f *GoodUserFilter) WhereRootUserID(p entql.ValueP) {
+	f.Where(p.Field(gooduser.FieldRootUserID))
+}
+
 // WhereName applies the entql string predicate on the name field.
 func (f *GoodUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldName))
 }
 
-// WhereAuthToken applies the entql string predicate on the auth_token field.
-func (f *GoodUserFilter) WhereAuthToken(p entql.StringP) {
-	f.Where(p.Field(gooduser.FieldAuthToken))
+// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
+func (f *GoodUserFilter) WhereMiningpoolType(p entql.StringP) {
+	f.Where(p.Field(gooduser.FieldMiningpoolType))
 }
 
-// WhereAuthed applies the entql bool predicate on the authed field.
-func (f *GoodUserFilter) WhereAuthed(p entql.BoolP) {
-	f.Where(p.Field(gooduser.FieldAuthed))
+// WhereCoinType applies the entql string predicate on the coin_type field.
+func (f *GoodUserFilter) WhereCoinType(p entql.StringP) {
+	f.Where(p.Field(gooduser.FieldCoinType))
 }
 
-// WhereStart applies the entql uint32 predicate on the start field.
-func (f *GoodUserFilter) WhereStart(p entql.Uint32P) {
-	f.Where(p.Field(gooduser.FieldStart))
-}
-
-// WhereEnd applies the entql uint32 predicate on the end field.
-func (f *GoodUserFilter) WhereEnd(p entql.Uint32P) {
-	f.Where(p.Field(gooduser.FieldEnd))
-}
-
-// WhereHashRate applies the entql float64 predicate on the hash_rate field.
-func (f *GoodUserFilter) WhereHashRate(p entql.Float64P) {
+// WhereHashRate applies the entql float32 predicate on the hash_rate field.
+func (f *GoodUserFilter) WhereHashRate(p entql.Float32P) {
 	f.Where(p.Field(gooduser.FieldHashRate))
 }
 
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.
 func (f *GoodUserFilter) WhereReadPageLink(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldReadPageLink))
+}
+
+// WhereRevenueType applies the entql string predicate on the revenue_type field.
+func (f *GoodUserFilter) WhereRevenueType(p entql.StringP) {
+	f.Where(p.Field(gooduser.FieldRevenueType))
 }
 
 // addPredicate implements the predicateAdder interface.

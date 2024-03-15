@@ -182,14 +182,6 @@ func init() {
 	gooduserDescEntID := gooduserMixinFields1[1].Descriptor()
 	// gooduser.DefaultEntID holds the default value on creation for the ent_id field.
 	gooduser.DefaultEntID = gooduserDescEntID.Default.(func() uuid.UUID)
-	// gooduserDescHashRate is the schema descriptor for hash_rate field.
-	gooduserDescHashRate := gooduserFields[6].Descriptor()
-	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
-	gooduser.DefaultHashRate = gooduserDescHashRate.Default.(float64)
-	// gooduserDescReadPageLink is the schema descriptor for read_page_link field.
-	gooduserDescReadPageLink := gooduserFields[7].Descriptor()
-	// gooduser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
-	gooduser.DefaultReadPageLink = gooduserDescReadPageLink.Default.(string)
 	orderuserMixin := schema.OrderUser{}.Mixin()
 	orderuser.Policy = privacy.NewPolicies(orderuserMixin[0], schema.OrderUser{})
 	orderuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {

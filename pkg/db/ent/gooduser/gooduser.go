@@ -22,20 +22,20 @@ const (
 	FieldEntID = "ent_id"
 	// FieldGoodID holds the string denoting the good_id field in the database.
 	FieldGoodID = "good_id"
+	// FieldRootUserID holds the string denoting the root_user_id field in the database.
+	FieldRootUserID = "root_user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldAuthToken holds the string denoting the auth_token field in the database.
-	FieldAuthToken = "auth_token"
-	// FieldAuthed holds the string denoting the authed field in the database.
-	FieldAuthed = "authed"
-	// FieldStart holds the string denoting the start field in the database.
-	FieldStart = "start"
-	// FieldEnd holds the string denoting the end field in the database.
-	FieldEnd = "end"
+	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
+	FieldMiningpoolType = "miningpool_type"
+	// FieldCoinType holds the string denoting the coin_type field in the database.
+	FieldCoinType = "coin_type"
 	// FieldHashRate holds the string denoting the hash_rate field in the database.
 	FieldHashRate = "hash_rate"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
 	FieldReadPageLink = "read_page_link"
+	// FieldRevenueType holds the string denoting the revenue_type field in the database.
+	FieldRevenueType = "revenue_type"
 	// Table holds the table name of the gooduser in the database.
 	Table = "good_users"
 )
@@ -48,13 +48,13 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldEntID,
 	FieldGoodID,
+	FieldRootUserID,
 	FieldName,
-	FieldAuthToken,
-	FieldAuthed,
-	FieldStart,
-	FieldEnd,
+	FieldMiningpoolType,
+	FieldCoinType,
 	FieldHashRate,
 	FieldReadPageLink,
+	FieldRevenueType,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -86,8 +86,4 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultHashRate holds the default value on creation for the "hash_rate" field.
-	DefaultHashRate float64
-	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
-	DefaultReadPageLink string
 )

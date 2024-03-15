@@ -26,20 +26,20 @@ type GoodUser struct {
 	EntID uuid.UUID `json:"ent_id,omitempty"`
 	// GoodID holds the value of the "good_id" field.
 	GoodID uuid.UUID `json:"good_id,omitempty"`
+	// RootUserID holds the value of the "root_user_id" field.
+	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// AuthToken holds the value of the "auth_token" field.
-	AuthToken string `json:"auth_token,omitempty"`
-	// Authed holds the value of the "authed" field.
-	Authed bool `json:"authed,omitempty"`
-	// Start holds the value of the "start" field.
-	Start uint32 `json:"start,omitempty"`
-	// End holds the value of the "end" field.
-	End uint32 `json:"end,omitempty"`
+	// MiningpoolType holds the value of the "miningpool_type" field.
+	MiningpoolType string `json:"miningpool_type,omitempty"`
+	// CoinType holds the value of the "coin_type" field.
+	CoinType string `json:"coin_type,omitempty"`
 	// HashRate holds the value of the "hash_rate" field.
-	HashRate float64 `json:"hash_rate,omitempty"`
+	HashRate float32 `json:"hash_rate,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
+	// RevenueType holds the value of the "revenue_type" field.
+	RevenueType string `json:"revenue_type,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -47,15 +47,13 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gooduser.FieldAuthed:
-			values[i] = new(sql.NullBool)
 		case gooduser.FieldHashRate:
 			values[i] = new(sql.NullFloat64)
-		case gooduser.FieldID, gooduser.FieldCreatedAt, gooduser.FieldUpdatedAt, gooduser.FieldDeletedAt, gooduser.FieldStart, gooduser.FieldEnd:
+		case gooduser.FieldID, gooduser.FieldCreatedAt, gooduser.FieldUpdatedAt, gooduser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case gooduser.FieldName, gooduser.FieldAuthToken, gooduser.FieldReadPageLink:
+		case gooduser.FieldName, gooduser.FieldMiningpoolType, gooduser.FieldCoinType, gooduser.FieldReadPageLink, gooduser.FieldRevenueType:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldGoodID:
+		case gooduser.FieldEntID, gooduser.FieldGoodID, gooduser.FieldRootUserID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -108,47 +106,47 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				gu.GoodID = *value
 			}
+		case gooduser.FieldRootUserID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field root_user_id", values[i])
+			} else if value != nil {
+				gu.RootUserID = *value
+			}
 		case gooduser.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				gu.Name = value.String
 			}
-		case gooduser.FieldAuthToken:
+		case gooduser.FieldMiningpoolType:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field auth_token", values[i])
+				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
 			} else if value.Valid {
-				gu.AuthToken = value.String
+				gu.MiningpoolType = value.String
 			}
-		case gooduser.FieldAuthed:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field authed", values[i])
+		case gooduser.FieldCoinType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
 			} else if value.Valid {
-				gu.Authed = value.Bool
-			}
-		case gooduser.FieldStart:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start", values[i])
-			} else if value.Valid {
-				gu.Start = uint32(value.Int64)
-			}
-		case gooduser.FieldEnd:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field end", values[i])
-			} else if value.Valid {
-				gu.End = uint32(value.Int64)
+				gu.CoinType = value.String
 			}
 		case gooduser.FieldHashRate:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field hash_rate", values[i])
 			} else if value.Valid {
-				gu.HashRate = value.Float64
+				gu.HashRate = float32(value.Float64)
 			}
 		case gooduser.FieldReadPageLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field read_page_link", values[i])
 			} else if value.Valid {
 				gu.ReadPageLink = value.String
+			}
+		case gooduser.FieldRevenueType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field revenue_type", values[i])
+			} else if value.Valid {
+				gu.RevenueType = value.String
 			}
 		}
 	}
@@ -193,26 +191,26 @@ func (gu *GoodUser) String() string {
 	builder.WriteString("good_id=")
 	builder.WriteString(fmt.Sprintf("%v", gu.GoodID))
 	builder.WriteString(", ")
+	builder.WriteString("root_user_id=")
+	builder.WriteString(fmt.Sprintf("%v", gu.RootUserID))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(gu.Name)
 	builder.WriteString(", ")
-	builder.WriteString("auth_token=")
-	builder.WriteString(gu.AuthToken)
+	builder.WriteString("miningpool_type=")
+	builder.WriteString(gu.MiningpoolType)
 	builder.WriteString(", ")
-	builder.WriteString("authed=")
-	builder.WriteString(fmt.Sprintf("%v", gu.Authed))
-	builder.WriteString(", ")
-	builder.WriteString("start=")
-	builder.WriteString(fmt.Sprintf("%v", gu.Start))
-	builder.WriteString(", ")
-	builder.WriteString("end=")
-	builder.WriteString(fmt.Sprintf("%v", gu.End))
+	builder.WriteString("coin_type=")
+	builder.WriteString(gu.CoinType)
 	builder.WriteString(", ")
 	builder.WriteString("hash_rate=")
 	builder.WriteString(fmt.Sprintf("%v", gu.HashRate))
 	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(gu.ReadPageLink)
+	builder.WriteString(", ")
+	builder.WriteString("revenue_type=")
+	builder.WriteString(gu.RevenueType)
 	builder.WriteByte(')')
 	return builder.String()
 }

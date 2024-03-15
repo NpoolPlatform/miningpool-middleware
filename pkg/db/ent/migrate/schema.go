@@ -96,13 +96,13 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "good_id", Type: field.TypeUUID},
+		{Name: "root_user_id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
-		{Name: "auth_token", Type: field.TypeString},
-		{Name: "authed", Type: field.TypeBool},
-		{Name: "start", Type: field.TypeUint32},
-		{Name: "end", Type: field.TypeUint32},
-		{Name: "hash_rate", Type: field.TypeFloat64, Nullable: true, Default: 0},
-		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "miningpool_type", Type: field.TypeString},
+		{Name: "coin_type", Type: field.TypeString},
+		{Name: "hash_rate", Type: field.TypeFloat32},
+		{Name: "read_page_link", Type: field.TypeString},
+		{Name: "revenue_type", Type: field.TypeString},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.
 	GoodUsersTable = &schema.Table{

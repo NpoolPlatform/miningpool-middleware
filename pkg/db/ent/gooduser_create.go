@@ -84,47 +84,33 @@ func (guc *GoodUserCreate) SetGoodID(u uuid.UUID) *GoodUserCreate {
 	return guc
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (guc *GoodUserCreate) SetRootUserID(u uuid.UUID) *GoodUserCreate {
+	guc.mutation.SetRootUserID(u)
+	return guc
+}
+
 // SetName sets the "name" field.
 func (guc *GoodUserCreate) SetName(s string) *GoodUserCreate {
 	guc.mutation.SetName(s)
 	return guc
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (guc *GoodUserCreate) SetAuthToken(s string) *GoodUserCreate {
-	guc.mutation.SetAuthToken(s)
+// SetMiningpoolType sets the "miningpool_type" field.
+func (guc *GoodUserCreate) SetMiningpoolType(s string) *GoodUserCreate {
+	guc.mutation.SetMiningpoolType(s)
 	return guc
 }
 
-// SetAuthed sets the "authed" field.
-func (guc *GoodUserCreate) SetAuthed(b bool) *GoodUserCreate {
-	guc.mutation.SetAuthed(b)
-	return guc
-}
-
-// SetStart sets the "start" field.
-func (guc *GoodUserCreate) SetStart(u uint32) *GoodUserCreate {
-	guc.mutation.SetStart(u)
-	return guc
-}
-
-// SetEnd sets the "end" field.
-func (guc *GoodUserCreate) SetEnd(u uint32) *GoodUserCreate {
-	guc.mutation.SetEnd(u)
+// SetCoinType sets the "coin_type" field.
+func (guc *GoodUserCreate) SetCoinType(s string) *GoodUserCreate {
+	guc.mutation.SetCoinType(s)
 	return guc
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (guc *GoodUserCreate) SetHashRate(f float64) *GoodUserCreate {
+func (guc *GoodUserCreate) SetHashRate(f float32) *GoodUserCreate {
 	guc.mutation.SetHashRate(f)
-	return guc
-}
-
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableHashRate(f *float64) *GoodUserCreate {
-	if f != nil {
-		guc.SetHashRate(*f)
-	}
 	return guc
 }
 
@@ -134,11 +120,9 @@ func (guc *GoodUserCreate) SetReadPageLink(s string) *GoodUserCreate {
 	return guc
 }
 
-// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableReadPageLink(s *string) *GoodUserCreate {
-	if s != nil {
-		guc.SetReadPageLink(*s)
-	}
+// SetRevenueType sets the "revenue_type" field.
+func (guc *GoodUserCreate) SetRevenueType(s string) *GoodUserCreate {
+	guc.mutation.SetRevenueType(s)
 	return guc
 }
 
@@ -255,14 +239,6 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultEntID()
 		guc.mutation.SetEntID(v)
 	}
-	if _, ok := guc.mutation.HashRate(); !ok {
-		v := gooduser.DefaultHashRate
-		guc.mutation.SetHashRate(v)
-	}
-	if _, ok := guc.mutation.ReadPageLink(); !ok {
-		v := gooduser.DefaultReadPageLink
-		guc.mutation.SetReadPageLink(v)
-	}
 	return nil
 }
 
@@ -283,20 +259,26 @@ func (guc *GoodUserCreate) check() error {
 	if _, ok := guc.mutation.GoodID(); !ok {
 		return &ValidationError{Name: "good_id", err: errors.New(`ent: missing required field "GoodUser.good_id"`)}
 	}
+	if _, ok := guc.mutation.RootUserID(); !ok {
+		return &ValidationError{Name: "root_user_id", err: errors.New(`ent: missing required field "GoodUser.root_user_id"`)}
+	}
 	if _, ok := guc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "GoodUser.name"`)}
 	}
-	if _, ok := guc.mutation.AuthToken(); !ok {
-		return &ValidationError{Name: "auth_token", err: errors.New(`ent: missing required field "GoodUser.auth_token"`)}
+	if _, ok := guc.mutation.MiningpoolType(); !ok {
+		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "GoodUser.miningpool_type"`)}
 	}
-	if _, ok := guc.mutation.Authed(); !ok {
-		return &ValidationError{Name: "authed", err: errors.New(`ent: missing required field "GoodUser.authed"`)}
+	if _, ok := guc.mutation.CoinType(); !ok {
+		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "GoodUser.coin_type"`)}
 	}
-	if _, ok := guc.mutation.Start(); !ok {
-		return &ValidationError{Name: "start", err: errors.New(`ent: missing required field "GoodUser.start"`)}
+	if _, ok := guc.mutation.HashRate(); !ok {
+		return &ValidationError{Name: "hash_rate", err: errors.New(`ent: missing required field "GoodUser.hash_rate"`)}
 	}
-	if _, ok := guc.mutation.End(); !ok {
-		return &ValidationError{Name: "end", err: errors.New(`ent: missing required field "GoodUser.end"`)}
+	if _, ok := guc.mutation.ReadPageLink(); !ok {
+		return &ValidationError{Name: "read_page_link", err: errors.New(`ent: missing required field "GoodUser.read_page_link"`)}
+	}
+	if _, ok := guc.mutation.RevenueType(); !ok {
+		return &ValidationError{Name: "revenue_type", err: errors.New(`ent: missing required field "GoodUser.revenue_type"`)}
 	}
 	return nil
 }
@@ -372,6 +354,14 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 		})
 		_node.GoodID = value
 	}
+	if value, ok := guc.mutation.RootUserID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: gooduser.FieldRootUserID,
+		})
+		_node.RootUserID = value
+	}
 	if value, ok := guc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -380,41 +370,25 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := guc.mutation.AuthToken(); ok {
+	if value, ok := guc.mutation.MiningpoolType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthToken,
+			Column: gooduser.FieldMiningpoolType,
 		})
-		_node.AuthToken = value
+		_node.MiningpoolType = value
 	}
-	if value, ok := guc.mutation.Authed(); ok {
+	if value, ok := guc.mutation.CoinType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: gooduser.FieldAuthed,
+			Column: gooduser.FieldCoinType,
 		})
-		_node.Authed = value
-	}
-	if value, ok := guc.mutation.Start(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldStart,
-		})
-		_node.Start = value
-	}
-	if value, ok := guc.mutation.End(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
-			Value:  value,
-			Column: gooduser.FieldEnd,
-		})
-		_node.End = value
+		_node.CoinType = value
 	}
 	if value, ok := guc.mutation.HashRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat64,
+			Type:   field.TypeFloat32,
 			Value:  value,
 			Column: gooduser.FieldHashRate,
 		})
@@ -427,6 +401,14 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 			Column: gooduser.FieldReadPageLink,
 		})
 		_node.ReadPageLink = value
+	}
+	if value, ok := guc.mutation.RevenueType(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: gooduser.FieldRevenueType,
+		})
+		_node.RevenueType = value
 	}
 	return _node, _spec
 }
@@ -560,6 +542,18 @@ func (u *GoodUserUpsert) UpdateGoodID() *GoodUserUpsert {
 	return u
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *GoodUserUpsert) SetRootUserID(v uuid.UUID) *GoodUserUpsert {
+	u.Set(gooduser.FieldRootUserID, v)
+	return u
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateRootUserID() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldRootUserID)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsert) SetName(v string) *GoodUserUpsert {
 	u.Set(gooduser.FieldName, v)
@@ -572,68 +566,32 @@ func (u *GoodUserUpsert) UpdateName() *GoodUserUpsert {
 	return u
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (u *GoodUserUpsert) SetAuthToken(v string) *GoodUserUpsert {
-	u.Set(gooduser.FieldAuthToken, v)
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *GoodUserUpsert) SetMiningpoolType(v string) *GoodUserUpsert {
+	u.Set(gooduser.FieldMiningpoolType, v)
 	return u
 }
 
-// UpdateAuthToken sets the "auth_token" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateAuthToken() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldAuthToken)
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateMiningpoolType() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldMiningpoolType)
 	return u
 }
 
-// SetAuthed sets the "authed" field.
-func (u *GoodUserUpsert) SetAuthed(v bool) *GoodUserUpsert {
-	u.Set(gooduser.FieldAuthed, v)
+// SetCoinType sets the "coin_type" field.
+func (u *GoodUserUpsert) SetCoinType(v string) *GoodUserUpsert {
+	u.Set(gooduser.FieldCoinType, v)
 	return u
 }
 
-// UpdateAuthed sets the "authed" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateAuthed() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldAuthed)
-	return u
-}
-
-// SetStart sets the "start" field.
-func (u *GoodUserUpsert) SetStart(v uint32) *GoodUserUpsert {
-	u.Set(gooduser.FieldStart, v)
-	return u
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateStart() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldStart)
-	return u
-}
-
-// AddStart adds v to the "start" field.
-func (u *GoodUserUpsert) AddStart(v uint32) *GoodUserUpsert {
-	u.Add(gooduser.FieldStart, v)
-	return u
-}
-
-// SetEnd sets the "end" field.
-func (u *GoodUserUpsert) SetEnd(v uint32) *GoodUserUpsert {
-	u.Set(gooduser.FieldEnd, v)
-	return u
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateEnd() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldEnd)
-	return u
-}
-
-// AddEnd adds v to the "end" field.
-func (u *GoodUserUpsert) AddEnd(v uint32) *GoodUserUpsert {
-	u.Add(gooduser.FieldEnd, v)
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateCoinType() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldCoinType)
 	return u
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsert) SetHashRate(v float64) *GoodUserUpsert {
+func (u *GoodUserUpsert) SetHashRate(v float32) *GoodUserUpsert {
 	u.Set(gooduser.FieldHashRate, v)
 	return u
 }
@@ -645,14 +603,8 @@ func (u *GoodUserUpsert) UpdateHashRate() *GoodUserUpsert {
 }
 
 // AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsert) AddHashRate(v float64) *GoodUserUpsert {
+func (u *GoodUserUpsert) AddHashRate(v float32) *GoodUserUpsert {
 	u.Add(gooduser.FieldHashRate, v)
-	return u
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsert) ClearHashRate() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldHashRate)
 	return u
 }
 
@@ -668,9 +620,15 @@ func (u *GoodUserUpsert) UpdateReadPageLink() *GoodUserUpsert {
 	return u
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *GoodUserUpsert) ClearReadPageLink() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldReadPageLink)
+// SetRevenueType sets the "revenue_type" field.
+func (u *GoodUserUpsert) SetRevenueType(v string) *GoodUserUpsert {
+	u.Set(gooduser.FieldRevenueType, v)
+	return u
+}
+
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateRevenueType() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldRevenueType)
 	return u
 }
 
@@ -815,6 +773,20 @@ func (u *GoodUserUpsertOne) UpdateGoodID() *GoodUserUpsertOne {
 	})
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *GoodUserUpsertOne) SetRootUserID(v uuid.UUID) *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.SetRootUserID(v)
+	})
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateRootUserID() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.UpdateRootUserID()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsertOne) SetName(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -829,85 +801,43 @@ func (u *GoodUserUpsertOne) UpdateName() *GoodUserUpsertOne {
 	})
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (u *GoodUserUpsertOne) SetAuthToken(v string) *GoodUserUpsertOne {
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *GoodUserUpsertOne) SetMiningpoolType(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetAuthToken(v)
+		s.SetMiningpoolType(v)
 	})
 }
 
-// UpdateAuthToken sets the "auth_token" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateAuthToken() *GoodUserUpsertOne {
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateMiningpoolType() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateAuthToken()
+		s.UpdateMiningpoolType()
 	})
 }
 
-// SetAuthed sets the "authed" field.
-func (u *GoodUserUpsertOne) SetAuthed(v bool) *GoodUserUpsertOne {
+// SetCoinType sets the "coin_type" field.
+func (u *GoodUserUpsertOne) SetCoinType(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetAuthed(v)
+		s.SetCoinType(v)
 	})
 }
 
-// UpdateAuthed sets the "authed" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateAuthed() *GoodUserUpsertOne {
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateCoinType() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateAuthed()
-	})
-}
-
-// SetStart sets the "start" field.
-func (u *GoodUserUpsertOne) SetStart(v uint32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetStart(v)
-	})
-}
-
-// AddStart adds v to the "start" field.
-func (u *GoodUserUpsertOne) AddStart(v uint32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddStart(v)
-	})
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateStart() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateStart()
-	})
-}
-
-// SetEnd sets the "end" field.
-func (u *GoodUserUpsertOne) SetEnd(v uint32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetEnd(v)
-	})
-}
-
-// AddEnd adds v to the "end" field.
-func (u *GoodUserUpsertOne) AddEnd(v uint32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddEnd(v)
-	})
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateEnd() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateEnd()
+		s.UpdateCoinType()
 	})
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsertOne) SetHashRate(v float64) *GoodUserUpsertOne {
+func (u *GoodUserUpsertOne) SetHashRate(v float32) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.SetHashRate(v)
 	})
 }
 
 // AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsertOne) AddHashRate(v float64) *GoodUserUpsertOne {
+func (u *GoodUserUpsertOne) AddHashRate(v float32) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.AddHashRate(v)
 	})
@@ -917,13 +847,6 @@ func (u *GoodUserUpsertOne) AddHashRate(v float64) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateHashRate() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateHashRate()
-	})
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsertOne) ClearHashRate() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearHashRate()
 	})
 }
 
@@ -941,10 +864,17 @@ func (u *GoodUserUpsertOne) UpdateReadPageLink() *GoodUserUpsertOne {
 	})
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *GoodUserUpsertOne) ClearReadPageLink() *GoodUserUpsertOne {
+// SetRevenueType sets the "revenue_type" field.
+func (u *GoodUserUpsertOne) SetRevenueType(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearReadPageLink()
+		s.SetRevenueType(v)
+	})
+}
+
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateRevenueType() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.UpdateRevenueType()
 	})
 }
 
@@ -1254,6 +1184,20 @@ func (u *GoodUserUpsertBulk) UpdateGoodID() *GoodUserUpsertBulk {
 	})
 }
 
+// SetRootUserID sets the "root_user_id" field.
+func (u *GoodUserUpsertBulk) SetRootUserID(v uuid.UUID) *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.SetRootUserID(v)
+	})
+}
+
+// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateRootUserID() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.UpdateRootUserID()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsertBulk) SetName(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -1268,85 +1212,43 @@ func (u *GoodUserUpsertBulk) UpdateName() *GoodUserUpsertBulk {
 	})
 }
 
-// SetAuthToken sets the "auth_token" field.
-func (u *GoodUserUpsertBulk) SetAuthToken(v string) *GoodUserUpsertBulk {
+// SetMiningpoolType sets the "miningpool_type" field.
+func (u *GoodUserUpsertBulk) SetMiningpoolType(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetAuthToken(v)
+		s.SetMiningpoolType(v)
 	})
 }
 
-// UpdateAuthToken sets the "auth_token" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateAuthToken() *GoodUserUpsertBulk {
+// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateMiningpoolType() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateAuthToken()
+		s.UpdateMiningpoolType()
 	})
 }
 
-// SetAuthed sets the "authed" field.
-func (u *GoodUserUpsertBulk) SetAuthed(v bool) *GoodUserUpsertBulk {
+// SetCoinType sets the "coin_type" field.
+func (u *GoodUserUpsertBulk) SetCoinType(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetAuthed(v)
+		s.SetCoinType(v)
 	})
 }
 
-// UpdateAuthed sets the "authed" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateAuthed() *GoodUserUpsertBulk {
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateCoinType() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateAuthed()
-	})
-}
-
-// SetStart sets the "start" field.
-func (u *GoodUserUpsertBulk) SetStart(v uint32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetStart(v)
-	})
-}
-
-// AddStart adds v to the "start" field.
-func (u *GoodUserUpsertBulk) AddStart(v uint32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddStart(v)
-	})
-}
-
-// UpdateStart sets the "start" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateStart() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateStart()
-	})
-}
-
-// SetEnd sets the "end" field.
-func (u *GoodUserUpsertBulk) SetEnd(v uint32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetEnd(v)
-	})
-}
-
-// AddEnd adds v to the "end" field.
-func (u *GoodUserUpsertBulk) AddEnd(v uint32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddEnd(v)
-	})
-}
-
-// UpdateEnd sets the "end" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateEnd() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateEnd()
+		s.UpdateCoinType()
 	})
 }
 
 // SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsertBulk) SetHashRate(v float64) *GoodUserUpsertBulk {
+func (u *GoodUserUpsertBulk) SetHashRate(v float32) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.SetHashRate(v)
 	})
 }
 
 // AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsertBulk) AddHashRate(v float64) *GoodUserUpsertBulk {
+func (u *GoodUserUpsertBulk) AddHashRate(v float32) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.AddHashRate(v)
 	})
@@ -1356,13 +1258,6 @@ func (u *GoodUserUpsertBulk) AddHashRate(v float64) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateHashRate() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateHashRate()
-	})
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsertBulk) ClearHashRate() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearHashRate()
 	})
 }
 
@@ -1380,10 +1275,17 @@ func (u *GoodUserUpsertBulk) UpdateReadPageLink() *GoodUserUpsertBulk {
 	})
 }
 
-// ClearReadPageLink clears the value of the "read_page_link" field.
-func (u *GoodUserUpsertBulk) ClearReadPageLink() *GoodUserUpsertBulk {
+// SetRevenueType sets the "revenue_type" field.
+func (u *GoodUserUpsertBulk) SetRevenueType(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearReadPageLink()
+		s.SetRevenueType(v)
+	})
+}
+
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateRevenueType() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.UpdateRevenueType()
 	})
 }
 

@@ -128,7 +128,7 @@ func (ouu *OrderUserUpdate) SetMiningpoolType(s string) *OrderUserUpdate {
 	return ouu
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (ouu *OrderUserUpdate) SetCoinType(s string) *OrderUserUpdate {
 	ouu.mutation.SetCoinType(s)
 	return ouu
@@ -141,15 +141,43 @@ func (ouu *OrderUserUpdate) SetProportion(f float32) *OrderUserUpdate {
 	return ouu
 }
 
+// SetNillableProportion sets the "proportion" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableProportion(f *float32) *OrderUserUpdate {
+	if f != nil {
+		ouu.SetProportion(*f)
+	}
+	return ouu
+}
+
 // AddProportion adds f to the "proportion" field.
 func (ouu *OrderUserUpdate) AddProportion(f float32) *OrderUserUpdate {
 	ouu.mutation.AddProportion(f)
 	return ouu
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (ouu *OrderUserUpdate) ClearProportion() *OrderUserUpdate {
+	ouu.mutation.ClearProportion()
+	return ouu
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (ouu *OrderUserUpdate) SetRevenueAddress(s string) *OrderUserUpdate {
 	ouu.mutation.SetRevenueAddress(s)
+	return ouu
+}
+
+// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableRevenueAddress(s *string) *OrderUserUpdate {
+	if s != nil {
+		ouu.SetRevenueAddress(*s)
+	}
+	return ouu
+}
+
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (ouu *OrderUserUpdate) ClearRevenueAddress() *OrderUserUpdate {
+	ouu.mutation.ClearRevenueAddress()
 	return ouu
 }
 
@@ -382,10 +410,22 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldProportion,
 		})
 	}
+	if ouu.mutation.ProportionCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: orderuser.FieldProportion,
+		})
+	}
 	if value, ok := ouu.mutation.RevenueAddress(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldRevenueAddress,
+		})
+	}
+	if ouu.mutation.RevenueAddressCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldRevenueAddress,
 		})
 	}
@@ -529,7 +569,7 @@ func (ouuo *OrderUserUpdateOne) SetMiningpoolType(s string) *OrderUserUpdateOne 
 	return ouuo
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (ouuo *OrderUserUpdateOne) SetCoinType(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetCoinType(s)
 	return ouuo
@@ -542,15 +582,43 @@ func (ouuo *OrderUserUpdateOne) SetProportion(f float32) *OrderUserUpdateOne {
 	return ouuo
 }
 
+// SetNillableProportion sets the "proportion" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableProportion(f *float32) *OrderUserUpdateOne {
+	if f != nil {
+		ouuo.SetProportion(*f)
+	}
+	return ouuo
+}
+
 // AddProportion adds f to the "proportion" field.
 func (ouuo *OrderUserUpdateOne) AddProportion(f float32) *OrderUserUpdateOne {
 	ouuo.mutation.AddProportion(f)
 	return ouuo
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (ouuo *OrderUserUpdateOne) ClearProportion() *OrderUserUpdateOne {
+	ouuo.mutation.ClearProportion()
+	return ouuo
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (ouuo *OrderUserUpdateOne) SetRevenueAddress(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetRevenueAddress(s)
+	return ouuo
+}
+
+// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableRevenueAddress(s *string) *OrderUserUpdateOne {
+	if s != nil {
+		ouuo.SetRevenueAddress(*s)
+	}
+	return ouuo
+}
+
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (ouuo *OrderUserUpdateOne) ClearRevenueAddress() *OrderUserUpdateOne {
+	ouuo.mutation.ClearRevenueAddress()
 	return ouuo
 }
 
@@ -813,10 +881,22 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldProportion,
 		})
 	}
+	if ouuo.mutation.ProportionCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: orderuser.FieldProportion,
+		})
+	}
 	if value, ok := ouuo.mutation.RevenueAddress(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldRevenueAddress,
+		})
+	}
+	if ouuo.mutation.RevenueAddressCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldRevenueAddress,
 		})
 	}

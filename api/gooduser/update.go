@@ -18,13 +18,8 @@ func (s *Server) UpdateGoodUser(ctx context.Context, in *npool.UpdateGoodUserReq
 		ctx,
 		gooduser.WithID(req.ID, false),
 		gooduser.WithEntID(req.EntID, false),
-		gooduser.WithName(req.Name, false),
-		gooduser.WithRootUserID(req.RootUserID, false),
 		gooduser.WithGoodID(req.GoodID, false),
-		gooduser.WithMiningpoolType(req.MiningpoolType, false),
-		gooduser.WithCoinType(req.CoinType, false),
 		gooduser.WithHashRate(req.HashRate, false),
-		gooduser.WithReadPageLink(req.ReadPageLink, false),
 		gooduser.WithRevenueType(req.RevenueType, false),
 	)
 	if err != nil {

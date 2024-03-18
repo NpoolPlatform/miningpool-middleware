@@ -10,9 +10,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 )
 
-var (
-	accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
-)
+var accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
 
 func main() {
 	mgr, err := f2pool.NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
@@ -28,5 +26,4 @@ func main() {
 		os.Exit(0)
 	}
 	fmt.Println(utils.PrettyStruct(ret))
-
 }

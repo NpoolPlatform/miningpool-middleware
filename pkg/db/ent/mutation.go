@@ -3637,10 +3637,24 @@ func (m *GoodUserMutation) AddedHashRate() (r float32, exists bool) {
 	return *v, true
 }
 
+// ClearHashRate clears the value of the "hash_rate" field.
+func (m *GoodUserMutation) ClearHashRate() {
+	m.hash_rate = nil
+	m.addhash_rate = nil
+	m.clearedFields[gooduser.FieldHashRate] = struct{}{}
+}
+
+// HashRateCleared returns if the "hash_rate" field was cleared in this mutation.
+func (m *GoodUserMutation) HashRateCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldHashRate]
+	return ok
+}
+
 // ResetHashRate resets all changes to the "hash_rate" field.
 func (m *GoodUserMutation) ResetHashRate() {
 	m.hash_rate = nil
 	m.addhash_rate = nil
+	delete(m.clearedFields, gooduser.FieldHashRate)
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -4009,7 +4023,11 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *GoodUserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(gooduser.FieldHashRate) {
+		fields = append(fields, gooduser.FieldHashRate)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -4022,6 +4040,11 @@ func (m *GoodUserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *GoodUserMutation) ClearField(name string) error {
+	switch name {
+	case gooduser.FieldHashRate:
+		m.ClearHashRate()
+		return nil
+	}
 	return fmt.Errorf("unknown GoodUser nullable field %s", name)
 }
 
@@ -4135,7 +4158,7 @@ type OrderUserMutation struct {
 	order_id        *uuid.UUID
 	name            *string
 	miningpool_type *string
-	_Coin_Type      *string
+	coin_type       *string
 	proportion      *float32
 	addproportion   *float32
 	revenue_address *string
@@ -4635,21 +4658,21 @@ func (m *OrderUserMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (m *OrderUserMutation) SetCoinType(s string) {
-	m._Coin_Type = &s
+	m.coin_type = &s
 }
 
-// CoinType returns the value of the "Coin_Type" field in the mutation.
+// CoinType returns the value of the "coin_type" field in the mutation.
 func (m *OrderUserMutation) CoinType() (r string, exists bool) {
-	v := m._Coin_Type
+	v := m.coin_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinType returns the old "Coin_Type" field's value of the OrderUser entity.
+// OldCoinType returns the old "coin_type" field's value of the OrderUser entity.
 // If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
 func (m *OrderUserMutation) OldCoinType(ctx context.Context) (v string, err error) {
@@ -4666,9 +4689,9 @@ func (m *OrderUserMutation) OldCoinType(ctx context.Context) (v string, err erro
 	return oldValue.CoinType, nil
 }
 
-// ResetCoinType resets all changes to the "Coin_Type" field.
+// ResetCoinType resets all changes to the "coin_type" field.
 func (m *OrderUserMutation) ResetCoinType() {
-	m._Coin_Type = nil
+	m.coin_type = nil
 }
 
 // SetProportion sets the "proportion" field.
@@ -4721,10 +4744,24 @@ func (m *OrderUserMutation) AddedProportion() (r float32, exists bool) {
 	return *v, true
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (m *OrderUserMutation) ClearProportion() {
+	m.proportion = nil
+	m.addproportion = nil
+	m.clearedFields[orderuser.FieldProportion] = struct{}{}
+}
+
+// ProportionCleared returns if the "proportion" field was cleared in this mutation.
+func (m *OrderUserMutation) ProportionCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldProportion]
+	return ok
+}
+
 // ResetProportion resets all changes to the "proportion" field.
 func (m *OrderUserMutation) ResetProportion() {
 	m.proportion = nil
 	m.addproportion = nil
+	delete(m.clearedFields, orderuser.FieldProportion)
 }
 
 // SetRevenueAddress sets the "revenue_address" field.
@@ -4758,9 +4795,22 @@ func (m *OrderUserMutation) OldRevenueAddress(ctx context.Context) (v string, er
 	return oldValue.RevenueAddress, nil
 }
 
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (m *OrderUserMutation) ClearRevenueAddress() {
+	m.revenue_address = nil
+	m.clearedFields[orderuser.FieldRevenueAddress] = struct{}{}
+}
+
+// RevenueAddressCleared returns if the "revenue_address" field was cleared in this mutation.
+func (m *OrderUserMutation) RevenueAddressCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldRevenueAddress]
+	return ok
+}
+
 // ResetRevenueAddress resets all changes to the "revenue_address" field.
 func (m *OrderUserMutation) ResetRevenueAddress() {
 	m.revenue_address = nil
+	delete(m.clearedFields, orderuser.FieldRevenueAddress)
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -4895,7 +4945,7 @@ func (m *OrderUserMutation) Fields() []string {
 	if m.miningpool_type != nil {
 		fields = append(fields, orderuser.FieldMiningpoolType)
 	}
-	if m._Coin_Type != nil {
+	if m.coin_type != nil {
 		fields = append(fields, orderuser.FieldCoinType)
 	}
 	if m.proportion != nil {
@@ -5171,6 +5221,12 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *OrderUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(orderuser.FieldProportion) {
+		fields = append(fields, orderuser.FieldProportion)
+	}
+	if m.FieldCleared(orderuser.FieldRevenueAddress) {
+		fields = append(fields, orderuser.FieldRevenueAddress)
+	}
 	if m.FieldCleared(orderuser.FieldAutoPay) {
 		fields = append(fields, orderuser.FieldAutoPay)
 	}
@@ -5188,6 +5244,12 @@ func (m *OrderUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *OrderUserMutation) ClearField(name string) error {
 	switch name {
+	case orderuser.FieldProportion:
+		m.ClearProportion()
+		return nil
+	case orderuser.FieldRevenueAddress:
+		m.ClearRevenueAddress()
+		return nil
 	case orderuser.FieldAutoPay:
 		m.ClearAutoPay()
 		return nil
@@ -5729,9 +5791,22 @@ func (m *RootUserMutation) OldEmail(ctx context.Context) (v string, err error) {
 	return oldValue.Email, nil
 }
 
+// ClearEmail clears the value of the "email" field.
+func (m *RootUserMutation) ClearEmail() {
+	m.email = nil
+	m.clearedFields[rootuser.FieldEmail] = struct{}{}
+}
+
+// EmailCleared returns if the "email" field was cleared in this mutation.
+func (m *RootUserMutation) EmailCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldEmail]
+	return ok
+}
+
 // ResetEmail resets all changes to the "email" field.
 func (m *RootUserMutation) ResetEmail() {
 	m.email = nil
+	delete(m.clearedFields, rootuser.FieldEmail)
 }
 
 // SetAuthToken sets the "auth_token" field.
@@ -5837,9 +5912,22 @@ func (m *RootUserMutation) OldRemark(ctx context.Context) (v string, err error) 
 	return oldValue.Remark, nil
 }
 
+// ClearRemark clears the value of the "remark" field.
+func (m *RootUserMutation) ClearRemark() {
+	m.remark = nil
+	m.clearedFields[rootuser.FieldRemark] = struct{}{}
+}
+
+// RemarkCleared returns if the "remark" field was cleared in this mutation.
+func (m *RootUserMutation) RemarkCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldRemark]
+	return ok
+}
+
 // ResetRemark resets all changes to the "remark" field.
 func (m *RootUserMutation) ResetRemark() {
 	m.remark = nil
+	delete(m.clearedFields, rootuser.FieldRemark)
 }
 
 // Where appends a list predicates to the RootUserMutation builder.
@@ -6096,7 +6184,14 @@ func (m *RootUserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RootUserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(rootuser.FieldEmail) {
+		fields = append(fields, rootuser.FieldEmail)
+	}
+	if m.FieldCleared(rootuser.FieldRemark) {
+		fields = append(fields, rootuser.FieldRemark)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -6109,6 +6204,14 @@ func (m *RootUserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RootUserMutation) ClearField(name string) error {
+	switch name {
+	case rootuser.FieldEmail:
+		m.ClearEmail()
+		return nil
+	case rootuser.FieldRemark:
+		m.ClearRemark()
+		return nil
+	}
 	return fmt.Errorf("unknown RootUser nullable field %s", name)
 }
 

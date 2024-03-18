@@ -621,7 +621,7 @@ func (f *OrderUserFilter) WhereMiningpoolType(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldMiningpoolType))
 }
 
-// WhereCoinType applies the entql string predicate on the Coin_Type field.
+// WhereCoinType applies the entql string predicate on the coin_type field.
 func (f *OrderUserFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldCoinType))
 }

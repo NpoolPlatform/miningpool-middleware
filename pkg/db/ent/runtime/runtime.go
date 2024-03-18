@@ -182,6 +182,10 @@ func init() {
 	gooduserDescEntID := gooduserMixinFields1[1].Descriptor()
 	// gooduser.DefaultEntID holds the default value on creation for the ent_id field.
 	gooduser.DefaultEntID = gooduserDescEntID.Default.(func() uuid.UUID)
+	// gooduserDescHashRate is the schema descriptor for hash_rate field.
+	gooduserDescHashRate := gooduserFields[5].Descriptor()
+	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
+	gooduser.DefaultHashRate = gooduserDescHashRate.Default.(float32)
 	orderuserMixin := schema.OrderUser{}.Mixin()
 	orderuser.Policy = privacy.NewPolicies(orderuserMixin[0], schema.OrderUser{})
 	orderuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -216,6 +220,14 @@ func init() {
 	orderuserDescEntID := orderuserMixinFields1[1].Descriptor()
 	// orderuser.DefaultEntID holds the default value on creation for the ent_id field.
 	orderuser.DefaultEntID = orderuserDescEntID.Default.(func() uuid.UUID)
+	// orderuserDescProportion is the schema descriptor for proportion field.
+	orderuserDescProportion := orderuserFields[6].Descriptor()
+	// orderuser.DefaultProportion holds the default value on creation for the proportion field.
+	orderuser.DefaultProportion = orderuserDescProportion.Default.(float32)
+	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
+	orderuserDescRevenueAddress := orderuserFields[7].Descriptor()
+	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.
+	orderuser.DefaultRevenueAddress = orderuserDescRevenueAddress.Default.(string)
 	// orderuserDescAutoPay is the schema descriptor for auto_pay field.
 	orderuserDescAutoPay := orderuserFields[9].Descriptor()
 	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
@@ -254,6 +266,14 @@ func init() {
 	rootuserDescEntID := rootuserMixinFields1[1].Descriptor()
 	// rootuser.DefaultEntID holds the default value on creation for the ent_id field.
 	rootuser.DefaultEntID = rootuserDescEntID.Default.(func() uuid.UUID)
+	// rootuserDescEmail is the schema descriptor for email field.
+	rootuserDescEmail := rootuserFields[2].Descriptor()
+	// rootuser.DefaultEmail holds the default value on creation for the email field.
+	rootuser.DefaultEmail = rootuserDescEmail.Default.(string)
+	// rootuserDescRemark is the schema descriptor for remark field.
+	rootuserDescRemark := rootuserFields[5].Descriptor()
+	// rootuser.DefaultRemark holds the default value on creation for the remark field.
+	rootuser.DefaultRemark = rootuserDescRemark.Default.(string)
 }
 
 const (

@@ -96,6 +96,14 @@ func (ruc *RootUserCreate) SetEmail(s string) *RootUserCreate {
 	return ruc
 }
 
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableEmail(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetEmail(*s)
+	}
+	return ruc
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (ruc *RootUserCreate) SetAuthToken(s string) *RootUserCreate {
 	ruc.mutation.SetAuthToken(s)
@@ -111,6 +119,14 @@ func (ruc *RootUserCreate) SetAuthed(b bool) *RootUserCreate {
 // SetRemark sets the "remark" field.
 func (ruc *RootUserCreate) SetRemark(s string) *RootUserCreate {
 	ruc.mutation.SetRemark(s)
+	return ruc
+}
+
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableRemark(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetRemark(*s)
+	}
 	return ruc
 }
 
@@ -227,6 +243,14 @@ func (ruc *RootUserCreate) defaults() error {
 		v := rootuser.DefaultEntID()
 		ruc.mutation.SetEntID(v)
 	}
+	if _, ok := ruc.mutation.Email(); !ok {
+		v := rootuser.DefaultEmail
+		ruc.mutation.SetEmail(v)
+	}
+	if _, ok := ruc.mutation.Remark(); !ok {
+		v := rootuser.DefaultRemark
+		ruc.mutation.SetRemark(v)
+	}
 	return nil
 }
 
@@ -250,17 +274,11 @@ func (ruc *RootUserCreate) check() error {
 	if _, ok := ruc.mutation.MiningpoolType(); !ok {
 		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "RootUser.miningpool_type"`)}
 	}
-	if _, ok := ruc.mutation.Email(); !ok {
-		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "RootUser.email"`)}
-	}
 	if _, ok := ruc.mutation.AuthToken(); !ok {
 		return &ValidationError{Name: "auth_token", err: errors.New(`ent: missing required field "RootUser.auth_token"`)}
 	}
 	if _, ok := ruc.mutation.Authed(); !ok {
 		return &ValidationError{Name: "authed", err: errors.New(`ent: missing required field "RootUser.authed"`)}
-	}
-	if _, ok := ruc.mutation.Remark(); !ok {
-		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "RootUser.remark"`)}
 	}
 	return nil
 }
@@ -532,6 +550,12 @@ func (u *RootUserUpsert) UpdateEmail() *RootUserUpsert {
 	return u
 }
 
+// ClearEmail clears the value of the "email" field.
+func (u *RootUserUpsert) ClearEmail() *RootUserUpsert {
+	u.SetNull(rootuser.FieldEmail)
+	return u
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (u *RootUserUpsert) SetAuthToken(v string) *RootUserUpsert {
 	u.Set(rootuser.FieldAuthToken, v)
@@ -565,6 +589,12 @@ func (u *RootUserUpsert) SetRemark(v string) *RootUserUpsert {
 // UpdateRemark sets the "remark" field to the value that was provided on create.
 func (u *RootUserUpsert) UpdateRemark() *RootUserUpsert {
 	u.SetExcluded(rootuser.FieldRemark)
+	return u
+}
+
+// ClearRemark clears the value of the "remark" field.
+func (u *RootUserUpsert) ClearRemark() *RootUserUpsert {
+	u.SetNull(rootuser.FieldRemark)
 	return u
 }
 
@@ -737,6 +767,13 @@ func (u *RootUserUpsertOne) UpdateEmail() *RootUserUpsertOne {
 	})
 }
 
+// ClearEmail clears the value of the "email" field.
+func (u *RootUserUpsertOne) ClearEmail() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearEmail()
+	})
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (u *RootUserUpsertOne) SetAuthToken(v string) *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
@@ -776,6 +813,13 @@ func (u *RootUserUpsertOne) SetRemark(v string) *RootUserUpsertOne {
 func (u *RootUserUpsertOne) UpdateRemark() *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateRemark()
+	})
+}
+
+// ClearRemark clears the value of the "remark" field.
+func (u *RootUserUpsertOne) ClearRemark() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearRemark()
 	})
 }
 
@@ -1113,6 +1157,13 @@ func (u *RootUserUpsertBulk) UpdateEmail() *RootUserUpsertBulk {
 	})
 }
 
+// ClearEmail clears the value of the "email" field.
+func (u *RootUserUpsertBulk) ClearEmail() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearEmail()
+	})
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (u *RootUserUpsertBulk) SetAuthToken(v string) *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
@@ -1152,6 +1203,13 @@ func (u *RootUserUpsertBulk) SetRemark(v string) *RootUserUpsertBulk {
 func (u *RootUserUpsertBulk) UpdateRemark() *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateRemark()
+	})
+}
+
+// ClearRemark clears the value of the "remark" field.
+func (u *RootUserUpsertBulk) ClearRemark() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearRemark()
 	})
 }
 

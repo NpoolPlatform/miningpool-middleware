@@ -60,6 +60,7 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error)
 }
 
 func (mgr *Manager) CheckAuth(ctx context.Context) error {
+	fmt.Println(mgr.cli.BaseURL, mgr.authToken)
 	_, err := mgr.cli.MiningUserList(ctx, &types.MiningUserListReq{})
 	return err
 }

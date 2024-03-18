@@ -142,7 +142,7 @@ func MiningpoolType(v string) predicate.OrderUser {
 	})
 }
 
-// CoinType applies equality check predicate on the "Coin_Type" field. It's identical to CoinTypeEQ.
+// CoinType applies equality check predicate on the "coin_type" field. It's identical to CoinTypeEQ.
 func CoinType(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCoinType), v))
@@ -823,21 +823,21 @@ func MiningpoolTypeContainsFold(v string) predicate.OrderUser {
 	})
 }
 
-// CoinTypeEQ applies the EQ predicate on the "Coin_Type" field.
+// CoinTypeEQ applies the EQ predicate on the "coin_type" field.
 func CoinTypeEQ(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeNEQ applies the NEQ predicate on the "Coin_Type" field.
+// CoinTypeNEQ applies the NEQ predicate on the "coin_type" field.
 func CoinTypeNEQ(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeIn applies the In predicate on the "Coin_Type" field.
+// CoinTypeIn applies the In predicate on the "coin_type" field.
 func CoinTypeIn(vs ...string) predicate.OrderUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
@@ -848,7 +848,7 @@ func CoinTypeIn(vs ...string) predicate.OrderUser {
 	})
 }
 
-// CoinTypeNotIn applies the NotIn predicate on the "Coin_Type" field.
+// CoinTypeNotIn applies the NotIn predicate on the "coin_type" field.
 func CoinTypeNotIn(vs ...string) predicate.OrderUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
@@ -859,63 +859,63 @@ func CoinTypeNotIn(vs ...string) predicate.OrderUser {
 	})
 }
 
-// CoinTypeGT applies the GT predicate on the "Coin_Type" field.
+// CoinTypeGT applies the GT predicate on the "coin_type" field.
 func CoinTypeGT(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeGTE applies the GTE predicate on the "Coin_Type" field.
+// CoinTypeGTE applies the GTE predicate on the "coin_type" field.
 func CoinTypeGTE(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeLT applies the LT predicate on the "Coin_Type" field.
+// CoinTypeLT applies the LT predicate on the "coin_type" field.
 func CoinTypeLT(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeLTE applies the LTE predicate on the "Coin_Type" field.
+// CoinTypeLTE applies the LTE predicate on the "coin_type" field.
 func CoinTypeLTE(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeContains applies the Contains predicate on the "Coin_Type" field.
+// CoinTypeContains applies the Contains predicate on the "coin_type" field.
 func CoinTypeContains(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.Contains(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeHasPrefix applies the HasPrefix predicate on the "Coin_Type" field.
+// CoinTypeHasPrefix applies the HasPrefix predicate on the "coin_type" field.
 func CoinTypeHasPrefix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasPrefix(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeHasSuffix applies the HasSuffix predicate on the "Coin_Type" field.
+// CoinTypeHasSuffix applies the HasSuffix predicate on the "coin_type" field.
 func CoinTypeHasSuffix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeEqualFold applies the EqualFold predicate on the "Coin_Type" field.
+// CoinTypeEqualFold applies the EqualFold predicate on the "coin_type" field.
 func CoinTypeEqualFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EqualFold(s.C(FieldCoinType), v))
 	})
 }
 
-// CoinTypeContainsFold applies the ContainsFold predicate on the "Coin_Type" field.
+// CoinTypeContainsFold applies the ContainsFold predicate on the "coin_type" field.
 func CoinTypeContainsFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
@@ -983,6 +983,20 @@ func ProportionLT(v float32) predicate.OrderUser {
 func ProportionLTE(v float32) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldProportion), v))
+	})
+}
+
+// ProportionIsNil applies the IsNil predicate on the "proportion" field.
+func ProportionIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldProportion)))
+	})
+}
+
+// ProportionNotNil applies the NotNil predicate on the "proportion" field.
+func ProportionNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldProportion)))
 	})
 }
 
@@ -1068,6 +1082,20 @@ func RevenueAddressHasPrefix(v string) predicate.OrderUser {
 func RevenueAddressHasSuffix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldRevenueAddress), v))
+	})
+}
+
+// RevenueAddressIsNil applies the IsNil predicate on the "revenue_address" field.
+func RevenueAddressIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRevenueAddress)))
+	})
+}
+
+// RevenueAddressNotNil applies the NotNil predicate on the "revenue_address" field.
+func RevenueAddressNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRevenueAddress)))
 	})
 }
 

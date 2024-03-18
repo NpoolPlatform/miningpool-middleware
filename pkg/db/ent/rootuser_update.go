@@ -116,6 +116,20 @@ func (ruu *RootUserUpdate) SetEmail(s string) *RootUserUpdate {
 	return ruu
 }
 
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableEmail(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetEmail(*s)
+	}
+	return ruu
+}
+
+// ClearEmail clears the value of the "email" field.
+func (ruu *RootUserUpdate) ClearEmail() *RootUserUpdate {
+	ruu.mutation.ClearEmail()
+	return ruu
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (ruu *RootUserUpdate) SetAuthToken(s string) *RootUserUpdate {
 	ruu.mutation.SetAuthToken(s)
@@ -131,6 +145,20 @@ func (ruu *RootUserUpdate) SetAuthed(b bool) *RootUserUpdate {
 // SetRemark sets the "remark" field.
 func (ruu *RootUserUpdate) SetRemark(s string) *RootUserUpdate {
 	ruu.mutation.SetRemark(s)
+	return ruu
+}
+
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableRemark(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetRemark(*s)
+	}
+	return ruu
+}
+
+// ClearRemark clears the value of the "remark" field.
+func (ruu *RootUserUpdate) ClearRemark() *RootUserUpdate {
+	ruu.mutation.ClearRemark()
 	return ruu
 }
 
@@ -302,6 +330,12 @@ func (ruu *RootUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: rootuser.FieldEmail,
 		})
 	}
+	if ruu.mutation.EmailCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldEmail,
+		})
+	}
 	if value, ok := ruu.mutation.AuthToken(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -320,6 +354,12 @@ func (ruu *RootUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: rootuser.FieldRemark,
+		})
+	}
+	if ruu.mutation.RemarkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: rootuser.FieldRemark,
 		})
 	}
@@ -431,6 +471,20 @@ func (ruuo *RootUserUpdateOne) SetEmail(s string) *RootUserUpdateOne {
 	return ruuo
 }
 
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableEmail(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetEmail(*s)
+	}
+	return ruuo
+}
+
+// ClearEmail clears the value of the "email" field.
+func (ruuo *RootUserUpdateOne) ClearEmail() *RootUserUpdateOne {
+	ruuo.mutation.ClearEmail()
+	return ruuo
+}
+
 // SetAuthToken sets the "auth_token" field.
 func (ruuo *RootUserUpdateOne) SetAuthToken(s string) *RootUserUpdateOne {
 	ruuo.mutation.SetAuthToken(s)
@@ -446,6 +500,20 @@ func (ruuo *RootUserUpdateOne) SetAuthed(b bool) *RootUserUpdateOne {
 // SetRemark sets the "remark" field.
 func (ruuo *RootUserUpdateOne) SetRemark(s string) *RootUserUpdateOne {
 	ruuo.mutation.SetRemark(s)
+	return ruuo
+}
+
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableRemark(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetRemark(*s)
+	}
+	return ruuo
+}
+
+// ClearRemark clears the value of the "remark" field.
+func (ruuo *RootUserUpdateOne) ClearRemark() *RootUserUpdateOne {
+	ruuo.mutation.ClearRemark()
 	return ruuo
 }
 
@@ -647,6 +715,12 @@ func (ruuo *RootUserUpdateOne) sqlSave(ctx context.Context) (_node *RootUser, er
 			Column: rootuser.FieldEmail,
 		})
 	}
+	if ruuo.mutation.EmailCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldEmail,
+		})
+	}
 	if value, ok := ruuo.mutation.AuthToken(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -665,6 +739,12 @@ func (ruuo *RootUserUpdateOne) sqlSave(ctx context.Context) (_node *RootUser, er
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: rootuser.FieldRemark,
+		})
+	}
+	if ruuo.mutation.RemarkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: rootuser.FieldRemark,
 		})
 	}

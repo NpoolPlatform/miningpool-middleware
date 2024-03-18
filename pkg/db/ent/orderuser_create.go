@@ -108,7 +108,7 @@ func (ouc *OrderUserCreate) SetMiningpoolType(s string) *OrderUserCreate {
 	return ouc
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (ouc *OrderUserCreate) SetCoinType(s string) *OrderUserCreate {
 	ouc.mutation.SetCoinType(s)
 	return ouc
@@ -120,9 +120,25 @@ func (ouc *OrderUserCreate) SetProportion(f float32) *OrderUserCreate {
 	return ouc
 }
 
+// SetNillableProportion sets the "proportion" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableProportion(f *float32) *OrderUserCreate {
+	if f != nil {
+		ouc.SetProportion(*f)
+	}
+	return ouc
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (ouc *OrderUserCreate) SetRevenueAddress(s string) *OrderUserCreate {
 	ouc.mutation.SetRevenueAddress(s)
+	return ouc
+}
+
+// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableRevenueAddress(s *string) *OrderUserCreate {
+	if s != nil {
+		ouc.SetRevenueAddress(*s)
+	}
 	return ouc
 }
 
@@ -259,6 +275,14 @@ func (ouc *OrderUserCreate) defaults() error {
 		v := orderuser.DefaultEntID()
 		ouc.mutation.SetEntID(v)
 	}
+	if _, ok := ouc.mutation.Proportion(); !ok {
+		v := orderuser.DefaultProportion
+		ouc.mutation.SetProportion(v)
+	}
+	if _, ok := ouc.mutation.RevenueAddress(); !ok {
+		v := orderuser.DefaultRevenueAddress
+		ouc.mutation.SetRevenueAddress(v)
+	}
 	if _, ok := ouc.mutation.AutoPay(); !ok {
 		v := orderuser.DefaultAutoPay
 		ouc.mutation.SetAutoPay(v)
@@ -296,13 +320,7 @@ func (ouc *OrderUserCreate) check() error {
 		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "OrderUser.miningpool_type"`)}
 	}
 	if _, ok := ouc.mutation.CoinType(); !ok {
-		return &ValidationError{Name: "Coin_Type", err: errors.New(`ent: missing required field "OrderUser.Coin_Type"`)}
-	}
-	if _, ok := ouc.mutation.Proportion(); !ok {
-		return &ValidationError{Name: "proportion", err: errors.New(`ent: missing required field "OrderUser.proportion"`)}
-	}
-	if _, ok := ouc.mutation.RevenueAddress(); !ok {
-		return &ValidationError{Name: "revenue_address", err: errors.New(`ent: missing required field "OrderUser.revenue_address"`)}
+		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "OrderUser.coin_type"`)}
 	}
 	if _, ok := ouc.mutation.ReadPageLink(); !ok {
 		return &ValidationError{Name: "read_page_link", err: errors.New(`ent: missing required field "OrderUser.read_page_link"`)}
@@ -633,13 +651,13 @@ func (u *OrderUserUpsert) UpdateMiningpoolType() *OrderUserUpsert {
 	return u
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsert) SetCoinType(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldCoinType, v)
 	return u
 }
 
-// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateCoinType() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldCoinType)
 	return u
@@ -663,6 +681,12 @@ func (u *OrderUserUpsert) AddProportion(v float32) *OrderUserUpsert {
 	return u
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (u *OrderUserUpsert) ClearProportion() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldProportion)
+	return u
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsert) SetRevenueAddress(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldRevenueAddress, v)
@@ -672,6 +696,12 @@ func (u *OrderUserUpsert) SetRevenueAddress(v string) *OrderUserUpsert {
 // UpdateRevenueAddress sets the "revenue_address" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateRevenueAddress() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldRevenueAddress)
+	return u
+}
+
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (u *OrderUserUpsert) ClearRevenueAddress() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldRevenueAddress)
 	return u
 }
 
@@ -902,14 +932,14 @@ func (u *OrderUserUpsertOne) UpdateMiningpoolType() *OrderUserUpsertOne {
 	})
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsertOne) SetCoinType(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.SetCoinType(v)
 	})
 }
 
-// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *OrderUserUpsertOne) UpdateCoinType() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateCoinType()
@@ -937,6 +967,13 @@ func (u *OrderUserUpsertOne) UpdateProportion() *OrderUserUpsertOne {
 	})
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (u *OrderUserUpsertOne) ClearProportion() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearProportion()
+	})
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsertOne) SetRevenueAddress(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -948,6 +985,13 @@ func (u *OrderUserUpsertOne) SetRevenueAddress(v string) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateRevenueAddress() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateRevenueAddress()
+	})
+}
+
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (u *OrderUserUpsertOne) ClearRevenueAddress() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearRevenueAddress()
 	})
 }
 
@@ -1348,14 +1392,14 @@ func (u *OrderUserUpsertBulk) UpdateMiningpoolType() *OrderUserUpsertBulk {
 	})
 }
 
-// SetCoinType sets the "Coin_Type" field.
+// SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsertBulk) SetCoinType(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.SetCoinType(v)
 	})
 }
 
-// UpdateCoinType sets the "Coin_Type" field to the value that was provided on create.
+// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *OrderUserUpsertBulk) UpdateCoinType() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateCoinType()
@@ -1383,6 +1427,13 @@ func (u *OrderUserUpsertBulk) UpdateProportion() *OrderUserUpsertBulk {
 	})
 }
 
+// ClearProportion clears the value of the "proportion" field.
+func (u *OrderUserUpsertBulk) ClearProportion() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearProportion()
+	})
+}
+
 // SetRevenueAddress sets the "revenue_address" field.
 func (u *OrderUserUpsertBulk) SetRevenueAddress(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1394,6 +1445,13 @@ func (u *OrderUserUpsertBulk) SetRevenueAddress(v string) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateRevenueAddress() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateRevenueAddress()
+	})
+}
+
+// ClearRevenueAddress clears the value of the "revenue_address" field.
+func (u *OrderUserUpsertBulk) ClearRevenueAddress() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearRevenueAddress()
 	})
 }
 

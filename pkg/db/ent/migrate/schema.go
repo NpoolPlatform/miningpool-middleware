@@ -100,7 +100,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "miningpool_type", Type: field.TypeString},
 		{Name: "coin_type", Type: field.TypeString},
-		{Name: "hash_rate", Type: field.TypeFloat32},
+		{Name: "hash_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
 		{Name: "read_page_link", Type: field.TypeString},
 		{Name: "revenue_type", Type: field.TypeString},
 	}
@@ -114,6 +114,21 @@ var (
 				Name:    "gooduser_ent_id",
 				Unique:  true,
 				Columns: []*schema.Column{GoodUsersColumns[4]},
+			},
+			{
+				Name:    "gooduser_good_id",
+				Unique:  false,
+				Columns: []*schema.Column{GoodUsersColumns[5]},
+			},
+			{
+				Name:    "gooduser_root_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{GoodUsersColumns[6]},
+			},
+			{
+				Name:    "gooduser_miningpool_type_coin_type",
+				Unique:  false,
+				Columns: []*schema.Column{GoodUsersColumns[8], GoodUsersColumns[9]},
 			},
 		},
 	}
@@ -130,8 +145,8 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "miningpool_type", Type: field.TypeString},
 		{Name: "coin_type", Type: field.TypeString},
-		{Name: "proportion", Type: field.TypeFloat32},
-		{Name: "revenue_address", Type: field.TypeString},
+		{Name: "proportion", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "revenue_address", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "read_page_link", Type: field.TypeString},
 		{Name: "auto_pay", Type: field.TypeBool, Nullable: true, Default: false},
 	}
@@ -157,10 +172,10 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "miningpool_type", Type: field.TypeString},
-		{Name: "email", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "auth_token", Type: field.TypeString},
 		{Name: "authed", Type: field.TypeBool},
-		{Name: "remark", Type: field.TypeString},
+		{Name: "remark", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// RootUsersTable holds the schema information for the "root_users" table.
 	RootUsersTable = &schema.Table{

@@ -34,11 +34,11 @@ func (OrderUser) Fields() []ent.Field {
 		field.
 			String("miningpool_type"),
 		field.
-			String("Coin_Type"),
+			String("coin_type"),
 		field.
-			Float32("proportion"),
+			Float32("proportion").Optional().Default(0),
 		field.
-			String("revenue_address"),
+			String("revenue_address").Optional().Default(""),
 		field.
 			String("read_page_link"),
 		field.

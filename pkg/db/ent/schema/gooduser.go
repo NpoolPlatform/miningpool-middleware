@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 	"github.com/google/uuid"
@@ -34,7 +35,7 @@ func (GoodUser) Fields() []ent.Field {
 		field.
 			String("coin_type"),
 		field.
-			Float32("hash_rate"),
+			Float32("hash_rate").Optional().Default(0),
 		field.
 			String("read_page_link"),
 		field.
@@ -45,4 +46,12 @@ func (GoodUser) Fields() []ent.Field {
 // Edges of the GoodUser.
 func (GoodUser) Edges() []ent.Edge {
 	return nil
+}
+
+func (GoodUser) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("good_id"),
+		index.Fields("root_user_id"),
+		index.Fields("miningpool_type", "coin_type"),
+	}
 }

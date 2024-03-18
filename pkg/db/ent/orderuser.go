@@ -34,8 +34,8 @@ type OrderUser struct {
 	Name string `json:"name,omitempty"`
 	// MiningpoolType holds the value of the "miningpool_type" field.
 	MiningpoolType string `json:"miningpool_type,omitempty"`
-	// CoinType holds the value of the "Coin_Type" field.
-	CoinType string `json:"Coin_Type,omitempty"`
+	// CoinType holds the value of the "coin_type" field.
+	CoinType string `json:"coin_type,omitempty"`
 	// Proportion holds the value of the "proportion" field.
 	Proportion float32 `json:"proportion,omitempty"`
 	// RevenueAddress holds the value of the "revenue_address" field.
@@ -138,7 +138,7 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			}
 		case orderuser.FieldCoinType:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field Coin_Type", values[i])
+				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
 			} else if value.Valid {
 				ou.CoinType = value.String
 			}
@@ -221,7 +221,7 @@ func (ou *OrderUser) String() string {
 	builder.WriteString("miningpool_type=")
 	builder.WriteString(ou.MiningpoolType)
 	builder.WriteString(", ")
-	builder.WriteString("Coin_Type=")
+	builder.WriteString("coin_type=")
 	builder.WriteString(ou.CoinType)
 	builder.WriteString(", ")
 	builder.WriteString("proportion=")

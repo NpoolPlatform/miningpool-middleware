@@ -38,8 +38,8 @@ var ret = &npool.RootUser{
 	Name:           "mininpool_middleware_client_rootuser_test",
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "sssss",
-	AuthToken:      "sadfasdf",
-	Authed:         false,
+	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
+	Authed:         true,
 	Remark:         "sdfasdfasdf",
 }
 
@@ -66,7 +66,7 @@ func createRootUser(t *testing.T) {
 }
 
 func updateRootUser(t *testing.T) {
-	pooltype := basetypes.MiningpoolType_AntPool
+	pooltype := basetypes.MiningpoolType_F2Pool
 	ret.MiningpoolTypeStr = pooltype.String()
 	ret.MiningpoolType = pooltype
 	req.ID = &ret.ID
@@ -75,7 +75,7 @@ func updateRootUser(t *testing.T) {
 	info, err := UpdateRootUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+		assert.Equal(t, ret, info)
 	}
 
 	pooltype = basetypes.MiningpoolType_F2Pool
@@ -85,14 +85,14 @@ func updateRootUser(t *testing.T) {
 	info, err = UpdateRootUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+		assert.Equal(t, ret, info)
 	}
 }
 
 func getRootUser(t *testing.T) {
 	info, err := GetRootUser(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
+		assert.Equal(t, ret, info)
 	}
 }
 
@@ -122,7 +122,7 @@ func deleteRootUser(t *testing.T) {
 		ID: &ret.ID,
 	})
 	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
+		assert.Equal(t, ret, info)
 	}
 
 	exist, err = ExistRootUserConds(context.Background(), &npool.Conds{

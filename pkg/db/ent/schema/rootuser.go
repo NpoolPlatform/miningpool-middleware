@@ -27,13 +27,13 @@ func (RootUser) Fields() []ent.Field {
 		field.
 			String("miningpool_type"),
 		field.
-			String("email"),
+			String("email").Optional().Default(""),
 		field.
 			String("auth_token"),
 		field.
 			Bool("authed"),
 		field.
-			String("remark"),
+			String("remark").Optional().Default(""),
 	}
 }
 

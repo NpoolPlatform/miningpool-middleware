@@ -35,9 +35,9 @@ func init() {
 var ret = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
-	RootUserID:     uuid.NewString(),
+	RootUserID:     rootUserRet.EntID,
 	GoodID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	HashRate:       66,
 	ReadPageLink:   "fffff",
@@ -59,6 +59,8 @@ var req = &npool.GoodUserReq{
 func createGoodUser(t *testing.T) {
 	info, err := CreateGoodUser(context.Background(), req)
 	if assert.Nil(t, err) {
+		ret.Name = info.Name
+		ret.ReadPageLink = info.ReadPageLink
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
@@ -71,22 +73,18 @@ func createGoodUser(t *testing.T) {
 }
 
 func updateGoodUser(t *testing.T) {
-	mtype := basetypes.MiningpoolType_AntPool
-	ret.MiningpoolTypeStr = mtype.String()
-	ret.MiningpoolType = mtype
+	ret.HashRate = 77
 	req.ID = &ret.ID
-	req.MiningpoolType = &mtype
-
+	req.HashRate = &ret.HashRate
 	info, err := UpdateGoodUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
 
-	mtype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = mtype
-	ret.MiningpoolTypeStr = mtype.String()
-	req.MiningpoolType = &mtype
+	ret.HashRate = 88
+	req.ID = &ret.ID
+	req.HashRate = &ret.HashRate
 	info, err = UpdateGoodUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
@@ -156,9 +154,11 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
+	t.Run("createGoodUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("updateGoodUser", updateGoodUser)
 	t.Run("getGoodUser", getGoodUser)
 	t.Run("getGoodUsers", getGoodUsers)
 	t.Run("deleteGoodUser", deleteGoodUser)
+	t.Run("deleteGoodUser", deleteRootUser)
 }

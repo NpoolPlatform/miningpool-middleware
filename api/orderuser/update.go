@@ -18,15 +18,9 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
-		orderuser.WithName(req.Name, false),
-		orderuser.WithRootUserID(req.RootUserID, false),
-		orderuser.WithGoodUserID(req.GoodUserID, false),
 		orderuser.WithOrderID(req.OrderID, false),
-		orderuser.WithMiningpoolType(req.MiningpoolType, false),
-		orderuser.WithCoinType(req.CoinType, false),
 		orderuser.WithProportion(req.Proportion, false),
 		orderuser.WithRevenueAddress(req.RevenueAddress, false),
-		orderuser.WithReadPageLink(req.ReadPageLink, false),
 		orderuser.WithAutoPay(req.AutoPay, false),
 	)
 	if err != nil {

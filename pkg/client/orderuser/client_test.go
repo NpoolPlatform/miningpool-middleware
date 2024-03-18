@@ -35,10 +35,10 @@ func init() {
 var ret = &npool.OrderUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
-	RootUserID:     uuid.NewString(),
-	GoodUserID:     uuid.NewString(),
+	RootUserID:     rootUserRet.EntID,
+	GoodUserID:     goodUserRet.EntID,
 	OrderID:        uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	Proportion:     66,
 	RevenueAddress: "fffff",
@@ -64,6 +64,9 @@ func createOrderUser(t *testing.T) {
 	info, err := CreateOrderUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
+		ret.Name = info.Name
+		ret.ReadPageLink = info.ReadPageLink
+		ret.AutoPay = info.AutoPay
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
 		ret.UpdatedAt = info.UpdatedAt
@@ -74,11 +77,9 @@ func createOrderUser(t *testing.T) {
 }
 
 func updateOrderUser(t *testing.T) {
-	mtype := basetypes.MiningpoolType_AntPool
-	ret.MiningpoolTypeStr = mtype.String()
-	ret.MiningpoolType = mtype
+	ret.Proportion = 99
 	req.ID = &ret.ID
-	req.MiningpoolType = &mtype
+	req.Proportion = &ret.Proportion
 
 	info, err := UpdateOrderUser(context.Background(), req)
 	if assert.Nil(t, err) {
@@ -86,10 +87,8 @@ func updateOrderUser(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	mtype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = mtype
-	ret.MiningpoolTypeStr = mtype.String()
-	req.MiningpoolType = &mtype
+	ret.RevenueAddress = "myaddr"
+	req.RevenueAddress = &ret.RevenueAddress
 	info, err = UpdateOrderUser(context.Background(), req)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
@@ -159,9 +158,13 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
+	t.Run("createOrderUser", createRootUser)
+	t.Run("createOrderUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
 	t.Run("updateOrderUser", updateOrderUser)
 	t.Run("getOrderUser", getOrderUser)
 	t.Run("getOrderUsers", getOrderUsers)
 	t.Run("deleteOrderUser", deleteOrderUser)
+	t.Run("deleteOrderUser", deleteGoodUser)
+	t.Run("deleteOrderUser", deleteRootUser)
 }

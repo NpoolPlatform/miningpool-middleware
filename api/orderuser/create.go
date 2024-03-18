@@ -3,10 +3,14 @@ package orderuser
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
 	orderuser "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -14,6 +18,16 @@ import (
 
 func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserRequest) (*npool.CreateOrderUserResponse, error) {
 	req := in.GetInfo()
+	req, err := newOrderUserInPool(ctx, req)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"CreateOrderUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithID(req.ID, false),
@@ -53,7 +67,66 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 	}, nil
 }
 
+func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
+	if err != nil {
+		return req, err
+	}
+	rootUser, err := rootuserH.GetRootUser(ctx)
+	if err != nil {
+		return req, err
+	}
+	if rootUser == nil {
+		return req, fmt.Errorf("have no rootuser,entid: %v", req.RootUserID)
+	}
+
+	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(req.GoodUserID, true))
+	if err != nil {
+		return req, err
+	}
+	goodUser, err := gooduserH.GetGoodUser(ctx)
+	if err != nil {
+		return req, err
+	}
+	if goodUser == nil {
+		return req, fmt.Errorf("have no gooduser,entid: %v", req.GoodUserID)
+	}
+
+	mgr, err := pools.NewPoolManager(*req.MiningpoolType, *req.CoinType, rootUser.AuthToken)
+	if err != nil {
+		return req, err
+	}
+	name, pagelink, err := mgr.AddMiningUser(ctx)
+	if err != nil {
+		return req, err
+	}
+	req.Name = &name
+	req.ReadPageLink = &pagelink
+
+	autoPay, err := mgr.PausePayment(ctx, name)
+	if err != nil {
+		return req, err
+	}
+	req.AutoPay = &autoPay
+	req.MiningpoolType = &goodUser.MiningpoolType
+	req.CoinType = &goodUser.CoinType
+	return req, nil
+}
+
 func (s *Server) CreateOrderUsers(ctx context.Context, in *npool.CreateOrderUsersRequest) (*npool.CreateOrderUsersResponse, error) {
+	reqs := in.GetInfos()
+	for i, req := range reqs {
+		_req, err := newOrderUserInPool(ctx, req)
+		reqs[i] = _req
+		if err != nil {
+			logger.Sugar().Errorw(
+				"CreateOrderUsers",
+				"In", in,
+				"Error", err,
+			)
+			return &npool.CreateOrderUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		}
+	}
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithReqs(in.GetInfos(), true),

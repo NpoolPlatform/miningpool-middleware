@@ -136,6 +136,7 @@ func WithAuthed(authed *bool, must bool) func(context.Context, *Handler) error {
 		return nil
 	}
 }
+
 func WithRemark(remark *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if remark == nil {

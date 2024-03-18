@@ -688,6 +688,20 @@ func EmailHasSuffix(v string) predicate.RootUser {
 	})
 }
 
+// EmailIsNil applies the IsNil predicate on the "email" field.
+func EmailIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldEmail)))
+	})
+}
+
+// EmailNotNil applies the NotNil predicate on the "email" field.
+func EmailNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldEmail)))
+	})
+}
+
 // EmailEqualFold applies the EqualFold predicate on the "email" field.
 func EmailEqualFold(v string) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
@@ -897,6 +911,20 @@ func RemarkHasPrefix(v string) predicate.RootUser {
 func RemarkHasSuffix(v string) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldRemark), v))
+	})
+}
+
+// RemarkIsNil applies the IsNil predicate on the "remark" field.
+func RemarkIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRemark)))
+	})
+}
+
+// RemarkNotNil applies the NotNil predicate on the "remark" field.
+func RemarkNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRemark)))
 	})
 }
 

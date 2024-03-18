@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	F2PoolRps = 2
+	F2PoolRps = 1
 )
 
 type Client struct {

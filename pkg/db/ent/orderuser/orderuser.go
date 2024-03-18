@@ -92,6 +92,10 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultProportion holds the default value on creation for the "proportion" field.
+	DefaultProportion float32
+	// DefaultRevenueAddress holds the default value on creation for the "revenue_address" field.
+	DefaultRevenueAddress string
 	// DefaultAutoPay holds the default value on creation for the "auto_pay" field.
 	DefaultAutoPay bool
 )

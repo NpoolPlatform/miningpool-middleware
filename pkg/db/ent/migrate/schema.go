@@ -161,6 +161,26 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{OrderUsersColumns[4]},
 			},
+			{
+				Name:    "orderuser_order_id",
+				Unique:  false,
+				Columns: []*schema.Column{OrderUsersColumns[7]},
+			},
+			{
+				Name:    "orderuser_root_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{OrderUsersColumns[5]},
+			},
+			{
+				Name:    "orderuser_good_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{OrderUsersColumns[6]},
+			},
+			{
+				Name:    "orderuser_miningpool_type_coin_type",
+				Unique:  false,
+				Columns: []*schema.Column{OrderUsersColumns[9], OrderUsersColumns[10]},
+			},
 		},
 	}
 	// RootUsersColumns holds the columns for the "root_users" table.

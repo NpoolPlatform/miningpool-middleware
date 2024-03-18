@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 	"github.com/google/uuid"
@@ -49,4 +50,13 @@ func (OrderUser) Fields() []ent.Field {
 // Edges of the OrderUser.
 func (OrderUser) Edges() []ent.Edge {
 	return nil
+}
+
+func (OrderUser) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("order_id"),
+		index.Fields("root_user_id"),
+		index.Fields("good_user_id"),
+		index.Fields("miningpool_type", "coin_type"),
+	}
 }

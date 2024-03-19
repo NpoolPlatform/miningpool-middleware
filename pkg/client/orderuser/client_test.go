@@ -34,30 +34,20 @@ func init() {
 
 var ret = &npool.OrderUser{
 	EntID:          uuid.NewString(),
-	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
 	GoodUserID:     goodUserRet.EntID,
 	OrderID:        uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
-	Proportion:     66,
-	RevenueAddress: "fffff",
-	ReadPageLink:   "fffff",
-	AutoPay:        false,
 }
 
 var req = &npool.OrderUserReq{
 	EntID:          &ret.EntID,
-	Name:           &ret.Name,
 	RootUserID:     &ret.RootUserID,
 	GoodUserID:     &ret.GoodUserID,
 	OrderID:        &ret.OrderID,
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
-	Proportion:     &ret.Proportion,
-	RevenueAddress: &ret.RevenueAddress,
-	ReadPageLink:   &ret.ReadPageLink,
-	AutoPay:        &ret.AutoPay,
 }
 
 func createOrderUser(t *testing.T) {
@@ -77,9 +67,9 @@ func createOrderUser(t *testing.T) {
 }
 
 func updateOrderUser(t *testing.T) {
-	ret.Proportion = 99
+	ret.OrderID = uuid.NewString()
 	req.ID = &ret.ID
-	req.Proportion = &ret.Proportion
+	req.OrderID = &ret.OrderID
 
 	info, err := UpdateOrderUser(context.Background(), req)
 	if assert.Nil(t, err) {
@@ -87,9 +77,45 @@ func updateOrderUser(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.RevenueAddress = "myaddr"
+	ret.Proportion = 99
+	req.Proportion = &ret.Proportion
+	info, err = SetupProportion(context.Background(), &npool.SetupProportionRequest{
+		EntID:      ret.EntID,
+		Proportion: ret.Proportion,
+	})
+	if assert.Nil(t, err) {
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, ret)
+	}
+
+	ret.RevenueAddress = "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
 	req.RevenueAddress = &ret.RevenueAddress
-	info, err = UpdateOrderUser(context.Background(), req)
+	info, err = SetupRevenueAddress(context.Background(), &npool.SetupRevenueAddressRequest{
+		EntID:          ret.EntID,
+		RevenueAddress: ret.RevenueAddress,
+	})
+	if assert.Nil(t, err) {
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, ret)
+	}
+
+	ret.AutoPay = true
+	req.AutoPay = &ret.AutoPay
+	info, err = SetupAutoPay(context.Background(), &npool.SetupAutoPayRequest{
+		EntID:   ret.EntID,
+		AutoPay: ret.AutoPay,
+	})
+	if assert.Nil(t, err) {
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, ret)
+	}
+
+	ret.AutoPay = false
+	req.AutoPay = &ret.AutoPay
+	info, err = SetupAutoPay(context.Background(), &npool.SetupAutoPayRequest{
+		EntID:   ret.EntID,
+		AutoPay: ret.AutoPay,
+	})
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)

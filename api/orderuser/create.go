@@ -103,11 +103,12 @@ func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.Or
 	req.Name = &name
 	req.ReadPageLink = &pagelink
 
-	autoPay, err := mgr.PausePayment(ctx, name)
+	paused, err := mgr.PausePayment(ctx, name)
 	if err != nil {
 		return req, err
 	}
-	req.AutoPay = &autoPay
+	autopay := !paused
+	req.AutoPay = &autopay
 	req.MiningpoolType = &goodUser.MiningpoolType
 	req.CoinType = &goodUser.CoinType
 	return req, nil

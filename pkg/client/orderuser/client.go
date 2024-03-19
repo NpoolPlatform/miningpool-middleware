@@ -119,6 +119,48 @@ func UpdateOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderU
 	return info.(*npool.OrderUser), nil
 }
 
+func SetupProportion(ctx context.Context, in *npool.SetupProportionRequest) (*npool.OrderUser, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.SetupProportion(ctx, in)
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return info.(*npool.OrderUser), nil
+}
+
+func SetupRevenueAddress(ctx context.Context, in *npool.SetupRevenueAddressRequest) (*npool.OrderUser, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.SetupRevenueAddress(ctx, in)
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return info.(*npool.OrderUser), nil
+}
+
+func SetupAutoPay(ctx context.Context, in *npool.SetupAutoPayRequest) (*npool.OrderUser, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.SetupAutoPay(ctx, in)
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return info.(*npool.OrderUser), nil
+}
+
 func ExistOrderUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistOrderUserConds(ctx, &npool.ExistOrderUserCondsRequest{

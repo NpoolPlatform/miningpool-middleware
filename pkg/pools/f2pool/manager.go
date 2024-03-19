@@ -30,8 +30,9 @@ var (
 	CoinType2Threshold map[basetype.CoinType]float64 = map[basetype.CoinType]float64{
 		basetype.CoinType_BitCoin: 0.05,
 	}
-	F2PoolAPI  = "https://api.f2pool.com"
-	MaxRetries = 10
+	F2PoolAPI     = "https://api.f2pool.com"
+	F2PoolBaseURL = "https://f2pool.com"
+	MaxRetries    = 10
 )
 
 const (
@@ -60,7 +61,6 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error)
 }
 
 func (mgr *Manager) CheckAuth(ctx context.Context) error {
-	fmt.Println(mgr.cli.BaseURL, mgr.authToken)
 	_, err := mgr.cli.MiningUserList(ctx, &types.MiningUserListReq{})
 	return err
 }
@@ -349,7 +349,7 @@ func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, e
 }
 
 func getReadPageLink(key, userName string) string {
-	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolAPI, key, userName)
+	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolBaseURL, key, userName)
 }
 
 // can only be a combination of lowercase characters and numbers

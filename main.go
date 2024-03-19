@@ -3,9 +3,21 @@ package main
 import "fmt"
 
 func main() {
-	authed := false
-	aa := &authed
-	fmt.Println(authed, *aa)
-	authed = true
-	fmt.Println(authed, *aa)
+	var err error
+	defer func() {
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
+	err = returnAErr()
+	aha, err := returnErr()
+	fmt.Println(aha)
+}
+
+func returnAErr() error {
+	return fmt.Errorf("sdfasdf111111111111111a")
+}
+
+func returnErr() (string, error) {
+	return "eadgf", fmt.Errorf("sdfasdfa")
 }

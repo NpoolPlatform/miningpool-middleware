@@ -265,13 +265,13 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.CoinType != nil {
 			h.Conds.CoinType = &cruder.Cond{
 				Op:  conds.GetCoinType().GetOp(),
-				Val: conds.GetCoinType().GetValue(),
+				Val: basetypes.CoinType(conds.GetCoinType().GetValue()),
 			}
 		}
 		if conds.MiningpoolType != nil {
 			h.Conds.MiningpoolType = &cruder.Cond{
 				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: conds.GetMiningpoolType().GetValue(),
+				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
 			}
 		}
 		if conds.Site != nil {

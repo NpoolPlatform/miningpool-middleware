@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 )
@@ -44,4 +45,10 @@ func (Coin) Fields() []ent.Field {
 // Edges of the Coin.
 func (Coin) Edges() []ent.Edge {
 	return nil
+}
+
+func (Coin) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("miningpool_type", "coin_type").Unique(),
+	}
 }

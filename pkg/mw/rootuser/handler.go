@@ -231,7 +231,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.MiningpoolType != nil {
 			h.Conds.MiningpoolType = &cruder.Cond{
 				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: conds.GetMiningpoolType().GetValue(),
+				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
 			}
 		}
 		if conds.Email != nil {

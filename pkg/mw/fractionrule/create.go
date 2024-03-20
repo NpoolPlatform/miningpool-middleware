@@ -3,6 +3,8 @@ package fractionrule
 import (
 	"context"
 
+	redis2 "github.com/NpoolPlatform/go-service-framework/pkg/redis"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 	fractionrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
 
@@ -14,6 +16,13 @@ import (
 )
 
 func (h *Handler) CreateFractionRule(ctx context.Context) (*npool.FractionRule, error) {
+	lockKey := basetypes.Prefix_PrefixCreateMiningpoolCoin.String()
+	if err := redis2.TryLock(lockKey, 0); err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = redis2.Unlock(lockKey)
+	}()
 	id := uuid.New()
 	if h.EntID == nil {
 		h.EntID = &id
@@ -45,6 +54,14 @@ func (h *Handler) CreateFractionRule(ctx context.Context) (*npool.FractionRule, 
 }
 
 func (h *Handler) CreateFractionRules(ctx context.Context) ([]*npool.FractionRule, error) {
+	lockKey := basetypes.Prefix_PrefixCreateMiningpoolCoin.String()
+	if err := redis2.TryLock(lockKey, 0); err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = redis2.Unlock(lockKey)
+	}()
+
 	ids := []uuid.UUID{}
 
 	err := db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

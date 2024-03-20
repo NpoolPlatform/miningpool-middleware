@@ -5,6 +5,7 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/api"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	apicli "github.com/NpoolPlatform/basal-middleware/pkg/client/api"
 	"github.com/NpoolPlatform/go-service-framework/pkg/action"
@@ -39,6 +40,7 @@ func run(ctx context.Context) error {
 	if err := db.Init(); err != nil {
 		return err
 	}
+	pools.Init()
 	return nil
 }
 

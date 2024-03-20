@@ -3,17 +3,24 @@ package coin
 import (
 	"context"
 
+	redis2 "github.com/NpoolPlatform/go-service-framework/pkg/redis"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
-
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-
 	"github.com/google/uuid"
 )
 
 func (h *Handler) CreateCoin(ctx context.Context) (*npool.Coin, error) {
+	lockKey := basetypes.Prefix_PrefixCreateMiningpoolCoin.String()
+	if err := redis2.TryLock(lockKey, 0); err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = redis2.Unlock(lockKey)
+	}()
 	id := uuid.New()
 	if h.EntID == nil {
 		h.EntID = &id
@@ -47,6 +54,13 @@ func (h *Handler) CreateCoin(ctx context.Context) (*npool.Coin, error) {
 }
 
 func (h *Handler) CreateCoins(ctx context.Context) ([]*npool.Coin, error) {
+	lockKey := basetypes.Prefix_PrefixCreateMiningpoolCoin.String()
+	if err := redis2.TryLock(lockKey, 0); err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = redis2.Unlock(lockKey)
+	}()
 	ids := []uuid.UUID{}
 
 	err := db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

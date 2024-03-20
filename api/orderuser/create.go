@@ -38,10 +38,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		orderuser.WithOrderID(req.OrderID, false),
 		orderuser.WithMiningpoolType(req.MiningpoolType, false),
 		orderuser.WithCoinType(req.CoinType, false),
-		orderuser.WithProportion(req.Proportion, false),
-		orderuser.WithRevenueAddress(req.RevenueAddress, false),
 		orderuser.WithReadPageLink(req.ReadPageLink, false),
-		orderuser.WithAutoPay(req.AutoPay, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

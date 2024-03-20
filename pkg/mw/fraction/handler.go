@@ -209,7 +209,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.WithdrawState != nil {
 			h.Conds.WithdrawState = &cruder.Cond{
 				Op:  conds.GetWithdrawState().GetOp(),
-				Val: conds.GetWithdrawState().GetValue(),
+				Val: basetypes.WithdrawState(conds.GetWithdrawState().GetValue()),
 			}
 		}
 		return nil

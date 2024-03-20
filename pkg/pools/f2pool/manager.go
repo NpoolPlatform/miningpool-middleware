@@ -27,8 +27,11 @@ var (
 	CoinType2Currency map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "bitcoin",
 	}
-	CoinType2Threshold map[basetype.CoinType]float64 = map[basetype.CoinType]float64{
-		basetype.CoinType_BitCoin: 0.05,
+	CoinType2Threshold map[basetype.CoinType]float32 = map[basetype.CoinType]float32{
+		basetype.CoinType_BitCoin: 0.005,
+	}
+	CoinType2FeeRate map[basetype.CoinType]float32 = map[basetype.CoinType]float32{
+		basetype.CoinType_BitCoin: 0.04,
 	}
 	F2PoolAPI     = "https://api.f2pool.com"
 	F2PoolBaseURL = "https://f2pool.com"

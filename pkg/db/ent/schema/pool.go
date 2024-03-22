@@ -23,7 +23,7 @@ func (Pool) Mixin() []ent.Mixin {
 func (Pool) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("miningpool_type").Unique(),
+			String("miningpool_type"),
 		field.
 			String("name"),
 		field.

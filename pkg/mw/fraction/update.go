@@ -53,10 +53,13 @@ func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
 		stm, err := fractioncrud.UpdateSet(
 			info.Update(),
 			&fractioncrud.Req{
+				AppID:         h.AppID,
+				UserID:        h.UserID,
 				OrderUserID:   h.OrderUserID,
 				WithdrawState: h.WithdrawState,
 				WithdrawTime:  h.WithdrawTime,
 				PayTime:       h.PayTime,
+				Msg:           h.Msg,
 			},
 		)
 		if err != nil {

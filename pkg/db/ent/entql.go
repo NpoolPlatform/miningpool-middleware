@@ -3,11 +3,13 @@
 package ent
 
 import (
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	"entgo.io/ent/dialect/sql"
@@ -18,8 +20,27 @@ import (
 
 // schemaGraph holds a representation of ent/schema at runtime.
 var schemaGraph = func() *sqlgraph.Schema {
-	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 6)}
+	graph := &sqlgraph.Schema{Nodes: make([]*sqlgraph.Node, 8)}
 	graph.Nodes[0] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   apppool.Table,
+			Columns: apppool.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUint32,
+				Column: apppool.FieldID,
+			},
+		},
+		Type: "AppPool",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			apppool.FieldCreatedAt: {Type: field.TypeUint32, Column: apppool.FieldCreatedAt},
+			apppool.FieldUpdatedAt: {Type: field.TypeUint32, Column: apppool.FieldUpdatedAt},
+			apppool.FieldDeletedAt: {Type: field.TypeUint32, Column: apppool.FieldDeletedAt},
+			apppool.FieldEntID:     {Type: field.TypeUUID, Column: apppool.FieldEntID},
+			apppool.FieldAppID:     {Type: field.TypeUUID, Column: apppool.FieldAppID},
+			apppool.FieldPoolID:    {Type: field.TypeUUID, Column: apppool.FieldPoolID},
+		},
+	}
+	graph.Nodes[1] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   coin.Table,
 			Columns: coin.Columns,
@@ -35,7 +56,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldDeletedAt:        {Type: field.TypeUint32, Column: coin.FieldDeletedAt},
 			coin.FieldEntID:            {Type: field.TypeUUID, Column: coin.FieldEntID},
 			coin.FieldMiningpoolType:   {Type: field.TypeString, Column: coin.FieldMiningpoolType},
-			coin.FieldSite:             {Type: field.TypeString, Column: coin.FieldSite},
 			coin.FieldCoinType:         {Type: field.TypeString, Column: coin.FieldCoinType},
 			coin.FieldRevenueTypes:     {Type: field.TypeJSON, Column: coin.FieldRevenueTypes},
 			coin.FieldFeeRate:          {Type: field.TypeFloat32, Column: coin.FieldFeeRate},
@@ -44,7 +64,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldThreshold:        {Type: field.TypeFloat32, Column: coin.FieldThreshold},
 		},
 	}
-	graph.Nodes[1] = &sqlgraph.Node{
+	graph.Nodes[2] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   fraction.Table,
 			Columns: fraction.Columns,
@@ -59,13 +79,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fraction.FieldUpdatedAt:     {Type: field.TypeUint32, Column: fraction.FieldUpdatedAt},
 			fraction.FieldDeletedAt:     {Type: field.TypeUint32, Column: fraction.FieldDeletedAt},
 			fraction.FieldEntID:         {Type: field.TypeUUID, Column: fraction.FieldEntID},
+			fraction.FieldAppID:         {Type: field.TypeUUID, Column: fraction.FieldAppID},
+			fraction.FieldUserID:        {Type: field.TypeUUID, Column: fraction.FieldUserID},
 			fraction.FieldOrderUserID:   {Type: field.TypeUUID, Column: fraction.FieldOrderUserID},
 			fraction.FieldWithdrawState: {Type: field.TypeString, Column: fraction.FieldWithdrawState},
 			fraction.FieldWithdrawTime:  {Type: field.TypeUint32, Column: fraction.FieldWithdrawTime},
 			fraction.FieldPayTime:       {Type: field.TypeUint32, Column: fraction.FieldPayTime},
+			fraction.FieldMsg:           {Type: field.TypeString, Column: fraction.FieldMsg},
 		},
 	}
-	graph.Nodes[2] = &sqlgraph.Node{
+	graph.Nodes[3] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   fractionrule.Table,
 			Columns: fractionrule.Columns,
@@ -87,7 +110,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fractionrule.FieldWithdrawRate:     {Type: field.TypeFloat32, Column: fractionrule.FieldWithdrawRate},
 		},
 	}
-	graph.Nodes[3] = &sqlgraph.Node{
+	graph.Nodes[4] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   gooduser.Table,
 			Columns: gooduser.Columns,
@@ -112,7 +135,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			gooduser.FieldRevenueType:    {Type: field.TypeString, Column: gooduser.FieldRevenueType},
 		},
 	}
-	graph.Nodes[4] = &sqlgraph.Node{
+	graph.Nodes[5] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   orderuser.Table,
 			Columns: orderuser.Columns,
@@ -139,7 +162,28 @@ var schemaGraph = func() *sqlgraph.Schema {
 			orderuser.FieldAutoPay:        {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
 		},
 	}
-	graph.Nodes[5] = &sqlgraph.Node{
+	graph.Nodes[6] = &sqlgraph.Node{
+		NodeSpec: sqlgraph.NodeSpec{
+			Table:   pool.Table,
+			Columns: pool.Columns,
+			ID: &sqlgraph.FieldSpec{
+				Type:   field.TypeUint32,
+				Column: pool.FieldID,
+			},
+		},
+		Type: "Pool",
+		Fields: map[string]*sqlgraph.FieldSpec{
+			pool.FieldCreatedAt:      {Type: field.TypeUint32, Column: pool.FieldCreatedAt},
+			pool.FieldUpdatedAt:      {Type: field.TypeUint32, Column: pool.FieldUpdatedAt},
+			pool.FieldDeletedAt:      {Type: field.TypeUint32, Column: pool.FieldDeletedAt},
+			pool.FieldEntID:          {Type: field.TypeUUID, Column: pool.FieldEntID},
+			pool.FieldMiningpoolType: {Type: field.TypeString, Column: pool.FieldMiningpoolType},
+			pool.FieldName:           {Type: field.TypeString, Column: pool.FieldName},
+			pool.FieldSite:           {Type: field.TypeString, Column: pool.FieldSite},
+			pool.FieldDescription:    {Type: field.TypeString, Column: pool.FieldDescription},
+		},
+	}
+	graph.Nodes[7] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
 			Table:   rootuser.Table,
 			Columns: rootuser.Columns,
@@ -172,6 +216,76 @@ type predicateAdder interface {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (apq *AppPoolQuery) addPredicate(pred func(s *sql.Selector)) {
+	apq.predicates = append(apq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the AppPoolQuery builder.
+func (apq *AppPoolQuery) Filter() *AppPoolFilter {
+	return &AppPoolFilter{config: apq.config, predicateAdder: apq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *AppPoolMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the AppPoolMutation builder.
+func (m *AppPoolMutation) Filter() *AppPoolFilter {
+	return &AppPoolFilter{config: m.config, predicateAdder: m}
+}
+
+// AppPoolFilter provides a generic filtering capability at runtime for AppPoolQuery.
+type AppPoolFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *AppPoolFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql uint32 predicate on the id field.
+func (f *AppPoolFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(apppool.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *AppPoolFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(apppool.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *AppPoolFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(apppool.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *AppPoolFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(apppool.FieldDeletedAt))
+}
+
+// WhereEntID applies the entql [16]byte predicate on the ent_id field.
+func (f *AppPoolFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(apppool.FieldEntID))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *AppPoolFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(apppool.FieldAppID))
+}
+
+// WherePoolID applies the entql [16]byte predicate on the pool_id field.
+func (f *AppPoolFilter) WherePoolID(p entql.ValueP) {
+	f.Where(p.Field(apppool.FieldPoolID))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (cq *CoinQuery) addPredicate(pred func(s *sql.Selector)) {
 	cq.predicates = append(cq.predicates, pred)
 }
@@ -200,7 +314,7 @@ type CoinFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *CoinFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[0].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -234,11 +348,6 @@ func (f *CoinFilter) WhereEntID(p entql.ValueP) {
 // WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
 func (f *CoinFilter) WhereMiningpoolType(p entql.StringP) {
 	f.Where(p.Field(coin.FieldMiningpoolType))
-}
-
-// WhereSite applies the entql string predicate on the site field.
-func (f *CoinFilter) WhereSite(p entql.StringP) {
-	f.Where(p.Field(coin.FieldSite))
 }
 
 // WhereCoinType applies the entql string predicate on the coin_type field.
@@ -300,7 +409,7 @@ type FractionFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *FractionFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[1].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -331,6 +440,16 @@ func (f *FractionFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(fraction.FieldEntID))
 }
 
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *FractionFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(fraction.FieldAppID))
+}
+
+// WhereUserID applies the entql [16]byte predicate on the user_id field.
+func (f *FractionFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(fraction.FieldUserID))
+}
+
 // WhereOrderUserID applies the entql [16]byte predicate on the order_user_id field.
 func (f *FractionFilter) WhereOrderUserID(p entql.ValueP) {
 	f.Where(p.Field(fraction.FieldOrderUserID))
@@ -349,6 +468,11 @@ func (f *FractionFilter) WhereWithdrawTime(p entql.Uint32P) {
 // WherePayTime applies the entql uint32 predicate on the pay_time field.
 func (f *FractionFilter) WherePayTime(p entql.Uint32P) {
 	f.Where(p.Field(fraction.FieldPayTime))
+}
+
+// WhereMsg applies the entql string predicate on the msg field.
+func (f *FractionFilter) WhereMsg(p entql.StringP) {
+	f.Where(p.Field(fraction.FieldMsg))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -380,7 +504,7 @@ type FractionRuleFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *FractionRuleFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -465,7 +589,7 @@ type GoodUserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *GoodUserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -565,7 +689,7 @@ type OrderUserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *OrderUserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[4].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})
@@ -647,6 +771,86 @@ func (f *OrderUserFilter) WhereAutoPay(p entql.BoolP) {
 }
 
 // addPredicate implements the predicateAdder interface.
+func (pq *PoolQuery) addPredicate(pred func(s *sql.Selector)) {
+	pq.predicates = append(pq.predicates, pred)
+}
+
+// Filter returns a Filter implementation to apply filters on the PoolQuery builder.
+func (pq *PoolQuery) Filter() *PoolFilter {
+	return &PoolFilter{config: pq.config, predicateAdder: pq}
+}
+
+// addPredicate implements the predicateAdder interface.
+func (m *PoolMutation) addPredicate(pred func(s *sql.Selector)) {
+	m.predicates = append(m.predicates, pred)
+}
+
+// Filter returns an entql.Where implementation to apply filters on the PoolMutation builder.
+func (m *PoolMutation) Filter() *PoolFilter {
+	return &PoolFilter{config: m.config, predicateAdder: m}
+}
+
+// PoolFilter provides a generic filtering capability at runtime for PoolQuery.
+type PoolFilter struct {
+	predicateAdder
+	config
+}
+
+// Where applies the entql predicate on the query filter.
+func (f *PoolFilter) Where(p entql.P) {
+	f.addPredicate(func(s *sql.Selector) {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[6].Type, p, s); err != nil {
+			s.AddError(err)
+		}
+	})
+}
+
+// WhereID applies the entql uint32 predicate on the id field.
+func (f *PoolFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(pool.FieldID))
+}
+
+// WhereCreatedAt applies the entql uint32 predicate on the created_at field.
+func (f *PoolFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(pool.FieldCreatedAt))
+}
+
+// WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
+func (f *PoolFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(pool.FieldUpdatedAt))
+}
+
+// WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
+func (f *PoolFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(pool.FieldDeletedAt))
+}
+
+// WhereEntID applies the entql [16]byte predicate on the ent_id field.
+func (f *PoolFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(pool.FieldEntID))
+}
+
+// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
+func (f *PoolFilter) WhereMiningpoolType(p entql.StringP) {
+	f.Where(p.Field(pool.FieldMiningpoolType))
+}
+
+// WhereName applies the entql string predicate on the name field.
+func (f *PoolFilter) WhereName(p entql.StringP) {
+	f.Where(p.Field(pool.FieldName))
+}
+
+// WhereSite applies the entql string predicate on the site field.
+func (f *PoolFilter) WhereSite(p entql.StringP) {
+	f.Where(p.Field(pool.FieldSite))
+}
+
+// WhereDescription applies the entql string predicate on the description field.
+func (f *PoolFilter) WhereDescription(p entql.StringP) {
+	f.Where(p.Field(pool.FieldDescription))
+}
+
+// addPredicate implements the predicateAdder interface.
 func (ruq *RootUserQuery) addPredicate(pred func(s *sql.Selector)) {
 	ruq.predicates = append(ruq.predicates, pred)
 }
@@ -675,7 +879,7 @@ type RootUserFilter struct {
 // Where applies the entql predicate on the query filter.
 func (f *RootUserFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
-		if err := schemaGraph.EvalP(schemaGraph.Nodes[5].Type, p, s); err != nil {
+		if err := schemaGraph.EvalP(schemaGraph.Nodes[7].Type, p, s); err != nil {
 			s.AddError(err)
 		}
 	})

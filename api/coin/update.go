@@ -21,7 +21,6 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 		coin.WithMiningpoolType(req.MiningpoolType, true),
 		coin.WithCoinType(req.CoinType, true),
 		coin.WithRevenueTypes(&req.RevenueTypes, true),
-		coin.WithSite(req.Site, true),
 		coin.WithFeeRate(req.FeeRate, true),
 		coin.WithFixedRevenueAble(req.FixedRevenueAble, true),
 		coin.WithThreshold(req.Threshold, true),

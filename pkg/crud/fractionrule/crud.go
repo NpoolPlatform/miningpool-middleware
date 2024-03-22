@@ -66,6 +66,7 @@ func UpdateSet(u *ent.FractionRuleUpdateOne, req *Req) (*ent.FractionRuleUpdateO
 }
 
 type Conds struct {
+	ID               *cruder.Cond
 	EntID            *cruder.Cond
 	MiningpoolType   *cruder.Cond
 	CoinType         *cruder.Cond
@@ -76,6 +77,18 @@ type Conds struct {
 func SetQueryConds(q *ent.FractionRuleQuery, conds *Conds) (*ent.FractionRuleQuery, error) { //nolint
 	if conds == nil {
 		return nil, fmt.Errorf("have no any conds")
+	}
+	if conds.ID != nil {
+		id, ok := conds.ID.Val.(uint32)
+		if !ok {
+			return nil, fmt.Errorf("invalid id")
+		}
+		switch conds.ID.Op {
+		case cruder.EQ:
+			q.Where(fractionruleent.ID(id))
+		default:
+			return nil, fmt.Errorf("invalid id field")
+		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)

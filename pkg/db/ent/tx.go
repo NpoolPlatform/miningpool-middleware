@@ -14,6 +14,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// AppPool is the client for interacting with the AppPool builders.
+	AppPool *AppPoolClient
 	// Coin is the client for interacting with the Coin builders.
 	Coin *CoinClient
 	// Fraction is the client for interacting with the Fraction builders.
@@ -24,6 +26,8 @@ type Tx struct {
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
 	OrderUser *OrderUserClient
+	// Pool is the client for interacting with the Pool builders.
+	Pool *PoolClient
 	// RootUser is the client for interacting with the RootUser builders.
 	RootUser *RootUserClient
 
@@ -161,11 +165,13 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.AppPool = NewAppPoolClient(tx.config)
 	tx.Coin = NewCoinClient(tx.config)
 	tx.Fraction = NewFractionClient(tx.config)
 	tx.FractionRule = NewFractionRuleClient(tx.config)
 	tx.GoodUser = NewGoodUserClient(tx.config)
 	tx.OrderUser = NewOrderUserClient(tx.config)
+	tx.Pool = NewPoolClient(tx.config)
 	tx.RootUser = NewRootUserClient(tx.config)
 }
 
@@ -176,7 +182,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Coin.QueryXXX(), the query will be executed
+// applies a query, for example: AppPool.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

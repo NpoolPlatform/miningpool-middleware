@@ -22,8 +22,6 @@ const (
 	FieldEntID = "ent_id"
 	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
 	FieldMiningpoolType = "miningpool_type"
-	// FieldSite holds the string denoting the site field in the database.
-	FieldSite = "site"
 	// FieldCoinType holds the string denoting the coin_type field in the database.
 	FieldCoinType = "coin_type"
 	// FieldRevenueTypes holds the string denoting the revenue_types field in the database.
@@ -48,7 +46,6 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldEntID,
 	FieldMiningpoolType,
-	FieldSite,
 	FieldCoinType,
 	FieldRevenueTypes,
 	FieldFeeRate,
@@ -86,8 +83,6 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultSite holds the default value on creation for the "site" field.
-	DefaultSite string
 	// DefaultRevenueTypes holds the default value on creation for the "revenue_types" field.
 	DefaultRevenueTypes []string
 	// DefaultFeeRate holds the default value on creation for the "fee_rate" field.

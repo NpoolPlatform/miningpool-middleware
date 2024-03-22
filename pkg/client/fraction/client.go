@@ -48,22 +48,6 @@ func CreateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction
 	return info.(*npool.Fraction), nil
 }
 
-func CreateFractions(ctx context.Context, in []*npool.FractionReq) ([]*npool.Fraction, error) {
-	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateFractions(ctx, &npool.CreateFractionsRequest{
-			Infos: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Infos, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return infos.([]*npool.Fraction), nil
-}
-
 func GetFraction(ctx context.Context, id string) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetFraction(ctx, &npool.GetFractionRequest{

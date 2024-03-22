@@ -5,11 +5,13 @@ package runtime
 import (
 	"context"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/schema"
 	"github.com/google/uuid"
@@ -22,6 +24,40 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	apppoolMixin := schema.AppPool{}.Mixin()
+	apppool.Policy = privacy.NewPolicies(apppoolMixin[0], schema.AppPool{})
+	apppool.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := apppool.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	apppoolMixinFields0 := apppoolMixin[0].Fields()
+	_ = apppoolMixinFields0
+	apppoolMixinFields1 := apppoolMixin[1].Fields()
+	_ = apppoolMixinFields1
+	apppoolFields := schema.AppPool{}.Fields()
+	_ = apppoolFields
+	// apppoolDescCreatedAt is the schema descriptor for created_at field.
+	apppoolDescCreatedAt := apppoolMixinFields0[0].Descriptor()
+	// apppool.DefaultCreatedAt holds the default value on creation for the created_at field.
+	apppool.DefaultCreatedAt = apppoolDescCreatedAt.Default.(func() uint32)
+	// apppoolDescUpdatedAt is the schema descriptor for updated_at field.
+	apppoolDescUpdatedAt := apppoolMixinFields0[1].Descriptor()
+	// apppool.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	apppool.DefaultUpdatedAt = apppoolDescUpdatedAt.Default.(func() uint32)
+	// apppool.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	apppool.UpdateDefaultUpdatedAt = apppoolDescUpdatedAt.UpdateDefault.(func() uint32)
+	// apppoolDescDeletedAt is the schema descriptor for deleted_at field.
+	apppoolDescDeletedAt := apppoolMixinFields0[2].Descriptor()
+	// apppool.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	apppool.DefaultDeletedAt = apppoolDescDeletedAt.Default.(func() uint32)
+	// apppoolDescEntID is the schema descriptor for ent_id field.
+	apppoolDescEntID := apppoolMixinFields1[1].Descriptor()
+	// apppool.DefaultEntID holds the default value on creation for the ent_id field.
+	apppool.DefaultEntID = apppoolDescEntID.Default.(func() uuid.UUID)
 	coinMixin := schema.Coin{}.Mixin()
 	coin.Policy = privacy.NewPolicies(coinMixin[0], schema.Coin{})
 	coin.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -56,28 +92,24 @@ func init() {
 	coinDescEntID := coinMixinFields1[1].Descriptor()
 	// coin.DefaultEntID holds the default value on creation for the ent_id field.
 	coin.DefaultEntID = coinDescEntID.Default.(func() uuid.UUID)
-	// coinDescSite is the schema descriptor for site field.
-	coinDescSite := coinFields[1].Descriptor()
-	// coin.DefaultSite holds the default value on creation for the site field.
-	coin.DefaultSite = coinDescSite.Default.(string)
 	// coinDescRevenueTypes is the schema descriptor for revenue_types field.
-	coinDescRevenueTypes := coinFields[3].Descriptor()
+	coinDescRevenueTypes := coinFields[2].Descriptor()
 	// coin.DefaultRevenueTypes holds the default value on creation for the revenue_types field.
 	coin.DefaultRevenueTypes = coinDescRevenueTypes.Default.([]string)
 	// coinDescFeeRate is the schema descriptor for fee_rate field.
-	coinDescFeeRate := coinFields[4].Descriptor()
+	coinDescFeeRate := coinFields[3].Descriptor()
 	// coin.DefaultFeeRate holds the default value on creation for the fee_rate field.
 	coin.DefaultFeeRate = coinDescFeeRate.Default.(float32)
 	// coinDescFixedRevenueAble is the schema descriptor for fixed_revenue_able field.
-	coinDescFixedRevenueAble := coinFields[5].Descriptor()
+	coinDescFixedRevenueAble := coinFields[4].Descriptor()
 	// coin.DefaultFixedRevenueAble holds the default value on creation for the fixed_revenue_able field.
 	coin.DefaultFixedRevenueAble = coinDescFixedRevenueAble.Default.(bool)
 	// coinDescRemark is the schema descriptor for remark field.
-	coinDescRemark := coinFields[6].Descriptor()
+	coinDescRemark := coinFields[5].Descriptor()
 	// coin.DefaultRemark holds the default value on creation for the remark field.
 	coin.DefaultRemark = coinDescRemark.Default.(string)
 	// coinDescThreshold is the schema descriptor for threshold field.
-	coinDescThreshold := coinFields[7].Descriptor()
+	coinDescThreshold := coinFields[6].Descriptor()
 	// coin.DefaultThreshold holds the default value on creation for the threshold field.
 	coin.DefaultThreshold = coinDescThreshold.Default.(float32)
 	fractionMixin := schema.Fraction{}.Mixin()
@@ -232,6 +264,48 @@ func init() {
 	orderuserDescAutoPay := orderuserFields[9].Descriptor()
 	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
 	orderuser.DefaultAutoPay = orderuserDescAutoPay.Default.(bool)
+	poolMixin := schema.Pool{}.Mixin()
+	pool.Policy = privacy.NewPolicies(poolMixin[0], schema.Pool{})
+	pool.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := pool.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	poolMixinFields0 := poolMixin[0].Fields()
+	_ = poolMixinFields0
+	poolMixinFields1 := poolMixin[1].Fields()
+	_ = poolMixinFields1
+	poolFields := schema.Pool{}.Fields()
+	_ = poolFields
+	// poolDescCreatedAt is the schema descriptor for created_at field.
+	poolDescCreatedAt := poolMixinFields0[0].Descriptor()
+	// pool.DefaultCreatedAt holds the default value on creation for the created_at field.
+	pool.DefaultCreatedAt = poolDescCreatedAt.Default.(func() uint32)
+	// poolDescUpdatedAt is the schema descriptor for updated_at field.
+	poolDescUpdatedAt := poolMixinFields0[1].Descriptor()
+	// pool.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	pool.DefaultUpdatedAt = poolDescUpdatedAt.Default.(func() uint32)
+	// pool.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	pool.UpdateDefaultUpdatedAt = poolDescUpdatedAt.UpdateDefault.(func() uint32)
+	// poolDescDeletedAt is the schema descriptor for deleted_at field.
+	poolDescDeletedAt := poolMixinFields0[2].Descriptor()
+	// pool.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	pool.DefaultDeletedAt = poolDescDeletedAt.Default.(func() uint32)
+	// poolDescEntID is the schema descriptor for ent_id field.
+	poolDescEntID := poolMixinFields1[1].Descriptor()
+	// pool.DefaultEntID holds the default value on creation for the ent_id field.
+	pool.DefaultEntID = poolDescEntID.Default.(func() uuid.UUID)
+	// poolDescSite is the schema descriptor for site field.
+	poolDescSite := poolFields[2].Descriptor()
+	// pool.DefaultSite holds the default value on creation for the site field.
+	pool.DefaultSite = poolDescSite.Default.(string)
+	// poolDescDescription is the schema descriptor for description field.
+	poolDescDescription := poolFields[3].Descriptor()
+	// pool.DefaultDescription holds the default value on creation for the description field.
+	pool.DefaultDescription = poolDescDescription.Default.(string)
 	rootuserMixin := schema.RootUser{}.Mixin()
 	rootuser.Policy = privacy.NewPolicies(rootuserMixin[0], schema.RootUser{})
 	rootuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {

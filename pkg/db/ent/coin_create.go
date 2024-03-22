@@ -84,20 +84,6 @@ func (cc *CoinCreate) SetMiningpoolType(s string) *CoinCreate {
 	return cc
 }
 
-// SetSite sets the "site" field.
-func (cc *CoinCreate) SetSite(s string) *CoinCreate {
-	cc.mutation.SetSite(s)
-	return cc
-}
-
-// SetNillableSite sets the "site" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableSite(s *string) *CoinCreate {
-	if s != nil {
-		cc.SetSite(*s)
-	}
-	return cc
-}
-
 // SetCoinType sets the "coin_type" field.
 func (cc *CoinCreate) SetCoinType(s string) *CoinCreate {
 	cc.mutation.SetCoinType(s)
@@ -279,10 +265,6 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultEntID()
 		cc.mutation.SetEntID(v)
 	}
-	if _, ok := cc.mutation.Site(); !ok {
-		v := coin.DefaultSite
-		cc.mutation.SetSite(v)
-	}
 	if _, ok := cc.mutation.RevenueTypes(); !ok {
 		v := coin.DefaultRevenueTypes
 		cc.mutation.SetRevenueTypes(v)
@@ -399,14 +381,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 			Column: coin.FieldMiningpoolType,
 		})
 		_node.MiningpoolType = value
-	}
-	if value, ok := cc.mutation.Site(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldSite,
-		})
-		_node.Site = value
 	}
 	if value, ok := cc.mutation.CoinType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -585,24 +559,6 @@ func (u *CoinUpsert) SetMiningpoolType(v string) *CoinUpsert {
 // UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
 func (u *CoinUpsert) UpdateMiningpoolType() *CoinUpsert {
 	u.SetExcluded(coin.FieldMiningpoolType)
-	return u
-}
-
-// SetSite sets the "site" field.
-func (u *CoinUpsert) SetSite(v string) *CoinUpsert {
-	u.Set(coin.FieldSite, v)
-	return u
-}
-
-// UpdateSite sets the "site" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateSite() *CoinUpsert {
-	u.SetExcluded(coin.FieldSite)
-	return u
-}
-
-// ClearSite clears the value of the "site" field.
-func (u *CoinUpsert) ClearSite() *CoinUpsert {
-	u.SetNull(coin.FieldSite)
 	return u
 }
 
@@ -858,27 +814,6 @@ func (u *CoinUpsertOne) SetMiningpoolType(v string) *CoinUpsertOne {
 func (u *CoinUpsertOne) UpdateMiningpoolType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.UpdateMiningpoolType()
-	})
-}
-
-// SetSite sets the "site" field.
-func (u *CoinUpsertOne) SetSite(v string) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetSite(v)
-	})
-}
-
-// UpdateSite sets the "site" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateSite() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateSite()
-	})
-}
-
-// ClearSite clears the value of the "site" field.
-func (u *CoinUpsertOne) ClearSite() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearSite()
 	})
 }
 
@@ -1318,27 +1253,6 @@ func (u *CoinUpsertBulk) SetMiningpoolType(v string) *CoinUpsertBulk {
 func (u *CoinUpsertBulk) UpdateMiningpoolType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.UpdateMiningpoolType()
-	})
-}
-
-// SetSite sets the "site" field.
-func (u *CoinUpsertBulk) SetSite(v string) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetSite(v)
-	})
-}
-
-// UpdateSite sets the "site" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateSite() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateSite()
-	})
-}
-
-// ClearSite clears the value of the "site" field.
-func (u *CoinUpsertBulk) ClearSite() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearSite()
 	})
 }
 

@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// AppPool is the predicate function for apppool builders.
+type AppPool func(*sql.Selector)
+
 // Coin is the predicate function for coin builders.
 type Coin func(*sql.Selector)
 
@@ -20,6 +23,9 @@ type GoodUser func(*sql.Selector)
 
 // OrderUser is the predicate function for orderuser builders.
 type OrderUser func(*sql.Selector)
+
+// Pool is the predicate function for pool builders.
+type Pool func(*sql.Selector)
 
 // RootUser is the predicate function for rootuser builders.
 type RootUser func(*sql.Selector)

@@ -16,7 +16,6 @@ type Req struct {
 	MiningpoolType   *basetypes.MiningpoolType
 	CoinType         *basetypes.CoinType
 	RevenueTypes     *[]basetypes.RevenueType
-	Site             *string
 	FeeRate          *float32
 	FixedRevenueAble *bool
 	Threshold        *float32
@@ -40,9 +39,6 @@ func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 			revenueTypes = append(revenueTypes, v.String())
 		}
 		c.SetRevenueTypes(revenueTypes)
-	}
-	if req.Site != nil {
-		c.SetSite(*req.Site)
 	}
 	if req.FeeRate != nil {
 		c.SetFeeRate(*req.FeeRate)
@@ -73,9 +69,6 @@ func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 		}
 		u = u.SetRevenueTypes(revenueTypes)
 	}
-	if req.Site != nil {
-		u = u.SetSite(*req.Site)
-	}
 	if req.FeeRate != nil {
 		u = u.SetFeeRate(*req.FeeRate)
 	}
@@ -95,6 +88,7 @@ func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 }
 
 type Conds struct {
+	ID               *cruder.Cond
 	EntID            *cruder.Cond
 	MiningpoolType   *cruder.Cond
 	CoinType         *cruder.Cond
@@ -106,6 +100,18 @@ type Conds struct {
 func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //nolint
 	if conds == nil {
 		return nil, fmt.Errorf("have no any conds")
+	}
+	if conds.ID != nil {
+		id, ok := conds.ID.Val.(uint32)
+		if !ok {
+			return nil, fmt.Errorf("invalid id")
+		}
+		switch conds.ID.Op {
+		case cruder.EQ:
+			q.Where(coinent.ID(id))
+		default:
+			return nil, fmt.Errorf("invalid id field")
+		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
@@ -153,18 +159,6 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			q.Where(coinent.CoinType(cointype.String()))
 		default:
 			return nil, fmt.Errorf("invalid cointype field")
-		}
-	}
-	if conds.Site != nil {
-		site, ok := conds.Site.Val.(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid site")
-		}
-		switch conds.Site.Op {
-		case cruder.EQ:
-			q.Where(coinent.Site(site))
-		default:
-			return nil, fmt.Errorf("invalid site field")
 		}
 	}
 	if conds.FixedRevenueAble != nil {

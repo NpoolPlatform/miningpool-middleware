@@ -17,10 +17,13 @@ import (
 type Handler struct {
 	ID            *uint32
 	EntID         *uuid.UUID
+	AppID         *uuid.UUID
+	UserID        *uuid.UUID
 	OrderUserID   *uuid.UUID
 	WithdrawState *basetypes.WithdrawState
 	WithdrawTime  *uint32
 	PayTime       *uint32
+	Msg           *string
 	Reqs          []*fractioncrud.Req
 	Conds         *fractioncrud.Conds
 	Offset        int32
@@ -63,6 +66,40 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 			return err
 		}
 		h.EntID = &_id
+		return nil
+	}
+}
+
+func WithAppID(appid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if appid == nil {
+			if must {
+				return fmt.Errorf("invalid appid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*appid)
+		if err != nil {
+			return err
+		}
+		h.AppID = &_id
+		return nil
+	}
+}
+
+func WithUserID(userid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if userid == nil {
+			if must {
+				return fmt.Errorf("invalid userid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*userid)
+		if err != nil {
+			return err
+		}
+		h.UserID = &_id
 		return nil
 	}
 }
@@ -126,6 +163,19 @@ func WithPayTime(paytime *uint32, must bool) func(context.Context, *Handler) err
 	}
 }
 
+func WithMsg(msg *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if msg == nil {
+			if must {
+				return fmt.Errorf("invalid msg")
+			}
+			return nil
+		}
+		h.Msg = msg
+		return nil
+	}
+}
+
 // nolint:gocognit
 func WithReqs(reqs []*npool.FractionReq, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
@@ -138,6 +188,27 @@ func WithReqs(reqs []*npool.FractionReq, must bool) func(context.Context, *Handl
 					return err
 				}
 				_req.EntID = &id
+			}
+			if req.AppID != nil {
+				id, err := uuid.Parse(req.GetAppID())
+				if err != nil {
+					return err
+				}
+				_req.AppID = &id
+			}
+			if req.UserID != nil {
+				id, err := uuid.Parse(req.GetUserID())
+				if err != nil {
+					return err
+				}
+				_req.UserID = &id
+			}
+			if req.OrderUserID != nil {
+				id, err := uuid.Parse(req.GetEntID())
+				if err != nil {
+					return err
+				}
+				_req.OrderUserID = &id
 			}
 			if req.OrderUserID != nil {
 				id, err := uuid.Parse(req.GetEntID())
@@ -158,6 +229,9 @@ func WithReqs(reqs []*npool.FractionReq, must bool) func(context.Context, *Handl
 			if req.PayTime != nil {
 				_req.PayTime = req.PayTime
 			}
+			if req.Msg != nil {
+				_req.Msg = req.Msg
+			}
 			_reqs = append(_reqs, _req)
 		}
 		h.Reqs = _reqs
@@ -171,6 +245,12 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		h.Conds = &fractioncrud.Conds{}
 		if conds == nil {
 			return nil
+		}
+		if conds.ID != nil {
+			h.Conds.ID = &cruder.Cond{
+				Op:  conds.GetID().GetOp(),
+				Val: conds.GetID().GetValue(),
+			}
 		}
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
@@ -194,6 +274,26 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.EntIDs = &cruder.Cond{
 				Op:  conds.GetEntIDs().GetOp(),
 				Val: ids,
+			}
+		}
+		if conds.AppID != nil {
+			id, err := uuid.Parse(conds.GetAppID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.AppID = &cruder.Cond{
+				Op:  conds.GetAppID().GetOp(),
+				Val: id,
+			}
+		}
+		if conds.UserID != nil {
+			id, err := uuid.Parse(conds.GetUserID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.UserID = &cruder.Cond{
+				Op:  conds.GetUserID().GetOp(),
+				Val: id,
 			}
 		}
 		if conds.OrderUserID != nil {

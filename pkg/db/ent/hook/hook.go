@@ -9,6 +9,19 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 )
 
+// The AppPoolFunc type is an adapter to allow the use of ordinary
+// function as AppPool mutator.
+type AppPoolFunc func(context.Context, *ent.AppPoolMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppPoolFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AppPoolMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPoolMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The CoinFunc type is an adapter to allow the use of ordinary
 // function as Coin mutator.
 type CoinFunc func(context.Context, *ent.CoinMutation) (ent.Value, error)
@@ -70,6 +83,19 @@ func (f OrderUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	mv, ok := m.(*ent.OrderUserMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.OrderUserMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The PoolFunc type is an adapter to allow the use of ordinary
+// function as Pool mutator.
+type PoolFunc func(context.Context, *ent.PoolMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PoolFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.PoolMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PoolMutation", m)
 	}
 	return f(ctx, mv)
 }

@@ -30,7 +30,6 @@ func (h *queryHandler) selectCoin(stm *ent.CoinQuery) {
 		coinent.FieldCoinType,
 		coinent.FieldMiningpoolType,
 		coinent.FieldRevenueTypes,
-		coinent.FieldSite,
 		coinent.FieldFeeRate,
 		coinent.FieldFixedRevenueAble,
 		coinent.FieldThreshold,

@@ -26,8 +26,6 @@ func (Coin) Fields() []ent.Field {
 		field.
 			String("miningpool_type"),
 		field.
-			String("site").Optional().Default(""),
-		field.
 			String("coin_type"),
 		field.
 			JSON("revenue_types", []string{}).Optional().Default([]string{}),

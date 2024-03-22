@@ -27,8 +27,6 @@ type Coin struct {
 	EntID uuid.UUID `json:"ent_id,omitempty"`
 	// MiningpoolType holds the value of the "miningpool_type" field.
 	MiningpoolType string `json:"miningpool_type,omitempty"`
-	// Site holds the value of the "site" field.
-	Site string `json:"site,omitempty"`
 	// CoinType holds the value of the "coin_type" field.
 	CoinType string `json:"coin_type,omitempty"`
 	// RevenueTypes holds the value of the "revenue_types" field.
@@ -56,7 +54,7 @@ func (*Coin) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullFloat64)
 		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case coin.FieldMiningpoolType, coin.FieldSite, coin.FieldCoinType, coin.FieldRemark:
+		case coin.FieldMiningpoolType, coin.FieldCoinType, coin.FieldRemark:
 			values[i] = new(sql.NullString)
 		case coin.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -110,12 +108,6 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
 			} else if value.Valid {
 				c.MiningpoolType = value.String
-			}
-		case coin.FieldSite:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field site", values[i])
-			} else if value.Valid {
-				c.Site = value.String
 			}
 		case coin.FieldCoinType:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -197,9 +189,6 @@ func (c *Coin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("miningpool_type=")
 	builder.WriteString(c.MiningpoolType)
-	builder.WriteString(", ")
-	builder.WriteString("site=")
-	builder.WriteString(c.Site)
 	builder.WriteString(", ")
 	builder.WriteString("coin_type=")
 	builder.WriteString(c.CoinType)

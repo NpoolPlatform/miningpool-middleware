@@ -18,10 +18,7 @@ func (s *Server) UpdateFraction(ctx context.Context, in *npool.UpdateFractionReq
 		ctx,
 		fraction.WithID(req.ID, true),
 		fraction.WithEntID(req.EntID, false),
-		fraction.WithOrderUserID(req.OrderUserID, true),
-		fraction.WithWithdrawState(req.WithdrawState, true),
-		fraction.WithWithdrawTime(req.WithdrawTime, true),
-		fraction.WithPayTime(req.PayTime, true),
+		fraction.WithMsg(req.Msg, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

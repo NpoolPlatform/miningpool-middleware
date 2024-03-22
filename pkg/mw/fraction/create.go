@@ -24,10 +24,13 @@ func (h *Handler) CreateFraction(ctx context.Context) (*npool.Fraction, error) {
 			cli.Fraction.Create(),
 			&fractioncrud.Req{
 				EntID:         h.EntID,
+				AppID:         h.AppID,
+				UserID:        h.UserID,
 				OrderUserID:   h.OrderUserID,
 				WithdrawState: h.WithdrawState,
 				WithdrawTime:  h.WithdrawTime,
 				PayTime:       h.PayTime,
+				Msg:           h.Msg,
 			},
 		).Save(ctx)
 		if err != nil {

@@ -13,16 +13,25 @@ import (
 
 type Req struct {
 	EntID         *uuid.UUID
+	AppID         *uuid.UUID
+	UserID        *uuid.UUID
 	OrderUserID   *uuid.UUID
 	WithdrawState *basetypes.WithdrawState
 	WithdrawTime  *uint32
 	PayTime       *uint32
+	Msg           *string
 	DeletedAt     *uint32
 }
 
 func CreateSet(c *ent.FractionCreate, req *Req) *ent.FractionCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
+	}
+	if req.AppID != nil {
+		c.SetAppID(*req.AppID)
+	}
+	if req.UserID != nil {
+		c.SetUserID(*req.UserID)
 	}
 	if req.OrderUserID != nil {
 		c.SetOrderUserID(*req.OrderUserID)
@@ -36,10 +45,19 @@ func CreateSet(c *ent.FractionCreate, req *Req) *ent.FractionCreate {
 	if req.PayTime != nil {
 		c.SetPayTime(*req.PayTime)
 	}
+	if req.Msg != nil {
+		c.SetMsg(*req.Msg)
+	}
 	return c
 }
 
 func UpdateSet(u *ent.FractionUpdateOne, req *Req) (*ent.FractionUpdateOne, error) {
+	if req.AppID != nil {
+		u = u.SetAppID(*req.AppID)
+	}
+	if req.UserID != nil {
+		u = u.SetUserID(*req.UserID)
+	}
 	if req.OrderUserID != nil {
 		u = u.SetOrderUserID(*req.OrderUserID)
 	}
@@ -52,6 +70,9 @@ func UpdateSet(u *ent.FractionUpdateOne, req *Req) (*ent.FractionUpdateOne, erro
 	if req.PayTime != nil {
 		u = u.SetPayTime(*req.PayTime)
 	}
+	if req.Msg != nil {
+		u = u.SetMsg(*req.Msg)
+	}
 	if req.DeletedAt != nil {
 		u = u.SetDeletedAt(*req.DeletedAt)
 	}
@@ -59,7 +80,10 @@ func UpdateSet(u *ent.FractionUpdateOne, req *Req) (*ent.FractionUpdateOne, erro
 }
 
 type Conds struct {
+	ID            *cruder.Cond
 	EntID         *cruder.Cond
+	AppID         *cruder.Cond
+	UserID        *cruder.Cond
 	OrderUserID   *cruder.Cond
 	WithdrawState *cruder.Cond
 	EntIDs        *cruder.Cond
@@ -68,6 +92,18 @@ type Conds struct {
 func SetQueryConds(q *ent.FractionQuery, conds *Conds) (*ent.FractionQuery, error) { //nolint
 	if conds == nil {
 		return nil, fmt.Errorf("have no any conds")
+	}
+	if conds.ID != nil {
+		id, ok := conds.ID.Val.(uint32)
+		if !ok {
+			return nil, fmt.Errorf("invalid id")
+		}
+		switch conds.ID.Op {
+		case cruder.EQ:
+			q.Where(fractionent.ID(id))
+		default:
+			return nil, fmt.Errorf("invalid id field")
+		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
@@ -91,6 +127,30 @@ func SetQueryConds(q *ent.FractionQuery, conds *Conds) (*ent.FractionQuery, erro
 			q.Where(fractionent.EntIDIn(ids...))
 		default:
 			return nil, fmt.Errorf("invalid entids field")
+		}
+	}
+	if conds.AppID != nil {
+		appid, ok := conds.AppID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid appid")
+		}
+		switch conds.AppID.Op {
+		case cruder.EQ:
+			q.Where(fractionent.AppID(appid))
+		default:
+			return nil, fmt.Errorf("invalid appid field")
+		}
+	}
+	if conds.UserID != nil {
+		userid, ok := conds.UserID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid userid")
+		}
+		switch conds.UserID.Op {
+		case cruder.EQ:
+			q.Where(fractionent.OrderUserID(userid))
+		default:
+			return nil, fmt.Errorf("invalid userid field")
 		}
 	}
 	if conds.OrderUserID != nil {

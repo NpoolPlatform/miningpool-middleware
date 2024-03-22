@@ -56,7 +56,6 @@ func (h *Handler) UpdateCoin(ctx context.Context) (*npool.Coin, error) {
 				CoinType:         h.CoinType,
 				MiningpoolType:   h.MiningpoolType,
 				RevenueTypes:     h.RevenueTypes,
-				Site:             h.Site,
 				FeeRate:          h.FeeRate,
 				FixedRevenueAble: h.FixedRevenueAble,
 				Threshold:        h.Threshold,

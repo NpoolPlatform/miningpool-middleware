@@ -31,7 +31,6 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 		rootuser.WithID(req.ID, true),
 		rootuser.WithEntID(req.EntID, false),
 		rootuser.WithName(req.Name, false),
-		rootuser.WithMiningpoolType(req.MiningpoolType, false),
 		rootuser.WithEmail(req.Email, false),
 		rootuser.WithAuthToken(req.AuthToken, false),
 		rootuser.WithAuthed(req.Authed, false),

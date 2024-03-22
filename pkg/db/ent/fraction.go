@@ -24,6 +24,10 @@ type Fraction struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
+	// AppID holds the value of the "app_id" field.
+	AppID uuid.UUID `json:"app_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID uuid.UUID `json:"user_id,omitempty"`
 	// OrderUserID holds the value of the "order_user_id" field.
 	OrderUserID uuid.UUID `json:"order_user_id,omitempty"`
 	// WithdrawState holds the value of the "withdraw_state" field.
@@ -32,6 +36,8 @@ type Fraction struct {
 	WithdrawTime uint32 `json:"withdraw_time,omitempty"`
 	// PayTime holds the value of the "pay_time" field.
 	PayTime uint32 `json:"pay_time,omitempty"`
+	// Msg holds the value of the "msg" field.
+	Msg string `json:"msg,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -41,9 +47,9 @@ func (*Fraction) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case fraction.FieldID, fraction.FieldCreatedAt, fraction.FieldUpdatedAt, fraction.FieldDeletedAt, fraction.FieldWithdrawTime, fraction.FieldPayTime:
 			values[i] = new(sql.NullInt64)
-		case fraction.FieldWithdrawState:
+		case fraction.FieldWithdrawState, fraction.FieldMsg:
 			values[i] = new(sql.NullString)
-		case fraction.FieldEntID, fraction.FieldOrderUserID:
+		case fraction.FieldEntID, fraction.FieldAppID, fraction.FieldUserID, fraction.FieldOrderUserID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Fraction", columns[i])
@@ -90,6 +96,18 @@ func (f *Fraction) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				f.EntID = *value
 			}
+		case fraction.FieldAppID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+			} else if value != nil {
+				f.AppID = *value
+			}
+		case fraction.FieldUserID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+			} else if value != nil {
+				f.UserID = *value
+			}
 		case fraction.FieldOrderUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field order_user_id", values[i])
@@ -113,6 +131,12 @@ func (f *Fraction) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field pay_time", values[i])
 			} else if value.Valid {
 				f.PayTime = uint32(value.Int64)
+			}
+		case fraction.FieldMsg:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field msg", values[i])
+			} else if value.Valid {
+				f.Msg = value.String
 			}
 		}
 	}
@@ -154,6 +178,12 @@ func (f *Fraction) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", f.EntID))
 	builder.WriteString(", ")
+	builder.WriteString("app_id=")
+	builder.WriteString(fmt.Sprintf("%v", f.AppID))
+	builder.WriteString(", ")
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", f.UserID))
+	builder.WriteString(", ")
 	builder.WriteString("order_user_id=")
 	builder.WriteString(fmt.Sprintf("%v", f.OrderUserID))
 	builder.WriteString(", ")
@@ -165,6 +195,9 @@ func (f *Fraction) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pay_time=")
 	builder.WriteString(fmt.Sprintf("%v", f.PayTime))
+	builder.WriteString(", ")
+	builder.WriteString("msg=")
+	builder.WriteString(f.Msg)
 	builder.WriteByte(')')
 	return builder.String()
 }

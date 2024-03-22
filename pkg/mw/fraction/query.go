@@ -25,10 +25,13 @@ func (h *queryHandler) selectFraction(stm *ent.FractionQuery) {
 	h.stm = stm.Select(
 		fractionent.FieldID,
 		fractionent.FieldEntID,
+		fractionent.FieldAppID,
+		fractionent.FieldUserID,
 		fractionent.FieldOrderUserID,
 		fractionent.FieldWithdrawState,
 		fractionent.FieldWithdrawTime,
 		fractionent.FieldPayTime,
+		fractionent.FieldMsg,
 		fractionent.FieldCreatedAt,
 		fractionent.FieldUpdatedAt,
 	)

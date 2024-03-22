@@ -8,6 +8,29 @@ import (
 )
 
 var (
+	// AppPoolsColumns holds the columns for the "app_pools" table.
+	AppPoolsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
+		{Name: "app_id", Type: field.TypeUUID},
+		{Name: "pool_id", Type: field.TypeUUID},
+	}
+	// AppPoolsTable holds the schema information for the "app_pools" table.
+	AppPoolsTable = &schema.Table{
+		Name:       "app_pools",
+		Columns:    AppPoolsColumns,
+		PrimaryKey: []*schema.Column{AppPoolsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "apppool_ent_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppPoolsColumns[4]},
+			},
+		},
+	}
 	// CoinsColumns holds the columns for the "coins" table.
 	CoinsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
@@ -16,7 +39,6 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "miningpool_type", Type: field.TypeString},
-		{Name: "site", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "coin_type", Type: field.TypeString},
 		{Name: "revenue_types", Type: field.TypeJSON, Nullable: true},
 		{Name: "fee_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
@@ -38,7 +60,7 @@ var (
 			{
 				Name:    "coin_miningpool_type_coin_type",
 				Unique:  true,
-				Columns: []*schema.Column{CoinsColumns[5], CoinsColumns[7]},
+				Columns: []*schema.Column{CoinsColumns[5], CoinsColumns[6]},
 			},
 		},
 	}
@@ -49,10 +71,13 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
+		{Name: "app_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeUUID},
 		{Name: "order_user_id", Type: field.TypeUUID},
 		{Name: "withdraw_state", Type: field.TypeString},
 		{Name: "withdraw_time", Type: field.TypeUint32},
 		{Name: "pay_time", Type: field.TypeUint32, Nullable: true},
+		{Name: "msg", Type: field.TypeString},
 	}
 	// FractionsTable holds the schema information for the "fractions" table.
 	FractionsTable = &schema.Table{
@@ -64,6 +89,11 @@ var (
 				Name:    "fraction_ent_id",
 				Unique:  true,
 				Columns: []*schema.Column{FractionsColumns[4]},
+			},
+			{
+				Name:    "fraction_app_id_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{FractionsColumns[5], FractionsColumns[6]},
 			},
 		},
 	}
@@ -193,6 +223,31 @@ var (
 			},
 		},
 	}
+	// PoolsColumns holds the columns for the "pools" table.
+	PoolsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint32, Increment: true},
+		{Name: "created_at", Type: field.TypeUint32},
+		{Name: "updated_at", Type: field.TypeUint32},
+		{Name: "deleted_at", Type: field.TypeUint32},
+		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
+		{Name: "miningpool_type", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "site", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
+	}
+	// PoolsTable holds the schema information for the "pools" table.
+	PoolsTable = &schema.Table{
+		Name:       "pools",
+		Columns:    PoolsColumns,
+		PrimaryKey: []*schema.Column{PoolsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "pool_ent_id",
+				Unique:  true,
+				Columns: []*schema.Column{PoolsColumns[4]},
+			},
+		},
+	}
 	// RootUsersColumns holds the columns for the "root_users" table.
 	RootUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
@@ -222,11 +277,13 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AppPoolsTable,
 		CoinsTable,
 		FractionsTable,
 		FractionRulesTable,
 		GoodUsersTable,
 		OrderUsersTable,
+		PoolsTable,
 		RootUsersTable,
 	}
 )

@@ -98,6 +98,18 @@ func (fu *FractionUpdate) SetNillableEntID(u *uuid.UUID) *FractionUpdate {
 	return fu
 }
 
+// SetAppID sets the "app_id" field.
+func (fu *FractionUpdate) SetAppID(u uuid.UUID) *FractionUpdate {
+	fu.mutation.SetAppID(u)
+	return fu
+}
+
+// SetUserID sets the "user_id" field.
+func (fu *FractionUpdate) SetUserID(u uuid.UUID) *FractionUpdate {
+	fu.mutation.SetUserID(u)
+	return fu
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (fu *FractionUpdate) SetOrderUserID(u uuid.UUID) *FractionUpdate {
 	fu.mutation.SetOrderUserID(u)
@@ -147,6 +159,12 @@ func (fu *FractionUpdate) AddPayTime(u int32) *FractionUpdate {
 // ClearPayTime clears the value of the "pay_time" field.
 func (fu *FractionUpdate) ClearPayTime() *FractionUpdate {
 	fu.mutation.ClearPayTime()
+	return fu
+}
+
+// SetMsg sets the "msg" field.
+func (fu *FractionUpdate) SetMsg(s string) *FractionUpdate {
+	fu.mutation.SetMsg(s)
 	return fu
 }
 
@@ -297,6 +315,20 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldEntID,
 		})
 	}
+	if value, ok := fu.mutation.AppID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldAppID,
+		})
+	}
+	if value, ok := fu.mutation.UserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldUserID,
+		})
+	}
 	if value, ok := fu.mutation.OrderUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -343,6 +375,13 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Column: fraction.FieldPayTime,
+		})
+	}
+	if value, ok := fu.mutation.Msg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fraction.FieldMsg,
 		})
 	}
 	_spec.Modifiers = fu.modifiers
@@ -435,6 +474,18 @@ func (fuo *FractionUpdateOne) SetNillableEntID(u *uuid.UUID) *FractionUpdateOne 
 	return fuo
 }
 
+// SetAppID sets the "app_id" field.
+func (fuo *FractionUpdateOne) SetAppID(u uuid.UUID) *FractionUpdateOne {
+	fuo.mutation.SetAppID(u)
+	return fuo
+}
+
+// SetUserID sets the "user_id" field.
+func (fuo *FractionUpdateOne) SetUserID(u uuid.UUID) *FractionUpdateOne {
+	fuo.mutation.SetUserID(u)
+	return fuo
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (fuo *FractionUpdateOne) SetOrderUserID(u uuid.UUID) *FractionUpdateOne {
 	fuo.mutation.SetOrderUserID(u)
@@ -484,6 +535,12 @@ func (fuo *FractionUpdateOne) AddPayTime(u int32) *FractionUpdateOne {
 // ClearPayTime clears the value of the "pay_time" field.
 func (fuo *FractionUpdateOne) ClearPayTime() *FractionUpdateOne {
 	fuo.mutation.ClearPayTime()
+	return fuo
+}
+
+// SetMsg sets the "msg" field.
+func (fuo *FractionUpdateOne) SetMsg(s string) *FractionUpdateOne {
+	fuo.mutation.SetMsg(s)
 	return fuo
 }
 
@@ -664,6 +721,20 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 			Column: fraction.FieldEntID,
 		})
 	}
+	if value, ok := fuo.mutation.AppID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldAppID,
+		})
+	}
+	if value, ok := fuo.mutation.UserID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldUserID,
+		})
+	}
 	if value, ok := fuo.mutation.OrderUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -710,6 +781,13 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Column: fraction.FieldPayTime,
+		})
+	}
+	if value, ok := fuo.mutation.Msg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fraction.FieldMsg,
 		})
 	}
 	_spec.Modifiers = fuo.modifiers

@@ -107,6 +107,20 @@ func EntID(v uuid.UUID) predicate.Fraction {
 	})
 }
 
+// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
+func AppID(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAppID), v))
+	})
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
 // OrderUserID applies equality check predicate on the "order_user_id" field. It's identical to OrderUserIDEQ.
 func OrderUserID(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
@@ -132,6 +146,13 @@ func WithdrawTime(v uint32) predicate.Fraction {
 func PayTime(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldPayTime), v))
+	})
+}
+
+// Msg applies equality check predicate on the "msg" field. It's identical to MsgEQ.
+func Msg(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMsg), v))
 	})
 }
 
@@ -388,6 +409,134 @@ func EntIDLT(v uuid.UUID) predicate.Fraction {
 func EntIDLTE(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldEntID), v))
+	})
+}
+
+// AppIDEQ applies the EQ predicate on the "app_id" field.
+func AppIDEQ(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDNEQ applies the NEQ predicate on the "app_id" field.
+func AppIDNEQ(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDIn applies the In predicate on the "app_id" field.
+func AppIDIn(vs ...uuid.UUID) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldAppID), v...))
+	})
+}
+
+// AppIDNotIn applies the NotIn predicate on the "app_id" field.
+func AppIDNotIn(vs ...uuid.UUID) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldAppID), v...))
+	})
+}
+
+// AppIDGT applies the GT predicate on the "app_id" field.
+func AppIDGT(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDGTE applies the GTE predicate on the "app_id" field.
+func AppIDGTE(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDLT applies the LT predicate on the "app_id" field.
+func AppIDLT(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDLTE applies the LTE predicate on the "app_id" field.
+func AppIDLTE(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAppID), v))
+	})
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...uuid.UUID) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldUserID), v...))
+	})
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...uuid.UUID) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldUserID), v...))
+	})
+}
+
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldUserID), v))
+	})
+}
+
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v uuid.UUID) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldUserID), v))
 	})
 }
 
@@ -693,6 +842,105 @@ func PayTimeIsNil() predicate.Fraction {
 func PayTimeNotNil() predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldPayTime)))
+	})
+}
+
+// MsgEQ applies the EQ predicate on the "msg" field.
+func MsgEQ(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMsg), v))
+	})
+}
+
+// MsgNEQ applies the NEQ predicate on the "msg" field.
+func MsgNEQ(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMsg), v))
+	})
+}
+
+// MsgIn applies the In predicate on the "msg" field.
+func MsgIn(vs ...string) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMsg), v...))
+	})
+}
+
+// MsgNotIn applies the NotIn predicate on the "msg" field.
+func MsgNotIn(vs ...string) predicate.Fraction {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMsg), v...))
+	})
+}
+
+// MsgGT applies the GT predicate on the "msg" field.
+func MsgGT(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMsg), v))
+	})
+}
+
+// MsgGTE applies the GTE predicate on the "msg" field.
+func MsgGTE(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMsg), v))
+	})
+}
+
+// MsgLT applies the LT predicate on the "msg" field.
+func MsgLT(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMsg), v))
+	})
+}
+
+// MsgLTE applies the LTE predicate on the "msg" field.
+func MsgLTE(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMsg), v))
+	})
+}
+
+// MsgContains applies the Contains predicate on the "msg" field.
+func MsgContains(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldMsg), v))
+	})
+}
+
+// MsgHasPrefix applies the HasPrefix predicate on the "msg" field.
+func MsgHasPrefix(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldMsg), v))
+	})
+}
+
+// MsgHasSuffix applies the HasSuffix predicate on the "msg" field.
+func MsgHasSuffix(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldMsg), v))
+	})
+}
+
+// MsgEqualFold applies the EqualFold predicate on the "msg" field.
+func MsgEqualFold(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldMsg), v))
+	})
+}
+
+// MsgContainsFold applies the ContainsFold predicate on the "msg" field.
+func MsgContainsFold(v string) predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldMsg), v))
 	})
 }
 

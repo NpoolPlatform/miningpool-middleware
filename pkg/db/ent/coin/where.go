@@ -114,13 +114,6 @@ func MiningpoolType(v string) predicate.Coin {
 	})
 }
 
-// Site applies equality check predicate on the "site" field. It's identical to SiteEQ.
-func Site(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSite), v))
-	})
-}
-
 // CoinType applies equality check predicate on the "coin_type" field. It's identical to CoinTypeEQ.
 func CoinType(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
@@ -508,119 +501,6 @@ func MiningpoolTypeEqualFold(v string) predicate.Coin {
 func MiningpoolTypeContainsFold(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// SiteEQ applies the EQ predicate on the "site" field.
-func SiteEQ(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldSite), v))
-	})
-}
-
-// SiteNEQ applies the NEQ predicate on the "site" field.
-func SiteNEQ(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldSite), v))
-	})
-}
-
-// SiteIn applies the In predicate on the "site" field.
-func SiteIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldSite), v...))
-	})
-}
-
-// SiteNotIn applies the NotIn predicate on the "site" field.
-func SiteNotIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldSite), v...))
-	})
-}
-
-// SiteGT applies the GT predicate on the "site" field.
-func SiteGT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldSite), v))
-	})
-}
-
-// SiteGTE applies the GTE predicate on the "site" field.
-func SiteGTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldSite), v))
-	})
-}
-
-// SiteLT applies the LT predicate on the "site" field.
-func SiteLT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldSite), v))
-	})
-}
-
-// SiteLTE applies the LTE predicate on the "site" field.
-func SiteLTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldSite), v))
-	})
-}
-
-// SiteContains applies the Contains predicate on the "site" field.
-func SiteContains(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldSite), v))
-	})
-}
-
-// SiteHasPrefix applies the HasPrefix predicate on the "site" field.
-func SiteHasPrefix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldSite), v))
-	})
-}
-
-// SiteHasSuffix applies the HasSuffix predicate on the "site" field.
-func SiteHasSuffix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldSite), v))
-	})
-}
-
-// SiteIsNil applies the IsNil predicate on the "site" field.
-func SiteIsNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSite)))
-	})
-}
-
-// SiteNotNil applies the NotNil predicate on the "site" field.
-func SiteNotNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSite)))
-	})
-}
-
-// SiteEqualFold applies the EqualFold predicate on the "site" field.
-func SiteEqualFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldSite), v))
-	})
-}
-
-// SiteContainsFold applies the ContainsFold predicate on the "site" field.
-func SiteContainsFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldSite), v))
 	})
 }
 

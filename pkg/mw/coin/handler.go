@@ -20,7 +20,6 @@ type Handler struct {
 	CoinType         *basetypes.CoinType
 	MiningpoolType   *basetypes.MiningpoolType
 	RevenueTypes     *[]basetypes.RevenueType
-	Site             *string
 	FeeRate          *float32
 	FixedRevenueAble *bool
 	Threshold        *float32
@@ -116,19 +115,6 @@ func WithRevenueTypes(revenuetypes *[]basetypes.RevenueType, must bool) func(con
 	}
 }
 
-func WithSite(site *string, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if site == nil {
-			if must {
-				return fmt.Errorf("invalid site")
-			}
-			return nil
-		}
-		h.Site = site
-		return nil
-	}
-}
-
 func WithFeeRate(feerate *float32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if feerate == nil {
@@ -209,9 +195,6 @@ func WithReqs(reqs []*npool.CoinReq, must bool) func(context.Context, *Handler) 
 			if req.RevenueTypes != nil {
 				_req.RevenueTypes = &req.RevenueTypes
 			}
-			if req.Site != nil {
-				_req.Site = req.Site
-			}
 			if req.FeeRate != nil {
 				_req.FeeRate = req.FeeRate
 			}
@@ -237,6 +220,12 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		h.Conds = &coincrud.Conds{}
 		if conds == nil {
 			return nil
+		}
+		if conds.ID != nil {
+			h.Conds.ID = &cruder.Cond{
+				Op:  conds.GetID().GetOp(),
+				Val: conds.GetID().GetValue(),
+			}
 		}
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
@@ -272,12 +261,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.MiningpoolType = &cruder.Cond{
 				Op:  conds.GetMiningpoolType().GetOp(),
 				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
-			}
-		}
-		if conds.Site != nil {
-			h.Conds.Site = &cruder.Cond{
-				Op:  conds.GetSite().GetOp(),
-				Val: conds.GetSite().GetValue(),
 			}
 		}
 		if conds.FixedRevenueAble != nil {

@@ -10,11 +10,13 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/migrate"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	"entgo.io/ent/dialect"
@@ -26,6 +28,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AppPool is the client for interacting with the AppPool builders.
+	AppPool *AppPoolClient
 	// Coin is the client for interacting with the Coin builders.
 	Coin *CoinClient
 	// Fraction is the client for interacting with the Fraction builders.
@@ -36,6 +40,8 @@ type Client struct {
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
 	OrderUser *OrderUserClient
+	// Pool is the client for interacting with the Pool builders.
+	Pool *PoolClient
 	// RootUser is the client for interacting with the RootUser builders.
 	RootUser *RootUserClient
 }
@@ -51,11 +57,13 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AppPool = NewAppPoolClient(c.config)
 	c.Coin = NewCoinClient(c.config)
 	c.Fraction = NewFractionClient(c.config)
 	c.FractionRule = NewFractionRuleClient(c.config)
 	c.GoodUser = NewGoodUserClient(c.config)
 	c.OrderUser = NewOrderUserClient(c.config)
+	c.Pool = NewPoolClient(c.config)
 	c.RootUser = NewRootUserClient(c.config)
 }
 
@@ -90,11 +98,13 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:          ctx,
 		config:       cfg,
+		AppPool:      NewAppPoolClient(cfg),
 		Coin:         NewCoinClient(cfg),
 		Fraction:     NewFractionClient(cfg),
 		FractionRule: NewFractionRuleClient(cfg),
 		GoodUser:     NewGoodUserClient(cfg),
 		OrderUser:    NewOrderUserClient(cfg),
+		Pool:         NewPoolClient(cfg),
 		RootUser:     NewRootUserClient(cfg),
 	}, nil
 }
@@ -115,11 +125,13 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:          ctx,
 		config:       cfg,
+		AppPool:      NewAppPoolClient(cfg),
 		Coin:         NewCoinClient(cfg),
 		Fraction:     NewFractionClient(cfg),
 		FractionRule: NewFractionRuleClient(cfg),
 		GoodUser:     NewGoodUserClient(cfg),
 		OrderUser:    NewOrderUserClient(cfg),
+		Pool:         NewPoolClient(cfg),
 		RootUser:     NewRootUserClient(cfg),
 	}, nil
 }
@@ -127,7 +139,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Coin.
+//		AppPool.
 //		Query().
 //		Count(ctx)
 //
@@ -150,12 +162,105 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.AppPool.Use(hooks...)
 	c.Coin.Use(hooks...)
 	c.Fraction.Use(hooks...)
 	c.FractionRule.Use(hooks...)
 	c.GoodUser.Use(hooks...)
 	c.OrderUser.Use(hooks...)
+	c.Pool.Use(hooks...)
 	c.RootUser.Use(hooks...)
+}
+
+// AppPoolClient is a client for the AppPool schema.
+type AppPoolClient struct {
+	config
+}
+
+// NewAppPoolClient returns a client for the AppPool from the given config.
+func NewAppPoolClient(c config) *AppPoolClient {
+	return &AppPoolClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `apppool.Hooks(f(g(h())))`.
+func (c *AppPoolClient) Use(hooks ...Hook) {
+	c.hooks.AppPool = append(c.hooks.AppPool, hooks...)
+}
+
+// Create returns a builder for creating a AppPool entity.
+func (c *AppPoolClient) Create() *AppPoolCreate {
+	mutation := newAppPoolMutation(c.config, OpCreate)
+	return &AppPoolCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppPool entities.
+func (c *AppPoolClient) CreateBulk(builders ...*AppPoolCreate) *AppPoolCreateBulk {
+	return &AppPoolCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppPool.
+func (c *AppPoolClient) Update() *AppPoolUpdate {
+	mutation := newAppPoolMutation(c.config, OpUpdate)
+	return &AppPoolUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppPoolClient) UpdateOne(ap *AppPool) *AppPoolUpdateOne {
+	mutation := newAppPoolMutation(c.config, OpUpdateOne, withAppPool(ap))
+	return &AppPoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppPoolClient) UpdateOneID(id uint32) *AppPoolUpdateOne {
+	mutation := newAppPoolMutation(c.config, OpUpdateOne, withAppPoolID(id))
+	return &AppPoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppPool.
+func (c *AppPoolClient) Delete() *AppPoolDelete {
+	mutation := newAppPoolMutation(c.config, OpDelete)
+	return &AppPoolDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppPoolClient) DeleteOne(ap *AppPool) *AppPoolDeleteOne {
+	return c.DeleteOneID(ap.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *AppPoolClient) DeleteOneID(id uint32) *AppPoolDeleteOne {
+	builder := c.Delete().Where(apppool.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppPoolDeleteOne{builder}
+}
+
+// Query returns a query builder for AppPool.
+func (c *AppPoolClient) Query() *AppPoolQuery {
+	return &AppPoolQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AppPool entity by its id.
+func (c *AppPoolClient) Get(ctx context.Context, id uint32) (*AppPool, error) {
+	return c.Query().Where(apppool.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppPoolClient) GetX(ctx context.Context, id uint32) *AppPool {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppPoolClient) Hooks() []Hook {
+	hooks := c.hooks.AppPool
+	return append(hooks[:len(hooks):len(hooks)], apppool.Hooks[:]...)
 }
 
 // CoinClient is a client for the Coin schema.
@@ -611,6 +716,97 @@ func (c *OrderUserClient) GetX(ctx context.Context, id uint32) *OrderUser {
 func (c *OrderUserClient) Hooks() []Hook {
 	hooks := c.hooks.OrderUser
 	return append(hooks[:len(hooks):len(hooks)], orderuser.Hooks[:]...)
+}
+
+// PoolClient is a client for the Pool schema.
+type PoolClient struct {
+	config
+}
+
+// NewPoolClient returns a client for the Pool from the given config.
+func NewPoolClient(c config) *PoolClient {
+	return &PoolClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `pool.Hooks(f(g(h())))`.
+func (c *PoolClient) Use(hooks ...Hook) {
+	c.hooks.Pool = append(c.hooks.Pool, hooks...)
+}
+
+// Create returns a builder for creating a Pool entity.
+func (c *PoolClient) Create() *PoolCreate {
+	mutation := newPoolMutation(c.config, OpCreate)
+	return &PoolCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Pool entities.
+func (c *PoolClient) CreateBulk(builders ...*PoolCreate) *PoolCreateBulk {
+	return &PoolCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Pool.
+func (c *PoolClient) Update() *PoolUpdate {
+	mutation := newPoolMutation(c.config, OpUpdate)
+	return &PoolUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PoolClient) UpdateOne(po *Pool) *PoolUpdateOne {
+	mutation := newPoolMutation(c.config, OpUpdateOne, withPool(po))
+	return &PoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PoolClient) UpdateOneID(id uint32) *PoolUpdateOne {
+	mutation := newPoolMutation(c.config, OpUpdateOne, withPoolID(id))
+	return &PoolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Pool.
+func (c *PoolClient) Delete() *PoolDelete {
+	mutation := newPoolMutation(c.config, OpDelete)
+	return &PoolDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PoolClient) DeleteOne(po *Pool) *PoolDeleteOne {
+	return c.DeleteOneID(po.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *PoolClient) DeleteOneID(id uint32) *PoolDeleteOne {
+	builder := c.Delete().Where(pool.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PoolDeleteOne{builder}
+}
+
+// Query returns a query builder for Pool.
+func (c *PoolClient) Query() *PoolQuery {
+	return &PoolQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Pool entity by its id.
+func (c *PoolClient) Get(ctx context.Context, id uint32) (*Pool, error) {
+	return c.Query().Where(pool.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PoolClient) GetX(ctx context.Context, id uint32) *Pool {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PoolClient) Hooks() []Hook {
+	hooks := c.hooks.Pool
+	return append(hooks[:len(hooks):len(hooks)], pool.Hooks[:]...)
 }
 
 // RootUserClient is a client for the RootUser schema.

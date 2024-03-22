@@ -20,6 +20,10 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
+	// FieldAppID holds the string denoting the app_id field in the database.
+	FieldAppID = "app_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
 	// FieldOrderUserID holds the string denoting the order_user_id field in the database.
 	FieldOrderUserID = "order_user_id"
 	// FieldWithdrawState holds the string denoting the withdraw_state field in the database.
@@ -28,6 +32,8 @@ const (
 	FieldWithdrawTime = "withdraw_time"
 	// FieldPayTime holds the string denoting the pay_time field in the database.
 	FieldPayTime = "pay_time"
+	// FieldMsg holds the string denoting the msg field in the database.
+	FieldMsg = "msg"
 	// Table holds the table name of the fraction in the database.
 	Table = "fractions"
 )
@@ -39,10 +45,13 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
+	FieldAppID,
+	FieldUserID,
 	FieldOrderUserID,
 	FieldWithdrawState,
 	FieldWithdrawTime,
 	FieldPayTime,
+	FieldMsg,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

@@ -88,6 +88,7 @@ func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, erro
 }
 
 type Conds struct {
+	ID             *cruder.Cond
 	EntID          *cruder.Cond
 	Name           *cruder.Cond
 	RootUserID     *cruder.Cond
@@ -101,6 +102,18 @@ type Conds struct {
 func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, error) { //nolint
 	if conds == nil {
 		return nil, fmt.Errorf("have no any conds")
+	}
+	if conds.ID != nil {
+		id, ok := conds.ID.Val.(uint32)
+		if !ok {
+			return nil, fmt.Errorf("invalid id")
+		}
+		switch conds.ID.Op {
+		case cruder.EQ:
+			q.Where(gooduserent.ID(id))
+		default:
+			return nil, fmt.Errorf("invalid id field")
+		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)

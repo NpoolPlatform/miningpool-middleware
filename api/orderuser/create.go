@@ -32,13 +32,13 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
-		orderuser.WithName(req.Name, false),
-		orderuser.WithRootUserID(req.RootUserID, false),
-		orderuser.WithGoodUserID(req.GoodUserID, false),
-		orderuser.WithOrderID(req.OrderID, false),
-		orderuser.WithMiningpoolType(req.MiningpoolType, false),
-		orderuser.WithCoinType(req.CoinType, false),
-		orderuser.WithReadPageLink(req.ReadPageLink, false),
+		orderuser.WithName(req.Name, true),
+		orderuser.WithRootUserID(req.RootUserID, true),
+		orderuser.WithGoodUserID(req.GoodUserID, true),
+		orderuser.WithOrderID(req.OrderID, true),
+		orderuser.WithMiningpoolType(req.MiningpoolType, true),
+		orderuser.WithCoinType(req.CoinType, true),
+		orderuser.WithReadPageLink(req.ReadPageLink, true),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

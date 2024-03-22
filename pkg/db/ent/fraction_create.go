@@ -78,6 +78,18 @@ func (fc *FractionCreate) SetNillableEntID(u *uuid.UUID) *FractionCreate {
 	return fc
 }
 
+// SetAppID sets the "app_id" field.
+func (fc *FractionCreate) SetAppID(u uuid.UUID) *FractionCreate {
+	fc.mutation.SetAppID(u)
+	return fc
+}
+
+// SetUserID sets the "user_id" field.
+func (fc *FractionCreate) SetUserID(u uuid.UUID) *FractionCreate {
+	fc.mutation.SetUserID(u)
+	return fc
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (fc *FractionCreate) SetOrderUserID(u uuid.UUID) *FractionCreate {
 	fc.mutation.SetOrderUserID(u)
@@ -107,6 +119,12 @@ func (fc *FractionCreate) SetNillablePayTime(u *uint32) *FractionCreate {
 	if u != nil {
 		fc.SetPayTime(*u)
 	}
+	return fc
+}
+
+// SetMsg sets the "msg" field.
+func (fc *FractionCreate) SetMsg(s string) *FractionCreate {
+	fc.mutation.SetMsg(s)
 	return fc
 }
 
@@ -240,6 +258,12 @@ func (fc *FractionCreate) check() error {
 	if _, ok := fc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "Fraction.ent_id"`)}
 	}
+	if _, ok := fc.mutation.AppID(); !ok {
+		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "Fraction.app_id"`)}
+	}
+	if _, ok := fc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Fraction.user_id"`)}
+	}
 	if _, ok := fc.mutation.OrderUserID(); !ok {
 		return &ValidationError{Name: "order_user_id", err: errors.New(`ent: missing required field "Fraction.order_user_id"`)}
 	}
@@ -248,6 +272,9 @@ func (fc *FractionCreate) check() error {
 	}
 	if _, ok := fc.mutation.WithdrawTime(); !ok {
 		return &ValidationError{Name: "withdraw_time", err: errors.New(`ent: missing required field "Fraction.withdraw_time"`)}
+	}
+	if _, ok := fc.mutation.Msg(); !ok {
+		return &ValidationError{Name: "msg", err: errors.New(`ent: missing required field "Fraction.msg"`)}
 	}
 	return nil
 }
@@ -315,6 +342,22 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
+	if value, ok := fc.mutation.AppID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldAppID,
+		})
+		_node.AppID = value
+	}
+	if value, ok := fc.mutation.UserID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldUserID,
+		})
+		_node.UserID = value
+	}
 	if value, ok := fc.mutation.OrderUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -346,6 +389,14 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 			Column: fraction.FieldPayTime,
 		})
 		_node.PayTime = value
+	}
+	if value, ok := fc.mutation.Msg(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: fraction.FieldMsg,
+		})
+		_node.Msg = value
 	}
 	return _node, _spec
 }
@@ -467,6 +518,30 @@ func (u *FractionUpsert) UpdateEntID() *FractionUpsert {
 	return u
 }
 
+// SetAppID sets the "app_id" field.
+func (u *FractionUpsert) SetAppID(v uuid.UUID) *FractionUpsert {
+	u.Set(fraction.FieldAppID, v)
+	return u
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateAppID() *FractionUpsert {
+	u.SetExcluded(fraction.FieldAppID)
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *FractionUpsert) SetUserID(v uuid.UUID) *FractionUpsert {
+	u.Set(fraction.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateUserID() *FractionUpsert {
+	u.SetExcluded(fraction.FieldUserID)
+	return u
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (u *FractionUpsert) SetOrderUserID(v uuid.UUID) *FractionUpsert {
 	u.Set(fraction.FieldOrderUserID, v)
@@ -530,6 +605,18 @@ func (u *FractionUpsert) AddPayTime(v uint32) *FractionUpsert {
 // ClearPayTime clears the value of the "pay_time" field.
 func (u *FractionUpsert) ClearPayTime() *FractionUpsert {
 	u.SetNull(fraction.FieldPayTime)
+	return u
+}
+
+// SetMsg sets the "msg" field.
+func (u *FractionUpsert) SetMsg(v string) *FractionUpsert {
+	u.Set(fraction.FieldMsg, v)
+	return u
+}
+
+// UpdateMsg sets the "msg" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateMsg() *FractionUpsert {
+	u.SetExcluded(fraction.FieldMsg)
 	return u
 }
 
@@ -660,6 +747,34 @@ func (u *FractionUpsertOne) UpdateEntID() *FractionUpsertOne {
 	})
 }
 
+// SetAppID sets the "app_id" field.
+func (u *FractionUpsertOne) SetAppID(v uuid.UUID) *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateAppID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *FractionUpsertOne) SetUserID(v uuid.UUID) *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateUserID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateUserID()
+	})
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (u *FractionUpsertOne) SetOrderUserID(v uuid.UUID) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
@@ -734,6 +849,20 @@ func (u *FractionUpsertOne) UpdatePayTime() *FractionUpsertOne {
 func (u *FractionUpsertOne) ClearPayTime() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.ClearPayTime()
+	})
+}
+
+// SetMsg sets the "msg" field.
+func (u *FractionUpsertOne) SetMsg(v string) *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetMsg(v)
+	})
+}
+
+// UpdateMsg sets the "msg" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateMsg() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateMsg()
 	})
 }
 
@@ -1029,6 +1158,34 @@ func (u *FractionUpsertBulk) UpdateEntID() *FractionUpsertBulk {
 	})
 }
 
+// SetAppID sets the "app_id" field.
+func (u *FractionUpsertBulk) SetAppID(v uuid.UUID) *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateAppID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateAppID()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *FractionUpsertBulk) SetUserID(v uuid.UUID) *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateUserID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateUserID()
+	})
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (u *FractionUpsertBulk) SetOrderUserID(v uuid.UUID) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
@@ -1103,6 +1260,20 @@ func (u *FractionUpsertBulk) UpdatePayTime() *FractionUpsertBulk {
 func (u *FractionUpsertBulk) ClearPayTime() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.ClearPayTime()
+	})
+}
+
+// SetMsg sets the "msg" field.
+func (u *FractionUpsertBulk) SetMsg(v string) *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetMsg(v)
+	})
+}
+
+// UpdateMsg sets the "msg" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateMsg() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateMsg()
 	})
 }
 

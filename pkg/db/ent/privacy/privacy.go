@@ -150,6 +150,30 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The AppPoolQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type AppPoolQueryRuleFunc func(context.Context, *ent.AppPoolQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f AppPoolQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AppPoolQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AppPoolQuery", q)
+}
+
+// The AppPoolMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type AppPoolMutationRuleFunc func(context.Context, *ent.AppPoolMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f AppPoolMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.AppPoolMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AppPoolMutation", m)
+}
+
 // The CoinQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type CoinQueryRuleFunc func(context.Context, *ent.CoinQuery) error
@@ -270,6 +294,30 @@ func (f OrderUserMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutat
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.OrderUserMutation", m)
 }
 
+// The PoolQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type PoolQueryRuleFunc func(context.Context, *ent.PoolQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f PoolQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PoolQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PoolQuery", q)
+}
+
+// The PoolMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type PoolMutationRuleFunc func(context.Context, *ent.PoolMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f PoolMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PoolMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PoolMutation", m)
+}
+
 // The RootUserQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type RootUserQueryRuleFunc func(context.Context, *ent.RootUserQuery) error
@@ -329,6 +377,8 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
+	case *ent.AppPoolQuery:
+		return q.Filter(), nil
 	case *ent.CoinQuery:
 		return q.Filter(), nil
 	case *ent.FractionQuery:
@@ -339,6 +389,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.OrderUserQuery:
 		return q.Filter(), nil
+	case *ent.PoolQuery:
+		return q.Filter(), nil
 	case *ent.RootUserQuery:
 		return q.Filter(), nil
 	default:
@@ -348,6 +400,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
+	case *ent.AppPoolMutation:
+		return m.Filter(), nil
 	case *ent.CoinMutation:
 		return m.Filter(), nil
 	case *ent.FractionMutation:
@@ -357,6 +411,8 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.GoodUserMutation:
 		return m.Filter(), nil
 	case *ent.OrderUserMutation:
+		return m.Filter(), nil
+	case *ent.PoolMutation:
 		return m.Filter(), nil
 	case *ent.RootUserMutation:
 		return m.Filter(), nil

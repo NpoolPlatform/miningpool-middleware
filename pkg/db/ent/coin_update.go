@@ -104,26 +104,6 @@ func (cu *CoinUpdate) SetMiningpoolType(s string) *CoinUpdate {
 	return cu
 }
 
-// SetSite sets the "site" field.
-func (cu *CoinUpdate) SetSite(s string) *CoinUpdate {
-	cu.mutation.SetSite(s)
-	return cu
-}
-
-// SetNillableSite sets the "site" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableSite(s *string) *CoinUpdate {
-	if s != nil {
-		cu.SetSite(*s)
-	}
-	return cu
-}
-
-// ClearSite clears the value of the "site" field.
-func (cu *CoinUpdate) ClearSite() *CoinUpdate {
-	cu.mutation.ClearSite()
-	return cu
-}
-
 // SetCoinType sets the "coin_type" field.
 func (cu *CoinUpdate) SetCoinType(s string) *CoinUpdate {
 	cu.mutation.SetCoinType(s)
@@ -390,19 +370,6 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldMiningpoolType,
 		})
 	}
-	if value, ok := cu.mutation.Site(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldSite,
-		})
-	}
-	if cu.mutation.SiteCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldSite,
-		})
-	}
 	if value, ok := cu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -582,26 +549,6 @@ func (cuo *CoinUpdateOne) SetNillableEntID(u *uuid.UUID) *CoinUpdateOne {
 // SetMiningpoolType sets the "miningpool_type" field.
 func (cuo *CoinUpdateOne) SetMiningpoolType(s string) *CoinUpdateOne {
 	cuo.mutation.SetMiningpoolType(s)
-	return cuo
-}
-
-// SetSite sets the "site" field.
-func (cuo *CoinUpdateOne) SetSite(s string) *CoinUpdateOne {
-	cuo.mutation.SetSite(s)
-	return cuo
-}
-
-// SetNillableSite sets the "site" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableSite(s *string) *CoinUpdateOne {
-	if s != nil {
-		cuo.SetSite(*s)
-	}
-	return cuo
-}
-
-// ClearSite clears the value of the "site" field.
-func (cuo *CoinUpdateOne) ClearSite() *CoinUpdateOne {
-	cuo.mutation.ClearSite()
 	return cuo
 }
 
@@ -899,19 +846,6 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Type:   field.TypeString,
 			Value:  value,
 			Column: coin.FieldMiningpoolType,
-		})
-	}
-	if value, ok := cuo.mutation.Site(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldSite,
-		})
-	}
-	if cuo.mutation.SiteCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldSite,
 		})
 	}
 	if value, ok := cuo.mutation.CoinType(); ok {

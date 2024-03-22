@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/google/uuid"
@@ -29,13 +31,704 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeAppPool      = "AppPool"
 	TypeCoin         = "Coin"
 	TypeFraction     = "Fraction"
 	TypeFractionRule = "FractionRule"
 	TypeGoodUser     = "GoodUser"
 	TypeOrderUser    = "OrderUser"
+	TypePool         = "Pool"
 	TypeRootUser     = "RootUser"
 )
+
+// AppPoolMutation represents an operation that mutates the AppPool nodes in the graph.
+type AppPoolMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *uint32
+	created_at    *uint32
+	addcreated_at *int32
+	updated_at    *uint32
+	addupdated_at *int32
+	deleted_at    *uint32
+	adddeleted_at *int32
+	ent_id        *uuid.UUID
+	app_id        *uuid.UUID
+	pool_id       *uuid.UUID
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*AppPool, error)
+	predicates    []predicate.AppPool
+}
+
+var _ ent.Mutation = (*AppPoolMutation)(nil)
+
+// apppoolOption allows management of the mutation configuration using functional options.
+type apppoolOption func(*AppPoolMutation)
+
+// newAppPoolMutation creates new mutation for the AppPool entity.
+func newAppPoolMutation(c config, op Op, opts ...apppoolOption) *AppPoolMutation {
+	m := &AppPoolMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppPool,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppPoolID sets the ID field of the mutation.
+func withAppPoolID(id uint32) apppoolOption {
+	return func(m *AppPoolMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppPool
+		)
+		m.oldValue = func(ctx context.Context) (*AppPool, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppPool.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppPool sets the old AppPool of the mutation.
+func withAppPool(node *AppPool) apppoolOption {
+	return func(m *AppPoolMutation) {
+		m.oldValue = func(context.Context) (*AppPool, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppPoolMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppPoolMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppPool entities.
+func (m *AppPoolMutation) SetID(id uint32) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppPoolMutation) ID() (id uint32, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppPoolMutation) IDs(ctx context.Context) ([]uint32, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint32{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppPool.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppPoolMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppPoolMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *AppPoolMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *AppPoolMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppPoolMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppPoolMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppPoolMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *AppPoolMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *AppPoolMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppPoolMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *AppPoolMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *AppPoolMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *AppPoolMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *AppPoolMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *AppPoolMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+}
+
+// SetEntID sets the "ent_id" field.
+func (m *AppPoolMutation) SetEntID(u uuid.UUID) {
+	m.ent_id = &u
+}
+
+// EntID returns the value of the "ent_id" field in the mutation.
+func (m *AppPoolMutation) EntID() (r uuid.UUID, exists bool) {
+	v := m.ent_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEntID returns the old "ent_id" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEntID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEntID: %w", err)
+	}
+	return oldValue.EntID, nil
+}
+
+// ResetEntID resets all changes to the "ent_id" field.
+func (m *AppPoolMutation) ResetEntID() {
+	m.ent_id = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *AppPoolMutation) SetAppID(u uuid.UUID) {
+	m.app_id = &u
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppPoolMutation) AppID() (r uuid.UUID, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppPoolMutation) ResetAppID() {
+	m.app_id = nil
+}
+
+// SetPoolID sets the "pool_id" field.
+func (m *AppPoolMutation) SetPoolID(u uuid.UUID) {
+	m.pool_id = &u
+}
+
+// PoolID returns the value of the "pool_id" field in the mutation.
+func (m *AppPoolMutation) PoolID() (r uuid.UUID, exists bool) {
+	v := m.pool_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPoolID returns the old "pool_id" field's value of the AppPool entity.
+// If the AppPool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPoolMutation) OldPoolID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPoolID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPoolID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPoolID: %w", err)
+	}
+	return oldValue.PoolID, nil
+}
+
+// ResetPoolID resets all changes to the "pool_id" field.
+func (m *AppPoolMutation) ResetPoolID() {
+	m.pool_id = nil
+}
+
+// Where appends a list predicates to the AppPoolMutation builder.
+func (m *AppPoolMutation) Where(ps ...predicate.AppPool) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *AppPoolMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (AppPool).
+func (m *AppPoolMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppPoolMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.created_at != nil {
+		fields = append(fields, apppool.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, apppool.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, apppool.FieldDeletedAt)
+	}
+	if m.ent_id != nil {
+		fields = append(fields, apppool.FieldEntID)
+	}
+	if m.app_id != nil {
+		fields = append(fields, apppool.FieldAppID)
+	}
+	if m.pool_id != nil {
+		fields = append(fields, apppool.FieldPoolID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppPoolMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case apppool.FieldCreatedAt:
+		return m.CreatedAt()
+	case apppool.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case apppool.FieldDeletedAt:
+		return m.DeletedAt()
+	case apppool.FieldEntID:
+		return m.EntID()
+	case apppool.FieldAppID:
+		return m.AppID()
+	case apppool.FieldPoolID:
+		return m.PoolID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppPoolMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case apppool.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case apppool.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case apppool.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case apppool.FieldEntID:
+		return m.OldEntID(ctx)
+	case apppool.FieldAppID:
+		return m.OldAppID(ctx)
+	case apppool.FieldPoolID:
+		return m.OldPoolID(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppPool field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppPoolMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case apppool.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case apppool.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case apppool.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case apppool.FieldEntID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEntID(v)
+		return nil
+	case apppool.FieldAppID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case apppool.FieldPoolID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPoolID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppPool field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppPoolMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_at != nil {
+		fields = append(fields, apppool.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, apppool.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, apppool.FieldDeletedAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppPoolMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case apppool.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case apppool.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case apppool.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppPoolMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case apppool.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case apppool.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case apppool.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppPool numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppPoolMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppPoolMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppPoolMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AppPool nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppPoolMutation) ResetField(name string) error {
+	switch name {
+	case apppool.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case apppool.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case apppool.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case apppool.FieldEntID:
+		m.ResetEntID()
+		return nil
+	case apppool.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case apppool.FieldPoolID:
+		m.ResetPoolID()
+		return nil
+	}
+	return fmt.Errorf("unknown AppPool field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppPoolMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppPoolMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppPoolMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppPoolMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppPoolMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppPoolMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppPoolMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown AppPool unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppPoolMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown AppPool edge %s", name)
+}
 
 // CoinMutation represents an operation that mutates the Coin nodes in the graph.
 type CoinMutation struct {
@@ -51,7 +744,6 @@ type CoinMutation struct {
 	adddeleted_at      *int32
 	ent_id             *uuid.UUID
 	miningpool_type    *string
-	site               *string
 	coin_type          *string
 	revenue_types      *[]string
 	fee_rate           *float32
@@ -410,55 +1102,6 @@ func (m *CoinMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
 }
 
-// SetSite sets the "site" field.
-func (m *CoinMutation) SetSite(s string) {
-	m.site = &s
-}
-
-// Site returns the value of the "site" field in the mutation.
-func (m *CoinMutation) Site() (r string, exists bool) {
-	v := m.site
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSite returns the old "site" field's value of the Coin entity.
-// If the Coin object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldSite(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSite is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSite requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSite: %w", err)
-	}
-	return oldValue.Site, nil
-}
-
-// ClearSite clears the value of the "site" field.
-func (m *CoinMutation) ClearSite() {
-	m.site = nil
-	m.clearedFields[coin.FieldSite] = struct{}{}
-}
-
-// SiteCleared returns if the "site" field was cleared in this mutation.
-func (m *CoinMutation) SiteCleared() bool {
-	_, ok := m.clearedFields[coin.FieldSite]
-	return ok
-}
-
-// ResetSite resets all changes to the "site" field.
-func (m *CoinMutation) ResetSite() {
-	m.site = nil
-	delete(m.clearedFields, coin.FieldSite)
-}
-
 // SetCoinType sets the "coin_type" field.
 func (m *CoinMutation) SetCoinType(s string) {
 	m.coin_type = &s
@@ -801,7 +1444,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -816,9 +1459,6 @@ func (m *CoinMutation) Fields() []string {
 	}
 	if m.miningpool_type != nil {
 		fields = append(fields, coin.FieldMiningpoolType)
-	}
-	if m.site != nil {
-		fields = append(fields, coin.FieldSite)
 	}
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
@@ -856,8 +1496,6 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.EntID()
 	case coin.FieldMiningpoolType:
 		return m.MiningpoolType()
-	case coin.FieldSite:
-		return m.Site()
 	case coin.FieldCoinType:
 		return m.CoinType()
 	case coin.FieldRevenueTypes:
@@ -889,8 +1527,6 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldEntID(ctx)
 	case coin.FieldMiningpoolType:
 		return m.OldMiningpoolType(ctx)
-	case coin.FieldSite:
-		return m.OldSite(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
 	case coin.FieldRevenueTypes:
@@ -946,13 +1582,6 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMiningpoolType(v)
-		return nil
-	case coin.FieldSite:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSite(v)
 		return nil
 	case coin.FieldCoinType:
 		v, ok := value.(string)
@@ -1089,9 +1718,6 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *CoinMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(coin.FieldSite) {
-		fields = append(fields, coin.FieldSite)
-	}
 	if m.FieldCleared(coin.FieldRevenueTypes) {
 		fields = append(fields, coin.FieldRevenueTypes)
 	}
@@ -1121,9 +1747,6 @@ func (m *CoinMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *CoinMutation) ClearField(name string) error {
 	switch name {
-	case coin.FieldSite:
-		m.ClearSite()
-		return nil
 	case coin.FieldRevenueTypes:
 		m.ClearRevenueTypes()
 		return nil
@@ -1161,9 +1784,6 @@ func (m *CoinMutation) ResetField(name string) error {
 		return nil
 	case coin.FieldMiningpoolType:
 		m.ResetMiningpoolType()
-		return nil
-	case coin.FieldSite:
-		m.ResetSite()
 		return nil
 	case coin.FieldCoinType:
 		m.ResetCoinType()
@@ -1248,12 +1868,15 @@ type FractionMutation struct {
 	deleted_at       *uint32
 	adddeleted_at    *int32
 	ent_id           *uuid.UUID
+	app_id           *uuid.UUID
+	user_id          *uuid.UUID
 	order_user_id    *uuid.UUID
 	withdraw_state   *string
 	withdraw_time    *uint32
 	addwithdraw_time *int32
 	pay_time         *uint32
 	addpay_time      *int32
+	msg              *string
 	clearedFields    map[string]struct{}
 	done             bool
 	oldValue         func(context.Context) (*Fraction, error)
@@ -1568,6 +2191,78 @@ func (m *FractionMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
+// SetAppID sets the "app_id" field.
+func (m *FractionMutation) SetAppID(u uuid.UUID) {
+	m.app_id = &u
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *FractionMutation) AppID() (r uuid.UUID, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the Fraction entity.
+// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *FractionMutation) ResetAppID() {
+	m.app_id = nil
+}
+
+// SetUserID sets the "user_id" field.
+func (m *FractionMutation) SetUserID(u uuid.UUID) {
+	m.user_id = &u
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *FractionMutation) UserID() (r uuid.UUID, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Fraction entity.
+// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *FractionMutation) ResetUserID() {
+	m.user_id = nil
+}
+
 // SetOrderUserID sets the "order_user_id" field.
 func (m *FractionMutation) SetOrderUserID(u uuid.UUID) {
 	m.order_user_id = &u
@@ -1766,6 +2461,42 @@ func (m *FractionMutation) ResetPayTime() {
 	delete(m.clearedFields, fraction.FieldPayTime)
 }
 
+// SetMsg sets the "msg" field.
+func (m *FractionMutation) SetMsg(s string) {
+	m.msg = &s
+}
+
+// Msg returns the value of the "msg" field in the mutation.
+func (m *FractionMutation) Msg() (r string, exists bool) {
+	v := m.msg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMsg returns the old "msg" field's value of the Fraction entity.
+// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionMutation) OldMsg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMsg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMsg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMsg: %w", err)
+	}
+	return oldValue.Msg, nil
+}
+
+// ResetMsg resets all changes to the "msg" field.
+func (m *FractionMutation) ResetMsg() {
+	m.msg = nil
+}
+
 // Where appends a list predicates to the FractionMutation builder.
 func (m *FractionMutation) Where(ps ...predicate.Fraction) {
 	m.predicates = append(m.predicates, ps...)
@@ -1785,7 +2516,7 @@ func (m *FractionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FractionMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, fraction.FieldCreatedAt)
 	}
@@ -1798,6 +2529,12 @@ func (m *FractionMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, fraction.FieldEntID)
 	}
+	if m.app_id != nil {
+		fields = append(fields, fraction.FieldAppID)
+	}
+	if m.user_id != nil {
+		fields = append(fields, fraction.FieldUserID)
+	}
 	if m.order_user_id != nil {
 		fields = append(fields, fraction.FieldOrderUserID)
 	}
@@ -1809,6 +2546,9 @@ func (m *FractionMutation) Fields() []string {
 	}
 	if m.pay_time != nil {
 		fields = append(fields, fraction.FieldPayTime)
+	}
+	if m.msg != nil {
+		fields = append(fields, fraction.FieldMsg)
 	}
 	return fields
 }
@@ -1826,6 +2566,10 @@ func (m *FractionMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case fraction.FieldEntID:
 		return m.EntID()
+	case fraction.FieldAppID:
+		return m.AppID()
+	case fraction.FieldUserID:
+		return m.UserID()
 	case fraction.FieldOrderUserID:
 		return m.OrderUserID()
 	case fraction.FieldWithdrawState:
@@ -1834,6 +2578,8 @@ func (m *FractionMutation) Field(name string) (ent.Value, bool) {
 		return m.WithdrawTime()
 	case fraction.FieldPayTime:
 		return m.PayTime()
+	case fraction.FieldMsg:
+		return m.Msg()
 	}
 	return nil, false
 }
@@ -1851,6 +2597,10 @@ func (m *FractionMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDeletedAt(ctx)
 	case fraction.FieldEntID:
 		return m.OldEntID(ctx)
+	case fraction.FieldAppID:
+		return m.OldAppID(ctx)
+	case fraction.FieldUserID:
+		return m.OldUserID(ctx)
 	case fraction.FieldOrderUserID:
 		return m.OldOrderUserID(ctx)
 	case fraction.FieldWithdrawState:
@@ -1859,6 +2609,8 @@ func (m *FractionMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldWithdrawTime(ctx)
 	case fraction.FieldPayTime:
 		return m.OldPayTime(ctx)
+	case fraction.FieldMsg:
+		return m.OldMsg(ctx)
 	}
 	return nil, fmt.Errorf("unknown Fraction field %s", name)
 }
@@ -1896,6 +2648,20 @@ func (m *FractionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
+	case fraction.FieldAppID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case fraction.FieldUserID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
 	case fraction.FieldOrderUserID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
@@ -1923,6 +2689,13 @@ func (m *FractionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPayTime(v)
+		return nil
+	case fraction.FieldMsg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMsg(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Fraction field %s", name)
@@ -2057,6 +2830,12 @@ func (m *FractionMutation) ResetField(name string) error {
 	case fraction.FieldEntID:
 		m.ResetEntID()
 		return nil
+	case fraction.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case fraction.FieldUserID:
+		m.ResetUserID()
+		return nil
 	case fraction.FieldOrderUserID:
 		m.ResetOrderUserID()
 		return nil
@@ -2068,6 +2847,9 @@ func (m *FractionMutation) ResetField(name string) error {
 		return nil
 	case fraction.FieldPayTime:
 		m.ResetPayTime()
+		return nil
+	case fraction.FieldMsg:
+		m.ResetMsg()
 		return nil
 	}
 	return fmt.Errorf("unknown Fraction field %s", name)
@@ -5353,6 +6135,844 @@ func (m *OrderUserMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *OrderUserMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown OrderUser edge %s", name)
+}
+
+// PoolMutation represents an operation that mutates the Pool nodes in the graph.
+type PoolMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *uint32
+	created_at      *uint32
+	addcreated_at   *int32
+	updated_at      *uint32
+	addupdated_at   *int32
+	deleted_at      *uint32
+	adddeleted_at   *int32
+	ent_id          *uuid.UUID
+	miningpool_type *string
+	name            *string
+	site            *string
+	description     *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Pool, error)
+	predicates      []predicate.Pool
+}
+
+var _ ent.Mutation = (*PoolMutation)(nil)
+
+// poolOption allows management of the mutation configuration using functional options.
+type poolOption func(*PoolMutation)
+
+// newPoolMutation creates new mutation for the Pool entity.
+func newPoolMutation(c config, op Op, opts ...poolOption) *PoolMutation {
+	m := &PoolMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePool,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPoolID sets the ID field of the mutation.
+func withPoolID(id uint32) poolOption {
+	return func(m *PoolMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Pool
+		)
+		m.oldValue = func(ctx context.Context) (*Pool, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Pool.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPool sets the old Pool of the mutation.
+func withPool(node *Pool) poolOption {
+	return func(m *PoolMutation) {
+		m.oldValue = func(context.Context) (*Pool, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PoolMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PoolMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Pool entities.
+func (m *PoolMutation) SetID(id uint32) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PoolMutation) ID() (id uint32, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PoolMutation) IDs(ctx context.Context) ([]uint32, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint32{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Pool.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *PoolMutation) SetCreatedAt(u uint32) {
+	m.created_at = &u
+	m.addcreated_at = nil
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *PoolMutation) CreatedAt() (r uint32, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// AddCreatedAt adds u to the "created_at" field.
+func (m *PoolMutation) AddCreatedAt(u int32) {
+	if m.addcreated_at != nil {
+		*m.addcreated_at += u
+	} else {
+		m.addcreated_at = &u
+	}
+}
+
+// AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
+func (m *PoolMutation) AddedCreatedAt() (r int32, exists bool) {
+	v := m.addcreated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *PoolMutation) ResetCreatedAt() {
+	m.created_at = nil
+	m.addcreated_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *PoolMutation) SetUpdatedAt(u uint32) {
+	m.updated_at = &u
+	m.addupdated_at = nil
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *PoolMutation) UpdatedAt() (r uint32, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// AddUpdatedAt adds u to the "updated_at" field.
+func (m *PoolMutation) AddUpdatedAt(u int32) {
+	if m.addupdated_at != nil {
+		*m.addupdated_at += u
+	} else {
+		m.addupdated_at = &u
+	}
+}
+
+// AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
+func (m *PoolMutation) AddedUpdatedAt() (r int32, exists bool) {
+	v := m.addupdated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *PoolMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+	m.addupdated_at = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *PoolMutation) SetDeletedAt(u uint32) {
+	m.deleted_at = &u
+	m.adddeleted_at = nil
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *PoolMutation) DeletedAt() (r uint32, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// AddDeletedAt adds u to the "deleted_at" field.
+func (m *PoolMutation) AddDeletedAt(u int32) {
+	if m.adddeleted_at != nil {
+		*m.adddeleted_at += u
+	} else {
+		m.adddeleted_at = &u
+	}
+}
+
+// AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
+func (m *PoolMutation) AddedDeletedAt() (r int32, exists bool) {
+	v := m.adddeleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *PoolMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	m.adddeleted_at = nil
+}
+
+// SetEntID sets the "ent_id" field.
+func (m *PoolMutation) SetEntID(u uuid.UUID) {
+	m.ent_id = &u
+}
+
+// EntID returns the value of the "ent_id" field in the mutation.
+func (m *PoolMutation) EntID() (r uuid.UUID, exists bool) {
+	v := m.ent_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEntID returns the old "ent_id" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEntID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEntID: %w", err)
+	}
+	return oldValue.EntID, nil
+}
+
+// ResetEntID resets all changes to the "ent_id" field.
+func (m *PoolMutation) ResetEntID() {
+	m.ent_id = nil
+}
+
+// SetMiningpoolType sets the "miningpool_type" field.
+func (m *PoolMutation) SetMiningpoolType(s string) {
+	m.miningpool_type = &s
+}
+
+// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
+func (m *PoolMutation) MiningpoolType() (r string, exists bool) {
+	v := m.miningpool_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMiningpoolType returns the old "miningpool_type" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+	}
+	return oldValue.MiningpoolType, nil
+}
+
+// ResetMiningpoolType resets all changes to the "miningpool_type" field.
+func (m *PoolMutation) ResetMiningpoolType() {
+	m.miningpool_type = nil
+}
+
+// SetName sets the "name" field.
+func (m *PoolMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *PoolMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *PoolMutation) ResetName() {
+	m.name = nil
+}
+
+// SetSite sets the "site" field.
+func (m *PoolMutation) SetSite(s string) {
+	m.site = &s
+}
+
+// Site returns the value of the "site" field in the mutation.
+func (m *PoolMutation) Site() (r string, exists bool) {
+	v := m.site
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSite returns the old "site" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldSite(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSite is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSite requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSite: %w", err)
+	}
+	return oldValue.Site, nil
+}
+
+// ClearSite clears the value of the "site" field.
+func (m *PoolMutation) ClearSite() {
+	m.site = nil
+	m.clearedFields[pool.FieldSite] = struct{}{}
+}
+
+// SiteCleared returns if the "site" field was cleared in this mutation.
+func (m *PoolMutation) SiteCleared() bool {
+	_, ok := m.clearedFields[pool.FieldSite]
+	return ok
+}
+
+// ResetSite resets all changes to the "site" field.
+func (m *PoolMutation) ResetSite() {
+	m.site = nil
+	delete(m.clearedFields, pool.FieldSite)
+}
+
+// SetDescription sets the "description" field.
+func (m *PoolMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *PoolMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ClearDescription clears the value of the "description" field.
+func (m *PoolMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[pool.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *PoolMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[pool.FieldDescription]
+	return ok
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *PoolMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, pool.FieldDescription)
+}
+
+// Where appends a list predicates to the PoolMutation builder.
+func (m *PoolMutation) Where(ps ...predicate.Pool) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *PoolMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Pool).
+func (m *PoolMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PoolMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.created_at != nil {
+		fields = append(fields, pool.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, pool.FieldUpdatedAt)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, pool.FieldDeletedAt)
+	}
+	if m.ent_id != nil {
+		fields = append(fields, pool.FieldEntID)
+	}
+	if m.miningpool_type != nil {
+		fields = append(fields, pool.FieldMiningpoolType)
+	}
+	if m.name != nil {
+		fields = append(fields, pool.FieldName)
+	}
+	if m.site != nil {
+		fields = append(fields, pool.FieldSite)
+	}
+	if m.description != nil {
+		fields = append(fields, pool.FieldDescription)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PoolMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case pool.FieldCreatedAt:
+		return m.CreatedAt()
+	case pool.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case pool.FieldDeletedAt:
+		return m.DeletedAt()
+	case pool.FieldEntID:
+		return m.EntID()
+	case pool.FieldMiningpoolType:
+		return m.MiningpoolType()
+	case pool.FieldName:
+		return m.Name()
+	case pool.FieldSite:
+		return m.Site()
+	case pool.FieldDescription:
+		return m.Description()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PoolMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case pool.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case pool.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case pool.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case pool.FieldEntID:
+		return m.OldEntID(ctx)
+	case pool.FieldMiningpoolType:
+		return m.OldMiningpoolType(ctx)
+	case pool.FieldName:
+		return m.OldName(ctx)
+	case pool.FieldSite:
+		return m.OldSite(ctx)
+	case pool.FieldDescription:
+		return m.OldDescription(ctx)
+	}
+	return nil, fmt.Errorf("unknown Pool field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PoolMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case pool.FieldCreatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case pool.FieldUpdatedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case pool.FieldDeletedAt:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case pool.FieldEntID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEntID(v)
+		return nil
+	case pool.FieldMiningpoolType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMiningpoolType(v)
+		return nil
+	case pool.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case pool.FieldSite:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSite(v)
+		return nil
+	case pool.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Pool field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PoolMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_at != nil {
+		fields = append(fields, pool.FieldCreatedAt)
+	}
+	if m.addupdated_at != nil {
+		fields = append(fields, pool.FieldUpdatedAt)
+	}
+	if m.adddeleted_at != nil {
+		fields = append(fields, pool.FieldDeletedAt)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PoolMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case pool.FieldCreatedAt:
+		return m.AddedCreatedAt()
+	case pool.FieldUpdatedAt:
+		return m.AddedUpdatedAt()
+	case pool.FieldDeletedAt:
+		return m.AddedDeletedAt()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PoolMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case pool.FieldCreatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedAt(v)
+		return nil
+	case pool.FieldUpdatedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedAt(v)
+		return nil
+	case pool.FieldDeletedAt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Pool numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PoolMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(pool.FieldSite) {
+		fields = append(fields, pool.FieldSite)
+	}
+	if m.FieldCleared(pool.FieldDescription) {
+		fields = append(fields, pool.FieldDescription)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PoolMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PoolMutation) ClearField(name string) error {
+	switch name {
+	case pool.FieldSite:
+		m.ClearSite()
+		return nil
+	case pool.FieldDescription:
+		m.ClearDescription()
+		return nil
+	}
+	return fmt.Errorf("unknown Pool nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PoolMutation) ResetField(name string) error {
+	switch name {
+	case pool.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case pool.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case pool.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case pool.FieldEntID:
+		m.ResetEntID()
+		return nil
+	case pool.FieldMiningpoolType:
+		m.ResetMiningpoolType()
+		return nil
+	case pool.FieldName:
+		m.ResetName()
+		return nil
+	case pool.FieldSite:
+		m.ResetSite()
+		return nil
+	case pool.FieldDescription:
+		m.ResetDescription()
+		return nil
+	}
+	return fmt.Errorf("unknown Pool field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PoolMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PoolMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PoolMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PoolMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PoolMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PoolMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PoolMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Pool unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PoolMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Pool edge %s", name)
 }
 
 // RootUserMutation represents an operation that mutates the RootUser nodes in the graph.

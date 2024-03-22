@@ -29,25 +29,34 @@ func init() {
 
 var ret = &npool.Fraction{
 	OrderUserID:   uuid.NewString(),
+	AppID:         uuid.NewString(),
+	UserID:        uuid.NewString(),
 	WithdrawState: basetypes.WithdrawState_WithdrawStateProccessing,
 	WithdrawTime:  5555,
 	PayTime:       7777,
+	Msg:           "7777",
 }
 
 var req = &npool.FractionReq{
+	AppID:         &ret.AppID,
+	UserID:        &ret.UserID,
 	OrderUserID:   &ret.OrderUserID,
 	WithdrawState: &ret.WithdrawState,
 	WithdrawTime:  &ret.WithdrawTime,
 	PayTime:       &ret.PayTime,
+	Msg:           &ret.Msg,
 }
 
 func create(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
+		WithAppID(req.AppID, true),
+		WithUserID(req.UserID, true),
 		WithOrderUserID(req.OrderUserID, true),
 		WithWithdrawState(req.WithdrawState, true),
 		WithWithdrawTime(req.WithdrawTime, true),
 		WithPayTime(req.PayTime, true),
+		WithMsg(req.Msg, true),
 	)
 	assert.Nil(t, err)
 

@@ -2,6 +2,7 @@ package fraction
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -119,10 +120,35 @@ func ExistFractionConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return info.(bool), nil
 }
 
-func DeleteFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
+func GetFractionOnly(ctx context.Context, conds *npool.Conds) (*npool.Fraction, error) {
+	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		const singleRowLimit = 2
+		resp, err := cli.GetFractions(ctx, &npool.GetFractionsRequest{
+			Conds:  conds,
+			Offset: 0,
+			Limit:  singleRowLimit,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Infos, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(infos.([]*npool.Fraction)) == 0 {
+		return nil, nil
+	}
+	if len(infos.([]*npool.Fraction)) > 1 {
+		return nil, fmt.Errorf("too many record")
+	}
+	return infos.([]*npool.Fraction)[0], nil
+}
+
+func DeleteFraction(ctx context.Context, id uint32) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
-			Info: in,
+			Info: &npool.FractionReq{ID: &id},
 		})
 		if err != nil {
 			return nil, err

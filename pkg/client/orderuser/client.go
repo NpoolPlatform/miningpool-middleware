@@ -2,6 +2,7 @@ package orderuser
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -177,10 +178,35 @@ func ExistOrderUserConds(ctx context.Context, conds *npool.Conds) (bool, error) 
 	return info.(bool), nil
 }
 
-func DeleteOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderUser, error) {
+func GetOrderUserOnly(ctx context.Context, conds *npool.Conds) (*npool.OrderUser, error) {
+	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		const singleRowLimit = 2
+		resp, err := cli.GetOrderUsers(ctx, &npool.GetOrderUsersRequest{
+			Conds:  conds,
+			Offset: 0,
+			Limit:  singleRowLimit,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Infos, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(infos.([]*npool.OrderUser)) == 0 {
+		return nil, nil
+	}
+	if len(infos.([]*npool.OrderUser)) > 1 {
+		return nil, fmt.Errorf("too many record")
+	}
+	return infos.([]*npool.OrderUser)[0], nil
+}
+
+func DeleteOrderUser(ctx context.Context, id uint32) (*npool.OrderUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteOrderUser(ctx, &npool.DeleteOrderUserRequest{
-			Info: in,
+			Info: &npool.OrderUserReq{ID: &id},
 		})
 		if err != nil {
 			return nil, err

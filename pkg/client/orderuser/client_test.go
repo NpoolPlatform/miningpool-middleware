@@ -151,9 +151,7 @@ func deleteOrderUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteOrderUser(context.Background(), &npool.OrderUserReq{
-		ID: &ret.ID,
-	})
+	info, err := DeleteOrderUser(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

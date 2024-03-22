@@ -118,9 +118,7 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteRootUser(context.Background(), &npool.RootUserReq{
-		ID: &ret.ID,
-	})
+	info, err := DeleteRootUser(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, ret, info)
 	}

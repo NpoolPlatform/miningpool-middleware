@@ -2,6 +2,7 @@ package rootuser
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -135,10 +136,35 @@ func ExistRootUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return info.(bool), nil
 }
 
-func DeleteRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
+func GetRootUserOnly(ctx context.Context, conds *npool.Conds) (*npool.RootUser, error) {
+	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		const singleRowLimit = 2
+		resp, err := cli.GetRootUsers(ctx, &npool.GetRootUsersRequest{
+			Conds:  conds,
+			Offset: 0,
+			Limit:  singleRowLimit,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Infos, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(infos.([]*npool.RootUser)) == 0 {
+		return nil, nil
+	}
+	if len(infos.([]*npool.RootUser)) > 1 {
+		return nil, fmt.Errorf("too many record")
+	}
+	return infos.([]*npool.RootUser)[0], nil
+}
+
+func DeleteRootUser(ctx context.Context, id uint32) (*npool.RootUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteRootUser(ctx, &npool.DeleteRootUserRequest{
-			Info: in,
+			Info: &npool.RootUserReq{ID: &id},
 		})
 		if err != nil {
 			return nil, err

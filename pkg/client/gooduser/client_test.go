@@ -121,9 +121,7 @@ func deleteGoodUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteGoodUser(context.Background(), &npool.GoodUserReq{
-		ID: &ret.ID,
-	})
+	info, err := DeleteGoodUser(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

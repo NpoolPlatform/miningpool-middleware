@@ -122,9 +122,7 @@ func deleteCoin(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteCoin(context.Background(), &npool.CoinReq{
-		ID: &ret.ID,
-	})
+	info, err := DeleteCoin(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

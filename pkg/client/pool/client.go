@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -119,10 +120,35 @@ func ExistPoolConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return info.(bool), nil
 }
 
-func DeletePool(ctx context.Context, in *npool.PoolReq) (*npool.Pool, error) {
+func GetPoolOnly(ctx context.Context, conds *npool.Conds) (*npool.Pool, error) {
+	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		const singleRowLimit = 2
+		resp, err := cli.GetPools(ctx, &npool.GetPoolsRequest{
+			Conds:  conds,
+			Offset: 0,
+			Limit:  singleRowLimit,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Infos, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if len(infos.([]*npool.Pool)) == 0 {
+		return nil, nil
+	}
+	if len(infos.([]*npool.Pool)) > 1 {
+		return nil, fmt.Errorf("too many record")
+	}
+	return infos.([]*npool.Pool)[0], nil
+}
+
+func DeletePool(ctx context.Context, id uint32) (*npool.Pool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeletePool(ctx, &npool.DeletePoolRequest{
-			Info: in,
+			Info: &npool.PoolReq{ID: &id},
 		})
 		if err != nil {
 			return nil, err

@@ -117,9 +117,7 @@ func deleteFractionRule(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteFractionRule(context.Background(), &npool.FractionRuleReq{
-		ID: &ret.ID,
-	})
+	info, err := DeleteFractionRule(context.Background(), ret.ID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

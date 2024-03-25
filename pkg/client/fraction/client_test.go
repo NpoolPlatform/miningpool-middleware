@@ -78,7 +78,6 @@ func updateFraction(t *testing.T) {
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
-
 	}
 }
 

@@ -79,6 +79,7 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 			return fmt.Errorf("invalid miningpooltype,not allow be default type")
 		}
 		h.MiningpoolType = miningpooltype
+
 		return nil
 	}
 }

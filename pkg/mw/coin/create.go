@@ -3,6 +3,7 @@ package coin
 import (
 	"context"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	redis2 "github.com/NpoolPlatform/go-service-framework/pkg/redis"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -19,7 +20,8 @@ func (h *Handler) CreateCoin(ctx context.Context) (*npool.Coin, error) {
 		return nil, err
 	}
 	defer func() {
-		_ = redis2.Unlock(lockKey)
+		err := redis2.Unlock(lockKey)
+		logger.Sugar().Error(err)
 	}()
 	id := uuid.New()
 	if h.EntID == nil {
@@ -58,7 +60,8 @@ func (h *Handler) CreateCoins(ctx context.Context) ([]*npool.Coin, error) {
 		return nil, err
 	}
 	defer func() {
-		_ = redis2.Unlock(lockKey)
+		err := redis2.Unlock(lockKey)
+		logger.Sugar().Error(err)
 	}()
 	ids := []uuid.UUID{}
 

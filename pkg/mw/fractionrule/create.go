@@ -3,6 +3,7 @@ package fractionrule
 import (
 	"context"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	redis2 "github.com/NpoolPlatform/go-service-framework/pkg/redis"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
@@ -21,7 +22,8 @@ func (h *Handler) CreateFractionRule(ctx context.Context) (*npool.FractionRule, 
 		return nil, err
 	}
 	defer func() {
-		_ = redis2.Unlock(lockKey)
+		err := redis2.Unlock(lockKey)
+		logger.Sugar().Error(err)
 	}()
 	id := uuid.New()
 	if h.EntID == nil {
@@ -59,7 +61,8 @@ func (h *Handler) CreateFractionRules(ctx context.Context) ([]*npool.FractionRul
 		return nil, err
 	}
 	defer func() {
-		_ = redis2.Unlock(lockKey)
+		err := redis2.Unlock(lockKey)
+		logger.Sugar().Error(err)
 	}()
 
 	ids := []uuid.UUID{}

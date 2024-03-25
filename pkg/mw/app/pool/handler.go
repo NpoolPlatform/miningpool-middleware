@@ -80,6 +80,7 @@ func WithAppID(id *string, must bool) func(context.Context, *Handler) error {
 		return nil
 	}
 }
+
 func WithPoolID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {

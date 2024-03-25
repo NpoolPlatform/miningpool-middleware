@@ -90,7 +90,7 @@ after-test:
 	${REPO_ROOT}/hack/after-test.sh
 
 test-go-unit: ## Runs Golang unit tests
-	${REPO_ROOT}/hack/test-go.sh
+	all_proxy=${all_proxy} ${REPO_ROOT}/hack/test-go.sh
 
 
 ##@ Helpers

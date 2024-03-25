@@ -215,7 +215,6 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 		err = fmt.Errorf("have no record of orderuser with entid %v", entid)
 		return nil, err
 	}
-	fmt.Println(1)
 
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&orderUser.GoodUserID, true))
 	if err != nil {
@@ -229,7 +228,6 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 		err = fmt.Errorf("have no record of gooduser with entid %v", orderUser.GoodUserID)
 		return nil, err
 	}
-	fmt.Println(2)
 
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
 	if err != nil {
@@ -243,7 +241,6 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 		err = fmt.Errorf("have no record of rootuser with entid %v", orderUser.RootUserID)
 		return nil, err
 	}
-	fmt.Println(3)
 	return &baseInfo{
 		OrderUserID:    orderUser.ID,
 		MiningpoolType: orderUser.MiningpoolType,

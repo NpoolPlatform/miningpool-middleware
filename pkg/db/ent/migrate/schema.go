@@ -57,11 +57,6 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{CoinsColumns[4]},
 			},
-			{
-				Name:    "coin_miningpool_type_coin_type",
-				Unique:  true,
-				Columns: []*schema.Column{CoinsColumns[5], CoinsColumns[6]},
-			},
 		},
 	}
 	// FractionsColumns holds the columns for the "fractions" table.
@@ -120,11 +115,6 @@ var (
 				Name:    "fractionrule_ent_id",
 				Unique:  true,
 				Columns: []*schema.Column{FractionRulesColumns[4]},
-			},
-			{
-				Name:    "fractionrule_miningpool_type_coin_type",
-				Unique:  true,
-				Columns: []*schema.Column{FractionRulesColumns[5], FractionRulesColumns[6]},
 			},
 		},
 	}

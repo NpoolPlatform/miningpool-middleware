@@ -23,7 +23,9 @@ func (h *Handler) CreateFractionRule(ctx context.Context) (*npool.FractionRule, 
 	}
 	defer func() {
 		err := redis2.Unlock(lockKey)
-		logger.Sugar().Error(err)
+		if err != nil {
+			logger.Sugar().Error(err)
+		}
 	}()
 	id := uuid.New()
 	if h.EntID == nil {
@@ -62,7 +64,9 @@ func (h *Handler) CreateFractionRules(ctx context.Context) ([]*npool.FractionRul
 	}
 	defer func() {
 		err := redis2.Unlock(lockKey)
-		logger.Sugar().Error(err)
+		if err != nil {
+			logger.Sugar().Error(err)
+		}
 	}()
 
 	ids := []uuid.UUID{}

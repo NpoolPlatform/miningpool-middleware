@@ -3,7 +3,6 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 )
@@ -39,10 +38,4 @@ func (FractionRule) Fields() []ent.Field {
 // Edges of the FractionRule.
 func (FractionRule) Edges() []ent.Edge {
 	return nil
-}
-
-func (FractionRule) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("miningpool_type", "coin_type").Unique(),
-	}
 }

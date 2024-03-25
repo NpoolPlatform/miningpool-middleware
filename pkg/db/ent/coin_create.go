@@ -449,7 +449,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 	cc.conflict = opts
 	return &CoinUpsertOne{
@@ -463,7 +462,6 @@ func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflictColumns(columns ...string) *CoinUpsertOne {
 	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertOne{
@@ -687,7 +685,6 @@ func (u *CoinUpsert) ClearThreshold() *CoinUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -701,10 +698,9 @@ func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Coin.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Coin.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *CoinUpsertOne) Ignore() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1084,7 +1080,6 @@ func (ccb *CoinCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBulk {
 	ccb.conflict = opts
 	return &CoinUpsertBulk{
@@ -1098,7 +1093,6 @@ func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBul
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflictColumns(columns ...string) *CoinUpsertBulk {
 	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertBulk{
@@ -1123,7 +1117,6 @@ type CoinUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1143,7 +1136,6 @@ func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 //	client.Coin.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) Ignore() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

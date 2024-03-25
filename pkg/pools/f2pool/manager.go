@@ -191,7 +191,7 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 		Recipient:   recipient,
 	})
 
-	if err != nil && infoResp != nil {
+	if err == nil && infoResp != nil {
 		for _, v := range infoResp.Data {
 			if v.Distributor != distributor || v.Currency != mgr.currency {
 				continue

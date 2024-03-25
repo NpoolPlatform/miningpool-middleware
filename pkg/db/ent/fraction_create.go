@@ -417,7 +417,6 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsertOne {
 	fc.conflict = opts
 	return &FractionUpsertOne{
@@ -431,7 +430,6 @@ func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsert
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (fc *FractionCreate) OnConflictColumns(columns ...string) *FractionUpsertOne {
 	fc.conflict = append(fc.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertOne{
@@ -631,7 +629,6 @@ func (u *FractionUpsert) UpdateMsg() *FractionUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -645,10 +642,9 @@ func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Fraction.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Fraction.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *FractionUpsertOne) Ignore() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1000,7 +996,6 @@ func (fcb *FractionCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionUpsertBulk {
 	fcb.conflict = opts
 	return &FractionUpsertBulk{
@@ -1014,7 +1009,6 @@ func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionU
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (fcb *FractionCreateBulk) OnConflictColumns(columns ...string) *FractionUpsertBulk {
 	fcb.conflict = append(fcb.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertBulk{
@@ -1039,7 +1033,6 @@ type FractionUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1059,7 +1052,6 @@ func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 //	client.Fraction.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *FractionUpsertBulk) Ignore() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

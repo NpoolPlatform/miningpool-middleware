@@ -21,7 +21,9 @@ func (h *Handler) CreateCoin(ctx context.Context) (*npool.Coin, error) {
 	}
 	defer func() {
 		err := redis2.Unlock(lockKey)
-		logger.Sugar().Error(err)
+		if err != nil {
+			logger.Sugar().Error(err)
+		}
 	}()
 	id := uuid.New()
 	if h.EntID == nil {
@@ -61,7 +63,9 @@ func (h *Handler) CreateCoins(ctx context.Context) ([]*npool.Coin, error) {
 	}
 	defer func() {
 		err := redis2.Unlock(lockKey)
-		logger.Sugar().Error(err)
+		if err != nil {
+			logger.Sugar().Error(err)
+		}
 	}()
 	ids := []uuid.UUID{}
 

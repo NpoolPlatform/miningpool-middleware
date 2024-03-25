@@ -25,7 +25,9 @@ func TestAuth(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	authed := mgr.CheckAuth(context.Background())
 	assert.Equal(t, nil, authed)
 }
@@ -35,7 +37,9 @@ func TestMininguser(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	ret, err := mgr.ExistMiningUser(context.Background(), "cococonut1")
 	assert.Nil(t, err)
 	assert.Equal(t, true, ret)
@@ -69,7 +73,9 @@ func TestRevenueProportion(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	propotion := 0.1
 	err = mgr.SetRevenueProportion(context.Background(), "cococonut2", "cococonut001", propotion)
 	assert.Nil(t, err)
@@ -83,7 +89,9 @@ func TestRevenueAddress(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	addr := "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
 	err = mgr.SetRevenueAddress(context.Background(), "cococonut2", addr)
 	fmt.Println(err)
@@ -99,7 +107,9 @@ func TestPageLink(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	// f2pool api have bug,
 	// link, err := mgr.AddReadPageLink(context.Background(), "cococonut2")
 	// assert.Nil(t, err)
@@ -121,7 +131,9 @@ func TestPayment(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	paused, err := mgr.PausePayment(context.Background(), "cococonut2")
 	assert.Nil(t, err)
 	assert.Equal(t, true, paused)
@@ -136,7 +148,9 @@ func TestWithdrawPraction(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
-
+	if err != nil {
+		return
+	}
 	txTime, err := mgr.WithdrawPraction(context.Background(), "cococonut1")
 	// most of the time this api will report an error
 	if err == nil {

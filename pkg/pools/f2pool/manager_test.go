@@ -2,7 +2,6 @@ package f2pool
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strconv"
 	"testing"
@@ -12,16 +11,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
+var (
+	accessToken = "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
+	user1       string
+)
 
-func init() {
-	//nolint
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-}
-
-func TestAuth(t *testing.T) {
+func auth(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
@@ -33,18 +28,15 @@ func TestAuth(t *testing.T) {
 }
 
 //nolint:gocritic
-func TestMininguser(t *testing.T) {
+func mininguser(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
-	ret, err := mgr.ExistMiningUser(context.Background(), "cococonut1")
-	assert.Nil(t, err)
-	assert.Equal(t, true, ret)
 
-	ret, err = mgr.ExistMiningUser(context.Background(), uuid.NewString())
+	ret, err := mgr.ExistMiningUser(context.Background(), uuid.NewString())
 	assert.NotNil(t, err)
 	assert.Equal(t, false, ret)
 
@@ -69,13 +61,14 @@ func TestMininguser(t *testing.T) {
 	// assert.NotNil(t, err)
 }
 
-func TestRevenueProportion(t *testing.T) {
+func proportion(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
+
 	propotion := 0.1
 	err = mgr.SetRevenueProportion(context.Background(), "cococonut2", "cococonut001", propotion)
 	assert.Nil(t, err)
@@ -85,76 +78,99 @@ func TestRevenueProportion(t *testing.T) {
 	assert.Equal(t, propotion, _propotion)
 }
 
-func TestRevenueAddress(t *testing.T) {
+func revenueAddress(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
-	addr := "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
-	err = mgr.SetRevenueAddress(context.Background(), "cococonut2", addr)
-	fmt.Println(err)
+	user1, _, err = mgr.AddMiningUser(context.Background())
 	assert.Nil(t, err)
 
-	_addr, err := mgr.GetRevenueAddress(context.Background(), "cococonut2")
+	addr := "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
+	err = mgr.SetRevenueAddress(context.Background(), user1, addr)
+	assert.Nil(t, err)
+
+	_addr, err := mgr.GetRevenueAddress(context.Background(), user1)
 	assert.Nil(t, err)
 	assert.Equal(t, addr, _addr)
 }
 
 //nolint:gocritic
-func TestPageLink(t *testing.T) {
+func pageLink(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
+
 	// f2pool api have bug,
-	// link, err := mgr.AddReadPageLink(context.Background(), "cococonut2")
+	// link, err := mgr.AddReadPageLink(context.Background(), user1)
 	// assert.Nil(t, err)
 
-	// _link, err := mgr.GetReadPageLink(context.Background(), "cococonut2")
+	// _link, err := mgr.GetReadPageLink(context.Background(), user1)
 	// assert.Nil(t, err)
 	// assert.Equal(t, link, _link)
 
-	err = mgr.DeleteReadPageLink(context.Background(), "cococonut2")
+	err = mgr.DeleteReadPageLink(context.Background(), user1)
 	assert.Nil(t, err)
 
-	// _link, err = mgr.GetReadPageLink(context.Background(), "cococonut2")
+	// _link, err = mgr.GetReadPageLink(context.Background(), user1)
 	// assert.Nil(t, err)
 	// assert.NotEqual(t, link, _link)
 }
 
 //nolint:gocritic
-func TestPayment(t *testing.T) {
+func payment(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
-	paused, err := mgr.PausePayment(context.Background(), "cococonut2")
+	paused, err := mgr.PausePayment(context.Background(), user1)
 	assert.Nil(t, err)
 	assert.Equal(t, true, paused)
 
-	resumed, err := mgr.ResumePayment(context.Background(), "cococonut2")
+	resumed, err := mgr.ResumePayment(context.Background(), user1)
 	assert.Nil(t, err)
 	assert.Equal(t, true, resumed)
 }
 
 //nolint:gocritic
-func TestWithdrawPraction(t *testing.T) {
+func withdrawPraction(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_BitCoin, accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
-	txTime, err := mgr.WithdrawPraction(context.Background(), "cococonut1")
+	txTime, err := mgr.WithdrawPraction(context.Background(), user1)
 	// most of the time this api will report an error
 	if err == nil {
 		assert.Nil(t, err)
 		assert.NotEqual(t, 0, txTime)
 	}
+}
+
+func TestCoin(t *testing.T) {
+	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
+		return
+	}
+
+	os.Setenv("TEST_F2POOL", "false")
+	testF2pool := os.Getenv("TEST_F2POOL")
+	if testF2pool == "false" {
+		return
+	}
+
+	t.Run("auth", auth)
+	t.Run("mininguser", mininguser)
+	t.Run("proportion", proportion)
+	t.Run("revenueAddress", revenueAddress)
+	t.Run("pageLink", pageLink)
+	t.Run("payment", payment)
+	t.Run("withdrawPraction", withdrawPraction)
 }

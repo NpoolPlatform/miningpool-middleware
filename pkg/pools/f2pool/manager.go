@@ -10,6 +10,7 @@ import (
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	basetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/mr-tron/base58"
@@ -33,9 +34,7 @@ var (
 	CoinType2FeeRate map[basetype.CoinType]float32 = map[basetype.CoinType]float32{
 		basetype.CoinType_BitCoin: 0.04,
 	}
-	F2PoolAPI     = "https://api.f2pool.com"
-	F2PoolBaseURL = "https://f2pool.com"
-	MaxRetries    = 10
+	MaxRetries = 10
 )
 
 const (
@@ -55,7 +54,7 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error)
 	mgr := &Manager{
 		currency:  currency,
 		authToken: auth,
-		cli:       client.NewClient(F2PoolAPI, auth),
+		cli:       client.NewClient(config.F2PoolAPI, auth),
 	}
 	if err := mgr.CheckAuth(context.Background()); err != nil {
 		return nil, err
@@ -352,7 +351,7 @@ func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, e
 }
 
 func getReadPageLink(key, userName string) string {
-	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", F2PoolBaseURL, key, userName)
+	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", config.F2PoolBaseURL, key, userName)
 }
 
 // can only be a combination of lowercase characters and numbers

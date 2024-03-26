@@ -10,7 +10,7 @@ ROOT_PATH=$MY_PATH/../
 PLATFORM=linux/amd64
 OUTPUT=./output
 
-go run $ROOT_PATH/mock/main.go test_mock_mininpool_mw
+go run $ROOT_PATH/mock/main.go test_mock_mininpool_mw &
 
 export F2POOL_API="http://127.0.0.1:20180"
 

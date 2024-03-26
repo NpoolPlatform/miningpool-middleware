@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    GOPROXY = 'https://goproxy.cn,direct'
+    GOPROXY = 'https://goproxy.io,direct'
   }
   tools {
     go 'go'

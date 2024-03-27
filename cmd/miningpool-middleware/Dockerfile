@@ -1,5 +1,12 @@
+
 FROM uhub.service.ucloud.cn/entropypool/alpine:3.16
 
-COPY miningpool-middleware /usr/local/bin/miningpool-middleware
+WORKDIR /app
 
-CMD ["miningpool-middleware", "run"]
+COPY miningpool-middleware /app
+
+ENTRYPOINT ["/app/miningpool-middleware"]
+
+EXPOSE 50530 50531 50532 50533
+
+CMD ["run"]

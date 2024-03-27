@@ -69,6 +69,7 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
+//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -82,4 +83,8 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultPayTime holds the default value on creation for the "pay_time" field.
+	DefaultPayTime uint32
+	// DefaultMsg holds the default value on creation for the "msg" field.
+	DefaultMsg string
 )

@@ -264,6 +264,7 @@ func (apq *AppPoolQuery) Clone() *AppPoolQuery {
 //		GroupBy(apppool.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
+//
 func (apq *AppPoolQuery) GroupBy(field string, fields ...string) *AppPoolGroupBy {
 	grbuild := &AppPoolGroupBy{config: apq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,6 +291,7 @@ func (apq *AppPoolQuery) GroupBy(field string, fields ...string) *AppPoolGroupBy
 //	client.AppPool.Query().
 //		Select(apppool.FieldCreatedAt).
 //		Scan(ctx, &v)
+//
 func (apq *AppPoolQuery) Select(fields ...string) *AppPoolSelect {
 	apq.fields = append(apq.fields, fields...)
 	selbuild := &AppPoolSelect{AppPoolQuery: apq}

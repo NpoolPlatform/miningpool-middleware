@@ -930,6 +930,20 @@ func MsgHasSuffix(v string) predicate.Fraction {
 	})
 }
 
+// MsgIsNil applies the IsNil predicate on the "msg" field.
+func MsgIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMsg)))
+	})
+}
+
+// MsgNotNil applies the NotNil predicate on the "msg" field.
+func MsgNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMsg)))
+	})
+}
+
 // MsgEqualFold applies the EqualFold predicate on the "msg" field.
 func MsgEqualFold(v string) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {

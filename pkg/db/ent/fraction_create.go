@@ -128,6 +128,14 @@ func (fc *FractionCreate) SetMsg(s string) *FractionCreate {
 	return fc
 }
 
+// SetNillableMsg sets the "msg" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableMsg(s *string) *FractionCreate {
+	if s != nil {
+		fc.SetMsg(*s)
+	}
+	return fc
+}
+
 // SetID sets the "id" field.
 func (fc *FractionCreate) SetID(u uint32) *FractionCreate {
 	fc.mutation.SetID(u)
@@ -241,6 +249,14 @@ func (fc *FractionCreate) defaults() error {
 		v := fraction.DefaultEntID()
 		fc.mutation.SetEntID(v)
 	}
+	if _, ok := fc.mutation.PayTime(); !ok {
+		v := fraction.DefaultPayTime
+		fc.mutation.SetPayTime(v)
+	}
+	if _, ok := fc.mutation.Msg(); !ok {
+		v := fraction.DefaultMsg
+		fc.mutation.SetMsg(v)
+	}
 	return nil
 }
 
@@ -272,9 +288,6 @@ func (fc *FractionCreate) check() error {
 	}
 	if _, ok := fc.mutation.WithdrawTime(); !ok {
 		return &ValidationError{Name: "withdraw_time", err: errors.New(`ent: missing required field "Fraction.withdraw_time"`)}
-	}
-	if _, ok := fc.mutation.Msg(); !ok {
-		return &ValidationError{Name: "msg", err: errors.New(`ent: missing required field "Fraction.msg"`)}
 	}
 	return nil
 }
@@ -417,6 +430,7 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsertOne {
 	fc.conflict = opts
 	return &FractionUpsertOne{
@@ -430,6 +444,7 @@ func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsert
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (fc *FractionCreate) OnConflictColumns(columns ...string) *FractionUpsertOne {
 	fc.conflict = append(fc.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertOne{
@@ -618,6 +633,12 @@ func (u *FractionUpsert) UpdateMsg() *FractionUpsert {
 	return u
 }
 
+// ClearMsg clears the value of the "msg" field.
+func (u *FractionUpsert) ClearMsg() *FractionUpsert {
+	u.SetNull(fraction.FieldMsg)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -629,6 +650,7 @@ func (u *FractionUpsert) UpdateMsg() *FractionUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -642,9 +664,10 @@ func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Fraction.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.Fraction.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *FractionUpsertOne) Ignore() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -862,6 +885,13 @@ func (u *FractionUpsertOne) UpdateMsg() *FractionUpsertOne {
 	})
 }
 
+// ClearMsg clears the value of the "msg" field.
+func (u *FractionUpsertOne) ClearMsg() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearMsg()
+	})
+}
+
 // Exec executes the query.
 func (u *FractionUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -996,6 +1026,7 @@ func (fcb *FractionCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionUpsertBulk {
 	fcb.conflict = opts
 	return &FractionUpsertBulk{
@@ -1009,6 +1040,7 @@ func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionU
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (fcb *FractionCreateBulk) OnConflictColumns(columns ...string) *FractionUpsertBulk {
 	fcb.conflict = append(fcb.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertBulk{
@@ -1033,6 +1065,7 @@ type FractionUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1052,6 +1085,7 @@ func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 //	client.Fraction.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *FractionUpsertBulk) Ignore() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1266,6 +1300,13 @@ func (u *FractionUpsertBulk) SetMsg(v string) *FractionUpsertBulk {
 func (u *FractionUpsertBulk) UpdateMsg() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateMsg()
+	})
+}
+
+// ClearMsg clears the value of the "msg" field.
+func (u *FractionUpsertBulk) ClearMsg() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearMsg()
 	})
 }
 

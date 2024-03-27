@@ -438,6 +438,7 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (guc *GoodUserCreate) OnConflict(opts ...sql.ConflictOption) *GoodUserUpsertOne {
 	guc.conflict = opts
 	return &GoodUserUpsertOne{
@@ -451,6 +452,7 @@ func (guc *GoodUserCreate) OnConflict(opts ...sql.ConflictOption) *GoodUserUpser
 //	client.GoodUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (guc *GoodUserCreate) OnConflictColumns(columns ...string) *GoodUserUpsertOne {
 	guc.conflict = append(guc.conflict, sql.ConflictColumns(columns...))
 	return &GoodUserUpsertOne{
@@ -656,6 +658,7 @@ func (u *GoodUserUpsert) UpdateRevenueType() *GoodUserUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertOne) UpdateNewValues() *GoodUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -669,9 +672,10 @@ func (u *GoodUserUpsertOne) UpdateNewValues() *GoodUserUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.GoodUser.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.GoodUser.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *GoodUserUpsertOne) Ignore() *GoodUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1030,6 +1034,7 @@ func (gucb *GoodUserCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (gucb *GoodUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *GoodUserUpsertBulk {
 	gucb.conflict = opts
 	return &GoodUserUpsertBulk{
@@ -1043,6 +1048,7 @@ func (gucb *GoodUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *GoodUser
 //	client.GoodUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (gucb *GoodUserCreateBulk) OnConflictColumns(columns ...string) *GoodUserUpsertBulk {
 	gucb.conflict = append(gucb.conflict, sql.ConflictColumns(columns...))
 	return &GoodUserUpsertBulk{
@@ -1067,6 +1073,7 @@ type GoodUserUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertBulk) UpdateNewValues() *GoodUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1086,6 +1093,7 @@ func (u *GoodUserUpsertBulk) UpdateNewValues() *GoodUserUpsertBulk {
 //	client.GoodUser.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertBulk) Ignore() *GoodUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

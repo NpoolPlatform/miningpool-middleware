@@ -71,8 +71,8 @@ var (
 		{Name: "order_user_id", Type: field.TypeUUID},
 		{Name: "withdraw_state", Type: field.TypeString},
 		{Name: "withdraw_time", Type: field.TypeUint32},
-		{Name: "pay_time", Type: field.TypeUint32, Nullable: true},
-		{Name: "msg", Type: field.TypeString},
+		{Name: "pay_time", Type: field.TypeUint32, Nullable: true, Default: 0},
+		{Name: "msg", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// FractionsTable holds the schema information for the "fractions" table.
 	FractionsTable = &schema.Table{

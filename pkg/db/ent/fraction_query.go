@@ -264,6 +264,7 @@ func (fq *FractionQuery) Clone() *FractionQuery {
 //		GroupBy(fraction.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
+//
 func (fq *FractionQuery) GroupBy(field string, fields ...string) *FractionGroupBy {
 	grbuild := &FractionGroupBy{config: fq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,6 +291,7 @@ func (fq *FractionQuery) GroupBy(field string, fields ...string) *FractionGroupB
 //	client.Fraction.Query().
 //		Select(fraction.FieldCreatedAt).
 //		Scan(ctx, &v)
+//
 func (fq *FractionQuery) Select(fields ...string) *FractionSelect {
 	fq.fields = append(fq.fields, fields...)
 	selbuild := &FractionSelect{FractionQuery: fq}

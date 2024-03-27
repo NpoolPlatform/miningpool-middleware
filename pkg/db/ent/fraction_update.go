@@ -168,6 +168,20 @@ func (fu *FractionUpdate) SetMsg(s string) *FractionUpdate {
 	return fu
 }
 
+// SetNillableMsg sets the "msg" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableMsg(s *string) *FractionUpdate {
+	if s != nil {
+		fu.SetMsg(*s)
+	}
+	return fu
+}
+
+// ClearMsg clears the value of the "msg" field.
+func (fu *FractionUpdate) ClearMsg() *FractionUpdate {
+	fu.mutation.ClearMsg()
+	return fu
+}
+
 // Mutation returns the FractionMutation object of the builder.
 func (fu *FractionUpdate) Mutation() *FractionMutation {
 	return fu.mutation
@@ -384,6 +398,12 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldMsg,
 		})
 	}
+	if fu.mutation.MsgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: fraction.FieldMsg,
+		})
+	}
 	_spec.Modifiers = fu.modifiers
 	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -541,6 +561,20 @@ func (fuo *FractionUpdateOne) ClearPayTime() *FractionUpdateOne {
 // SetMsg sets the "msg" field.
 func (fuo *FractionUpdateOne) SetMsg(s string) *FractionUpdateOne {
 	fuo.mutation.SetMsg(s)
+	return fuo
+}
+
+// SetNillableMsg sets the "msg" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableMsg(s *string) *FractionUpdateOne {
+	if s != nil {
+		fuo.SetMsg(*s)
+	}
+	return fuo
+}
+
+// ClearMsg clears the value of the "msg" field.
+func (fuo *FractionUpdateOne) ClearMsg() *FractionUpdateOne {
+	fuo.mutation.ClearMsg()
 	return fuo
 }
 
@@ -787,6 +821,12 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: fraction.FieldMsg,
+		})
+	}
+	if fuo.mutation.MsgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: fraction.FieldMsg,
 		})
 	}

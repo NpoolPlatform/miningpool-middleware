@@ -146,6 +146,14 @@ func init() {
 	fractionDescEntID := fractionMixinFields1[1].Descriptor()
 	// fraction.DefaultEntID holds the default value on creation for the ent_id field.
 	fraction.DefaultEntID = fractionDescEntID.Default.(func() uuid.UUID)
+	// fractionDescPayTime is the schema descriptor for pay_time field.
+	fractionDescPayTime := fractionFields[5].Descriptor()
+	// fraction.DefaultPayTime holds the default value on creation for the pay_time field.
+	fraction.DefaultPayTime = fractionDescPayTime.Default.(uint32)
+	// fractionDescMsg is the schema descriptor for msg field.
+	fractionDescMsg := fractionFields[6].Descriptor()
+	// fraction.DefaultMsg holds the default value on creation for the msg field.
+	fraction.DefaultMsg = fractionDescMsg.Default.(string)
 	fractionruleMixin := schema.FractionRule{}.Mixin()
 	fractionrule.Policy = privacy.NewPolicies(fractionruleMixin[0], schema.FractionRule{})
 	fractionrule.Hooks[0] = func(next ent.Mutator) ent.Mutator {

@@ -35,9 +35,9 @@ func (Fraction) Fields() []ent.Field {
 		field.
 			Uint32("withdraw_time"),
 		field.
-			Uint32("pay_time").Optional(),
+			Uint32("pay_time").Optional().Default(0),
 		field.
-			String("msg"),
+			String("msg").Optional().Default(""),
 	}
 }
 

@@ -327,6 +327,7 @@ func (apc *AppPoolCreate) createSpec() (*AppPool, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (apc *AppPoolCreate) OnConflict(opts ...sql.ConflictOption) *AppPoolUpsertOne {
 	apc.conflict = opts
 	return &AppPoolUpsertOne{
@@ -340,6 +341,7 @@ func (apc *AppPoolCreate) OnConflict(opts ...sql.ConflictOption) *AppPoolUpsertO
 //	client.AppPool.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (apc *AppPoolCreate) OnConflictColumns(columns ...string) *AppPoolUpsertOne {
 	apc.conflict = append(apc.conflict, sql.ConflictColumns(columns...))
 	return &AppPoolUpsertOne{
@@ -461,6 +463,7 @@ func (u *AppPoolUpsert) UpdatePoolID() *AppPoolUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *AppPoolUpsertOne) UpdateNewValues() *AppPoolUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -474,9 +477,10 @@ func (u *AppPoolUpsertOne) UpdateNewValues() *AppPoolUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.AppPool.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.AppPool.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *AppPoolUpsertOne) Ignore() *AppPoolUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -737,6 +741,7 @@ func (apcb *AppPoolCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (apcb *AppPoolCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPoolUpsertBulk {
 	apcb.conflict = opts
 	return &AppPoolUpsertBulk{
@@ -750,6 +755,7 @@ func (apcb *AppPoolCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPoolUp
 //	client.AppPool.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (apcb *AppPoolCreateBulk) OnConflictColumns(columns ...string) *AppPoolUpsertBulk {
 	apcb.conflict = append(apcb.conflict, sql.ConflictColumns(columns...))
 	return &AppPoolUpsertBulk{
@@ -774,6 +780,7 @@ type AppPoolUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *AppPoolUpsertBulk) UpdateNewValues() *AppPoolUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -793,6 +800,7 @@ func (u *AppPoolUpsertBulk) UpdateNewValues() *AppPoolUpsertBulk {
 //	client.AppPool.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *AppPoolUpsertBulk) Ignore() *AppPoolUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

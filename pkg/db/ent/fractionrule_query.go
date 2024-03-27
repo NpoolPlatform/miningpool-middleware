@@ -264,6 +264,7 @@ func (frq *FractionRuleQuery) Clone() *FractionRuleQuery {
 //		GroupBy(fractionrule.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
+//
 func (frq *FractionRuleQuery) GroupBy(field string, fields ...string) *FractionRuleGroupBy {
 	grbuild := &FractionRuleGroupBy{config: frq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,6 +291,7 @@ func (frq *FractionRuleQuery) GroupBy(field string, fields ...string) *FractionR
 //	client.FractionRule.Query().
 //		Select(fractionrule.FieldCreatedAt).
 //		Scan(ctx, &v)
+//
 func (frq *FractionRuleQuery) Select(fields ...string) *FractionRuleSelect {
 	frq.fields = append(frq.fields, fields...)
 	selbuild := &FractionRuleSelect{FractionRuleQuery: frq}

@@ -2492,9 +2492,22 @@ func (m *FractionMutation) OldMsg(ctx context.Context) (v string, err error) {
 	return oldValue.Msg, nil
 }
 
+// ClearMsg clears the value of the "msg" field.
+func (m *FractionMutation) ClearMsg() {
+	m.msg = nil
+	m.clearedFields[fraction.FieldMsg] = struct{}{}
+}
+
+// MsgCleared returns if the "msg" field was cleared in this mutation.
+func (m *FractionMutation) MsgCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldMsg]
+	return ok
+}
+
 // ResetMsg resets all changes to the "msg" field.
 func (m *FractionMutation) ResetMsg() {
 	m.msg = nil
+	delete(m.clearedFields, fraction.FieldMsg)
 }
 
 // Where appends a list predicates to the FractionMutation builder.
@@ -2793,6 +2806,9 @@ func (m *FractionMutation) ClearedFields() []string {
 	if m.FieldCleared(fraction.FieldPayTime) {
 		fields = append(fields, fraction.FieldPayTime)
 	}
+	if m.FieldCleared(fraction.FieldMsg) {
+		fields = append(fields, fraction.FieldMsg)
+	}
 	return fields
 }
 
@@ -2809,6 +2825,9 @@ func (m *FractionMutation) ClearField(name string) error {
 	switch name {
 	case fraction.FieldPayTime:
 		m.ClearPayTime()
+		return nil
+	case fraction.FieldMsg:
+		m.ClearMsg()
 		return nil
 	}
 	return fmt.Errorf("unknown Fraction nullable field %s", name)

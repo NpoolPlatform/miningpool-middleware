@@ -9,15 +9,70 @@ import (
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	coinmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	fractionrulemw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
+	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 )
 
 func Init() {
+	RegistePool(context.Background())
 	RegisteCoinInfo(context.Background())
 	RegisteFractionRule(context.Background())
+}
+
+func RegistePool(ctx context.Context) {
+	infos := []*poolmw.Pool{
+		{
+			MiningpoolType: v1.MiningpoolType_F2Pool,
+			Name:           v1.MiningpoolType_F2Pool.String(),
+			Site:           config.F2PoolSite,
+			Description:    "",
+		},
+	}
+	for _, info := range infos {
+		poolH, err := pool.NewHandler(ctx, pool.WithConds(&poolmw.Conds{
+			MiningpoolType: &basetypes.Uint32Val{
+				Op:    cruder.EQ,
+				Value: uint32(info.MiningpoolType),
+			},
+			Name: &basetypes.StringVal{
+				Op:    cruder.EQ,
+				Value: info.Name,
+			},
+		}))
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+
+		exist, err := poolH.ExistPoolConds(ctx)
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+		if exist {
+			continue
+		}
+
+		poolH, err = pool.NewHandler(ctx,
+			pool.WithMiningpoolType(&info.MiningpoolType, true),
+			pool.WithName(&info.Name, true),
+			pool.WithSite(&info.Site, true),
+			pool.WithDescription(&info.Description, true),
+		)
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+		_, err = poolH.CreatePool(ctx)
+		if err != nil {
+			logger.Sugar().Error(err)
+		}
+	}
 }
 
 func RegisteCoinInfo(ctx context.Context) {

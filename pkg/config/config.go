@@ -10,6 +10,8 @@ var (
 
 	F2PoolBaseURL    = "https://f2pool.com"
 	F2PoolBaseURLKey = "F2POOL_BASE_URL"
+
+	F2PoolSite = "https://f2pool.com"
 )
 
 func init() {

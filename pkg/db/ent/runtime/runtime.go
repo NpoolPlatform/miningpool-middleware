@@ -223,7 +223,7 @@ func init() {
 	// gooduser.DefaultEntID holds the default value on creation for the ent_id field.
 	gooduser.DefaultEntID = gooduserDescEntID.Default.(func() uuid.UUID)
 	// gooduserDescHashRate is the schema descriptor for hash_rate field.
-	gooduserDescHashRate := gooduserFields[5].Descriptor()
+	gooduserDescHashRate := gooduserFields[4].Descriptor()
 	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
 	gooduser.DefaultHashRate = gooduserDescHashRate.Default.(float32)
 	orderuserMixin := schema.OrderUser{}.Mixin()
@@ -261,15 +261,15 @@ func init() {
 	// orderuser.DefaultEntID holds the default value on creation for the ent_id field.
 	orderuser.DefaultEntID = orderuserDescEntID.Default.(func() uuid.UUID)
 	// orderuserDescProportion is the schema descriptor for proportion field.
-	orderuserDescProportion := orderuserFields[6].Descriptor()
+	orderuserDescProportion := orderuserFields[7].Descriptor()
 	// orderuser.DefaultProportion holds the default value on creation for the proportion field.
 	orderuser.DefaultProportion = orderuserDescProportion.Default.(float32)
 	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
-	orderuserDescRevenueAddress := orderuserFields[7].Descriptor()
+	orderuserDescRevenueAddress := orderuserFields[8].Descriptor()
 	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.
 	orderuser.DefaultRevenueAddress = orderuserDescRevenueAddress.Default.(string)
 	// orderuserDescAutoPay is the schema descriptor for auto_pay field.
-	orderuserDescAutoPay := orderuserFields[9].Descriptor()
+	orderuserDescAutoPay := orderuserFields[10].Descriptor()
 	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
 	orderuser.DefaultAutoPay = orderuserDescAutoPay.Default.(bool)
 	poolMixin := schema.Pool{}.Mixin()

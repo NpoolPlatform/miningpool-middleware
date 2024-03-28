@@ -125,7 +125,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			gooduser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
 			gooduser.FieldDeletedAt:      {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
 			gooduser.FieldEntID:          {Type: field.TypeUUID, Column: gooduser.FieldEntID},
-			gooduser.FieldGoodID:         {Type: field.TypeUUID, Column: gooduser.FieldGoodID},
 			gooduser.FieldRootUserID:     {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
 			gooduser.FieldName:           {Type: field.TypeString, Column: gooduser.FieldName},
 			gooduser.FieldMiningpoolType: {Type: field.TypeString, Column: gooduser.FieldMiningpoolType},
@@ -152,7 +151,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			orderuser.FieldEntID:          {Type: field.TypeUUID, Column: orderuser.FieldEntID},
 			orderuser.FieldRootUserID:     {Type: field.TypeUUID, Column: orderuser.FieldRootUserID},
 			orderuser.FieldGoodUserID:     {Type: field.TypeUUID, Column: orderuser.FieldGoodUserID},
-			orderuser.FieldOrderID:        {Type: field.TypeUUID, Column: orderuser.FieldOrderID},
+			orderuser.FieldUserID:         {Type: field.TypeUUID, Column: orderuser.FieldUserID},
+			orderuser.FieldAppID:          {Type: field.TypeUUID, Column: orderuser.FieldAppID},
 			orderuser.FieldName:           {Type: field.TypeString, Column: orderuser.FieldName},
 			orderuser.FieldMiningpoolType: {Type: field.TypeString, Column: orderuser.FieldMiningpoolType},
 			orderuser.FieldCoinType:       {Type: field.TypeString, Column: orderuser.FieldCoinType},
@@ -620,11 +620,6 @@ func (f *GoodUserFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(gooduser.FieldEntID))
 }
 
-// WhereGoodID applies the entql [16]byte predicate on the good_id field.
-func (f *GoodUserFilter) WhereGoodID(p entql.ValueP) {
-	f.Where(p.Field(gooduser.FieldGoodID))
-}
-
 // WhereRootUserID applies the entql [16]byte predicate on the root_user_id field.
 func (f *GoodUserFilter) WhereRootUserID(p entql.ValueP) {
 	f.Where(p.Field(gooduser.FieldRootUserID))
@@ -730,9 +725,14 @@ func (f *OrderUserFilter) WhereGoodUserID(p entql.ValueP) {
 	f.Where(p.Field(orderuser.FieldGoodUserID))
 }
 
-// WhereOrderID applies the entql [16]byte predicate on the order_id field.
-func (f *OrderUserFilter) WhereOrderID(p entql.ValueP) {
-	f.Where(p.Field(orderuser.FieldOrderID))
+// WhereUserID applies the entql [16]byte predicate on the user_id field.
+func (f *OrderUserFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(orderuser.FieldUserID))
+}
+
+// WhereAppID applies the entql [16]byte predicate on the app_id field.
+func (f *OrderUserFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(orderuser.FieldAppID))
 }
 
 // WhereName applies the entql string predicate on the name field.

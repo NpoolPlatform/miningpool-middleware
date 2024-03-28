@@ -78,12 +78,6 @@ func (guc *GoodUserCreate) SetNillableEntID(u *uuid.UUID) *GoodUserCreate {
 	return guc
 }
 
-// SetGoodID sets the "good_id" field.
-func (guc *GoodUserCreate) SetGoodID(u uuid.UUID) *GoodUserCreate {
-	guc.mutation.SetGoodID(u)
-	return guc
-}
-
 // SetRootUserID sets the "root_user_id" field.
 func (guc *GoodUserCreate) SetRootUserID(u uuid.UUID) *GoodUserCreate {
 	guc.mutation.SetRootUserID(u)
@@ -268,9 +262,6 @@ func (guc *GoodUserCreate) check() error {
 	if _, ok := guc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "GoodUser.ent_id"`)}
 	}
-	if _, ok := guc.mutation.GoodID(); !ok {
-		return &ValidationError{Name: "good_id", err: errors.New(`ent: missing required field "GoodUser.good_id"`)}
-	}
 	if _, ok := guc.mutation.RootUserID(); !ok {
 		return &ValidationError{Name: "root_user_id", err: errors.New(`ent: missing required field "GoodUser.root_user_id"`)}
 	}
@@ -354,14 +345,6 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 			Column: gooduser.FieldEntID,
 		})
 		_node.EntID = value
-	}
-	if value, ok := guc.mutation.GoodID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldGoodID,
-		})
-		_node.GoodID = value
 	}
 	if value, ok := guc.mutation.RootUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -536,18 +519,6 @@ func (u *GoodUserUpsert) SetEntID(v uuid.UUID) *GoodUserUpsert {
 // UpdateEntID sets the "ent_id" field to the value that was provided on create.
 func (u *GoodUserUpsert) UpdateEntID() *GoodUserUpsert {
 	u.SetExcluded(gooduser.FieldEntID)
-	return u
-}
-
-// SetGoodID sets the "good_id" field.
-func (u *GoodUserUpsert) SetGoodID(v uuid.UUID) *GoodUserUpsert {
-	u.Set(gooduser.FieldGoodID, v)
-	return u
-}
-
-// UpdateGoodID sets the "good_id" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateGoodID() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldGoodID)
 	return u
 }
 
@@ -771,20 +742,6 @@ func (u *GoodUserUpsertOne) SetEntID(v uuid.UUID) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateEntID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateEntID()
-	})
-}
-
-// SetGoodID sets the "good_id" field.
-func (u *GoodUserUpsertOne) SetGoodID(v uuid.UUID) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetGoodID(v)
-	})
-}
-
-// UpdateGoodID sets the "good_id" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateGoodID() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateGoodID()
 	})
 }
 
@@ -1189,20 +1146,6 @@ func (u *GoodUserUpsertBulk) SetEntID(v uuid.UUID) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateEntID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateEntID()
-	})
-}
-
-// SetGoodID sets the "good_id" field.
-func (u *GoodUserUpsertBulk) SetGoodID(v uuid.UUID) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetGoodID(v)
-	})
-}
-
-// UpdateGoodID sets the "good_id" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateGoodID() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateGoodID()
 	})
 }
 

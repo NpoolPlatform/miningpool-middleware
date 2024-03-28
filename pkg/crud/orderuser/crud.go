@@ -15,7 +15,8 @@ type Req struct {
 	EntID          *uuid.UUID
 	RootUserID     *uuid.UUID
 	GoodUserID     *uuid.UUID
-	OrderID        *uuid.UUID
+	AppID          *uuid.UUID
+	UserID         *uuid.UUID
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
@@ -39,8 +40,11 @@ func CreateSet(c *ent.OrderUserCreate, req *Req) *ent.OrderUserCreate {
 	if req.GoodUserID != nil {
 		c.SetGoodUserID(*req.GoodUserID)
 	}
-	if req.OrderID != nil {
-		c.SetOrderID(*req.OrderID)
+	if req.AppID != nil {
+		c.SetAppID(*req.AppID)
+	}
+	if req.UserID != nil {
+		c.SetUserID(*req.UserID)
 	}
 	if req.MiningpoolType != nil {
 		c.SetMiningpoolType(req.MiningpoolType.String())
@@ -73,8 +77,11 @@ func UpdateSet(u *ent.OrderUserUpdateOne, req *Req) (*ent.OrderUserUpdateOne, er
 	if req.GoodUserID != nil {
 		u = u.SetGoodUserID(*req.GoodUserID)
 	}
-	if req.OrderID != nil {
-		u = u.SetOrderID(*req.OrderID)
+	if req.AppID != nil {
+		u = u.SetAppID(*req.AppID)
+	}
+	if req.UserID != nil {
+		u = u.SetUserID(*req.UserID)
 	}
 	if req.MiningpoolType != nil {
 		u = u.SetMiningpoolType(req.MiningpoolType.String())
@@ -106,7 +113,8 @@ type Conds struct {
 	Name           *cruder.Cond
 	RootUserID     *cruder.Cond
 	GoodUserID     *cruder.Cond
-	OrderID        *cruder.Cond
+	AppID          *cruder.Cond
+	UserID         *cruder.Cond
 	MiningpoolType *cruder.Cond
 	CoinType       *cruder.Cond
 	RevenueAddress *cruder.Cond
@@ -190,16 +198,28 @@ func SetQueryConds(q *ent.OrderUserQuery, conds *Conds) (*ent.OrderUserQuery, er
 			return nil, fmt.Errorf("invalid gooduserid field")
 		}
 	}
-	if conds.OrderID != nil {
-		id, ok := conds.OrderID.Val.(uuid.UUID)
+	if conds.AppID != nil {
+		id, ok := conds.AppID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid orderid")
+			return nil, fmt.Errorf("invalid appid")
 		}
-		switch conds.OrderID.Op {
+		switch conds.AppID.Op {
 		case cruder.EQ:
-			q.Where(orderuserent.OrderID(id))
+			q.Where(orderuserent.AppID(id))
 		default:
-			return nil, fmt.Errorf("invalid orderid field")
+			return nil, fmt.Errorf("invalid appid field")
+		}
+	}
+	if conds.UserID != nil {
+		id, ok := conds.UserID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid userid")
+		}
+		switch conds.UserID.Op {
+		case cruder.EQ:
+			q.Where(orderuserent.UserID(id))
+		default:
+			return nil, fmt.Errorf("invalid userid field")
 		}
 	}
 	if conds.MiningpoolType != nil {

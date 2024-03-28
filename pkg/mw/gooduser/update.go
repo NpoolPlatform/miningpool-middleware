@@ -58,7 +58,6 @@ func (h *Handler) UpdateGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 			&goodusercrud.Req{
 				Name:           h.Name,
 				RootUserID:     h.RootUserID,
-				GoodID:         h.GoodID,
 				MiningpoolType: h.MiningpoolType,
 				CoinType:       h.CoinType,
 				HashRate:       h.HashRate,

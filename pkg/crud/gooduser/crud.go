@@ -14,7 +14,6 @@ import (
 type Req struct {
 	EntID          *uuid.UUID
 	RootUserID     *uuid.UUID
-	GoodID         *uuid.UUID
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
@@ -31,10 +30,6 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.RootUserID != nil {
 		c.SetRootUserID(*req.RootUserID)
 	}
-	if req.GoodID != nil {
-		c.SetGoodID(*req.GoodID)
-	}
-
 	if req.Name != nil {
 		c.SetName(*req.Name)
 	}
@@ -59,9 +54,6 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, error) {
 	if req.RootUserID != nil {
 		u = u.SetRootUserID(*req.RootUserID)
-	}
-	if req.GoodID != nil {
-		u = u.SetGoodID(*req.GoodID)
 	}
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
@@ -92,7 +84,6 @@ type Conds struct {
 	EntID          *cruder.Cond
 	Name           *cruder.Cond
 	RootUserID     *cruder.Cond
-	GoodID         *cruder.Cond
 	MiningpoolType *cruder.Cond
 	CoinType       *cruder.Cond
 	RevenueType    *cruder.Cond
@@ -149,18 +140,6 @@ func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, erro
 			q.Where(gooduserent.RootUserID(id))
 		default:
 			return nil, fmt.Errorf("invalid rootuserid field")
-		}
-	}
-	if conds.GoodID != nil {
-		id, ok := conds.GoodID.Val.(uuid.UUID)
-		if !ok {
-			return nil, fmt.Errorf("invalid goodid")
-		}
-		switch conds.GoodID.Op {
-		case cruder.EQ:
-			q.Where(gooduserent.GoodID(id))
-		default:
-			return nil, fmt.Errorf("invalid goodid field")
 		}
 	}
 	if conds.Name != nil {

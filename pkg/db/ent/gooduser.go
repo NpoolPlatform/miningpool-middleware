@@ -24,8 +24,6 @@ type GoodUser struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// GoodID holds the value of the "good_id" field.
-	GoodID uuid.UUID `json:"good_id,omitempty"`
 	// RootUserID holds the value of the "root_user_id" field.
 	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// Name holds the value of the "name" field.
@@ -53,7 +51,7 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case gooduser.FieldName, gooduser.FieldMiningpoolType, gooduser.FieldCoinType, gooduser.FieldReadPageLink, gooduser.FieldRevenueType:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldGoodID, gooduser.FieldRootUserID:
+		case gooduser.FieldEntID, gooduser.FieldRootUserID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -99,12 +97,6 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field ent_id", values[i])
 			} else if value != nil {
 				gu.EntID = *value
-			}
-		case gooduser.FieldGoodID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field good_id", values[i])
-			} else if value != nil {
-				gu.GoodID = *value
 			}
 		case gooduser.FieldRootUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -187,9 +179,6 @@ func (gu *GoodUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", gu.EntID))
-	builder.WriteString(", ")
-	builder.WriteString("good_id=")
-	builder.WriteString(fmt.Sprintf("%v", gu.GoodID))
 	builder.WriteString(", ")
 	builder.WriteString("root_user_id=")
 	builder.WriteString(fmt.Sprintf("%v", gu.RootUserID))

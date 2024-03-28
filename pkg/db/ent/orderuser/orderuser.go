@@ -24,8 +24,10 @@ const (
 	FieldRootUserID = "root_user_id"
 	// FieldGoodUserID holds the string denoting the good_user_id field in the database.
 	FieldGoodUserID = "good_user_id"
-	// FieldOrderID holds the string denoting the order_id field in the database.
-	FieldOrderID = "order_id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldAppID holds the string denoting the app_id field in the database.
+	FieldAppID = "app_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
@@ -53,7 +55,8 @@ var Columns = []string{
 	FieldEntID,
 	FieldRootUserID,
 	FieldGoodUserID,
-	FieldOrderID,
+	FieldUserID,
+	FieldAppID,
 	FieldName,
 	FieldMiningpoolType,
 	FieldCoinType,

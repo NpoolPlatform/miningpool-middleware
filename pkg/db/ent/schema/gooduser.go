@@ -25,8 +25,6 @@ func (GoodUser) Mixin() []ent.Mixin {
 func (GoodUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("good_id", uuid.UUID{}),
-		field.
 			UUID("root_user_id", uuid.UUID{}),
 		field.
 			String("name"),
@@ -50,7 +48,6 @@ func (GoodUser) Edges() []ent.Edge {
 
 func (GoodUser) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("good_id"),
 		index.Fields("root_user_id"),
 		index.Fields("miningpool_type", "coin_type"),
 	}

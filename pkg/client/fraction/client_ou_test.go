@@ -32,7 +32,8 @@ var orderserRet = &npool.OrderUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootUserRet.EntID,
 	GoodUserID:     goodUserRet.EntID,
-	OrderID:        uuid.NewString(),
+	AppID:          uuid.NewString(),
+	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 }
@@ -41,7 +42,8 @@ var orderuserReq = &npool.OrderUserReq{
 	EntID:          &orderserRet.EntID,
 	RootUserID:     &orderserRet.RootUserID,
 	GoodUserID:     &orderserRet.GoodUserID,
-	OrderID:        &orderserRet.OrderID,
+	AppID:          &orderserRet.AppID,
+	UserID:         &orderserRet.UserID,
 	MiningpoolType: &orderserRet.MiningpoolType,
 	CoinType:       &orderserRet.CoinType,
 }

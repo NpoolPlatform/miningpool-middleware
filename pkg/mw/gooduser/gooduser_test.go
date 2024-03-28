@@ -31,7 +31,6 @@ var ret = &npool.GoodUser{
 	Name:           "sssss",
 	EntID:          uuid.NewString(),
 	RootUserID:     uuid.NewString(),
-	GoodID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	HashRate:       5.0,
@@ -43,7 +42,6 @@ var req = &npool.GoodUserReq{
 	Name:           &ret.Name,
 	EntID:          &ret.EntID,
 	RootUserID:     &ret.RootUserID,
-	GoodID:         &ret.GoodID,
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
 	HashRate:       &ret.HashRate,
@@ -57,7 +55,6 @@ func create(t *testing.T) {
 		WithName(req.Name, true),
 		WithEntID(req.EntID, true),
 		WithRootUserID(req.RootUserID, true),
-		WithGoodID(req.GoodID, true),
 		WithMiningpoolType(req.MiningpoolType, true),
 		WithCoinType(req.CoinType, true),
 		WithHashRate(req.HashRate, true),
@@ -106,7 +103,6 @@ func update(t *testing.T) {
 	}
 
 	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
-	ret.GoodID = uuid.NewString()
 
 	handler, err = NewHandler(
 		context.Background(),
@@ -114,7 +110,6 @@ func update(t *testing.T) {
 		WithMiningpoolType(&ret.MiningpoolType, false),
 		WithCoinType(&ret.CoinType, false),
 		WithRevenueType(&ret.RevenueType, false),
-		WithGoodID(&ret.GoodID, false),
 		WithReadPageLink(nil, false),
 	)
 	assert.Nil(t, err)

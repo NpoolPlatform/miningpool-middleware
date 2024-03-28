@@ -23,7 +23,6 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
-		orderuser.WithOrderID(req.OrderID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

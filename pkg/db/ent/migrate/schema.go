@@ -125,7 +125,6 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "good_id", Type: field.TypeUUID},
 		{Name: "root_user_id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
 		{Name: "miningpool_type", Type: field.TypeString},
@@ -146,19 +145,14 @@ var (
 				Columns: []*schema.Column{GoodUsersColumns[4]},
 			},
 			{
-				Name:    "gooduser_good_id",
+				Name:    "gooduser_root_user_id",
 				Unique:  false,
 				Columns: []*schema.Column{GoodUsersColumns[5]},
 			},
 			{
-				Name:    "gooduser_root_user_id",
-				Unique:  false,
-				Columns: []*schema.Column{GoodUsersColumns[6]},
-			},
-			{
 				Name:    "gooduser_miningpool_type_coin_type",
 				Unique:  false,
-				Columns: []*schema.Column{GoodUsersColumns[8], GoodUsersColumns[9]},
+				Columns: []*schema.Column{GoodUsersColumns[7], GoodUsersColumns[8]},
 			},
 		},
 	}
@@ -171,7 +165,8 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "root_user_id", Type: field.TypeUUID},
 		{Name: "good_user_id", Type: field.TypeUUID},
-		{Name: "order_id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "app_id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
 		{Name: "miningpool_type", Type: field.TypeString},
 		{Name: "coin_type", Type: field.TypeString},
@@ -192,14 +187,9 @@ var (
 				Columns: []*schema.Column{OrderUsersColumns[4]},
 			},
 			{
-				Name:    "orderuser_order_id",
+				Name:    "orderuser_app_id",
 				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[7]},
-			},
-			{
-				Name:    "orderuser_root_user_id",
-				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[5]},
+				Columns: []*schema.Column{OrderUsersColumns[8]},
 			},
 			{
 				Name:    "orderuser_good_user_id",
@@ -209,7 +199,7 @@ var (
 			{
 				Name:    "orderuser_miningpool_type_coin_type",
 				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[9], OrderUsersColumns[10]},
+				Columns: []*schema.Column{OrderUsersColumns[10], OrderUsersColumns[11]},
 			},
 		},
 	}

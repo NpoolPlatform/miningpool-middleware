@@ -110,9 +110,15 @@ func (ouu *OrderUserUpdate) SetGoodUserID(u uuid.UUID) *OrderUserUpdate {
 	return ouu
 }
 
-// SetOrderID sets the "order_id" field.
-func (ouu *OrderUserUpdate) SetOrderID(u uuid.UUID) *OrderUserUpdate {
-	ouu.mutation.SetOrderID(u)
+// SetUserID sets the "user_id" field.
+func (ouu *OrderUserUpdate) SetUserID(u uuid.UUID) *OrderUserUpdate {
+	ouu.mutation.SetUserID(u)
+	return ouu
+}
+
+// SetAppID sets the "app_id" field.
+func (ouu *OrderUserUpdate) SetAppID(u uuid.UUID) *OrderUserUpdate {
+	ouu.mutation.SetAppID(u)
 	return ouu
 }
 
@@ -368,11 +374,18 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldGoodUserID,
 		})
 	}
-	if value, ok := ouu.mutation.OrderID(); ok {
+	if value, ok := ouu.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: orderuser.FieldOrderID,
+			Column: orderuser.FieldUserID,
+		})
+	}
+	if value, ok := ouu.mutation.AppID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldAppID,
 		})
 	}
 	if value, ok := ouu.mutation.Name(); ok {
@@ -551,9 +564,15 @@ func (ouuo *OrderUserUpdateOne) SetGoodUserID(u uuid.UUID) *OrderUserUpdateOne {
 	return ouuo
 }
 
-// SetOrderID sets the "order_id" field.
-func (ouuo *OrderUserUpdateOne) SetOrderID(u uuid.UUID) *OrderUserUpdateOne {
-	ouuo.mutation.SetOrderID(u)
+// SetUserID sets the "user_id" field.
+func (ouuo *OrderUserUpdateOne) SetUserID(u uuid.UUID) *OrderUserUpdateOne {
+	ouuo.mutation.SetUserID(u)
+	return ouuo
+}
+
+// SetAppID sets the "app_id" field.
+func (ouuo *OrderUserUpdateOne) SetAppID(u uuid.UUID) *OrderUserUpdateOne {
+	ouuo.mutation.SetAppID(u)
 	return ouuo
 }
 
@@ -839,11 +858,18 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldGoodUserID,
 		})
 	}
-	if value, ok := ouuo.mutation.OrderID(); ok {
+	if value, ok := ouuo.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: orderuser.FieldOrderID,
+			Column: orderuser.FieldUserID,
+		})
+	}
+	if value, ok := ouuo.mutation.AppID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldAppID,
 		})
 	}
 	if value, ok := ouuo.mutation.Name(); ok {

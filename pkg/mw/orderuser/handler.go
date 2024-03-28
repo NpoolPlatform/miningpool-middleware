@@ -19,7 +19,8 @@ type Handler struct {
 	EntID          *uuid.UUID
 	RootUserID     *uuid.UUID
 	GoodUserID     *uuid.UUID
-	OrderID        *uuid.UUID
+	AppID          *uuid.UUID
+	UserID         *uuid.UUID
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
@@ -107,19 +108,36 @@ func WithGoodUserID(gooduserid *string, must bool) func(context.Context, *Handle
 	}
 }
 
-func WithOrderID(orderid *string, must bool) func(context.Context, *Handler) error {
+func WithAppID(appid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if orderid == nil {
+		if appid == nil {
 			if must {
-				return fmt.Errorf("invalid orderid")
+				return fmt.Errorf("invalid appid")
 			}
 			return nil
 		}
-		_id, err := uuid.Parse(*orderid)
+		_id, err := uuid.Parse(*appid)
 		if err != nil {
 			return err
 		}
-		h.OrderID = &_id
+		h.AppID = &_id
+		return nil
+	}
+}
+
+func WithUserID(userid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if userid == nil {
+			if must {
+				return fmt.Errorf("invalid userid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*userid)
+		if err != nil {
+			return err
+		}
+		h.UserID = &_id
 		return nil
 	}
 }
@@ -248,12 +266,19 @@ func WithReqs(reqs []*npool.OrderUserReq, must bool) func(context.Context, *Hand
 				}
 				_req.GoodUserID = &id
 			}
-			if req.OrderID != nil {
+			if req.AppID != nil {
 				id, err := uuid.Parse(req.GetEntID())
 				if err != nil {
 					return err
 				}
-				_req.OrderID = &id
+				_req.AppID = &id
+			}
+			if req.UserID != nil {
+				id, err := uuid.Parse(req.GetEntID())
+				if err != nil {
+					return err
+				}
+				_req.UserID = &id
 			}
 			if req.Name != nil {
 				_req.Name = req.Name
@@ -352,13 +377,23 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
-		if conds.OrderID != nil {
-			id, err := uuid.Parse(conds.GetOrderID().GetValue())
+		if conds.AppID != nil {
+			id, err := uuid.Parse(conds.GetAppID().GetValue())
 			if err != nil {
 				return err
 			}
-			h.Conds.OrderID = &cruder.Cond{
-				Op:  conds.GetOrderID().GetOp(),
+			h.Conds.AppID = &cruder.Cond{
+				Op:  conds.GetAppID().GetOp(),
+				Val: id,
+			}
+		}
+		if conds.UserID != nil {
+			id, err := uuid.Parse(conds.GetUserID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.UserID = &cruder.Cond{
+				Op:  conds.GetUserID().GetOp(),
 				Val: id,
 			}
 		}

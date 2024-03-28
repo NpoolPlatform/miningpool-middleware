@@ -28,8 +28,10 @@ type OrderUser struct {
 	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// GoodUserID holds the value of the "good_user_id" field.
 	GoodUserID uuid.UUID `json:"good_user_id,omitempty"`
-	// OrderID holds the value of the "order_id" field.
-	OrderID uuid.UUID `json:"order_id,omitempty"`
+	// UserID holds the value of the "user_id" field.
+	UserID uuid.UUID `json:"user_id,omitempty"`
+	// AppID holds the value of the "app_id" field.
+	AppID uuid.UUID `json:"app_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// MiningpoolType holds the value of the "miningpool_type" field.
@@ -59,7 +61,7 @@ func (*OrderUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case orderuser.FieldName, orderuser.FieldMiningpoolType, orderuser.FieldCoinType, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case orderuser.FieldEntID, orderuser.FieldRootUserID, orderuser.FieldGoodUserID, orderuser.FieldOrderID:
+		case orderuser.FieldEntID, orderuser.FieldRootUserID, orderuser.FieldGoodUserID, orderuser.FieldUserID, orderuser.FieldAppID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderUser", columns[i])
@@ -118,11 +120,17 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			} else if value != nil {
 				ou.GoodUserID = *value
 			}
-		case orderuser.FieldOrderID:
+		case orderuser.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field order_id", values[i])
+				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				ou.OrderID = *value
+				ou.UserID = *value
+			}
+		case orderuser.FieldAppID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+			} else if value != nil {
+				ou.AppID = *value
 			}
 		case orderuser.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -212,8 +220,11 @@ func (ou *OrderUser) String() string {
 	builder.WriteString("good_user_id=")
 	builder.WriteString(fmt.Sprintf("%v", ou.GoodUserID))
 	builder.WriteString(", ")
-	builder.WriteString("order_id=")
-	builder.WriteString(fmt.Sprintf("%v", ou.OrderID))
+	builder.WriteString("user_id=")
+	builder.WriteString(fmt.Sprintf("%v", ou.UserID))
+	builder.WriteString(", ")
+	builder.WriteString("app_id=")
+	builder.WriteString(fmt.Sprintf("%v", ou.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ou.Name)

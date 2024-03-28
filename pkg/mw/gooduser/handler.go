@@ -18,7 +18,6 @@ type Handler struct {
 	ID             *uint32
 	EntID          *uuid.UUID
 	RootUserID     *uuid.UUID
-	GoodID         *uuid.UUID
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
@@ -84,23 +83,6 @@ func WithRootUserID(rootuserid *string, must bool) func(context.Context, *Handle
 			return err
 		}
 		h.RootUserID = &_id
-		return nil
-	}
-}
-
-func WithGoodID(goodid *string, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if goodid == nil {
-			if must {
-				return fmt.Errorf("invalid goodid")
-			}
-			return nil
-		}
-		_id, err := uuid.Parse(*goodid)
-		if err != nil {
-			return err
-		}
-		h.GoodID = &_id
 		return nil
 	}
 }
@@ -209,13 +191,6 @@ func WithReqs(reqs []*npool.GoodUserReq, must bool) func(context.Context, *Handl
 				}
 				_req.RootUserID = &id
 			}
-			if req.GoodID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.GoodID = &id
-			}
 			if req.Name != nil {
 				_req.Name = req.Name
 			}
@@ -291,16 +266,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			}
 			h.Conds.RootUserID = &cruder.Cond{
 				Op:  conds.GetRootUserID().GetOp(),
-				Val: id,
-			}
-		}
-		if conds.GoodID != nil {
-			id, err := uuid.Parse(conds.GetGoodID().GetValue())
-			if err != nil {
-				return err
-			}
-			h.Conds.GoodID = &cruder.Cond{
-				Op:  conds.GetGoodID().GetOp(),
 				Val: id,
 			}
 		}

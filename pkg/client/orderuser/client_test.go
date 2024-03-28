@@ -36,7 +36,8 @@ var ret = &npool.OrderUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootUserRet.EntID,
 	GoodUserID:     goodUserRet.EntID,
-	OrderID:        uuid.NewString(),
+	AppID:          uuid.NewString(),
+	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 }
@@ -45,7 +46,8 @@ var req = &npool.OrderUserReq{
 	EntID:          &ret.EntID,
 	RootUserID:     &ret.RootUserID,
 	GoodUserID:     &ret.GoodUserID,
-	OrderID:        &ret.OrderID,
+	AppID:          &ret.AppID,
+	UserID:         &ret.UserID,
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
 }
@@ -67,9 +69,7 @@ func createOrderUser(t *testing.T) {
 }
 
 func updateOrderUser(t *testing.T) {
-	ret.OrderID = uuid.NewString()
 	req.ID = &ret.ID
-	req.OrderID = &ret.OrderID
 
 	info, err := UpdateOrderUser(context.Background(), req)
 	if assert.Nil(t, err) {

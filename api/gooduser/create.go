@@ -33,7 +33,6 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 		gooduser.WithEntID(req.EntID, false),
 		gooduser.WithName(req.Name, true),
 		gooduser.WithRootUserID(req.RootUserID, true),
-		gooduser.WithGoodID(req.GoodID, true),
 		gooduser.WithMiningpoolType(req.MiningpoolType, true),
 		gooduser.WithCoinType(req.CoinType, true),
 		gooduser.WithHashRate(req.HashRate, false),

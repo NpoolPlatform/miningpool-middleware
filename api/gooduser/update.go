@@ -18,7 +18,6 @@ func (s *Server) UpdateGoodUser(ctx context.Context, in *npool.UpdateGoodUserReq
 		ctx,
 		gooduser.WithID(req.ID, false),
 		gooduser.WithEntID(req.EntID, false),
-		gooduser.WithGoodID(req.GoodID, false),
 		gooduser.WithHashRate(req.HashRate, false),
 		gooduser.WithRevenueType(req.RevenueType, false),
 	)

@@ -27,7 +27,6 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldEntID,
 		gooduserent.FieldName,
 		gooduserent.FieldRootUserID,
-		gooduserent.FieldGoodID,
 		gooduserent.FieldMiningpoolType,
 		gooduserent.FieldCoinType,
 		gooduserent.FieldHashRate,

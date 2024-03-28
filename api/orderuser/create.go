@@ -35,7 +35,6 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		orderuser.WithName(req.Name, true),
 		orderuser.WithRootUserID(req.RootUserID, true),
 		orderuser.WithGoodUserID(req.GoodUserID, true),
-		orderuser.WithOrderID(req.OrderID, true),
 		orderuser.WithMiningpoolType(req.MiningpoolType, true),
 		orderuser.WithCoinType(req.CoinType, true),
 		orderuser.WithReadPageLink(req.ReadPageLink, true),

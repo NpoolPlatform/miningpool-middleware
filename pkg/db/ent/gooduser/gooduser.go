@@ -20,8 +20,6 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldGoodID holds the string denoting the good_id field in the database.
-	FieldGoodID = "good_id"
 	// FieldRootUserID holds the string denoting the root_user_id field in the database.
 	FieldRootUserID = "root_user_id"
 	// FieldName holds the string denoting the name field in the database.
@@ -47,7 +45,6 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldGoodID,
 	FieldRootUserID,
 	FieldName,
 	FieldMiningpoolType,

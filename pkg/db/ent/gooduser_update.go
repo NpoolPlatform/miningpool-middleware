@@ -98,12 +98,6 @@ func (guu *GoodUserUpdate) SetNillableEntID(u *uuid.UUID) *GoodUserUpdate {
 	return guu
 }
 
-// SetGoodID sets the "good_id" field.
-func (guu *GoodUserUpdate) SetGoodID(u uuid.UUID) *GoodUserUpdate {
-	guu.mutation.SetGoodID(u)
-	return guu
-}
-
 // SetRootUserID sets the "root_user_id" field.
 func (guu *GoodUserUpdate) SetRootUserID(u uuid.UUID) *GoodUserUpdate {
 	guu.mutation.SetRootUserID(u)
@@ -314,13 +308,6 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldEntID,
 		})
 	}
-	if value, ok := guu.mutation.GoodID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldGoodID,
-		})
-	}
 	if value, ok := guu.mutation.RootUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -470,12 +457,6 @@ func (guuo *GoodUserUpdateOne) SetNillableEntID(u *uuid.UUID) *GoodUserUpdateOne
 	if u != nil {
 		guuo.SetEntID(*u)
 	}
-	return guuo
-}
-
-// SetGoodID sets the "good_id" field.
-func (guuo *GoodUserUpdateOne) SetGoodID(u uuid.UUID) *GoodUserUpdateOne {
-	guuo.mutation.SetGoodID(u)
 	return guuo
 }
 
@@ -717,13 +698,6 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Type:   field.TypeUUID,
 			Value:  value,
 			Column: gooduser.FieldEntID,
-		})
-	}
-	if value, ok := guuo.mutation.GoodID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldGoodID,
 		})
 	}
 	if value, ok := guuo.mutation.RootUserID(); ok {

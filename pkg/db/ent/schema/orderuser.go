@@ -29,7 +29,9 @@ func (OrderUser) Fields() []ent.Field {
 		field.
 			UUID("good_user_id", uuid.UUID{}),
 		field.
-			UUID("order_id", uuid.UUID{}),
+			UUID("user_id", uuid.UUID{}),
+		field.
+			UUID("app_id", uuid.UUID{}),
 		field.
 			String("name"),
 		field.
@@ -54,8 +56,7 @@ func (OrderUser) Edges() []ent.Edge {
 
 func (OrderUser) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("order_id"),
-		index.Fields("root_user_id"),
+		index.Fields("app_id"),
 		index.Fields("good_user_id"),
 		index.Fields("miningpool_type", "coin_type"),
 	}

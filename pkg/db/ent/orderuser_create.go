@@ -90,9 +90,15 @@ func (ouc *OrderUserCreate) SetGoodUserID(u uuid.UUID) *OrderUserCreate {
 	return ouc
 }
 
-// SetOrderID sets the "order_id" field.
-func (ouc *OrderUserCreate) SetOrderID(u uuid.UUID) *OrderUserCreate {
-	ouc.mutation.SetOrderID(u)
+// SetUserID sets the "user_id" field.
+func (ouc *OrderUserCreate) SetUserID(u uuid.UUID) *OrderUserCreate {
+	ouc.mutation.SetUserID(u)
+	return ouc
+}
+
+// SetAppID sets the "app_id" field.
+func (ouc *OrderUserCreate) SetAppID(u uuid.UUID) *OrderUserCreate {
+	ouc.mutation.SetAppID(u)
 	return ouc
 }
 
@@ -310,8 +316,11 @@ func (ouc *OrderUserCreate) check() error {
 	if _, ok := ouc.mutation.GoodUserID(); !ok {
 		return &ValidationError{Name: "good_user_id", err: errors.New(`ent: missing required field "OrderUser.good_user_id"`)}
 	}
-	if _, ok := ouc.mutation.OrderID(); !ok {
-		return &ValidationError{Name: "order_id", err: errors.New(`ent: missing required field "OrderUser.order_id"`)}
+	if _, ok := ouc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrderUser.user_id"`)}
+	}
+	if _, ok := ouc.mutation.AppID(); !ok {
+		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "OrderUser.app_id"`)}
 	}
 	if _, ok := ouc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrderUser.name"`)}
@@ -407,13 +416,21 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.GoodUserID = value
 	}
-	if value, ok := ouc.mutation.OrderID(); ok {
+	if value, ok := ouc.mutation.UserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: orderuser.FieldOrderID,
+			Column: orderuser.FieldUserID,
 		})
-		_node.OrderID = value
+		_node.UserID = value
+	}
+	if value, ok := ouc.mutation.AppID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: orderuser.FieldAppID,
+		})
+		_node.AppID = value
 	}
 	if value, ok := ouc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -615,15 +632,27 @@ func (u *OrderUserUpsert) UpdateGoodUserID() *OrderUserUpsert {
 	return u
 }
 
-// SetOrderID sets the "order_id" field.
-func (u *OrderUserUpsert) SetOrderID(v uuid.UUID) *OrderUserUpsert {
-	u.Set(orderuser.FieldOrderID, v)
+// SetUserID sets the "user_id" field.
+func (u *OrderUserUpsert) SetUserID(v uuid.UUID) *OrderUserUpsert {
+	u.Set(orderuser.FieldUserID, v)
 	return u
 }
 
-// UpdateOrderID sets the "order_id" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateOrderID() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldOrderID)
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateUserID() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldUserID)
+	return u
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrderUserUpsert) SetAppID(v uuid.UUID) *OrderUserUpsert {
+	u.Set(orderuser.FieldAppID, v)
+	return u
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrderUserUpsert) UpdateAppID() *OrderUserUpsert {
+	u.SetExcluded(orderuser.FieldAppID)
 	return u
 }
 
@@ -890,17 +919,31 @@ func (u *OrderUserUpsertOne) UpdateGoodUserID() *OrderUserUpsertOne {
 	})
 }
 
-// SetOrderID sets the "order_id" field.
-func (u *OrderUserUpsertOne) SetOrderID(v uuid.UUID) *OrderUserUpsertOne {
+// SetUserID sets the "user_id" field.
+func (u *OrderUserUpsertOne) SetUserID(v uuid.UUID) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
-		s.SetOrderID(v)
+		s.SetUserID(v)
 	})
 }
 
-// UpdateOrderID sets the "order_id" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateOrderID() *OrderUserUpsertOne {
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateUserID() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateOrderID()
+		s.UpdateUserID()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrderUserUpsertOne) SetAppID(v uuid.UUID) *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrderUserUpsertOne) UpdateAppID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateAppID()
 	})
 }
 
@@ -1350,17 +1393,31 @@ func (u *OrderUserUpsertBulk) UpdateGoodUserID() *OrderUserUpsertBulk {
 	})
 }
 
-// SetOrderID sets the "order_id" field.
-func (u *OrderUserUpsertBulk) SetOrderID(v uuid.UUID) *OrderUserUpsertBulk {
+// SetUserID sets the "user_id" field.
+func (u *OrderUserUpsertBulk) SetUserID(v uuid.UUID) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
-		s.SetOrderID(v)
+		s.SetUserID(v)
 	})
 }
 
-// UpdateOrderID sets the "order_id" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateOrderID() *OrderUserUpsertBulk {
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateUserID() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateOrderID()
+		s.UpdateUserID()
+	})
+}
+
+// SetAppID sets the "app_id" field.
+func (u *OrderUserUpsertBulk) SetAppID(v uuid.UUID) *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.SetAppID(v)
+	})
+}
+
+// UpdateAppID sets the "app_id" field to the value that was provided on create.
+func (u *OrderUserUpsertBulk) UpdateAppID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.UpdateAppID()
 	})
 }
 

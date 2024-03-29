@@ -3,19 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"time"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 )
 
 func main() {
-	cli := client.NewClient("https://api.f2pool.com", "t8jbn1rqsoah9wirc0msgqmm24vdvg65t4r15ge758u7ut1g46xgqkk8bn5w2jc8")
-
-	resp, err := cli.MiningUserPaymentResume(context.Background(), &types.MiningUserPaymentResumeReq{
-		Currency:        "bitcoin",
-		MiningUserNames: []string{"coocoo", "cococonut001"},
-	})
+	mgr, err := f2pool.NewF2PoolManager(v1.CoinType_BitCoin, "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp72")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(0)
+	}
+	err = mgr.CheckAuth(context.Background())
 	fmt.Println(err)
-	fmt.Println(utils.PrettyStruct(resp))
+
+	time.Sleep(time.Second * 3)
 }

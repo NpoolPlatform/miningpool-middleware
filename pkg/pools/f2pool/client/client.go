@@ -7,12 +7,16 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/redis"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 )
 
 const (
 	F2PoolRps = 1
+	// f2pool api rps=1
+	defaultLockTimeout = time.Second / F2PoolRps
+	maxRetreies        = 3
 )
 
 type Client struct {
@@ -21,28 +25,29 @@ type Client struct {
 	TimeTokenBucket chan struct{}
 }
 
-var client *Client
-
 func NewClient(baseURL, accessToken string) *Client {
-	if client == nil {
-		client = &Client{BaseURL: baseURL, AccessToken: accessToken}
-		client.TimeTokenBucket = make(chan struct{})
-		go func() {
-			for {
-				client.TimeTokenBucket <- struct{}{}
-				time.Sleep(time.Second / F2PoolRps)
-			}
-		}()
-	}
-	return client
+	return &Client{BaseURL: baseURL, AccessToken: accessToken}
 }
 
 func (cli *Client) post(ctx context.Context, path string, req, resp interface{}) error {
+	lockKey := fmt.Sprintf("f2pool_client_%v", cli.AccessToken)
+	var err error
+	for i := 0; i < maxRetreies; i++ {
+		err = redis.TryLock(lockKey, defaultLockTimeout)
+		if err == nil {
+			break
+		}
+		time.Sleep(defaultLockTimeout)
+		err = fmt.Errorf("f2pool api busy")
+	}
+	if err != nil {
+		return err
+	}
+
 	reqBody, err := json.Marshal(req)
 	if err != nil {
 		return err
 	}
-	<-cli.TimeTokenBucket
 
 	headers := make(map[string]string)
 	headers["Content-Type"] = "application/json"

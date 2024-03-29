@@ -92,7 +92,6 @@ func checkUpdateAuthed(ctx context.Context, req *npool.RootUserReq) (*npool.Root
 	if err != nil {
 		return req, err
 	}
-
 	err = mgr.CheckAuth(ctx)
 	if err != nil {
 		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v", req.MiningpoolType, req.Name)

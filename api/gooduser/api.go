@@ -1,6 +1,8 @@
 package gooduser
 
 import (
+	"context"
+
 	gooduser "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -16,5 +18,5 @@ func Register(server grpc.ServiceRegistrar) {
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	return nil
+	return gooduser.RegisterMiddlewareHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 }

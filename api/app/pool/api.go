@@ -1,6 +1,8 @@
 package pool
 
 import (
+	"context"
+
 	pool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -16,5 +18,5 @@ func Register(server grpc.ServiceRegistrar) {
 }
 
 func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	return nil
+	return pool.RegisterMiddlewareHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
 }

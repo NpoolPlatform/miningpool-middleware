@@ -71,7 +71,7 @@ func checkCreateAuthed(ctx context.Context, req *npool.RootUserReq) (bool, error
 
 	err = mgr.CheckAuth(ctx)
 	if err != nil {
-		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v", req.MiningpoolType, req.Name)
+		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v , err: %v", req.MiningpoolType, *req.Name, err)
 		return false, err
 	}
 	return true, nil

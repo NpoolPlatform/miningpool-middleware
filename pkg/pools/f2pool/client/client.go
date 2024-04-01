@@ -2,21 +2,23 @@
 package client
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/redis"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
+	"github.com/go-resty/resty/v2"
 )
 
 const (
 	F2PoolRps = 1
 	// f2pool api rps=1
 	defaultLockTimeout = time.Second / F2PoolRps
+	postTimeout        = time.Second * 3
 	maxRetreies        = 3
+	successStatusCode  = 200
 )
 
 type Client struct {
@@ -29,7 +31,7 @@ func NewClient(baseURL, accessToken string) *Client {
 	return &Client{BaseURL: baseURL, AccessToken: accessToken}
 }
 
-func (cli *Client) post(ctx context.Context, path string, req, resp interface{}) error {
+func (cli *Client) post(path string, req, resp interface{}) error {
 	lockKey := fmt.Sprintf("f2pool_client_%v", cli.AccessToken)
 	var err error
 	for i := 0; i < maxRetreies; i++ {
@@ -54,21 +56,34 @@ func (cli *Client) post(ctx context.Context, path string, req, resp interface{})
 	headers["F2P-API-SECRET"] = cli.AccessToken
 
 	url := fmt.Sprintf("%v%v", cli.BaseURL, path)
-	postResp, err := utils.PostJSON(ctx, url, reqBody, headers)
+	errResp := &types.ErrorResponse{}
+
+	socksProxy := os.Getenv("ENV_F2POOL_REQUEST_PROXY")
+	restycli := resty.New()
+	if socksProxy != "" {
+		restycli = restycli.SetProxy(socksProxy)
+	}
+
+	restyreq := restycli.
+		SetTimeout(postTimeout).
+		SetHeaders(headers).
+		R().
+		SetBody(reqBody).
+		SetResult(resp).
+		SetError(errResp)
+
+	ret, err := restyreq.Post(url)
 	if err != nil {
 		return err
 	}
 
-	if postResp.StatusCode != utils.SuccessStatusCode {
-		return fmt.Errorf("wrong response,status code: %v,response: %v", postResp.StatusCode, string(postResp.Body))
+	if ret.StatusCode() != successStatusCode {
+		return fmt.Errorf("wrong response,status code: %v,response: %v", ret.StatusCode(), string(ret.Body()))
 	}
 
-	errResp := &types.ErrorResponse{}
-	err = json.Unmarshal(postResp.Body, errResp)
-
-	if err == nil && errResp.Code != 0 {
+	if errResp.Code != 0 {
 		return fmt.Errorf("request api %v error,status_code: %v,err: %v", url, errResp.Code, errResp.Msg)
 	}
 
-	return json.Unmarshal(postResp.Body, resp)
+	return nil
 }

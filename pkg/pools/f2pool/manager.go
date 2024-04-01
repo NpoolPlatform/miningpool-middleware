@@ -56,9 +56,6 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error)
 		authToken: auth,
 		cli:       client.NewClient(config.F2PoolAPI, auth),
 	}
-	if err := mgr.CheckAuth(context.Background()); err != nil {
-		return nil, err
-	}
 	return mgr, nil
 }
 
@@ -82,10 +79,6 @@ func (mgr *Manager) AddMiningUser(ctx context.Context) (userName, readPageLink s
 		if err == nil {
 			break
 		}
-	}
-
-	if err != nil {
-		return "", "", fmt.Errorf("add mining user retries exhausted,err: %v", err)
 	}
 
 	if resp == nil {

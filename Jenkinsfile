@@ -361,6 +361,7 @@ pipeline {
           feature_name=`echo $BRANCH_NAME | awk -F '/' '{ print $2 }'`
           sed -i "s/miningpool-middleware:latest/miningpool-middleware:$feature_name/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
           sed -i "s/uhub.service.ucloud.cn/$DOCKER_REGISTRY/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
+          sed -i "s#f2pool_proxy: \\\"\\\"#f2pool_proxy: \\\"$F2POOL_REQUEST_PROXY\\\"#g" cmd/miningpool-middleware/k8s/00-configmap.yaml
           TAG=$feature_name make deploy-to-k8s-cluster
         '''.stripIndent())
       }
@@ -374,6 +375,7 @@ pipeline {
       }
       steps {
         sh 'sed -i "s/uhub.service.ucloud.cn/$DOCKER_REGISTRY/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml'
+        sh 'sed -i "s#f2pool_proxy: \\\"\\\"#f2pool_proxy: \\\"$F2POOL_REQUEST_PROXY\\\"#g" cmd/miningpool-middleware/k8s/00-configmap.yaml'
         sh 'TAG=latest make deploy-to-k8s-cluster'
       }
     }
@@ -398,6 +400,7 @@ pipeline {
           git checkout $tag
           sed -i "s/miningpool-middleware:latest/miningpool-middleware:$tag/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
           sed -i "s/uhub.service.ucloud.cn/$DOCKER_REGISTRY/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
+          sed -i "s#f2pool_proxy: \\\"\\\"#f2pool_proxy: \\\"$F2POOL_REQUEST_PROXY\\\"#g" cmd/miningpool-middleware/k8s/00-configmap.yaml
           TAG=$tag make deploy-to-k8s-cluster
         '''.stripIndent())
       }
@@ -422,6 +425,7 @@ pipeline {
           git checkout $tag
           sed -i "s/miningpool-middleware:latest/miningpool-middleware:$tag/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
           sed -i "s/uhub.service.ucloud.cn/$DOCKER_REGISTRY/g" cmd/miningpool-middleware/k8s/02-miningpool-middleware.yaml
+          sed -i "s#f2pool_proxy: \\\"\\\"#f2pool_proxy: \\\"$F2POOL_REQUEST_PROXY\\\"#g" cmd/miningpool-middleware/k8s/00-configmap.yaml
           TAG=$tag make deploy-to-k8s-cluster
         '''.stripIndent())
       }

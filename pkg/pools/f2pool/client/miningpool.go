@@ -9,12 +9,12 @@ import (
 
 func (cli *Client) BlocksPaging(ctx context.Context, req *types.BlocksPagingReq) (*types.BlocksPagingResp, error) {
 	resp := &types.BlocksPagingResp{}
-	err := cli.post(ctx, types.BlocksPaging, req, resp)
+	err := cli.post(types.BlocksPaging, req, resp)
 	return resp, err
 }
 
 func (cli *Client) BlocksDateRange(ctx context.Context, req *types.BlocksDateRangeReq) (*types.BlocksDateRangeResp, error) {
 	resp := &types.BlocksDateRangeResp{}
-	err := cli.post(ctx, types.BlocksDateRange, req, resp)
+	err := cli.post(types.BlocksDateRange, req, resp)
 	return resp, err
 }

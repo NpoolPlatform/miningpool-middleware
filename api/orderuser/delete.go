@@ -2,6 +2,7 @@ package orderuser
 
 import (
 	"context"
+	"fmt"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	orderuser "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
@@ -14,6 +15,11 @@ import (
 
 func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserRequest) (*npool.DeleteOrderUserResponse, error) {
 	req := in.GetInfo()
+	if req == nil || req.ID == nil {
+		err := fmt.Errorf("wrong id")
+		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithID(req.ID, true),

@@ -2,6 +2,7 @@ package fraction
 
 import (
 	"context"
+	"fmt"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	fraction "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/fraction"
@@ -14,6 +15,10 @@ import (
 
 func (s *Server) DeleteFraction(ctx context.Context, in *npool.DeleteFractionRequest) (*npool.DeleteFractionResponse, error) {
 	req := in.GetInfo()
+	if req == nil || req.ID == nil {
+		err := fmt.Errorf("wrong id")
+		return &npool.DeleteFractionResponse{}, status.Error(codes.Internal, err.Error())
+	}
 	handler, err := fraction.NewHandler(
 		ctx,
 		fraction.WithID(req.ID, true),

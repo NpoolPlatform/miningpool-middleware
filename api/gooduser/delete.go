@@ -2,6 +2,7 @@ package gooduser
 
 import (
 	"context"
+	"fmt"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 	gooduser "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
@@ -14,6 +15,10 @@ import (
 
 func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserRequest) (*npool.DeleteGoodUserResponse, error) {
 	req := in.GetInfo()
+	if req == nil || req.ID == nil {
+		err := fmt.Errorf("wrong id")
+		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+	}
 	handler, err := gooduser.NewHandler(
 		ctx,
 		gooduser.WithID(req.ID, true),

@@ -2,6 +2,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	pool "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
@@ -14,6 +15,11 @@ import (
 
 func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*npool.DeletePoolResponse, error) {
 	req := in.GetInfo()
+	if req == nil || req.ID == nil {
+		err := fmt.Errorf("wrong id")
+		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
 	handler, err := pool.NewHandler(
 		ctx,
 		pool.WithID(req.ID, true),

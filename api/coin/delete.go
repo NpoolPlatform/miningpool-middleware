@@ -2,6 +2,7 @@ package coin
 
 import (
 	"context"
+	"fmt"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	coin "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
@@ -14,6 +15,10 @@ import (
 
 func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*npool.DeleteCoinResponse, error) {
 	req := in.GetInfo()
+	if req == nil || req.ID == nil {
+		err := fmt.Errorf("wrong id")
+		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, err.Error())
+	}
 	handler, err := coin.NewHandler(
 		ctx,
 		coin.WithID(req.ID, true),

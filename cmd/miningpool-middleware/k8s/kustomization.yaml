@@ -1,4 +1,5 @@
 resources:
+  - 00-configmap.yaml
   - 01-miningpool-middleware.viper.yaml
   - 02-miningpool-middleware.yaml
   - 03-strip-prefix.yaml

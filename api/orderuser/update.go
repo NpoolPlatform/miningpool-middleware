@@ -161,6 +161,8 @@ func (s *Server) SetupAutoPay(ctx context.Context, in *npool.SetupAutoPayRequest
 
 	autoPay := in.AutoPay
 	paused := true
+
+	logger.Sugar().Error(autoPay, paused)
 	if in.AutoPay {
 		autoPay, err = mgr.ResumePayment(ctx, baseInfo.Recipient)
 	} else {
@@ -172,6 +174,7 @@ func (s *Server) SetupAutoPay(ctx context.Context, in *npool.SetupAutoPayRequest
 	if !paused {
 		autoPay = false
 	}
+	logger.Sugar().Error(autoPay, paused)
 
 	handler, err := orderuser.NewHandler(
 		ctx,

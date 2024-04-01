@@ -24,6 +24,7 @@ func httpHandler(path string, req interface{}, handle func() (interface{}, error
 				w.Write([]byte(err.Error()))
 				return
 			}
+			w.Header().Add("Content-Type", "application/json")
 			w.Write(respBytes)
 		}()
 		reqBytes, err = io.ReadAll(r.Body)

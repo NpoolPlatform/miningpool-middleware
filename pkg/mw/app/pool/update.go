@@ -12,22 +12,9 @@ import (
 	apppoolent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 )
 
-type updateHandler struct {
-	*Handler
-}
-
-//nolint:gocyclo
-func (h *updateHandler) validateState(info *ent.AppPool) error {
-	return nil
-}
-
 func (h *Handler) UpdatePool(ctx context.Context) (*npool.Pool, error) {
 	if h.ID == nil {
 		return nil, fmt.Errorf("invalid id")
-	}
-
-	handler := &updateHandler{
-		Handler: h,
 	}
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
@@ -39,10 +26,6 @@ func (h *Handler) UpdatePool(ctx context.Context) (*npool.Pool, error) {
 			).
 			Only(_ctx)
 		if err != nil {
-			return err
-		}
-
-		if err := handler.validateState(info); err != nil {
 			return err
 		}
 

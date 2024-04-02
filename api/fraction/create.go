@@ -103,6 +103,9 @@ func fractionInPool(ctx context.Context, info *npool.FractionReq) (*npool.Fracti
 		errMsg := err.Error()
 		info.Msg = &errMsg
 		info.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
+	} else if paytime == 0 {
+		info.PayTime = &paytime
+		info.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
 	} else {
 		info.PayTime = &paytime
 		info.WithdrawState = v1.WithdrawState_WithdrawStateSuccess.Enum()

@@ -20,15 +20,7 @@ spec:
     - host: api.npool.top
       http: &http_rules
         paths:
-          - path: /api/miningpoolmw/v1/miningpool_DeleteAppPool
-            backend:
-              serviceName: miningpool-middleware
-              servicePort: 50850
           - path: /api/miningpoolmw/v1/miningpool_DeleteFraction
-            backend:
-              serviceName: miningpool-middleware
-              servicePort: 50850
-          - path: /api/miningpoolmw/v1/miningpool_DeleteGoodUser
             backend:
               serviceName: miningpool-middleware
               servicePort: 50850
@@ -37,10 +29,6 @@ spec:
               serviceName: miningpool-middleware
               servicePort: 50850
           - path: /api/miningpoolmw/v1/miningpool_DeleteOrderUser
-            backend:
-              serviceName: miningpool-middleware
-              servicePort: 50850
-          - path: /api/miningpoolmw/v1/miningpool_DeleteRootUser
             backend:
               serviceName: miningpool-middleware
               servicePort: 50850

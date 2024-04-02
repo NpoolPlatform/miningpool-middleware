@@ -18,12 +18,25 @@ import (
 )
 
 func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserRequest) (*npool.UpdateOrderUserResponse, error) {
-	req := in.GetInfo()
+	req, err := handleUpdateReq(ctx, in.GetInfo())
+	if err != nil {
+		logger.Sugar().Errorw(
+			"UpdateOrderUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
+		orderuser.WithProportion(req.Proportion, false),
+		orderuser.WithRevenueAddress(req.RevenueAddress, false),
+		orderuser.WithAutoPay(req.AutoPay, false),
 	)
+
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateOrderUser",
@@ -48,151 +61,62 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 	}, nil
 }
 
-func (s *Server) SetupProportion(ctx context.Context, in *npool.SetupProportionRequest) (*npool.SetupProportionResponse, error) {
-	var err error
-	defer func() {
+func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
+	baseInfo, err := getBaseInfo(ctx, req.EntID)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.Proportion != nil {
+		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
 		if err != nil {
-			logger.Sugar().Errorw(
-				"SetupProportion",
-				"In", in,
-				"Error", err,
-			)
+			return nil, err
 		}
-	}()
-	baseInfo, err := getBaseInfo(ctx, &in.EntID)
-	if err != nil {
-		return &npool.SetupProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
 
-	mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-	if err != nil {
-		return &npool.SetupProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	err = mgr.SetRevenueProportion(ctx, baseInfo.Distributor, baseInfo.Recipient, float64(in.Proportion))
-	if err != nil {
-		return &npool.SetupProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	handler, err := orderuser.NewHandler(
-		ctx,
-		orderuser.WithID(&baseInfo.OrderUserID, true),
-		orderuser.WithProportion(&in.Proportion, true),
-	)
-	if err != nil {
-		return &npool.SetupProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	info, err := handler.UpdateOrderUser(ctx)
-	if err != nil {
-		return &npool.SetupProportionResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.SetupProportionResponse{
-		Info: info,
-	}, nil
-}
-
-func (s *Server) SetupRevenueAddress(ctx context.Context, in *npool.SetupRevenueAddressRequest) (*npool.SetupRevenueAddressResponse, error) {
-	var err error
-	defer func() {
+		err = mgr.SetRevenueProportion(ctx, baseInfo.Distributor, baseInfo.Recipient, float64(*req.Proportion))
 		if err != nil {
-			logger.Sugar().Errorw(
-				"SetupProportion",
-				"In", in,
-				"Error", err,
-			)
+			return nil, err
 		}
-	}()
-	baseInfo, err := getBaseInfo(ctx, &in.EntID)
-	if err != nil {
-		return &npool.SetupRevenueAddressResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-	if err != nil {
-		return &npool.SetupRevenueAddressResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	err = mgr.SetRevenueAddress(ctx, baseInfo.Recipient, in.RevenueAddress)
-	if err != nil {
-		return &npool.SetupRevenueAddressResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	handler, err := orderuser.NewHandler(
-		ctx,
-		orderuser.WithID(&baseInfo.OrderUserID, true),
-		orderuser.WithRevenueAddress(&in.RevenueAddress, true),
-	)
-	if err != nil {
-		return &npool.SetupRevenueAddressResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	info, err := handler.UpdateOrderUser(ctx)
-	if err != nil {
-		return &npool.SetupRevenueAddressResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.SetupRevenueAddressResponse{
-		Info: info,
-	}, nil
-}
-
-func (s *Server) SetupAutoPay(ctx context.Context, in *npool.SetupAutoPayRequest) (*npool.SetupAutoPayResponse, error) {
-	var err error
-	defer func() {
+	if req.RevenueAddress != nil {
+		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
 		if err != nil {
-			logger.Sugar().Errorw(
-				"SetupProportion",
-				"In", in,
-				"Error", err,
-			)
+			return nil, err
 		}
-	}()
-	baseInfo, err := getBaseInfo(ctx, &in.EntID)
-	if err != nil {
-		return &npool.SetupAutoPayResponse{}, status.Error(codes.InvalidArgument, err.Error())
+
+		err = mgr.SetRevenueAddress(ctx, baseInfo.Recipient, *req.RevenueAddress)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-	if err != nil {
-		return &npool.SetupAutoPayResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	if req.AutoPay != nil {
+		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
+		if err != nil {
+			return nil, err
+		}
+
+		autoPay := *req.AutoPay
+		paused := true
+
+		logger.Sugar().Error(autoPay, paused)
+		if autoPay {
+			autoPay, err = mgr.ResumePayment(ctx, baseInfo.Recipient)
+		} else {
+			paused, err = mgr.PausePayment(ctx, baseInfo.Recipient)
+		}
+		if err != nil {
+			return nil, err
+		}
+		if !paused {
+			autoPay = false
+		}
+
+		req.AutoPay = &autoPay
 	}
 
-	autoPay := in.AutoPay
-	paused := true
-
-	logger.Sugar().Error(autoPay, paused)
-	if in.AutoPay {
-		autoPay, err = mgr.ResumePayment(ctx, baseInfo.Recipient)
-	} else {
-		paused, err = mgr.PausePayment(ctx, baseInfo.Recipient)
-	}
-	if err != nil {
-		return &npool.SetupAutoPayResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-	if !paused {
-		autoPay = false
-	}
-	logger.Sugar().Error(autoPay, paused)
-
-	handler, err := orderuser.NewHandler(
-		ctx,
-		orderuser.WithID(&baseInfo.OrderUserID, true),
-		orderuser.WithAutoPay(&autoPay, true),
-	)
-	if err != nil {
-		return &npool.SetupAutoPayResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	info, err := handler.UpdateOrderUser(ctx)
-	if err != nil {
-		return &npool.SetupAutoPayResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.SetupAutoPayResponse{
-		Info: info,
-	}, nil
+	return req, nil
 }
 
 type baseInfo struct {

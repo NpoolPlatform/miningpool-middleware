@@ -79,9 +79,10 @@ func updateOrderUser(t *testing.T) {
 
 	ret.Proportion = 99
 	req.Proportion = &ret.Proportion
-	info, err = SetupProportion(context.Background(), &npool.SetupProportionRequest{
-		EntID:      ret.EntID,
-		Proportion: ret.Proportion,
+	info, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+		ID:         req.ID,
+		EntID:      &ret.EntID,
+		Proportion: &ret.Proportion,
 	})
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
@@ -90,9 +91,10 @@ func updateOrderUser(t *testing.T) {
 
 	ret.RevenueAddress = "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
 	req.RevenueAddress = &ret.RevenueAddress
-	info, err = SetupRevenueAddress(context.Background(), &npool.SetupRevenueAddressRequest{
-		EntID:          ret.EntID,
-		RevenueAddress: ret.RevenueAddress,
+	info, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+		ID:             req.ID,
+		EntID:          &ret.EntID,
+		RevenueAddress: &ret.RevenueAddress,
 	})
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
@@ -101,9 +103,10 @@ func updateOrderUser(t *testing.T) {
 
 	ret.AutoPay = true
 	req.AutoPay = &ret.AutoPay
-	info, err = SetupAutoPay(context.Background(), &npool.SetupAutoPayRequest{
-		EntID:   ret.EntID,
-		AutoPay: ret.AutoPay,
+	info, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+		ID:      req.ID,
+		EntID:   &ret.EntID,
+		AutoPay: &ret.AutoPay,
 	})
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
@@ -112,9 +115,10 @@ func updateOrderUser(t *testing.T) {
 
 	ret.AutoPay = false
 	req.AutoPay = &ret.AutoPay
-	info, err = SetupAutoPay(context.Background(), &npool.SetupAutoPayRequest{
-		EntID:   ret.EntID,
-		AutoPay: ret.AutoPay,
+	info, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+		ID:      req.ID,
+		EntID:   &ret.EntID,
+		AutoPay: &ret.AutoPay,
 	})
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt

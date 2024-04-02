@@ -36,7 +36,6 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		orderuser.WithRevenueAddress(req.RevenueAddress, false),
 		orderuser.WithAutoPay(req.AutoPay, false),
 	)
-
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateOrderUser",
@@ -66,13 +65,11 @@ func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.Order
 	if err != nil {
 		return nil, err
 	}
-
+	mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
+	if err != nil {
+		return nil, err
+	}
 	if req.Proportion != nil {
-		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-		if err != nil {
-			return nil, err
-		}
-
 		err = mgr.SetRevenueProportion(ctx, baseInfo.Distributor, baseInfo.Recipient, float64(*req.Proportion))
 		if err != nil {
 			return nil, err
@@ -80,11 +77,6 @@ func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.Order
 	}
 
 	if req.RevenueAddress != nil {
-		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-		if err != nil {
-			return nil, err
-		}
-
 		err = mgr.SetRevenueAddress(ctx, baseInfo.Recipient, *req.RevenueAddress)
 		if err != nil {
 			return nil, err
@@ -92,11 +84,6 @@ func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.Order
 	}
 
 	if req.AutoPay != nil {
-		mgr, err := pools.NewPoolManager(baseInfo.MiningpoolType, baseInfo.CoinType, baseInfo.AuthToken)
-		if err != nil {
-			return nil, err
-		}
-
 		autoPay := *req.AutoPay
 		paused := true
 

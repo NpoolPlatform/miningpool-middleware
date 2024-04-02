@@ -43,6 +43,10 @@ func (h *Handler) DeleteRootUser(ctx context.Context) (*npool.RootUser, error) {
 		return nil, err
 	}
 
+	if info == nil {
+		return nil, nil
+	}
+
 	entID, err := uuid.Parse(info.EntID)
 	if err != nil {
 		return nil, err

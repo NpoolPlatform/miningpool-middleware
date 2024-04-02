@@ -44,7 +44,7 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error)
 	}
 
 	if info == nil {
-		return nil, fmt.Errorf("have no orderuser %v", h.ID)
+		return nil, nil
 	}
 
 	entID, err := uuid.Parse(info.EntID)

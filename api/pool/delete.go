@@ -14,6 +14,16 @@ import (
 )
 
 func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*npool.DeletePoolResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"DeletePool",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.DeletePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	if req == nil || req.ID == nil {
 		err := fmt.Errorf("wrong id")

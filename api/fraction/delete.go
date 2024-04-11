@@ -14,6 +14,16 @@ import (
 )
 
 func (s *Server) DeleteFraction(ctx context.Context, in *npool.DeleteFractionRequest) (*npool.DeleteFractionResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"DeleteFraction",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.DeleteFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	if req == nil || req.ID == nil {
 		err := fmt.Errorf("wrong id")

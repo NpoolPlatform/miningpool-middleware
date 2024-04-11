@@ -14,6 +14,16 @@ import (
 )
 
 func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserRequest) (*npool.DeleteGoodUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"DeleteGoodUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.DeleteGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	if req == nil || req.ID == nil {
 		err := fmt.Errorf("wrong id")

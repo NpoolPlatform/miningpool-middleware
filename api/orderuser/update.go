@@ -18,6 +18,16 @@ import (
 )
 
 func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserRequest) (*npool.UpdateOrderUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"UpdateOrderUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req, err := handleUpdateReq(ctx, in.GetInfo())
 	if err != nil {
 		logger.Sugar().Errorw(

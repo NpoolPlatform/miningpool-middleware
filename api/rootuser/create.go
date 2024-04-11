@@ -16,6 +16,16 @@ import (
 )
 
 func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserRequest) (*npool.CreateRootUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateRootUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	authed, err := checkCreateAuthed(ctx, req)
 	if err != nil {

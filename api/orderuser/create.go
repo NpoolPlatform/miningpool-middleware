@@ -17,6 +17,16 @@ import (
 )
 
 func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserRequest) (*npool.CreateOrderUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateOrderUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	req, err := newOrderUserInPool(ctx, req)
 	if err != nil {

@@ -14,6 +14,16 @@ import (
 )
 
 func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserRequest) (*npool.DeleteOrderUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"DeleteOrderUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	if req == nil || req.ID == nil {
 		err := fmt.Errorf("wrong id")

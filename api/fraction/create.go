@@ -19,6 +19,16 @@ import (
 )
 
 func (s *Server) CreateFraction(ctx context.Context, in *npool.CreateFractionRequest) (*npool.CreateFractionResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateFraction",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req, err := fractionInPool(ctx, in.GetInfo())
 	if err != nil {
 		logger.Sugar().Errorw(

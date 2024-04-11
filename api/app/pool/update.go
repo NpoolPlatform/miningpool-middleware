@@ -3,6 +3,7 @@ package pool
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
@@ -14,6 +15,15 @@ import (
 
 func (s *Server) UpdatePool(ctx context.Context, in *npool.UpdatePoolRequest) (*npool.UpdatePoolResponse, error) {
 	req := in.GetInfo()
+	if req == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"UpdatePool",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.UpdatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	handler, err := pool.NewHandler(
 		ctx,
 		pool.WithID(req.ID, false),

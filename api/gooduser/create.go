@@ -16,6 +16,15 @@ import (
 )
 
 func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserRequest) (*npool.CreateGoodUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateGoodUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	req := in.GetInfo()
 	req, err := newGoodUserInPool(ctx, req)
 	if err != nil {

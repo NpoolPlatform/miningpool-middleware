@@ -3,6 +3,7 @@ package fractionrule
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
@@ -13,6 +14,15 @@ import (
 )
 
 func (s *Server) CreateFractionRule(ctx context.Context, in *npool.CreateFractionRuleRequest) (*npool.CreateFractionRuleResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateFractionRule",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateFractionRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
 	req := in.GetInfo()
 	handler, err := fractionrule.NewHandler(
 		ctx,

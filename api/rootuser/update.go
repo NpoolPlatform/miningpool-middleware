@@ -16,6 +16,16 @@ import (
 )
 
 func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserRequest) (*npool.UpdateRootUserResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"UpdateRootUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	req, err := checkUpdateAuthed(ctx, req)
 	if err != nil {

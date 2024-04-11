@@ -3,6 +3,7 @@ package coin
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
@@ -13,6 +14,16 @@ import (
 )
 
 func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*npool.CreateCoinResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"CreateCoin",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.CreateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	handler, err := coin.NewHandler(
 		ctx,

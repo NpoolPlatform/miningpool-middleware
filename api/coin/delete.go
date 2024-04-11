@@ -14,6 +14,16 @@ import (
 )
 
 func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*npool.DeleteCoinResponse, error) {
+	if in.GetInfo() == nil {
+		err := fmt.Errorf("request is nil")
+		logger.Sugar().Errorw(
+			"DeleteCoin",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.DeleteCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	req := in.GetInfo()
 	if req == nil || req.ID == nil {
 		err := fmt.Errorf("wrong id")

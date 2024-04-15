@@ -3,6 +3,8 @@ package rootuser
 import (
 	"context"
 	"fmt"
+	"net/mail"
+	"regexp"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
@@ -77,6 +79,10 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 			}
 			return nil
 		}
+		re := regexp.MustCompile("^[a-zA-Z0-9\u3040-\u31ff][[a-zA-Z0-9_\\-\\.\u3040-\u31ff]{3,32}$") //nolint
+		if !re.MatchString(*name) {
+			return fmt.Errorf("invalid username")
+		}
 		h.Name = name
 		return nil
 	}
@@ -106,6 +112,9 @@ func WithEmail(email *string, must bool) func(context.Context, *Handler) error {
 			}
 			return nil
 		}
+		if _, err := mail.ParseAddress(*email); err != nil {
+			return err
+		}
 		h.Email = email
 		return nil
 	}
@@ -132,6 +141,9 @@ func WithAuthed(authed *bool, must bool) func(context.Context, *Handler) error {
 			}
 			return nil
 		}
+		if !*authed {
+			return fmt.Errorf("invalid authed")
+		}
 		h.Authed = authed
 		return nil
 	}
@@ -146,47 +158,6 @@ func WithRemark(remark *string, must bool) func(context.Context, *Handler) error
 			return nil
 		}
 		h.Remark = remark
-		return nil
-	}
-}
-
-// nolint:gocognit
-func WithReqs(reqs []*npool.RootUserReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*rootusercrud.Req{}
-		for _, req := range reqs {
-			_req := &rootusercrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.Name != nil {
-				_req.Name = req.Name
-			}
-			if req.MiningpoolType != nil {
-				if req.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
-					return fmt.Errorf("invalid miningpooltype,not allow be default type")
-				}
-				_req.MiningpoolType = req.MiningpoolType
-			}
-			if req.Email != nil {
-				_req.Email = req.Email
-			}
-			if req.AuthToken != nil {
-				_req.AuthToken = req.AuthToken
-			}
-			if req.Authed != nil {
-				_req.Authed = req.Authed
-			}
-			if req.Remark != nil {
-				_req.Remark = req.Remark
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
 		return nil
 	}
 }

@@ -139,47 +139,6 @@ func WithWithdrawRate(withdrawrate *float32, must bool) func(context.Context, *H
 	}
 }
 
-// nolint:gocognit
-func WithReqs(reqs []*npool.FractionRuleReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*fractionrulecrud.Req{}
-		for _, req := range reqs {
-			_req := &fractionrulecrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.MiningpoolType != nil {
-				if req.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
-					return fmt.Errorf("invalid miningpooltype,not allow be default type")
-				}
-				_req.MiningpoolType = req.MiningpoolType
-			}
-			if req.CoinType != nil {
-				if req.CoinType == basetypes.CoinType_DefaultCoinType.Enum() {
-					return fmt.Errorf("invalid cointype,not allow be default type")
-				}
-				_req.CoinType = req.CoinType
-			}
-			if req.WithdrawInterval != nil {
-				_req.WithdrawInterval = req.WithdrawInterval
-			}
-			if req.MinAmount != nil {
-				_req.MinAmount = req.MinAmount
-			}
-			if req.WithdrawRate != nil {
-				_req.WithdrawRate = req.WithdrawRate
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
-		return nil
-	}
-}
-
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {

@@ -29,11 +29,11 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "miningpool_middleware_mw_rootuser_test_data",
+	Name:           "mm_mw_rootuser_test_data",
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
-	Email:          "gggogo",
-	AuthToken:      "asdfasdf",
-	Authed:         false,
+	Email:          "gggo@go.go",
+	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
+	Authed:         true,
 	Remark:         "asdfaf",
 }
 
@@ -75,18 +75,19 @@ func create(t *testing.T) {
 
 func update(t *testing.T) {
 	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
-	ret.Authed = !ret.Authed
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithAuthed(&ret.Authed, false),
 		WithEmail(nil, false),
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdateRootUser(context.Background())
+	err = handler.UpdateRootUser(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetRootUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.UpdatedAt = info.UpdatedAt
@@ -94,22 +95,20 @@ func update(t *testing.T) {
 	}
 
 	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
-	ret.Authed = !ret.Authed
 
 	handler, err = NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithAuthed(&ret.Authed, false),
 		WithEmail(nil, false),
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdateRootUser(context.Background())
+	err = handler.UpdateRootUser(context.Background())
 	assert.Nil(t, err)
 }
 
-func delete(t *testing.T) {
+func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
@@ -184,5 +183,5 @@ func TestRootUser(t *testing.T) {
 
 	t.Run("create", create)
 	t.Run("update", update)
-	t.Run("delete", delete)
+	t.Run("deleteRow", deleteRow)
 }

@@ -24,7 +24,7 @@ func (h *Handler) CreateGoodUser(ctx context.Context) error {
 			return err
 		}
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("fail create pool: %v", err)
+			return fmt.Errorf("fail create gooduser: %v", err)
 		}
 		return nil
 	})

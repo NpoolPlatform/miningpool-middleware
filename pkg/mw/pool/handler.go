@@ -123,41 +123,6 @@ func WithDescription(description *string, must bool) func(context.Context, *Hand
 	}
 }
 
-// nolint:gocognit
-func WithReqs(reqs []*npool.PoolReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*poolcrud.Req{}
-		for _, req := range reqs {
-			_req := &poolcrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.MiningpoolType != nil {
-				if req.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
-					return fmt.Errorf("invalid miningpooltype,not allow be default type")
-				}
-				_req.MiningpoolType = req.MiningpoolType
-			}
-			if req.Name != nil {
-				_req.Name = req.Name
-			}
-			if req.Site != nil {
-				_req.Site = req.Site
-			}
-			if req.Description != nil {
-				_req.Description = req.Description
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
-		return nil
-	}
-}
-
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {

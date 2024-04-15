@@ -85,7 +85,7 @@ func (h *Handler) genCreateSQL() (string, error) {
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
 		h.MiningpoolType.String(),
-		h.Name,
+		*h.Name,
 	)
 
 	fmt.Println(sql)

@@ -67,12 +67,11 @@ func (h *Handler) genCreateSQL() (string, error) {
 		selectVals = append(selectVals, fmt.Sprintf("%v as %v", v, k))
 	}
 
-	sql := fmt.Sprintf("insert into fraction_rules (%v) select * from (select %v) as tmp where not exists (select * from fraction_rules where miningpool_type='%v' coin_type='%v' and deleted_at=0);",
+	sql := fmt.Sprintf("insert into fraction_rules (%v) select * from (select %v) as tmp where not exists (select * from fraction_rules where miningpool_type='%v' and coin_type='%v' and deleted_at=0);",
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
 		h.MiningpoolType.String(),
 		h.CoinType.String(),
 	)
-
 	return sql, nil
 }

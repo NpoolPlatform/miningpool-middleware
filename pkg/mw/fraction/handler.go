@@ -176,69 +176,6 @@ func WithMsg(msg *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-// nolint:gocognit
-func WithReqs(reqs []*npool.FractionReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*fractioncrud.Req{}
-		for _, req := range reqs {
-			_req := &fractioncrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.AppID != nil {
-				id, err := uuid.Parse(req.GetAppID())
-				if err != nil {
-					return err
-				}
-				_req.AppID = &id
-			}
-			if req.UserID != nil {
-				id, err := uuid.Parse(req.GetUserID())
-				if err != nil {
-					return err
-				}
-				_req.UserID = &id
-			}
-			if req.OrderUserID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.OrderUserID = &id
-			}
-			if req.OrderUserID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.OrderUserID = &id
-			}
-			if req.WithdrawState != nil {
-				if req.WithdrawState == basetypes.WithdrawState_DefaultWithdrawState.Enum() {
-					return fmt.Errorf("invalid withdrawstate,not allow be default type")
-				}
-				_req.WithdrawState = req.WithdrawState
-			}
-			if req.WithdrawTime != nil {
-				_req.WithdrawTime = req.WithdrawTime
-			}
-			if req.PayTime != nil {
-				_req.PayTime = req.PayTime
-			}
-			if req.Msg != nil {
-				_req.Msg = req.Msg
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
-		return nil
-	}
-}
-
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {

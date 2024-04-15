@@ -98,40 +98,6 @@ func WithPoolID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-// nolint:gocognit
-func WithReqs(reqs []*npool.PoolReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*apppoolcrud.Req{}
-		for _, req := range reqs {
-			_req := &apppoolcrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.AppID != nil {
-				id, err := uuid.Parse(req.GetAppID())
-				if err != nil {
-					return err
-				}
-				_req.AppID = &id
-			}
-			if req.PoolID != nil {
-				id, err := uuid.Parse(req.GetPoolID())
-				if err != nil {
-					return err
-				}
-				_req.PoolID = &id
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
-		return nil
-	}
-}
-
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {

@@ -23,7 +23,7 @@ func (h *Handler) CreateCoin(ctx context.Context) error {
 			return err
 		}
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("fail create pool: %v", err)
+			return fmt.Errorf("fail create coin: %v", err)
 		}
 		return nil
 	})

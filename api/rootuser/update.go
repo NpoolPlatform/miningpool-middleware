@@ -29,7 +29,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 	req := in.GetInfo()
 	req, err := checkUpdateAuthed(ctx, req)
 	if err != nil {
-		logger.Sugar().Warnf(
+		logger.Sugar().Errorw(
 			"UpdateRootUser",
 			"In", in,
 			"Error", err,
@@ -39,7 +39,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 
 	handler, err := rootuser.NewHandler(
 		ctx,
-		rootuser.WithID(req.ID, true),
+		rootuser.WithID(req.ID, false),
 		rootuser.WithEntID(req.EntID, false),
 		rootuser.WithName(req.Name, false),
 		rootuser.WithEmail(req.Email, false),
@@ -56,7 +56,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateRootUser(ctx)
+	err = handler.UpdateRootUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateRootUser",
@@ -66,9 +66,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 		return &npool.UpdateRootUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateRootUserResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateRootUserResponse{}, nil
 }
 
 func checkUpdateAuthed(ctx context.Context, req *npool.RootUserReq) (*npool.RootUserReq, error) {
@@ -105,7 +103,7 @@ func checkUpdateAuthed(ctx context.Context, req *npool.RootUserReq) (*npool.Root
 	}
 	err = mgr.CheckAuth(ctx)
 	if err != nil {
-		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v", req.MiningpoolType, req.Name)
+		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v", req.MiningpoolType.String(), *req.Name)
 		return req, err
 	}
 	authed = true

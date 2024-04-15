@@ -30,9 +30,9 @@ func init() {
 
 var rootUserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "mininpool_middleware_client_rootuser_test",
+	Name:           "mm_client_rootuser_test",
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	Email:          "sssss",
+	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "sdfasdfasdf",

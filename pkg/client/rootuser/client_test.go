@@ -35,9 +35,9 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "mininpool_middleware_client_rootuser_test",
+	Name:           "mm_client_rootuser_test",
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	Email:          "sssss",
+	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "sdfasdfasdf",
@@ -69,23 +69,23 @@ func createRootUser(t *testing.T) {
 }
 
 func updateRootUser(t *testing.T) {
-	pooltype := basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolTypeStr = pooltype.String()
-	ret.MiningpoolType = pooltype
+	ret.Name = "test_root_user"
 	req.ID = &ret.ID
-	req.MiningpoolType = &pooltype
 
-	info, err := UpdateRootUser(context.Background(), req)
+	_, err := UpdateRootUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
 	}
 
-	pooltype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = pooltype
-	ret.MiningpoolTypeStr = pooltype.String()
-	req.MiningpoolType = &pooltype
-	info, err = UpdateRootUser(context.Background(), req)
+	ret.Name = "test_api_client"
+	_, err = UpdateRootUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err = GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)

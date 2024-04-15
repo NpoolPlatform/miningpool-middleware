@@ -111,6 +111,9 @@ func WithRevenueTypes(revenuetypes *[]basetypes.RevenueType, must bool) func(con
 			}
 			return nil
 		}
+		if len(*revenuetypes) == 0 {
+			return fmt.Errorf("invalid revenuetypes")
+		}
 		h.RevenueTypes = revenuetypes
 		return nil
 	}

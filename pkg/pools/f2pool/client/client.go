@@ -56,7 +56,7 @@ func (cli *Client) post(path string, req, resp interface{}) error {
 	headers["F2P-API-SECRET"] = cli.AccessToken
 
 	url := fmt.Sprintf("%v%v", cli.BaseURL, path)
-	errResp := &types.ErrorResponse{}
+	errResp := types.ErrorResponse{}
 
 	socksProxy := os.Getenv("ENV_F2POOL_REQUEST_PROXY")
 	restycli := resty.New()
@@ -81,6 +81,7 @@ func (cli *Client) post(path string, req, resp interface{}) error {
 		return fmt.Errorf("wrong response,status code: %v,response: %v", ret.StatusCode(), string(ret.Body()))
 	}
 
+	json.Unmarshal(ret.Body(), &errResp)
 	if errResp.Code != 0 {
 		return fmt.Errorf("request api %v error,status_code: %v,err: %v", url, errResp.Code, errResp.Msg)
 	}

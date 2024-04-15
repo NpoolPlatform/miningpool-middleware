@@ -29,7 +29,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 	req := in.GetInfo()
 	authed, err := checkCreateAuthed(ctx, req)
 	if err != nil {
-		logger.Sugar().Warnw(
+		logger.Sugar().Errorw(
 			"CreateRootUser",
 			"In", in,
 			"Error", err,

@@ -174,57 +174,6 @@ func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context
 	}
 }
 
-// nolint:gocognit
-func WithReqs(reqs []*npool.GoodUserReq, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		_reqs := []*goodusercrud.Req{}
-		for _, req := range reqs {
-			_req := &goodusercrud.Req{}
-			if req.EntID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.EntID = &id
-			}
-			if req.RootUserID != nil {
-				id, err := uuid.Parse(req.GetEntID())
-				if err != nil {
-					return err
-				}
-				_req.RootUserID = &id
-			}
-			if req.Name != nil {
-				_req.Name = req.Name
-			}
-			if req.MiningpoolType != nil {
-				if req.MiningpoolType == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
-					return fmt.Errorf("invalid miningpooltype,not allow be default type")
-				}
-				_req.MiningpoolType = req.MiningpoolType
-			}
-			if req.CoinType != nil {
-				if req.CoinType == basetypes.CoinType_DefaultCoinType.Enum() {
-					return fmt.Errorf("invalid cointype,not allow be default type")
-				}
-				_req.CoinType = req.CoinType
-			}
-			if req.HashRate != nil {
-				_req.HashRate = req.HashRate
-			}
-			if req.ReadPageLink != nil {
-				_req.ReadPageLink = req.ReadPageLink
-			}
-			if req.RevenueType != nil {
-				_req.RevenueType = req.RevenueType
-			}
-			_reqs = append(_reqs, _req)
-		}
-		h.Reqs = _reqs
-		return nil
-	}
-}
-
 //nolint:gocognit
 func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {

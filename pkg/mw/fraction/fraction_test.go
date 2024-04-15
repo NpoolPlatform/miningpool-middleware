@@ -107,7 +107,7 @@ func update(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func delete(t *testing.T) {
+func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
@@ -182,5 +182,5 @@ func TestFraction(t *testing.T) {
 
 	t.Run("create", create)
 	t.Run("update", update)
-	t.Run("delete", delete)
+	t.Run("deleteRow", deleteRow)
 }

@@ -68,7 +68,7 @@ func RegistePool(ctx context.Context) {
 			logger.Sugar().Error(err)
 			continue
 		}
-		_, err = poolH.CreatePool(ctx)
+		err = poolH.CreatePool(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 		}
@@ -123,7 +123,7 @@ func RegisteCoinInfo(ctx context.Context) {
 			logger.Sugar().Error(err)
 			continue
 		}
-		_, err = coinH.CreateCoin(ctx)
+		err = coinH.CreateCoin(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 		}
@@ -179,7 +179,7 @@ func RegisteFractionRule(ctx context.Context) {
 			logger.Sugar().Error(err)
 			continue
 		}
-		_, err = fractionruleH.CreateFractionRule(ctx)
+		err = fractionruleH.CreateFractionRule(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 		}

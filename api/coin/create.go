@@ -35,7 +35,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 		coin.WithFeeRate(req.FeeRate, true),
 		coin.WithFixedRevenueAble(req.FixedRevenueAble, true),
 		coin.WithThreshold(req.Threshold, true),
-		coin.WithRemark(req.Remark, true),
+		coin.WithRemark(req.Remark, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(
@@ -46,7 +46,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 		return &npool.CreateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateCoin(ctx)
+	err = handler.CreateCoin(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateCoin",
@@ -56,7 +56,5 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 		return &npool.CreateCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateCoinResponse{
-		Info: info,
-	}, nil
+	return &npool.CreateCoinResponse{}, nil
 }

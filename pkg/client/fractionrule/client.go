@@ -49,22 +49,6 @@ func CreateFractionRule(ctx context.Context, in *npool.FractionRuleReq) (*npool.
 	return info.(*npool.FractionRule), nil
 }
 
-func CreateFractionRules(ctx context.Context, in []*npool.FractionRuleReq) ([]*npool.FractionRule, error) {
-	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateFractionRules(ctx, &npool.CreateFractionRulesRequest{
-			Infos: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Infos, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return infos.([]*npool.FractionRule), nil
-}
-
 func GetFractionRule(ctx context.Context, id string) (*npool.FractionRule, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetFractionRule(ctx, &npool.GetFractionRuleRequest{

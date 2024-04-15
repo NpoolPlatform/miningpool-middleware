@@ -49,22 +49,6 @@ func CreateOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderU
 	return info.(*npool.OrderUser), nil
 }
 
-func CreateOrderUsers(ctx context.Context, in []*npool.OrderUserReq) ([]*npool.OrderUser, error) {
-	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateOrderUsers(ctx, &npool.CreateOrderUsersRequest{
-			Infos: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Infos, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return infos.([]*npool.OrderUser), nil
-}
-
 func GetOrderUser(ctx context.Context, id string) (*npool.OrderUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetOrderUser(ctx, &npool.GetOrderUserRequest{

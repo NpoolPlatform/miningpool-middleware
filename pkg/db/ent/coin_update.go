@@ -13,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // CoinUpdate is the builder for updating Coin entities.
@@ -123,23 +124,16 @@ func (cu *CoinUpdate) ClearRevenueTypes() *CoinUpdate {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (cu *CoinUpdate) SetFeeRate(f float32) *CoinUpdate {
-	cu.mutation.ResetFeeRate()
-	cu.mutation.SetFeeRate(f)
+func (cu *CoinUpdate) SetFeeRate(d decimal.Decimal) *CoinUpdate {
+	cu.mutation.SetFeeRate(d)
 	return cu
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableFeeRate(f *float32) *CoinUpdate {
-	if f != nil {
-		cu.SetFeeRate(*f)
+func (cu *CoinUpdate) SetNillableFeeRate(d *decimal.Decimal) *CoinUpdate {
+	if d != nil {
+		cu.SetFeeRate(*d)
 	}
-	return cu
-}
-
-// AddFeeRate adds f to the "fee_rate" field.
-func (cu *CoinUpdate) AddFeeRate(f float32) *CoinUpdate {
-	cu.mutation.AddFeeRate(f)
 	return cu
 }
 
@@ -190,23 +184,16 @@ func (cu *CoinUpdate) ClearRemark() *CoinUpdate {
 }
 
 // SetThreshold sets the "threshold" field.
-func (cu *CoinUpdate) SetThreshold(f float32) *CoinUpdate {
-	cu.mutation.ResetThreshold()
-	cu.mutation.SetThreshold(f)
+func (cu *CoinUpdate) SetThreshold(d decimal.Decimal) *CoinUpdate {
+	cu.mutation.SetThreshold(d)
 	return cu
 }
 
 // SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableThreshold(f *float32) *CoinUpdate {
-	if f != nil {
-		cu.SetThreshold(*f)
+func (cu *CoinUpdate) SetNillableThreshold(d *decimal.Decimal) *CoinUpdate {
+	if d != nil {
+		cu.SetThreshold(*d)
 	}
-	return cu
-}
-
-// AddThreshold adds f to the "threshold" field.
-func (cu *CoinUpdate) AddThreshold(f float32) *CoinUpdate {
-	cu.mutation.AddThreshold(f)
 	return cu
 }
 
@@ -392,21 +379,14 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.FeeRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: coin.FieldFeeRate,
-		})
-	}
-	if value, ok := cu.mutation.AddedFeeRate(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldFeeRate,
 		})
 	}
 	if cu.mutation.FeeRateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: coin.FieldFeeRate,
 		})
 	}
@@ -438,21 +418,14 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.Threshold(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: coin.FieldThreshold,
-		})
-	}
-	if value, ok := cu.mutation.AddedThreshold(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldThreshold,
 		})
 	}
 	if cu.mutation.ThresholdCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: coin.FieldThreshold,
 		})
 	}
@@ -571,23 +544,16 @@ func (cuo *CoinUpdateOne) ClearRevenueTypes() *CoinUpdateOne {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (cuo *CoinUpdateOne) SetFeeRate(f float32) *CoinUpdateOne {
-	cuo.mutation.ResetFeeRate()
-	cuo.mutation.SetFeeRate(f)
+func (cuo *CoinUpdateOne) SetFeeRate(d decimal.Decimal) *CoinUpdateOne {
+	cuo.mutation.SetFeeRate(d)
 	return cuo
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableFeeRate(f *float32) *CoinUpdateOne {
-	if f != nil {
-		cuo.SetFeeRate(*f)
+func (cuo *CoinUpdateOne) SetNillableFeeRate(d *decimal.Decimal) *CoinUpdateOne {
+	if d != nil {
+		cuo.SetFeeRate(*d)
 	}
-	return cuo
-}
-
-// AddFeeRate adds f to the "fee_rate" field.
-func (cuo *CoinUpdateOne) AddFeeRate(f float32) *CoinUpdateOne {
-	cuo.mutation.AddFeeRate(f)
 	return cuo
 }
 
@@ -638,23 +604,16 @@ func (cuo *CoinUpdateOne) ClearRemark() *CoinUpdateOne {
 }
 
 // SetThreshold sets the "threshold" field.
-func (cuo *CoinUpdateOne) SetThreshold(f float32) *CoinUpdateOne {
-	cuo.mutation.ResetThreshold()
-	cuo.mutation.SetThreshold(f)
+func (cuo *CoinUpdateOne) SetThreshold(d decimal.Decimal) *CoinUpdateOne {
+	cuo.mutation.SetThreshold(d)
 	return cuo
 }
 
 // SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableThreshold(f *float32) *CoinUpdateOne {
-	if f != nil {
-		cuo.SetThreshold(*f)
+func (cuo *CoinUpdateOne) SetNillableThreshold(d *decimal.Decimal) *CoinUpdateOne {
+	if d != nil {
+		cuo.SetThreshold(*d)
 	}
-	return cuo
-}
-
-// AddThreshold adds f to the "threshold" field.
-func (cuo *CoinUpdateOne) AddThreshold(f float32) *CoinUpdateOne {
-	cuo.mutation.AddThreshold(f)
 	return cuo
 }
 
@@ -870,21 +829,14 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 	}
 	if value, ok := cuo.mutation.FeeRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: coin.FieldFeeRate,
-		})
-	}
-	if value, ok := cuo.mutation.AddedFeeRate(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldFeeRate,
 		})
 	}
 	if cuo.mutation.FeeRateCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: coin.FieldFeeRate,
 		})
 	}
@@ -916,21 +868,14 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 	}
 	if value, ok := cuo.mutation.Threshold(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: coin.FieldThreshold,
-		})
-	}
-	if value, ok := cuo.mutation.AddedThreshold(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldThreshold,
 		})
 	}
 	if cuo.mutation.ThresholdCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: coin.FieldThreshold,
 		})
 	}

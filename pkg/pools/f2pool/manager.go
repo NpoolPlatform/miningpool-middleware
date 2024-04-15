@@ -28,11 +28,11 @@ var (
 	CoinType2Currency map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "bitcoin",
 	}
-	CoinType2Threshold map[basetype.CoinType]float32 = map[basetype.CoinType]float32{
-		basetype.CoinType_BitCoin: 0.005,
+	CoinType2Threshold map[basetype.CoinType]string = map[basetype.CoinType]string{
+		basetype.CoinType_BitCoin: "0.005",
 	}
-	CoinType2FeeRate map[basetype.CoinType]float32 = map[basetype.CoinType]float32{
-		basetype.CoinType_BitCoin: 0.04,
+	CoinType2FeeRate map[basetype.CoinType]string = map[basetype.CoinType]string{
+		basetype.CoinType_BitCoin: "0.04",
 	}
 	MaxRetries = 10
 )

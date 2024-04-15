@@ -140,8 +140,8 @@ func TestClient(t *testing.T) {
 	monkey.Patch(grpc2.GetGRPCConnV1, func(service string, recvMsgBytes int, tags ...string) (*grpc.ClientConn, error) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
-	t.Run("createOrderUser", createRootUser)
-	t.Run("createOrderUser", createGoodUser)
+	t.Run("createRootUser", createRootUser)
+	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
 	t.Run("createFraction", createFraction)
 	t.Run("updateFraction", updateFraction)
@@ -149,6 +149,6 @@ func TestClient(t *testing.T) {
 	t.Run("getFractions", getFractions)
 	t.Run("deleteFraction", deleteFraction)
 	t.Run("deleteOrderUser", deleteOrderUser)
-	t.Run("deleteOrderUser", deleteGoodUser)
-	t.Run("deleteOrderUser", deleteRootUser)
+	t.Run("deleteGoodUser", deleteGoodUser)
+	t.Run("deleteRootUser", deleteRootUser)
 }

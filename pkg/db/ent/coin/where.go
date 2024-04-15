@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // ID filters vertices based on their ID field.
@@ -122,7 +123,7 @@ func CoinType(v string) predicate.Coin {
 }
 
 // FeeRate applies equality check predicate on the "fee_rate" field. It's identical to FeeRateEQ.
-func FeeRate(v float32) predicate.Coin {
+func FeeRate(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldFeeRate), v))
 	})
@@ -143,7 +144,7 @@ func Remark(v string) predicate.Coin {
 }
 
 // Threshold applies equality check predicate on the "threshold" field. It's identical to ThresholdEQ.
-func Threshold(v float32) predicate.Coin {
+func Threshold(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldThreshold), v))
 	})
@@ -618,21 +619,21 @@ func RevenueTypesNotNil() predicate.Coin {
 }
 
 // FeeRateEQ applies the EQ predicate on the "fee_rate" field.
-func FeeRateEQ(v float32) predicate.Coin {
+func FeeRateEQ(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldFeeRate), v))
 	})
 }
 
 // FeeRateNEQ applies the NEQ predicate on the "fee_rate" field.
-func FeeRateNEQ(v float32) predicate.Coin {
+func FeeRateNEQ(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldFeeRate), v))
 	})
 }
 
 // FeeRateIn applies the In predicate on the "fee_rate" field.
-func FeeRateIn(vs ...float32) predicate.Coin {
+func FeeRateIn(vs ...decimal.Decimal) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -643,7 +644,7 @@ func FeeRateIn(vs ...float32) predicate.Coin {
 }
 
 // FeeRateNotIn applies the NotIn predicate on the "fee_rate" field.
-func FeeRateNotIn(vs ...float32) predicate.Coin {
+func FeeRateNotIn(vs ...decimal.Decimal) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -654,28 +655,28 @@ func FeeRateNotIn(vs ...float32) predicate.Coin {
 }
 
 // FeeRateGT applies the GT predicate on the "fee_rate" field.
-func FeeRateGT(v float32) predicate.Coin {
+func FeeRateGT(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldFeeRate), v))
 	})
 }
 
 // FeeRateGTE applies the GTE predicate on the "fee_rate" field.
-func FeeRateGTE(v float32) predicate.Coin {
+func FeeRateGTE(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldFeeRate), v))
 	})
 }
 
 // FeeRateLT applies the LT predicate on the "fee_rate" field.
-func FeeRateLT(v float32) predicate.Coin {
+func FeeRateLT(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldFeeRate), v))
 	})
 }
 
 // FeeRateLTE applies the LTE predicate on the "fee_rate" field.
-func FeeRateLTE(v float32) predicate.Coin {
+func FeeRateLTE(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldFeeRate), v))
 	})
@@ -837,21 +838,21 @@ func RemarkContainsFold(v string) predicate.Coin {
 }
 
 // ThresholdEQ applies the EQ predicate on the "threshold" field.
-func ThresholdEQ(v float32) predicate.Coin {
+func ThresholdEQ(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldThreshold), v))
 	})
 }
 
 // ThresholdNEQ applies the NEQ predicate on the "threshold" field.
-func ThresholdNEQ(v float32) predicate.Coin {
+func ThresholdNEQ(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldThreshold), v))
 	})
 }
 
 // ThresholdIn applies the In predicate on the "threshold" field.
-func ThresholdIn(vs ...float32) predicate.Coin {
+func ThresholdIn(vs ...decimal.Decimal) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -862,7 +863,7 @@ func ThresholdIn(vs ...float32) predicate.Coin {
 }
 
 // ThresholdNotIn applies the NotIn predicate on the "threshold" field.
-func ThresholdNotIn(vs ...float32) predicate.Coin {
+func ThresholdNotIn(vs ...decimal.Decimal) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -873,28 +874,28 @@ func ThresholdNotIn(vs ...float32) predicate.Coin {
 }
 
 // ThresholdGT applies the GT predicate on the "threshold" field.
-func ThresholdGT(v float32) predicate.Coin {
+func ThresholdGT(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldThreshold), v))
 	})
 }
 
 // ThresholdGTE applies the GTE predicate on the "threshold" field.
-func ThresholdGTE(v float32) predicate.Coin {
+func ThresholdGTE(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldThreshold), v))
 	})
 }
 
 // ThresholdLT applies the LT predicate on the "threshold" field.
-func ThresholdLT(v float32) predicate.Coin {
+func ThresholdLT(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldThreshold), v))
 	})
 }
 
 // ThresholdLTE applies the LTE predicate on the "threshold" field.
-func ThresholdLTE(v float32) predicate.Coin {
+func ThresholdLTE(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldThreshold), v))
 	})

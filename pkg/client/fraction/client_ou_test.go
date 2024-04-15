@@ -49,7 +49,10 @@ var orderuserReq = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	info, err := orderuserclient.CreateOrderUser(context.Background(), orderuserReq)
+	_, err := orderuserclient.CreateOrderUser(context.Background(), orderuserReq)
+	assert.Nil(t, err)
+
+	info, err := orderuserclient.GetOrderUser(context.Background(), *orderuserReq.EntID)
 	if assert.Nil(t, err) {
 		orderserRet.CreatedAt = info.CreatedAt
 		orderserRet.Name = info.Name

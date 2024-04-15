@@ -15,6 +15,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/schema"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	"entgo.io/ent"
 	"entgo.io/ent/privacy"
@@ -99,7 +100,7 @@ func init() {
 	// coinDescFeeRate is the schema descriptor for fee_rate field.
 	coinDescFeeRate := coinFields[3].Descriptor()
 	// coin.DefaultFeeRate holds the default value on creation for the fee_rate field.
-	coin.DefaultFeeRate = coinDescFeeRate.Default.(float32)
+	coin.DefaultFeeRate = coinDescFeeRate.Default.(decimal.Decimal)
 	// coinDescFixedRevenueAble is the schema descriptor for fixed_revenue_able field.
 	coinDescFixedRevenueAble := coinFields[4].Descriptor()
 	// coin.DefaultFixedRevenueAble holds the default value on creation for the fixed_revenue_able field.
@@ -111,7 +112,7 @@ func init() {
 	// coinDescThreshold is the schema descriptor for threshold field.
 	coinDescThreshold := coinFields[6].Descriptor()
 	// coin.DefaultThreshold holds the default value on creation for the threshold field.
-	coin.DefaultThreshold = coinDescThreshold.Default.(float32)
+	coin.DefaultThreshold = coinDescThreshold.Default.(decimal.Decimal)
 	fractionMixin := schema.Fraction{}.Mixin()
 	fraction.Policy = privacy.NewPolicies(fractionMixin[0], schema.Fraction{})
 	fraction.Hooks[0] = func(next ent.Mutator) ent.Mutator {

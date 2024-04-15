@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // CoinCreate is the builder for creating a Coin entity.
@@ -97,15 +98,15 @@ func (cc *CoinCreate) SetRevenueTypes(s []string) *CoinCreate {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (cc *CoinCreate) SetFeeRate(f float32) *CoinCreate {
-	cc.mutation.SetFeeRate(f)
+func (cc *CoinCreate) SetFeeRate(d decimal.Decimal) *CoinCreate {
+	cc.mutation.SetFeeRate(d)
 	return cc
 }
 
 // SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableFeeRate(f *float32) *CoinCreate {
-	if f != nil {
-		cc.SetFeeRate(*f)
+func (cc *CoinCreate) SetNillableFeeRate(d *decimal.Decimal) *CoinCreate {
+	if d != nil {
+		cc.SetFeeRate(*d)
 	}
 	return cc
 }
@@ -139,15 +140,15 @@ func (cc *CoinCreate) SetNillableRemark(s *string) *CoinCreate {
 }
 
 // SetThreshold sets the "threshold" field.
-func (cc *CoinCreate) SetThreshold(f float32) *CoinCreate {
-	cc.mutation.SetThreshold(f)
+func (cc *CoinCreate) SetThreshold(d decimal.Decimal) *CoinCreate {
+	cc.mutation.SetThreshold(d)
 	return cc
 }
 
 // SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableThreshold(f *float32) *CoinCreate {
-	if f != nil {
-		cc.SetThreshold(*f)
+func (cc *CoinCreate) SetNillableThreshold(d *decimal.Decimal) *CoinCreate {
+	if d != nil {
+		cc.SetThreshold(*d)
 	}
 	return cc
 }
@@ -400,7 +401,7 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.FeeRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldFeeRate,
 		})
@@ -424,7 +425,7 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := cc.mutation.Threshold(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: coin.FieldThreshold,
 		})
@@ -449,7 +450,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 	cc.conflict = opts
 	return &CoinUpsertOne{
@@ -463,7 +463,6 @@ func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflictColumns(columns ...string) *CoinUpsertOne {
 	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertOne{
@@ -593,7 +592,7 @@ func (u *CoinUpsert) ClearRevenueTypes() *CoinUpsert {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsert) SetFeeRate(v float32) *CoinUpsert {
+func (u *CoinUpsert) SetFeeRate(v decimal.Decimal) *CoinUpsert {
 	u.Set(coin.FieldFeeRate, v)
 	return u
 }
@@ -601,12 +600,6 @@ func (u *CoinUpsert) SetFeeRate(v float32) *CoinUpsert {
 // UpdateFeeRate sets the "fee_rate" field to the value that was provided on create.
 func (u *CoinUpsert) UpdateFeeRate() *CoinUpsert {
 	u.SetExcluded(coin.FieldFeeRate)
-	return u
-}
-
-// AddFeeRate adds v to the "fee_rate" field.
-func (u *CoinUpsert) AddFeeRate(v float32) *CoinUpsert {
-	u.Add(coin.FieldFeeRate, v)
 	return u
 }
 
@@ -653,7 +646,7 @@ func (u *CoinUpsert) ClearRemark() *CoinUpsert {
 }
 
 // SetThreshold sets the "threshold" field.
-func (u *CoinUpsert) SetThreshold(v float32) *CoinUpsert {
+func (u *CoinUpsert) SetThreshold(v decimal.Decimal) *CoinUpsert {
 	u.Set(coin.FieldThreshold, v)
 	return u
 }
@@ -661,12 +654,6 @@ func (u *CoinUpsert) SetThreshold(v float32) *CoinUpsert {
 // UpdateThreshold sets the "threshold" field to the value that was provided on create.
 func (u *CoinUpsert) UpdateThreshold() *CoinUpsert {
 	u.SetExcluded(coin.FieldThreshold)
-	return u
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *CoinUpsert) AddThreshold(v float32) *CoinUpsert {
-	u.Add(coin.FieldThreshold, v)
 	return u
 }
 
@@ -687,7 +674,6 @@ func (u *CoinUpsert) ClearThreshold() *CoinUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -701,10 +687,9 @@ func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Coin.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Coin.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *CoinUpsertOne) Ignore() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -853,16 +838,9 @@ func (u *CoinUpsertOne) ClearRevenueTypes() *CoinUpsertOne {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsertOne) SetFeeRate(v float32) *CoinUpsertOne {
+func (u *CoinUpsertOne) SetFeeRate(v decimal.Decimal) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.SetFeeRate(v)
-	})
-}
-
-// AddFeeRate adds v to the "fee_rate" field.
-func (u *CoinUpsertOne) AddFeeRate(v float32) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.AddFeeRate(v)
 	})
 }
 
@@ -923,16 +901,9 @@ func (u *CoinUpsertOne) ClearRemark() *CoinUpsertOne {
 }
 
 // SetThreshold sets the "threshold" field.
-func (u *CoinUpsertOne) SetThreshold(v float32) *CoinUpsertOne {
+func (u *CoinUpsertOne) SetThreshold(v decimal.Decimal) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.SetThreshold(v)
-	})
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *CoinUpsertOne) AddThreshold(v float32) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.AddThreshold(v)
 	})
 }
 
@@ -1084,7 +1055,6 @@ func (ccb *CoinCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBulk {
 	ccb.conflict = opts
 	return &CoinUpsertBulk{
@@ -1098,7 +1068,6 @@ func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBul
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflictColumns(columns ...string) *CoinUpsertBulk {
 	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertBulk{
@@ -1123,7 +1092,6 @@ type CoinUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1143,7 +1111,6 @@ func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 //	client.Coin.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) Ignore() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1292,16 +1259,9 @@ func (u *CoinUpsertBulk) ClearRevenueTypes() *CoinUpsertBulk {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsertBulk) SetFeeRate(v float32) *CoinUpsertBulk {
+func (u *CoinUpsertBulk) SetFeeRate(v decimal.Decimal) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.SetFeeRate(v)
-	})
-}
-
-// AddFeeRate adds v to the "fee_rate" field.
-func (u *CoinUpsertBulk) AddFeeRate(v float32) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.AddFeeRate(v)
 	})
 }
 
@@ -1362,16 +1322,9 @@ func (u *CoinUpsertBulk) ClearRemark() *CoinUpsertBulk {
 }
 
 // SetThreshold sets the "threshold" field.
-func (u *CoinUpsertBulk) SetThreshold(v float32) *CoinUpsertBulk {
+func (u *CoinUpsertBulk) SetThreshold(v decimal.Decimal) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.SetThreshold(v)
-	})
-}
-
-// AddThreshold adds v to the "threshold" field.
-func (u *CoinUpsertBulk) AddThreshold(v float32) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.AddThreshold(v)
 	})
 }
 

@@ -57,7 +57,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateGoodUser(ctx)
+	err = handler.CreateGoodUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateGoodUser",
@@ -67,9 +67,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateGoodUserResponse{
-		Info: info,
-	}, nil
+	return &npool.CreateGoodUserResponse{}, nil
 }
 
 func newGoodUserInPool(ctx context.Context, req *npool.GoodUserReq) (*npool.GoodUserReq, error) {
@@ -96,47 +94,4 @@ func newGoodUserInPool(ctx context.Context, req *npool.GoodUserReq) (*npool.Good
 	req.Name = &name
 	req.ReadPageLink = &pageLink
 	return req, nil
-}
-
-func (s *Server) CreateGoodUsers(ctx context.Context, in *npool.CreateGoodUsersRequest) (*npool.CreateGoodUsersResponse, error) {
-	reqs := in.GetInfos()
-	var err error
-	for i, req := range reqs {
-		req, err = newGoodUserInPool(ctx, req)
-		reqs[i] = req
-		if err != nil {
-			logger.Sugar().Errorw(
-				"CreateGoodUsers",
-				"In", in,
-				"Error", err,
-			)
-			return &npool.CreateGoodUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
-		}
-	}
-	handler, err := gooduser.NewHandler(
-		ctx,
-		gooduser.WithReqs(in.GetInfos(), true),
-	)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateGoodUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateGoodUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	infos, err := handler.CreateGoodUsers(ctx)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateGoodUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateGoodUsersResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.CreateGoodUsersResponse{
-		Infos: infos,
-	}, nil
 }

@@ -53,7 +53,10 @@ var req = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	info, err := CreateOrderUser(context.Background(), req)
+	_, err := CreateOrderUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
 		ret.Name = info.Name
@@ -186,13 +189,13 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
-	t.Run("createOrderUser", createRootUser)
-	t.Run("createOrderUser", createGoodUser)
+	t.Run("createRootUser", createRootUser)
+	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
 	t.Run("updateOrderUser", updateOrderUser)
 	t.Run("getOrderUser", getOrderUser)
 	t.Run("getOrderUsers", getOrderUsers)
 	t.Run("deleteOrderUser", deleteOrderUser)
-	t.Run("deleteOrderUser", deleteGoodUser)
-	t.Run("deleteOrderUser", deleteRootUser)
+	t.Run("deleteGoodUser", deleteGoodUser)
+	t.Run("deleteRootUser", deleteRootUser)
 }

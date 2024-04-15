@@ -55,7 +55,10 @@ var req = &npool.GoodUserReq{
 }
 
 func createGoodUser(t *testing.T) {
-	info, err := CreateGoodUser(context.Background(), req)
+	_, err := CreateGoodUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetGoodUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
@@ -150,11 +153,11 @@ func TestClient(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
-	t.Run("createGoodUser", createRootUser)
+	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("updateGoodUser", updateGoodUser)
 	t.Run("getGoodUser", getGoodUser)
 	t.Run("getGoodUsers", getGoodUsers)
 	t.Run("deleteGoodUser", deleteGoodUser)
-	t.Run("deleteGoodUser", deleteRootUser)
+	t.Run("deleteRootUser", deleteRootUser)
 }

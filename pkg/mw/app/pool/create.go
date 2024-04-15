@@ -2,65 +2,46 @@ package apppool
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
-	apppoolcrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/app/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/google/uuid"
 )
 
-func (h *Handler) CreatePool(ctx context.Context) (*npool.Pool, error) {
+func (h *Handler) CreatePool(ctx context.Context) error {
+	poolID := h.PoolID.String()
+	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
+	if err != nil {
+		return err
+	}
+
+	exist, err := poolH.ExistPool(ctx)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return fmt.Errorf("invalid pool id")
+	}
+
 	id := uuid.New()
 	if h.EntID == nil {
 		h.EntID = &id
 	}
 
-	err := db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
-		info, err := apppoolcrud.CreateSet(
-			cli.AppPool.Create(),
-			&apppoolcrud.Req{
-				EntID:  h.EntID,
-				AppID:  h.AppID,
-				PoolID: h.PoolID,
-			},
-		).Save(ctx)
+	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
+		sql, err := h.genCreateSQL()
 		if err != nil {
 			return err
 		}
-		h.ID = &info.ID
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return h.GetPool(ctx)
-}
-
-func (h *Handler) CreatePools(ctx context.Context) ([]*npool.Pool, error) {
-	ids := []uuid.UUID{}
-
-	err := db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		for _, req := range h.Reqs {
-			info, err := apppoolcrud.CreateSet(tx.AppPool.Create(), req).Save(_ctx)
-			if err != nil {
-				return err
-			}
-			ids = append(ids, info.EntID)
+		rc, err := tx.ExecContext(ctx, sql)
+		if err != nil {
+			return err
+		}
+		if n, err := rc.RowsAffected(); err != nil || n != 1 {
+			return fmt.Errorf("fail create app pool: %v", err)
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	h.Conds = &apppoolcrud.Conds{
-		EntIDs: &cruder.Cond{Op: cruder.IN, Val: ids},
-	}
-	h.Offset = 0
-	h.Limit = int32(len(ids))
-
-	infos, _, err := h.GetPools(ctx)
-	return infos, err
 }

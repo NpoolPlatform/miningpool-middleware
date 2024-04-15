@@ -9,6 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -39,6 +40,18 @@ var req = &npool.PoolReq{
 }
 
 func create(t *testing.T) {
+	poolH, err := pool.NewHandler(context.Background(), pool.WithConds(nil), pool.WithOffset(0), pool.WithLimit(2))
+	assert.Nil(t, err)
+
+	infos, _, err := poolH.GetPools(context.Background())
+	assert.Nil(t, err)
+	if !assert.Equal(t, true, len(infos) > 0) {
+		return
+	}
+
+	ret.PoolID = infos[0].EntID
+	req.PoolID = &infos[0].EntID
+
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
@@ -47,7 +60,10 @@ func create(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.CreatePool(context.Background())
+	err = handler.CreatePool(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetPool(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
@@ -55,6 +71,11 @@ func create(t *testing.T) {
 		ret.EntID = info.EntID
 		assert.Equal(t, ret, info)
 	}
+
+	entID := uuid.New()
+	handler.EntID = &entID
+	err = handler.CreatePool(context.Background())
+	assert.NotNil(t, err)
 }
 
 func update(t *testing.T) {

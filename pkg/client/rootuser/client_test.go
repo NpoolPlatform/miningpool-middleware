@@ -54,7 +54,10 @@ var req = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
-	info, err := CreateRootUser(context.Background(), req)
+	_, err := CreateRootUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr

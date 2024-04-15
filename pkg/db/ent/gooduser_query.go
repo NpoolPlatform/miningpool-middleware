@@ -264,7 +264,6 @@ func (guq *GoodUserQuery) Clone() *GoodUserQuery {
 //		GroupBy(gooduser.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (guq *GoodUserQuery) GroupBy(field string, fields ...string) *GoodUserGroupBy {
 	grbuild := &GoodUserGroupBy{config: guq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -291,7 +290,6 @@ func (guq *GoodUserQuery) GroupBy(field string, fields ...string) *GoodUserGroup
 //	client.GoodUser.Query().
 //		Select(gooduser.FieldCreatedAt).
 //		Scan(ctx, &v)
-//
 func (guq *GoodUserQuery) Select(fields ...string) *GoodUserSelect {
 	guq.fields = append(guq.fields, fields...)
 	selbuild := &GoodUserSelect{GoodUserQuery: guq}

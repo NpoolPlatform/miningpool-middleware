@@ -166,6 +166,9 @@ func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context
 			}
 			return nil
 		}
+		if revenuetype == basetypes.RevenueType_DefaultRevenueType.Enum() {
+			return fmt.Errorf("invalid revenuetype,not allow be default type")
+		}
 		h.RevenueType = revenuetype
 		return nil
 	}

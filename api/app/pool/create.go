@@ -41,7 +41,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 		return &npool.CreatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreatePool(ctx)
+	err = handler.CreatePool(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreatePool",
@@ -51,7 +51,5 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreatePoolResponse{
-		Info: info,
-	}, nil
+	return &npool.CreatePoolResponse{}, nil
 }

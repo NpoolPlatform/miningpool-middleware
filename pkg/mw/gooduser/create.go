@@ -2,73 +2,30 @@ package gooduser
 
 import (
 	"context"
+	"fmt"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
-	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
-
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 
 	"github.com/google/uuid"
 )
 
-func (h *Handler) CreateGoodUser(ctx context.Context) (*npool.GoodUser, error) {
-	id := uuid.New()
+func (h *Handler) CreateGoodUser(ctx context.Context) error {
 	if h.EntID == nil {
-		h.EntID = &id
+		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
-
-	err := db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
-		info, err := goodusercrud.CreateSet(
-			cli.GoodUser.Create(),
-			&goodusercrud.Req{
-				EntID:          h.EntID,
-				Name:           h.Name,
-				RootUserID:     h.RootUserID,
-				MiningpoolType: h.MiningpoolType,
-				CoinType:       h.CoinType,
-				HashRate:       h.HashRate,
-				ReadPageLink:   h.ReadPageLink,
-				RevenueType:    h.RevenueType,
-			},
-		).Save(ctx)
+	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
+		sql, err := h.genCreateSQL()
 		if err != nil {
 			return err
 		}
-		h.ID = &info.ID
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return h.GetGoodUser(ctx)
-}
-
-func (h *Handler) CreateGoodUsers(ctx context.Context) ([]*npool.GoodUser, error) {
-	ids := []uuid.UUID{}
-
-	err := db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		for _, req := range h.Reqs {
-			info, err := goodusercrud.CreateSet(tx.GoodUser.Create(), req).Save(_ctx)
-			if err != nil {
-				return err
-			}
-			ids = append(ids, info.EntID)
+		rc, err := tx.ExecContext(ctx, sql)
+		if err != nil {
+			return err
+		}
+		if n, err := rc.RowsAffected(); err != nil || n != 1 {
+			return fmt.Errorf("fail create pool: %v", err)
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	h.Conds = &goodusercrud.Conds{
-		EntIDs: &cruder.Cond{Op: cruder.IN, Val: ids},
-	}
-	h.Offset = 0
-	h.Limit = int32(len(ids))
-
-	infos, _, err := h.GetGoodUsers(ctx)
-	return infos, err
 }

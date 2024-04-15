@@ -60,7 +60,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		return &npool.CreateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateOrderUser(ctx)
+	err = handler.CreateOrderUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateOrderUser",
@@ -70,9 +70,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		return &npool.CreateOrderUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateOrderUserResponse{
-		Info: info,
-	}, nil
+	return &npool.CreateOrderUserResponse{}, nil
 }
 
 func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
@@ -120,46 +118,4 @@ func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.Or
 	req.MiningpoolType = &goodUser.MiningpoolType
 	req.CoinType = &goodUser.CoinType
 	return req, nil
-}
-
-func (s *Server) CreateOrderUsers(ctx context.Context, in *npool.CreateOrderUsersRequest) (*npool.CreateOrderUsersResponse, error) {
-	reqs := in.GetInfos()
-	for i, req := range reqs {
-		_req, err := newOrderUserInPool(ctx, req)
-		reqs[i] = _req
-		if err != nil {
-			logger.Sugar().Errorw(
-				"CreateOrderUsers",
-				"In", in,
-				"Error", err,
-			)
-			return &npool.CreateOrderUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
-		}
-	}
-	handler, err := orderuser.NewHandler(
-		ctx,
-		orderuser.WithReqs(in.GetInfos(), true),
-	)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateOrderUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateOrderUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	infos, err := handler.CreateOrderUsers(ctx)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateOrderUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateOrderUsersResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.CreateOrderUsersResponse{
-		Infos: infos,
-	}, nil
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	"entgo.io/ent"
 )
@@ -746,12 +747,10 @@ type CoinMutation struct {
 	miningpool_type    *string
 	coin_type          *string
 	revenue_types      *[]string
-	fee_rate           *float32
-	addfee_rate        *float32
+	fee_rate           *decimal.Decimal
 	fixed_revenue_able *bool
 	remark             *string
-	threshold          *float32
-	addthreshold       *float32
+	threshold          *decimal.Decimal
 	clearedFields      map[string]struct{}
 	done               bool
 	oldValue           func(context.Context) (*Coin, error)
@@ -1188,13 +1187,12 @@ func (m *CoinMutation) ResetRevenueTypes() {
 }
 
 // SetFeeRate sets the "fee_rate" field.
-func (m *CoinMutation) SetFeeRate(f float32) {
-	m.fee_rate = &f
-	m.addfee_rate = nil
+func (m *CoinMutation) SetFeeRate(d decimal.Decimal) {
+	m.fee_rate = &d
 }
 
 // FeeRate returns the value of the "fee_rate" field in the mutation.
-func (m *CoinMutation) FeeRate() (r float32, exists bool) {
+func (m *CoinMutation) FeeRate() (r decimal.Decimal, exists bool) {
 	v := m.fee_rate
 	if v == nil {
 		return
@@ -1205,7 +1203,7 @@ func (m *CoinMutation) FeeRate() (r float32, exists bool) {
 // OldFeeRate returns the old "fee_rate" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldFeeRate(ctx context.Context) (v float32, err error) {
+func (m *CoinMutation) OldFeeRate(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeeRate is only allowed on UpdateOne operations")
 	}
@@ -1219,28 +1217,9 @@ func (m *CoinMutation) OldFeeRate(ctx context.Context) (v float32, err error) {
 	return oldValue.FeeRate, nil
 }
 
-// AddFeeRate adds f to the "fee_rate" field.
-func (m *CoinMutation) AddFeeRate(f float32) {
-	if m.addfee_rate != nil {
-		*m.addfee_rate += f
-	} else {
-		m.addfee_rate = &f
-	}
-}
-
-// AddedFeeRate returns the value that was added to the "fee_rate" field in this mutation.
-func (m *CoinMutation) AddedFeeRate() (r float32, exists bool) {
-	v := m.addfee_rate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearFeeRate clears the value of the "fee_rate" field.
 func (m *CoinMutation) ClearFeeRate() {
 	m.fee_rate = nil
-	m.addfee_rate = nil
 	m.clearedFields[coin.FieldFeeRate] = struct{}{}
 }
 
@@ -1253,7 +1232,6 @@ func (m *CoinMutation) FeeRateCleared() bool {
 // ResetFeeRate resets all changes to the "fee_rate" field.
 func (m *CoinMutation) ResetFeeRate() {
 	m.fee_rate = nil
-	m.addfee_rate = nil
 	delete(m.clearedFields, coin.FieldFeeRate)
 }
 
@@ -1356,13 +1334,12 @@ func (m *CoinMutation) ResetRemark() {
 }
 
 // SetThreshold sets the "threshold" field.
-func (m *CoinMutation) SetThreshold(f float32) {
-	m.threshold = &f
-	m.addthreshold = nil
+func (m *CoinMutation) SetThreshold(d decimal.Decimal) {
+	m.threshold = &d
 }
 
 // Threshold returns the value of the "threshold" field in the mutation.
-func (m *CoinMutation) Threshold() (r float32, exists bool) {
+func (m *CoinMutation) Threshold() (r decimal.Decimal, exists bool) {
 	v := m.threshold
 	if v == nil {
 		return
@@ -1373,7 +1350,7 @@ func (m *CoinMutation) Threshold() (r float32, exists bool) {
 // OldThreshold returns the old "threshold" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldThreshold(ctx context.Context) (v float32, err error) {
+func (m *CoinMutation) OldThreshold(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldThreshold is only allowed on UpdateOne operations")
 	}
@@ -1387,28 +1364,9 @@ func (m *CoinMutation) OldThreshold(ctx context.Context) (v float32, err error) 
 	return oldValue.Threshold, nil
 }
 
-// AddThreshold adds f to the "threshold" field.
-func (m *CoinMutation) AddThreshold(f float32) {
-	if m.addthreshold != nil {
-		*m.addthreshold += f
-	} else {
-		m.addthreshold = &f
-	}
-}
-
-// AddedThreshold returns the value that was added to the "threshold" field in this mutation.
-func (m *CoinMutation) AddedThreshold() (r float32, exists bool) {
-	v := m.addthreshold
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearThreshold clears the value of the "threshold" field.
 func (m *CoinMutation) ClearThreshold() {
 	m.threshold = nil
-	m.addthreshold = nil
 	m.clearedFields[coin.FieldThreshold] = struct{}{}
 }
 
@@ -1421,7 +1379,6 @@ func (m *CoinMutation) ThresholdCleared() bool {
 // ResetThreshold resets all changes to the "threshold" field.
 func (m *CoinMutation) ResetThreshold() {
 	m.threshold = nil
-	m.addthreshold = nil
 	delete(m.clearedFields, coin.FieldThreshold)
 }
 
@@ -1598,7 +1555,7 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		m.SetRevenueTypes(v)
 		return nil
 	case coin.FieldFeeRate:
-		v, ok := value.(float32)
+		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1619,7 +1576,7 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		m.SetRemark(v)
 		return nil
 	case coin.FieldThreshold:
-		v, ok := value.(float32)
+		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1642,12 +1599,6 @@ func (m *CoinMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, coin.FieldDeletedAt)
 	}
-	if m.addfee_rate != nil {
-		fields = append(fields, coin.FieldFeeRate)
-	}
-	if m.addthreshold != nil {
-		fields = append(fields, coin.FieldThreshold)
-	}
 	return fields
 }
 
@@ -1662,10 +1613,6 @@ func (m *CoinMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case coin.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case coin.FieldFeeRate:
-		return m.AddedFeeRate()
-	case coin.FieldThreshold:
-		return m.AddedThreshold()
 	}
 	return nil, false
 }
@@ -1695,20 +1642,6 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeletedAt(v)
-		return nil
-	case coin.FieldFeeRate:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddFeeRate(v)
-		return nil
-	case coin.FieldThreshold:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddThreshold(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Coin numeric field %s", name)

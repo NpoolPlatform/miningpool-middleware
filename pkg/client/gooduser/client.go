@@ -49,22 +49,6 @@ func CreateGoodUser(ctx context.Context, in *npool.GoodUserReq) (*npool.GoodUser
 	return info.(*npool.GoodUser), nil
 }
 
-func CreateGoodUsers(ctx context.Context, in []*npool.GoodUserReq) ([]*npool.GoodUser, error) {
-	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateGoodUsers(ctx, &npool.CreateGoodUsersRequest{
-			Infos: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Infos, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return infos.([]*npool.GoodUser), nil
-}
-
 func GetGoodUser(ctx context.Context, id string) (*npool.GoodUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetGoodUser(ctx, &npool.GetGoodUserRequest{

@@ -75,7 +75,10 @@ func create(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.CreateOrderUser(context.Background())
+	err = handler.CreateOrderUser(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt

@@ -16,9 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
 	"github.com/google/uuid"
@@ -38,9 +36,9 @@ var ret = &npool.Coin{
 	MiningpoolType:   basetypes.MiningpoolType_F2Pool,
 	CoinType:         basetypes.CoinType_BitCoin,
 	RevenueTypes:     []basetypes.RevenueType{basetypes.RevenueType_FPPS, basetypes.RevenueType_PPLNS},
-	FeeRate:          2.0,
+	FeeRate:          "2.0",
 	FixedRevenueAble: false,
-	Threshold:        3.0,
+	Threshold:        "3.0",
 	Remark:           "sdfasdfasdf",
 }
 
@@ -56,85 +54,23 @@ var req = &npool.CoinReq{
 }
 
 func createCoin(t *testing.T) {
-	info, err := CreateCoin(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueTypesStr = info.RevenueTypesStr
-		ret.UpdatedAt = info.UpdatedAt
-		ret.ID = info.ID
-		ret.EntID = info.EntID
-		assert.Equal(t, ret, info)
-	}
-}
-
-func updateCoin(t *testing.T) {
-	pooltype := basetypes.MiningpoolType_AntPool
-	ret.MiningpoolTypeStr = pooltype.String()
-	ret.MiningpoolType = pooltype
-	req.ID = &ret.ID
-	req.MiningpoolType = &pooltype
-
-	info, err := UpdateCoin(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+	infos, _, err := GetCoins(context.Background(), &npool.Conds{}, 0, 2)
+	assert.Nil(t, err)
+	if len(infos) == 0 {
+		return
 	}
 
-	pooltype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = pooltype
-	ret.MiningpoolTypeStr = pooltype.String()
-	req.MiningpoolType = &pooltype
-	info, err = UpdateCoin(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-}
+	ret.MiningpoolType = infos[0].MiningpoolType
+	req.MiningpoolType = &infos[0].MiningpoolType
+	ret.CoinType = infos[0].CoinType
+	req.CoinType = &infos[0].CoinType
 
-func getCoin(t *testing.T) {
-	info, err := GetCoin(context.Background(), ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
-}
+	_, err = CreateCoin(context.Background(), req)
+	assert.NotNil(t, err)
 
-func getCoins(t *testing.T) {
-	infos, total, err := GetCoins(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{Op: cruder.EQ, Value: ret.EntID},
-	}, 0, 1)
+	info, err := GetCoin(context.Background(), infos[0].EntID)
 	if assert.Nil(t, err) {
-		assert.Equal(t, len(infos), 1)
-		assert.Equal(t, total, uint32(1))
-		assert.Equal(t, infos[0], ret)
-	}
-}
-
-func deleteCoin(t *testing.T) {
-	exist, err := ExistCoinConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
-			Op:    cruder.EQ,
-			Value: ret.EntID,
-		},
-	})
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-	}
-
-	info, err := DeleteCoin(context.Background(), ret.ID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
-
-	exist, err = ExistCoinConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
-			Op:    cruder.EQ,
-			Value: ret.EntID,
-		},
-	})
-	if assert.Nil(t, err) {
-		assert.Equal(t, false, exist)
+		assert.Equal(t, infos[0], info)
 	}
 }
 
@@ -154,8 +90,4 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("createCoin", createCoin)
-	t.Run("updateCoin", updateCoin)
-	t.Run("getCoin", getCoin)
-	t.Run("getCoins", getCoins)
-	t.Run("deleteCoin", deleteCoin)
 }

@@ -62,8 +62,10 @@ func create(t *testing.T) {
 		WithRevenueType(req.RevenueType, true),
 	)
 	assert.Nil(t, err)
+	err = handler.CreateGoodUser(context.Background())
+	assert.Nil(t, err)
 
-	info, err := handler.CreateGoodUser(context.Background())
+	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt

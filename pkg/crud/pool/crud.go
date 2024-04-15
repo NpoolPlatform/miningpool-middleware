@@ -36,6 +36,7 @@ func CreateSet(c *ent.PoolCreate, req *Req) *ent.PoolCreate {
 	if req.Description != nil {
 		c.SetDescription(*req.Description)
 	}
+	c.Mutation().Where()
 	return c
 }
 

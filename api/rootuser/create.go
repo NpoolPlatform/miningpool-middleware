@@ -34,6 +34,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 			"In", in,
 			"Error", err,
 		)
+		return &npool.CreateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 	req.Authed = &authed
 
@@ -57,7 +58,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 		return &npool.CreateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateRootUser(ctx)
+	err = handler.CreateRootUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateRootUser",
@@ -67,9 +68,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 		return &npool.CreateRootUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateRootUserResponse{
-		Info: info,
-	}, nil
+	return &npool.CreateRootUserResponse{}, nil
 }
 
 func checkCreateAuthed(ctx context.Context, req *npool.RootUserReq) (bool, error) {
@@ -85,46 +84,4 @@ func checkCreateAuthed(ctx context.Context, req *npool.RootUserReq) (bool, error
 		return false, err
 	}
 	return true, nil
-}
-
-func (s *Server) CreateRootUsers(ctx context.Context, in *npool.CreateRootUsersRequest) (*npool.CreateRootUsersResponse, error) {
-	reqs := in.GetInfos()
-	for _, req := range reqs {
-		authed, err := checkCreateAuthed(ctx, req)
-		if err != nil {
-			logger.Sugar().Warnw(
-				"CreateRootUsers",
-				"In", in,
-				"Error", err,
-			)
-		}
-		req.Authed = &authed
-	}
-
-	handler, err := rootuser.NewHandler(
-		ctx,
-		rootuser.WithReqs(reqs, true),
-	)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateRootUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateRootUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	infos, err := handler.CreateRootUsers(ctx)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateRootUsers",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateRootUsersResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.CreateRootUsersResponse{
-		Infos: infos,
-	}, nil
 }

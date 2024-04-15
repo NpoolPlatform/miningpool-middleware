@@ -5,6 +5,7 @@ package coin
 import (
 	"entgo.io/ent"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -69,7 +70,6 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
-//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -86,11 +86,11 @@ var (
 	// DefaultRevenueTypes holds the default value on creation for the "revenue_types" field.
 	DefaultRevenueTypes []string
 	// DefaultFeeRate holds the default value on creation for the "fee_rate" field.
-	DefaultFeeRate float32
+	DefaultFeeRate decimal.Decimal
 	// DefaultFixedRevenueAble holds the default value on creation for the "fixed_revenue_able" field.
 	DefaultFixedRevenueAble bool
 	// DefaultRemark holds the default value on creation for the "remark" field.
 	DefaultRemark string
 	// DefaultThreshold holds the default value on creation for the "threshold" field.
-	DefaultThreshold float32
+	DefaultThreshold decimal.Decimal
 )

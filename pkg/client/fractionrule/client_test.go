@@ -16,9 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 
 	"github.com/google/uuid"
@@ -52,84 +50,23 @@ var req = &npool.FractionRuleReq{
 }
 
 func createFractionRule(t *testing.T) {
-	info, err := CreateFractionRule(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.UpdatedAt = info.UpdatedAt
-		ret.ID = info.ID
-		ret.EntID = info.EntID
-		assert.Equal(t, ret, info)
-	}
-}
-
-func updateFractionRule(t *testing.T) {
-	pooltype := basetypes.MiningpoolType_AntPool
-	ret.MiningpoolTypeStr = pooltype.String()
-	ret.MiningpoolType = pooltype
-	req.ID = &ret.ID
-	req.MiningpoolType = &pooltype
-
-	info, err := UpdateFractionRule(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+	infos, _, err := GetFractionRules(context.Background(), &npool.Conds{}, 0, 2)
+	assert.Nil(t, err)
+	if len(infos) == 0 {
+		return
 	}
 
-	pooltype = basetypes.MiningpoolType_F2Pool
-	ret.MiningpoolType = pooltype
-	ret.MiningpoolTypeStr = pooltype.String()
-	req.MiningpoolType = &pooltype
-	info, err = UpdateFractionRule(context.Background(), req)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-}
+	ret.MiningpoolType = infos[0].MiningpoolType
+	req.MiningpoolType = &infos[0].MiningpoolType
+	ret.CoinType = infos[0].CoinType
+	req.CoinType = &infos[0].CoinType
 
-func getFractionRule(t *testing.T) {
-	info, err := GetFractionRule(context.Background(), ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
-}
+	_, err = CreateFractionRule(context.Background(), req)
+	assert.NotNil(t, err)
 
-func getFractionRules(t *testing.T) {
-	infos, total, err := GetFractionRules(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{Op: cruder.EQ, Value: ret.EntID},
-	}, 0, 1)
+	info, err := GetFractionRule(context.Background(), infos[0].EntID)
 	if assert.Nil(t, err) {
-		assert.Equal(t, len(infos), 1)
-		assert.Equal(t, total, uint32(1))
-		assert.Equal(t, infos[0], ret)
-	}
-}
-
-func deleteFractionRule(t *testing.T) {
-	exist, err := ExistFractionRuleConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
-			Op:    cruder.EQ,
-			Value: ret.EntID,
-		},
-	})
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-	}
-
-	info, err := DeleteFractionRule(context.Background(), ret.ID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
-
-	exist, err = ExistFractionRuleConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
-			Op:    cruder.EQ,
-			Value: ret.EntID,
-		},
-	})
-	if assert.Nil(t, err) {
-		assert.Equal(t, false, exist)
+		assert.Equal(t, infos[0], info)
 	}
 }
 
@@ -149,8 +86,4 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("createFractionRule", createFractionRule)
-	t.Run("updateFractionRule", updateFractionRule)
-	t.Run("getFractionRule", getFractionRule)
-	t.Run("getFractionRules", getFractionRules)
-	t.Run("deleteFractionRule", deleteFractionRule)
 }

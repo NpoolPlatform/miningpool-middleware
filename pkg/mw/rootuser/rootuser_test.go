@@ -10,6 +10,7 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
+	"github.com/google/uuid"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -27,6 +28,7 @@ func init() {
 }
 
 var ret = &npool.RootUser{
+	EntID:          uuid.NewString(),
 	Name:           "miningpool_middleware_mw_rootuser_test_data",
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
 	Email:          "gggogo",
@@ -36,6 +38,7 @@ var ret = &npool.RootUser{
 }
 
 var req = &npool.RootUserReq{
+	EntID:          &ret.EntID,
 	Name:           &ret.Name,
 	MiningpoolType: &ret.MiningpoolType,
 	Email:          &ret.Email,
@@ -56,7 +59,10 @@ func create(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.CreateRootUser(context.Background())
+	err = handler.CreateRootUser(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetRootUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt

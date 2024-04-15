@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/config"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"bou.ke/monkey"
@@ -45,7 +46,20 @@ var req = &npool.PoolReq{
 }
 
 func createPool(t *testing.T) {
-	info, err := CreatePool(context.Background(), req)
+	infos, _, err := pool.GetPools(context.Background(), nil, 0, 2)
+	assert.Nil(t, err)
+	fmt.Println(err)
+	if len(infos) == 0 {
+		return
+	}
+
+	ret.PoolID = infos[0].EntID
+	req.PoolID = &infos[0].EntID
+
+	_, err = CreatePool(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetPool(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
 		ret.UpdatedAt = info.UpdatedAt

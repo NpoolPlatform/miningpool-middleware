@@ -41,10 +41,10 @@ var (
 		{Name: "miningpool_type", Type: field.TypeString},
 		{Name: "coin_type", Type: field.TypeString},
 		{Name: "revenue_types", Type: field.TypeJSON, Nullable: true},
-		{Name: "fee_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "fee_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "fixed_revenue_able", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "threshold", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "threshold", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// CoinsTable holds the schema information for the "coins" table.
 	CoinsTable = &schema.Table{

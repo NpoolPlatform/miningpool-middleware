@@ -58,10 +58,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldMiningpoolType:   {Type: field.TypeString, Column: coin.FieldMiningpoolType},
 			coin.FieldCoinType:         {Type: field.TypeString, Column: coin.FieldCoinType},
 			coin.FieldRevenueTypes:     {Type: field.TypeJSON, Column: coin.FieldRevenueTypes},
-			coin.FieldFeeRate:          {Type: field.TypeFloat32, Column: coin.FieldFeeRate},
+			coin.FieldFeeRate:          {Type: field.TypeOther, Column: coin.FieldFeeRate},
 			coin.FieldFixedRevenueAble: {Type: field.TypeBool, Column: coin.FieldFixedRevenueAble},
 			coin.FieldRemark:           {Type: field.TypeString, Column: coin.FieldRemark},
-			coin.FieldThreshold:        {Type: field.TypeFloat32, Column: coin.FieldThreshold},
+			coin.FieldThreshold:        {Type: field.TypeOther, Column: coin.FieldThreshold},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -360,8 +360,8 @@ func (f *CoinFilter) WhereRevenueTypes(p entql.BytesP) {
 	f.Where(p.Field(coin.FieldRevenueTypes))
 }
 
-// WhereFeeRate applies the entql float32 predicate on the fee_rate field.
-func (f *CoinFilter) WhereFeeRate(p entql.Float32P) {
+// WhereFeeRate applies the entql other predicate on the fee_rate field.
+func (f *CoinFilter) WhereFeeRate(p entql.OtherP) {
 	f.Where(p.Field(coin.FieldFeeRate))
 }
 
@@ -375,8 +375,8 @@ func (f *CoinFilter) WhereRemark(p entql.StringP) {
 	f.Where(p.Field(coin.FieldRemark))
 }
 
-// WhereThreshold applies the entql float32 predicate on the threshold field.
-func (f *CoinFilter) WhereThreshold(p entql.Float32P) {
+// WhereThreshold applies the entql other predicate on the threshold field.
+func (f *CoinFilter) WhereThreshold(p entql.OtherP) {
 	f.Where(p.Field(coin.FieldThreshold))
 }
 

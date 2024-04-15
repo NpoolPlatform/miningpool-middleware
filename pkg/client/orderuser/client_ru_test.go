@@ -49,7 +49,10 @@ var rootUserReq = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
-	info, err := rootuserclient.CreateRootUser(context.Background(), rootUserReq)
+	_, err := rootuserclient.CreateRootUser(context.Background(), rootUserReq)
+	assert.Nil(t, err)
+
+	info, err := rootuserclient.GetRootUser(context.Background(), *rootUserReq.EntID)
 	if assert.Nil(t, err) {
 		rootUserRet.CreatedAt = info.CreatedAt
 		rootUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr

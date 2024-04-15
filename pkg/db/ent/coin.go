@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // Coin is the model entity for the Coin schema.
@@ -32,13 +33,13 @@ type Coin struct {
 	// RevenueTypes holds the value of the "revenue_types" field.
 	RevenueTypes []string `json:"revenue_types,omitempty"`
 	// FeeRate holds the value of the "fee_rate" field.
-	FeeRate float32 `json:"fee_rate,omitempty"`
+	FeeRate decimal.Decimal `json:"fee_rate,omitempty"`
 	// FixedRevenueAble holds the value of the "fixed_revenue_able" field.
 	FixedRevenueAble bool `json:"fixed_revenue_able,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
 	// Threshold holds the value of the "threshold" field.
-	Threshold float32 `json:"threshold,omitempty"`
+	Threshold decimal.Decimal `json:"threshold,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,10 +49,10 @@ func (*Coin) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case coin.FieldRevenueTypes:
 			values[i] = new([]byte)
+		case coin.FieldFeeRate, coin.FieldThreshold:
+			values[i] = new(decimal.Decimal)
 		case coin.FieldFixedRevenueAble:
 			values[i] = new(sql.NullBool)
-		case coin.FieldFeeRate, coin.FieldThreshold:
-			values[i] = new(sql.NullFloat64)
 		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case coin.FieldMiningpoolType, coin.FieldCoinType, coin.FieldRemark:
@@ -124,10 +125,10 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 				}
 			}
 		case coin.FieldFeeRate:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field fee_rate", values[i])
-			} else if value.Valid {
-				c.FeeRate = float32(value.Float64)
+			} else if value != nil {
+				c.FeeRate = *value
 			}
 		case coin.FieldFixedRevenueAble:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -142,10 +143,10 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 				c.Remark = value.String
 			}
 		case coin.FieldThreshold:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field threshold", values[i])
-			} else if value.Valid {
-				c.Threshold = float32(value.Float64)
+			} else if value != nil {
+				c.Threshold = *value
 			}
 		}
 	}

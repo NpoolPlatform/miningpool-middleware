@@ -34,6 +34,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 			"In", in,
 			"Error", err,
 		)
+		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	handler, err := rootuser.NewHandler(

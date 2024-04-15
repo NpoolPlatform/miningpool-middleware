@@ -43,7 +43,7 @@ func (s *Server) CreateFractionRule(ctx context.Context, in *npool.CreateFractio
 		return &npool.CreateFractionRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateFractionRule(ctx)
+	err = handler.CreateFractionRule(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateFractionRule",
@@ -53,36 +53,5 @@ func (s *Server) CreateFractionRule(ctx context.Context, in *npool.CreateFractio
 		return &npool.CreateFractionRuleResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateFractionRuleResponse{
-		Info: info,
-	}, nil
-}
-
-func (s *Server) CreateFractionRules(ctx context.Context, in *npool.CreateFractionRulesRequest) (*npool.CreateFractionRulesResponse, error) {
-	handler, err := fractionrule.NewHandler(
-		ctx,
-		fractionrule.WithReqs(in.GetInfos(), true),
-	)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateFractionRules",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateFractionRulesResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	infos, err := handler.CreateFractionRules(ctx)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"CreateFractionRules",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.CreateFractionRulesResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
-	return &npool.CreateFractionRulesResponse{
-		Infos: infos,
-	}, nil
+	return &npool.CreateFractionRuleResponse{}, nil
 }

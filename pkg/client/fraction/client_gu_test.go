@@ -51,7 +51,10 @@ var goodUserReq = &npool.GoodUserReq{
 }
 
 func createGoodUser(t *testing.T) {
-	info, err := gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
+	_, err := gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
+	assert.Nil(t, err)
+
+	info, err := gooduserclient.GetGoodUser(context.Background(), *goodUserReq.EntID)
 	if assert.Nil(t, err) {
 		goodUserRet.Name = info.Name
 		goodUserRet.ReadPageLink = info.ReadPageLink

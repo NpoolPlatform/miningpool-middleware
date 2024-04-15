@@ -1,4 +1,4 @@
-package fractionrule
+package coin
 
 import (
 	"context"
@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"testing"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 
@@ -25,30 +26,35 @@ func init() {
 	}
 }
 
-var ret = &npool.FractionRule{
+var ret = &npool.Coin{
 	EntID:            uuid.NewString(),
-	MiningpoolType:   basetypes.MiningpoolType_AntPool,
 	CoinType:         basetypes.CoinType_BitCoin,
-	WithdrawInterval: 1000,
-	MinAmount:        2.0,
-	WithdrawRate:     3.0,
+	MiningpoolType:   basetypes.MiningpoolType_AntPool,
+	RevenueTypes:     []basetypes.RevenueType{basetypes.RevenueType_FPPS, basetypes.RevenueType_PPLNS},
+	FeeRate:          decimal.NewFromFloat(5.4).String(),
+	FixedRevenueAble: false,
+	Threshold:        decimal.NewFromFloat(5.4).String(),
+	Remark:           "asdfaf",
 }
 
-var req = &npool.FractionRuleReq{
+var req = &npool.CoinReq{
 	EntID:            &ret.EntID,
-	MiningpoolType:   &ret.MiningpoolType,
 	CoinType:         &ret.CoinType,
-	WithdrawInterval: &ret.WithdrawInterval,
-	MinAmount:        &ret.MinAmount,
-	WithdrawRate:     &ret.WithdrawRate,
+	MiningpoolType:   &ret.MiningpoolType,
+	RevenueTypes:     ret.RevenueTypes,
+	FeeRate:          &ret.FeeRate,
+	FixedRevenueAble: &ret.FixedRevenueAble,
+	Threshold:        &ret.Threshold,
+	Remark:           &ret.Remark,
 }
 
 func create(t *testing.T) {
 	getH, err := NewHandler(context.Background(), WithConds(nil), WithOffset(0), WithLimit(2))
 	assert.Nil(t, err)
 
-	infos, _, err := getH.GetFractionRules(context.Background())
+	infos, _, err := getH.GetCoins(context.Background())
 	assert.Nil(t, err)
+
 	if len(infos) == 0 {
 		return
 	}
@@ -57,30 +63,25 @@ func create(t *testing.T) {
 	req.MiningpoolType = &infos[0].MiningpoolType
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
-	ret.EntID = infos[0].EntID
-	req.EntID = &infos[0].EntID
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
-		WithMiningpoolType(req.MiningpoolType, true),
 		WithCoinType(req.CoinType, true),
-		WithWithdrawInterval(req.WithdrawInterval, true),
-		WithMinAmount(req.MinAmount, true),
-		WithWithdrawRate(req.WithdrawRate, true),
+		WithMiningpoolType(req.MiningpoolType, true),
+		WithRevenueTypes(&req.RevenueTypes, true),
+		WithFeeRate(req.FeeRate, true),
+		WithFixedRevenueAble(req.FixedRevenueAble, true),
+		WithThreshold(req.Threshold, true),
+		WithRemark(req.Remark, true),
 	)
 	assert.Nil(t, err)
 
-	err = handler.CreateFractionRule(context.Background())
+	err = handler.CreateCoin(context.Background())
 	assert.NotNil(t, err)
-
-	info, err := handler.GetFractionRule(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, infos[0])
-	}
 }
 
-func TestFractionRule(t *testing.T) {
+func TestCoin(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}

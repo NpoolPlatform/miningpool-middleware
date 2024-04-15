@@ -49,22 +49,6 @@ func CreateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser
 	return info.(*npool.RootUser), nil
 }
 
-func CreateRootUsers(ctx context.Context, in []*npool.RootUserReq) ([]*npool.RootUser, error) {
-	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateRootUsers(ctx, &npool.CreateRootUsersRequest{
-			Infos: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Infos, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return infos.([]*npool.RootUser), nil
-}
-
 func GetRootUser(ctx context.Context, id string) (*npool.RootUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetRootUser(ctx, &npool.GetRootUserRequest{

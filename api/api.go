@@ -41,19 +41,10 @@ func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOpt
 	if err := pool.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
-	if err := rootuser.RegisterGateway(mux, endpoint, opts); err != nil {
-		return err
-	}
 	if err := fraction.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
-	if err := gooduser.RegisterGateway(mux, endpoint, opts); err != nil {
-		return err
-	}
 	if err := orderuser.RegisterGateway(mux, endpoint, opts); err != nil {
-		return err
-	}
-	if err := apppool.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
 	return nil

@@ -88,22 +88,6 @@ func GetPools(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*
 	return infos.([]*npool.Pool), total, nil
 }
 
-func UpdatePool(ctx context.Context, in *npool.PoolReq) (*npool.Pool, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdatePool(ctx, &npool.UpdatePoolRequest{
-			Info: in,
-		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return info.(*npool.Pool), nil
-}
-
 func ExistPoolConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistPoolConds(ctx, &npool.ExistPoolCondsRequest{

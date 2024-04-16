@@ -26,15 +26,17 @@ func (h *updateHandler) validateState(info *ent.Fraction) error {
 }
 
 func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
-	if h.ID == nil {
-		return nil, fmt.Errorf("invalid id")
+	info, err := h.GetFraction(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("invalid id or ent_id")
 	}
+	h.ID = &info.ID
 
 	handler := &updateHandler{
 		Handler: h,
 	}
 
-	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
+	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		info, err := cli.
 			Fraction.
 			Query().

@@ -29,13 +29,11 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 		ctx,
 		coin.WithID(req.ID, false),
 		coin.WithEntID(req.EntID, false),
-		coin.WithMiningpoolType(req.MiningpoolType, true),
-		coin.WithCoinType(req.CoinType, true),
-		coin.WithRevenueTypes(&req.RevenueTypes, true),
-		coin.WithFeeRate(req.FeeRate, true),
-		coin.WithFixedRevenueAble(req.FixedRevenueAble, true),
-		coin.WithThreshold(req.Threshold, true),
-		coin.WithRemark(req.Remark, true),
+		coin.WithRevenueTypes(&req.RevenueTypes, false),
+		coin.WithFeeRate(req.FeeRate, false),
+		coin.WithFixedRevenueAble(req.FixedRevenueAble, false),
+		coin.WithThreshold(req.Threshold, false),
+		coin.WithRemark(req.Remark, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

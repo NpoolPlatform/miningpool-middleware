@@ -29,7 +29,6 @@ func (s *Server) UpdatePool(ctx context.Context, in *npool.UpdatePoolRequest) (*
 		ctx,
 		pool.WithID(req.ID, false),
 		pool.WithEntID(req.EntID, false),
-		pool.WithMiningpoolType(req.MiningpoolType, false),
 		pool.WithName(req.Name, false),
 		pool.WithSite(req.Site, false),
 		pool.WithDescription(req.Description, false),

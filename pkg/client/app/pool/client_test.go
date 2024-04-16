@@ -69,32 +69,6 @@ func createPool(t *testing.T) {
 	}
 }
 
-func updatePool(t *testing.T) {
-	ret.AppID = uuid.NewString()
-	req.AppID = &ret.AppID
-	req.ID = &ret.ID
-
-	_, err := UpdatePool(context.Background(), req)
-	assert.Nil(t, err)
-
-	info, err := GetPool(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-
-	ret.PoolID = uuid.NewString()
-	req.PoolID = &ret.PoolID
-	_, err = UpdatePool(context.Background(), req)
-	assert.Nil(t, err)
-
-	info, err = GetPool(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-}
-
 func getPool(t *testing.T) {
 	info, err := GetPool(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
@@ -156,7 +130,6 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("createPool", createPool)
-	t.Run("updatePool", updatePool)
 	t.Run("getPool", getPool)
 	t.Run("getPools", getPools)
 	t.Run("deletePool", deletePool)

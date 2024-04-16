@@ -27,13 +27,11 @@ func (s *Server) UpdateFractionRule(ctx context.Context, in *npool.UpdateFractio
 	req := in.GetInfo()
 	handler, err := fractionrule.NewHandler(
 		ctx,
-		fractionrule.WithID(req.ID, true),
+		fractionrule.WithID(req.ID, false),
 		fractionrule.WithEntID(req.EntID, false),
-		fractionrule.WithMiningpoolType(req.MiningpoolType, true),
-		fractionrule.WithCoinType(req.CoinType, true),
-		fractionrule.WithWithdrawInterval(req.WithdrawInterval, true),
-		fractionrule.WithMinAmount(req.MinAmount, true),
-		fractionrule.WithWithdrawRate(req.WithdrawRate, true),
+		fractionrule.WithWithdrawInterval(req.WithdrawInterval, false),
+		fractionrule.WithMinAmount(req.MinAmount, false),
+		fractionrule.WithWithdrawRate(req.WithdrawRate, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

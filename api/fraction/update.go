@@ -27,7 +27,7 @@ func (s *Server) UpdateFraction(ctx context.Context, in *npool.UpdateFractionReq
 
 	handler, err := fraction.NewHandler(
 		ctx,
-		fraction.WithID(req.ID, true),
+		fraction.WithID(req.ID, false),
 		fraction.WithEntID(req.EntID, false),
 		fraction.WithMsg(req.Msg, false),
 	)

@@ -96,7 +96,7 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 			}
 			return nil
 		}
-		if miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
+		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
 			return fmt.Errorf("invalid miningpooltype,not allow be default type")
 		}
 		h.MiningpoolType = miningpooltype

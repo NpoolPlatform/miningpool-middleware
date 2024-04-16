@@ -12,6 +12,35 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (s *Server) ExistRootUser(ctx context.Context, in *npool.ExistRootUserRequest) (*npool.ExistRootUserResponse, error) {
+	handler, err := rootuser.NewHandler(
+		ctx,
+		rootuser.WithEntID(&in.EntID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistRootUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	info, err := handler.ExistRootUser(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistRootUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistRootUserResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.ExistRootUserResponse{
+		Info: info,
+	}, nil
+}
+
 func (s *Server) ExistRootUserConds(ctx context.Context, in *npool.ExistRootUserCondsRequest) (*npool.ExistRootUserCondsResponse, error) {
 	handler, err := rootuser.NewHandler(
 		ctx,

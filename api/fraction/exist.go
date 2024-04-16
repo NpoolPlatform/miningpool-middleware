@@ -12,6 +12,35 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (s *Server) ExistFraction(ctx context.Context, in *npool.ExistFractionRequest) (*npool.ExistFractionResponse, error) {
+	handler, err := fraction.NewHandler(
+		ctx,
+		fraction.WithEntID(&in.EntID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistFraction",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	info, err := handler.ExistFraction(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistFraction",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistFractionResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.ExistFractionResponse{
+		Info: info,
+	}, nil
+}
+
 func (s *Server) ExistFractionConds(ctx context.Context, in *npool.ExistFractionCondsRequest) (*npool.ExistFractionCondsResponse, error) {
 	handler, err := fraction.NewHandler(
 		ctx,

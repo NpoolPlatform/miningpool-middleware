@@ -108,7 +108,7 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 			}
 			return nil
 		}
-		if miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType.Enum() {
+		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
 			return fmt.Errorf("invalid miningpooltype,not allow be default type")
 		}
 		h.MiningpoolType = miningpooltype
@@ -124,7 +124,7 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 			}
 			return nil
 		}
-		if cointype == basetypes.CoinType_DefaultCoinType.Enum() {
+		if *cointype == basetypes.CoinType_DefaultCoinType {
 			return fmt.Errorf("invalid cointype,not allow be default type")
 		}
 		h.CoinType = cointype
@@ -166,7 +166,7 @@ func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context
 			}
 			return nil
 		}
-		if revenuetype == basetypes.RevenueType_DefaultRevenueType.Enum() {
+		if *revenuetype == basetypes.RevenueType_DefaultRevenueType {
 			return fmt.Errorf("invalid revenuetype,not allow be default type")
 		}
 		h.RevenueType = revenuetype

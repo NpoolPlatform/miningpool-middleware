@@ -12,6 +12,35 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (s *Server) ExistCoin(ctx context.Context, in *npool.ExistCoinRequest) (*npool.ExistCoinResponse, error) {
+	handler, err := coin.NewHandler(
+		ctx,
+		coin.WithEntID(&in.EntID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistCoin",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	info, err := handler.ExistCoin(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistCoin",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistCoinResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.ExistCoinResponse{
+		Info: info,
+	}, nil
+}
+
 func (s *Server) ExistCoinConds(ctx context.Context, in *npool.ExistCoinCondsRequest) (*npool.ExistCoinCondsResponse, error) {
 	handler, err := coin.NewHandler(
 		ctx,

@@ -148,7 +148,7 @@ func SetQueryConds(q *ent.FractionQuery, conds *Conds) (*ent.FractionQuery, erro
 		}
 		switch conds.UserID.Op {
 		case cruder.EQ:
-			q.Where(fractionent.OrderUserID(userid))
+			q.Where(fractionent.UserID(userid))
 		default:
 			return nil, fmt.Errorf("invalid userid field")
 		}

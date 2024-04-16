@@ -12,6 +12,35 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (s *Server) ExistGoodUser(ctx context.Context, in *npool.ExistGoodUserRequest) (*npool.ExistGoodUserResponse, error) {
+	handler, err := gooduser.NewHandler(
+		ctx,
+		gooduser.WithEntID(&in.EntID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistGoodUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	info, err := handler.ExistGoodUser(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"ExistGoodUser",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.ExistGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.ExistGoodUserResponse{
+		Info: info,
+	}, nil
+}
+
 func (s *Server) ExistGoodUserConds(ctx context.Context, in *npool.ExistGoodUserCondsRequest) (*npool.ExistGoodUserCondsResponse, error) {
 	handler, err := gooduser.NewHandler(
 		ctx,

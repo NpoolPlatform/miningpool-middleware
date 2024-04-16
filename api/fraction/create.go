@@ -86,7 +86,7 @@ func fractionInPool(ctx context.Context, info *npool.FractionReq) (*npool.Fracti
 		return nil, err
 	}
 	if orderUser == nil {
-		return info, fmt.Errorf("have no orderuser,entid: %v", info.OrderUserID)
+		return info, fmt.Errorf("have no orderuser,entid: %v", *info.OrderUserID)
 	}
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
 	if err != nil {

@@ -129,7 +129,7 @@ func WithWithdrawState(withdrawstate *basetypes.WithdrawState, must bool) func(c
 			}
 			return nil
 		}
-		if withdrawstate == basetypes.WithdrawState_DefaultWithdrawState.Enum() {
+		if *withdrawstate == basetypes.WithdrawState_DefaultWithdrawState {
 			return fmt.Errorf("invalid withdrawstate,not allow be default type")
 		}
 		h.WithdrawState = withdrawstate

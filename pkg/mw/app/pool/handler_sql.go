@@ -126,10 +126,10 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 	if v, ok := vals[apppool.FieldAppID]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", apppool.FieldAppID, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", apppool.FieldAppID, v))
 	}
 	if v, ok := vals[apppool.FieldPoolID]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", apppool.FieldPoolID, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", apppool.FieldPoolID, v))
 	}
 
 	sql := fmt.Sprintf("update app_pools set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from app_pools as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",

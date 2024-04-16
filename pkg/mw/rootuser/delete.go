@@ -3,7 +3,6 @@ package rootuser
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
@@ -12,8 +11,6 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-
-	"github.com/google/uuid"
 )
 
 type deleteHandler struct {
@@ -34,10 +31,6 @@ func (h *deleteHandler) deleteRootUserBase(ctx context.Context, tx *ent.Tx) erro
 }
 
 func (h *Handler) DeleteRootUser(ctx context.Context) (*npool.RootUser, error) {
-	if h.ID == nil {
-		return nil, fmt.Errorf("invalid id")
-	}
-
 	info, err := h.GetRootUser(ctx)
 	if err != nil {
 		return nil, err
@@ -47,11 +40,7 @@ func (h *Handler) DeleteRootUser(ctx context.Context) (*npool.RootUser, error) {
 		return nil, nil
 	}
 
-	entID, err := uuid.Parse(info.EntID)
-	if err != nil {
-		return nil, err
-	}
-	h.EntID = &entID
+	h.ID = &info.ID
 	handler := &deleteHandler{
 		Handler: h,
 	}

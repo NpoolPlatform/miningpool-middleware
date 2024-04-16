@@ -25,13 +25,10 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 	}
 
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, err.Error())
-	}
 	handler, err := coin.NewHandler(
 		ctx,
-		coin.WithID(req.ID, true),
+		coin.WithID(req.ID, false),
+		coin.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

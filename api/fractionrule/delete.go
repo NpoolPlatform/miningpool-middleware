@@ -23,14 +23,12 @@ func (s *Server) DeleteFractionRule(ctx context.Context, in *npool.DeleteFractio
 		)
 		return &npool.DeleteFractionRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
+
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteFractionRuleResponse{}, status.Error(codes.Internal, err.Error())
-	}
 	handler, err := fractionrule.NewHandler(
 		ctx,
-		fractionrule.WithID(req.ID, true),
+		fractionrule.WithID(req.ID, false),
+		fractionrule.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

@@ -3,7 +3,6 @@ package orderuser
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
@@ -12,8 +11,6 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-
-	"github.com/google/uuid"
 )
 
 type deleteHandler struct {
@@ -34,10 +31,6 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 }
 
 func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error) {
-	if h.ID == nil {
-		return nil, fmt.Errorf("invalid id")
-	}
-
 	info, err := h.GetOrderUser(ctx)
 	if err != nil {
 		return nil, err
@@ -47,11 +40,7 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error)
 		return nil, nil
 	}
 
-	entID, err := uuid.Parse(info.EntID)
-	if err != nil {
-		return nil, err
-	}
-	h.EntID = &entID
+	h.ID = &info.ID
 	handler := &deleteHandler{
 		Handler: h,
 	}

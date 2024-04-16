@@ -87,11 +87,9 @@ func update(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithCoinType(&ret.CoinType, false),
 		WithRevenueType(&ret.RevenueType, false),
+		WithMiningpoolType(&ret.MiningpoolType, false),
 		WithHashRate(&ret.HashRate, false),
-		WithReadPageLink(nil, false),
 	)
 	assert.Nil(t, err)
 
@@ -107,14 +105,12 @@ func update(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
+	ret.HashRate = 6.18
 
 	handler, err = NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithCoinType(&ret.CoinType, false),
-		WithRevenueType(&ret.RevenueType, false),
+		WithHashRate(&ret.HashRate, false),
 		WithReadPageLink(nil, false),
 	)
 	assert.Nil(t, err)

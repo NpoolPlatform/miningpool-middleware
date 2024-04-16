@@ -25,13 +25,10 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 	}
 
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Internal, err.Error())
-	}
 	handler, err := gooduser.NewHandler(
 		ctx,
-		gooduser.WithID(req.ID, true),
+		gooduser.WithID(req.ID, false),
+		gooduser.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

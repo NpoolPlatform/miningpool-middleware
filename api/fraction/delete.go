@@ -25,13 +25,10 @@ func (s *Server) DeleteFraction(ctx context.Context, in *npool.DeleteFractionReq
 	}
 
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteFractionResponse{}, status.Error(codes.Internal, err.Error())
-	}
 	handler, err := fraction.NewHandler(
 		ctx,
-		fraction.WithID(req.ID, true),
+		fraction.WithID(req.ID, false),
+		fraction.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

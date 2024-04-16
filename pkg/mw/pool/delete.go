@@ -3,7 +3,6 @@ package pool
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
@@ -12,8 +11,6 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-
-	"github.com/google/uuid"
 )
 
 type deleteHandler struct {
@@ -34,10 +31,6 @@ func (h *deleteHandler) deletePoolBase(ctx context.Context, tx *ent.Tx) error {
 }
 
 func (h *Handler) DeletePool(ctx context.Context) (*npool.Pool, error) {
-	if h.ID == nil {
-		return nil, fmt.Errorf("invalid id")
-	}
-
 	info, err := h.GetPool(ctx)
 	if err != nil {
 		return nil, err
@@ -46,11 +39,7 @@ func (h *Handler) DeletePool(ctx context.Context) (*npool.Pool, error) {
 		return nil, nil
 	}
 
-	entID, err := uuid.Parse(info.EntID)
-	if err != nil {
-		return nil, err
-	}
-	h.EntID = &entID
+	h.ID = &info.ID
 	handler := &deleteHandler{
 		Handler: h,
 	}

@@ -166,10 +166,10 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 	if v, ok := vals[coin.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", coin.FieldMiningpoolType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", coin.FieldMiningpoolType, v))
 	}
 	if v, ok := vals[coin.FieldCoinType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", coin.FieldCoinType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", coin.FieldCoinType, v))
 	}
 
 	sql := fmt.Sprintf("update coins set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from coins as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",

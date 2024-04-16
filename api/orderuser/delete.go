@@ -25,14 +25,10 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 	}
 
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
 	handler, err := orderuser.NewHandler(
 		ctx,
-		orderuser.WithID(req.ID, true),
+		orderuser.WithID(req.ID, false),
+		orderuser.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

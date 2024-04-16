@@ -148,10 +148,10 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 	if v, ok := vals[fractionrule.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", fractionrule.FieldMiningpoolType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", fractionrule.FieldMiningpoolType, v))
 	}
 	if v, ok := vals[fractionrule.FieldCoinType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", fractionrule.FieldCoinType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", fractionrule.FieldCoinType, v))
 	}
 
 	sql := fmt.Sprintf("update fraction_rules set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from fraction_rules as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",

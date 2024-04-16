@@ -162,10 +162,10 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 	if v, ok := vals[gooduser.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", gooduser.FieldMiningpoolType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", gooduser.FieldMiningpoolType, v))
 	}
 	if v, ok := vals[gooduser.FieldName]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", gooduser.FieldName, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", gooduser.FieldName, v))
 	}
 
 	sql := fmt.Sprintf("update good_users set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from good_users as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
@@ -173,5 +173,7 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		strings.Join(idKeys, " AND "),
 		strings.Join(subQKeys, " AND "),
 	)
+
+	fmt.Println(sql)
 	return sql, nil
 }

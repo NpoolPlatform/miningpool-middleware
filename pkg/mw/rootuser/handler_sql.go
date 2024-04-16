@@ -155,13 +155,13 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 	if v, ok := vals[rootuser.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", rootuser.FieldMiningpoolType, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldMiningpoolType, v))
 	}
 	if v, ok := vals[rootuser.FieldName]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", rootuser.FieldName, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldName, v))
 	}
 	if v, ok := vals[rootuser.FieldEmail]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", rootuser.FieldEmail, v))
+		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldEmail, v))
 	}
 
 	sql := fmt.Sprintf("update root_users set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from root_users as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",

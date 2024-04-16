@@ -25,14 +25,10 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 	}
 
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, err.Error())
-	}
-
 	handler, err := rootuser.NewHandler(
 		ctx,
-		rootuser.WithID(req.ID, true),
+		rootuser.WithID(req.ID, false),
+		rootuser.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

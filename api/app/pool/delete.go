@@ -23,14 +23,12 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 		)
 		return &npool.DeletePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
+
 	req := in.GetInfo()
-	if req == nil || req.ID == nil {
-		err := fmt.Errorf("wrong id")
-		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, err.Error())
-	}
 	handler, err := pool.NewHandler(
 		ctx,
-		pool.WithID(req.ID, true),
+		pool.WithID(req.ID, false),
+		pool.WithEntID(req.EntID, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

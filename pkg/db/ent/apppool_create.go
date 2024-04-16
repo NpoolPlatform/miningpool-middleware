@@ -84,9 +84,25 @@ func (apc *AppPoolCreate) SetAppID(u uuid.UUID) *AppPoolCreate {
 	return apc
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (apc *AppPoolCreate) SetNillableAppID(u *uuid.UUID) *AppPoolCreate {
+	if u != nil {
+		apc.SetAppID(*u)
+	}
+	return apc
+}
+
 // SetPoolID sets the "pool_id" field.
 func (apc *AppPoolCreate) SetPoolID(u uuid.UUID) *AppPoolCreate {
 	apc.mutation.SetPoolID(u)
+	return apc
+}
+
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (apc *AppPoolCreate) SetNillablePoolID(u *uuid.UUID) *AppPoolCreate {
+	if u != nil {
+		apc.SetPoolID(*u)
+	}
 	return apc
 }
 
@@ -203,6 +219,20 @@ func (apc *AppPoolCreate) defaults() error {
 		v := apppool.DefaultEntID()
 		apc.mutation.SetEntID(v)
 	}
+	if _, ok := apc.mutation.AppID(); !ok {
+		if apppool.DefaultAppID == nil {
+			return fmt.Errorf("ent: uninitialized apppool.DefaultAppID (forgotten import ent/runtime?)")
+		}
+		v := apppool.DefaultAppID()
+		apc.mutation.SetAppID(v)
+	}
+	if _, ok := apc.mutation.PoolID(); !ok {
+		if apppool.DefaultPoolID == nil {
+			return fmt.Errorf("ent: uninitialized apppool.DefaultPoolID (forgotten import ent/runtime?)")
+		}
+		v := apppool.DefaultPoolID()
+		apc.mutation.SetPoolID(v)
+	}
 	return nil
 }
 
@@ -219,12 +249,6 @@ func (apc *AppPoolCreate) check() error {
 	}
 	if _, ok := apc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "AppPool.ent_id"`)}
-	}
-	if _, ok := apc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppPool.app_id"`)}
-	}
-	if _, ok := apc.mutation.PoolID(); !ok {
-		return &ValidationError{Name: "pool_id", err: errors.New(`ent: missing required field "AppPool.pool_id"`)}
 	}
 	return nil
 }
@@ -438,6 +462,12 @@ func (u *AppPoolUpsert) UpdateAppID() *AppPoolUpsert {
 	return u
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *AppPoolUpsert) ClearAppID() *AppPoolUpsert {
+	u.SetNull(apppool.FieldAppID)
+	return u
+}
+
 // SetPoolID sets the "pool_id" field.
 func (u *AppPoolUpsert) SetPoolID(v uuid.UUID) *AppPoolUpsert {
 	u.Set(apppool.FieldPoolID, v)
@@ -447,6 +477,12 @@ func (u *AppPoolUpsert) SetPoolID(v uuid.UUID) *AppPoolUpsert {
 // UpdatePoolID sets the "pool_id" field to the value that was provided on create.
 func (u *AppPoolUpsert) UpdatePoolID() *AppPoolUpsert {
 	u.SetExcluded(apppool.FieldPoolID)
+	return u
+}
+
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *AppPoolUpsert) ClearPoolID() *AppPoolUpsert {
+	u.SetNull(apppool.FieldPoolID)
 	return u
 }
 
@@ -589,6 +625,13 @@ func (u *AppPoolUpsertOne) UpdateAppID() *AppPoolUpsertOne {
 	})
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *AppPoolUpsertOne) ClearAppID() *AppPoolUpsertOne {
+	return u.Update(func(s *AppPoolUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetPoolID sets the "pool_id" field.
 func (u *AppPoolUpsertOne) SetPoolID(v uuid.UUID) *AppPoolUpsertOne {
 	return u.Update(func(s *AppPoolUpsert) {
@@ -600,6 +643,13 @@ func (u *AppPoolUpsertOne) SetPoolID(v uuid.UUID) *AppPoolUpsertOne {
 func (u *AppPoolUpsertOne) UpdatePoolID() *AppPoolUpsertOne {
 	return u.Update(func(s *AppPoolUpsert) {
 		s.UpdatePoolID()
+	})
+}
+
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *AppPoolUpsertOne) ClearPoolID() *AppPoolUpsertOne {
+	return u.Update(func(s *AppPoolUpsert) {
+		s.ClearPoolID()
 	})
 }
 
@@ -905,6 +955,13 @@ func (u *AppPoolUpsertBulk) UpdateAppID() *AppPoolUpsertBulk {
 	})
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *AppPoolUpsertBulk) ClearAppID() *AppPoolUpsertBulk {
+	return u.Update(func(s *AppPoolUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetPoolID sets the "pool_id" field.
 func (u *AppPoolUpsertBulk) SetPoolID(v uuid.UUID) *AppPoolUpsertBulk {
 	return u.Update(func(s *AppPoolUpsert) {
@@ -916,6 +973,13 @@ func (u *AppPoolUpsertBulk) SetPoolID(v uuid.UUID) *AppPoolUpsertBulk {
 func (u *AppPoolUpsertBulk) UpdatePoolID() *AppPoolUpsertBulk {
 	return u.Update(func(s *AppPoolUpsert) {
 		s.UpdatePoolID()
+	})
+}
+
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *AppPoolUpsertBulk) ClearPoolID() *AppPoolUpsertBulk {
+	return u.Update(func(s *AppPoolUpsert) {
+		s.ClearPoolID()
 	})
 }
 

@@ -104,9 +104,37 @@ func (fru *FractionRuleUpdate) SetMiningpoolType(s string) *FractionRuleUpdate {
 	return fru
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillableMiningpoolType(s *string) *FractionRuleUpdate {
+	if s != nil {
+		fru.SetMiningpoolType(*s)
+	}
+	return fru
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (fru *FractionRuleUpdate) ClearMiningpoolType() *FractionRuleUpdate {
+	fru.mutation.ClearMiningpoolType()
+	return fru
+}
+
 // SetCoinType sets the "coin_type" field.
 func (fru *FractionRuleUpdate) SetCoinType(s string) *FractionRuleUpdate {
 	fru.mutation.SetCoinType(s)
+	return fru
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillableCoinType(s *string) *FractionRuleUpdate {
+	if s != nil {
+		fru.SetCoinType(*s)
+	}
+	return fru
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (fru *FractionRuleUpdate) ClearCoinType() *FractionRuleUpdate {
+	fru.mutation.ClearCoinType()
 	return fru
 }
 
@@ -117,9 +145,23 @@ func (fru *FractionRuleUpdate) SetWithdrawInterval(u uint32) *FractionRuleUpdate
 	return fru
 }
 
+// SetNillableWithdrawInterval sets the "withdraw_interval" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillableWithdrawInterval(u *uint32) *FractionRuleUpdate {
+	if u != nil {
+		fru.SetWithdrawInterval(*u)
+	}
+	return fru
+}
+
 // AddWithdrawInterval adds u to the "withdraw_interval" field.
 func (fru *FractionRuleUpdate) AddWithdrawInterval(u int32) *FractionRuleUpdate {
 	fru.mutation.AddWithdrawInterval(u)
+	return fru
+}
+
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (fru *FractionRuleUpdate) ClearWithdrawInterval() *FractionRuleUpdate {
+	fru.mutation.ClearWithdrawInterval()
 	return fru
 }
 
@@ -130,9 +172,23 @@ func (fru *FractionRuleUpdate) SetMinAmount(f float32) *FractionRuleUpdate {
 	return fru
 }
 
+// SetNillableMinAmount sets the "min_amount" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillableMinAmount(f *float32) *FractionRuleUpdate {
+	if f != nil {
+		fru.SetMinAmount(*f)
+	}
+	return fru
+}
+
 // AddMinAmount adds f to the "min_amount" field.
 func (fru *FractionRuleUpdate) AddMinAmount(f float32) *FractionRuleUpdate {
 	fru.mutation.AddMinAmount(f)
+	return fru
+}
+
+// ClearMinAmount clears the value of the "min_amount" field.
+func (fru *FractionRuleUpdate) ClearMinAmount() *FractionRuleUpdate {
+	fru.mutation.ClearMinAmount()
 	return fru
 }
 
@@ -143,9 +199,23 @@ func (fru *FractionRuleUpdate) SetWithdrawRate(f float32) *FractionRuleUpdate {
 	return fru
 }
 
+// SetNillableWithdrawRate sets the "withdraw_rate" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillableWithdrawRate(f *float32) *FractionRuleUpdate {
+	if f != nil {
+		fru.SetWithdrawRate(*f)
+	}
+	return fru
+}
+
 // AddWithdrawRate adds f to the "withdraw_rate" field.
 func (fru *FractionRuleUpdate) AddWithdrawRate(f float32) *FractionRuleUpdate {
 	fru.mutation.AddWithdrawRate(f)
+	return fru
+}
+
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (fru *FractionRuleUpdate) ClearWithdrawRate() *FractionRuleUpdate {
+	fru.mutation.ClearWithdrawRate()
 	return fru
 }
 
@@ -303,10 +373,22 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fractionrule.FieldMiningpoolType,
 		})
 	}
+	if fru.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: fractionrule.FieldMiningpoolType,
+		})
+	}
 	if value, ok := fru.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: fractionrule.FieldCoinType,
+		})
+	}
+	if fru.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: fractionrule.FieldCoinType,
 		})
 	}
@@ -324,6 +406,12 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fractionrule.FieldWithdrawInterval,
 		})
 	}
+	if fru.mutation.WithdrawIntervalCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: fractionrule.FieldWithdrawInterval,
+		})
+	}
 	if value, ok := fru.mutation.MinAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -338,6 +426,12 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fractionrule.FieldMinAmount,
 		})
 	}
+	if fru.mutation.MinAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: fractionrule.FieldMinAmount,
+		})
+	}
 	if value, ok := fru.mutation.WithdrawRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -349,6 +443,12 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
 			Value:  value,
+			Column: fractionrule.FieldWithdrawRate,
+		})
+	}
+	if fru.mutation.WithdrawRateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
 			Column: fractionrule.FieldWithdrawRate,
 		})
 	}
@@ -448,9 +548,37 @@ func (fruo *FractionRuleUpdateOne) SetMiningpoolType(s string) *FractionRuleUpda
 	return fruo
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillableMiningpoolType(s *string) *FractionRuleUpdateOne {
+	if s != nil {
+		fruo.SetMiningpoolType(*s)
+	}
+	return fruo
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (fruo *FractionRuleUpdateOne) ClearMiningpoolType() *FractionRuleUpdateOne {
+	fruo.mutation.ClearMiningpoolType()
+	return fruo
+}
+
 // SetCoinType sets the "coin_type" field.
 func (fruo *FractionRuleUpdateOne) SetCoinType(s string) *FractionRuleUpdateOne {
 	fruo.mutation.SetCoinType(s)
+	return fruo
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillableCoinType(s *string) *FractionRuleUpdateOne {
+	if s != nil {
+		fruo.SetCoinType(*s)
+	}
+	return fruo
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (fruo *FractionRuleUpdateOne) ClearCoinType() *FractionRuleUpdateOne {
+	fruo.mutation.ClearCoinType()
 	return fruo
 }
 
@@ -461,9 +589,23 @@ func (fruo *FractionRuleUpdateOne) SetWithdrawInterval(u uint32) *FractionRuleUp
 	return fruo
 }
 
+// SetNillableWithdrawInterval sets the "withdraw_interval" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillableWithdrawInterval(u *uint32) *FractionRuleUpdateOne {
+	if u != nil {
+		fruo.SetWithdrawInterval(*u)
+	}
+	return fruo
+}
+
 // AddWithdrawInterval adds u to the "withdraw_interval" field.
 func (fruo *FractionRuleUpdateOne) AddWithdrawInterval(u int32) *FractionRuleUpdateOne {
 	fruo.mutation.AddWithdrawInterval(u)
+	return fruo
+}
+
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (fruo *FractionRuleUpdateOne) ClearWithdrawInterval() *FractionRuleUpdateOne {
+	fruo.mutation.ClearWithdrawInterval()
 	return fruo
 }
 
@@ -474,9 +616,23 @@ func (fruo *FractionRuleUpdateOne) SetMinAmount(f float32) *FractionRuleUpdateOn
 	return fruo
 }
 
+// SetNillableMinAmount sets the "min_amount" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillableMinAmount(f *float32) *FractionRuleUpdateOne {
+	if f != nil {
+		fruo.SetMinAmount(*f)
+	}
+	return fruo
+}
+
 // AddMinAmount adds f to the "min_amount" field.
 func (fruo *FractionRuleUpdateOne) AddMinAmount(f float32) *FractionRuleUpdateOne {
 	fruo.mutation.AddMinAmount(f)
+	return fruo
+}
+
+// ClearMinAmount clears the value of the "min_amount" field.
+func (fruo *FractionRuleUpdateOne) ClearMinAmount() *FractionRuleUpdateOne {
+	fruo.mutation.ClearMinAmount()
 	return fruo
 }
 
@@ -487,9 +643,23 @@ func (fruo *FractionRuleUpdateOne) SetWithdrawRate(f float32) *FractionRuleUpdat
 	return fruo
 }
 
+// SetNillableWithdrawRate sets the "withdraw_rate" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillableWithdrawRate(f *float32) *FractionRuleUpdateOne {
+	if f != nil {
+		fruo.SetWithdrawRate(*f)
+	}
+	return fruo
+}
+
 // AddWithdrawRate adds f to the "withdraw_rate" field.
 func (fruo *FractionRuleUpdateOne) AddWithdrawRate(f float32) *FractionRuleUpdateOne {
 	fruo.mutation.AddWithdrawRate(f)
+	return fruo
+}
+
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (fruo *FractionRuleUpdateOne) ClearWithdrawRate() *FractionRuleUpdateOne {
+	fruo.mutation.ClearWithdrawRate()
 	return fruo
 }
 
@@ -677,10 +847,22 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 			Column: fractionrule.FieldMiningpoolType,
 		})
 	}
+	if fruo.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: fractionrule.FieldMiningpoolType,
+		})
+	}
 	if value, ok := fruo.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: fractionrule.FieldCoinType,
+		})
+	}
+	if fruo.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: fractionrule.FieldCoinType,
 		})
 	}
@@ -698,6 +880,12 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 			Column: fractionrule.FieldWithdrawInterval,
 		})
 	}
+	if fruo.mutation.WithdrawIntervalCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: fractionrule.FieldWithdrawInterval,
+		})
+	}
 	if value, ok := fruo.mutation.MinAmount(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -712,6 +900,12 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 			Column: fractionrule.FieldMinAmount,
 		})
 	}
+	if fruo.mutation.MinAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
+			Column: fractionrule.FieldMinAmount,
+		})
+	}
 	if value, ok := fruo.mutation.WithdrawRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -723,6 +917,12 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
 			Value:  value,
+			Column: fractionrule.FieldWithdrawRate,
+		})
+	}
+	if fruo.mutation.WithdrawRateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeFloat32,
 			Column: fractionrule.FieldWithdrawRate,
 		})
 	}

@@ -67,4 +67,8 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultAppID holds the default value on creation for the "app_id" field.
+	DefaultAppID func() uuid.UUID
+	// DefaultPoolID holds the default value on creation for the "pool_id" field.
+	DefaultPoolID func() uuid.UUID
 )

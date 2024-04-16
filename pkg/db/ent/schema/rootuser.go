@@ -23,15 +23,17 @@ func (RootUser) Mixin() []ent.Mixin {
 func (RootUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("name"),
+			String("name").Optional().Default(""),
 		field.
-			String("miningpool_type"),
+			String("miningpool_type").Optional().Default(""),
 		field.
 			String("email").Optional().Default(""),
 		field.
-			String("auth_token"),
+			Text("auth_token").Optional().Default(""),
 		field.
-			Bool("authed"),
+			Text("auth_token_salt").Optional().Default(""),
+		field.
+			Bool("authed").Optional().Default(false),
 		field.
 			String("remark").Optional().Default(""),
 	}

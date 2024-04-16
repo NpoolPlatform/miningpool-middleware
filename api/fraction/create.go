@@ -92,7 +92,7 @@ func fractionInPool(ctx context.Context, info *npool.FractionReq) (*npool.Fracti
 	if err != nil {
 		return nil, err
 	}
-	rootUser, err := rootuserH.GetRootUser(ctx)
+	rootUser, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
 		return nil, err
 	}

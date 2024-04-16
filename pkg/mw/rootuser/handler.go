@@ -23,6 +23,7 @@ type Handler struct {
 	MiningpoolType *basetypes.MiningpoolType
 	Email          *string
 	AuthToken      *string
+	AuthTokenSalt  *string
 	Authed         *bool
 	Remark         *string
 	Reqs           []*rootusercrud.Req
@@ -129,7 +130,7 @@ func WithAuthToken(authtoken *string, must bool) func(context.Context, *Handler)
 			return nil
 		}
 		h.AuthToken = authtoken
-		return nil
+		return h.withAuthTokenEncrypt()
 	}
 }
 

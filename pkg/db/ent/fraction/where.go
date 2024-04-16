@@ -476,6 +476,20 @@ func AppIDLTE(v uuid.UUID) predicate.Fraction {
 	})
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAppID)))
+	})
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAppID)))
+	})
+}
+
 // UserIDEQ applies the EQ predicate on the "user_id" field.
 func UserIDEQ(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
@@ -540,6 +554,20 @@ func UserIDLTE(v uuid.UUID) predicate.Fraction {
 	})
 }
 
+// UserIDIsNil applies the IsNil predicate on the "user_id" field.
+func UserIDIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldUserID)))
+	})
+}
+
+// UserIDNotNil applies the NotNil predicate on the "user_id" field.
+func UserIDNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldUserID)))
+	})
+}
+
 // OrderUserIDEQ applies the EQ predicate on the "order_user_id" field.
 func OrderUserIDEQ(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
@@ -601,6 +629,20 @@ func OrderUserIDLT(v uuid.UUID) predicate.Fraction {
 func OrderUserIDLTE(v uuid.UUID) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldOrderUserID), v))
+	})
+}
+
+// OrderUserIDIsNil applies the IsNil predicate on the "order_user_id" field.
+func OrderUserIDIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldOrderUserID)))
+	})
+}
+
+// OrderUserIDNotNil applies the NotNil predicate on the "order_user_id" field.
+func OrderUserIDNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldOrderUserID)))
 	})
 }
 
@@ -689,6 +731,20 @@ func WithdrawStateHasSuffix(v string) predicate.Fraction {
 	})
 }
 
+// WithdrawStateIsNil applies the IsNil predicate on the "withdraw_state" field.
+func WithdrawStateIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldWithdrawState)))
+	})
+}
+
+// WithdrawStateNotNil applies the NotNil predicate on the "withdraw_state" field.
+func WithdrawStateNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldWithdrawState)))
+	})
+}
+
 // WithdrawStateEqualFold applies the EqualFold predicate on the "withdraw_state" field.
 func WithdrawStateEqualFold(v string) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
@@ -764,6 +820,20 @@ func WithdrawTimeLT(v uint32) predicate.Fraction {
 func WithdrawTimeLTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldWithdrawTime), v))
+	})
+}
+
+// WithdrawTimeIsNil applies the IsNil predicate on the "withdraw_time" field.
+func WithdrawTimeIsNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldWithdrawTime)))
+	})
+}
+
+// WithdrawTimeNotNil applies the NotNil predicate on the "withdraw_time" field.
+func WithdrawTimeNotNil() predicate.Fraction {
+	return predicate.Fraction(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldWithdrawTime)))
 	})
 }
 

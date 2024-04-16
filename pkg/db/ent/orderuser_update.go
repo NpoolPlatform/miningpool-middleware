@@ -104,9 +104,37 @@ func (ouu *OrderUserUpdate) SetRootUserID(u uuid.UUID) *OrderUserUpdate {
 	return ouu
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableRootUserID(u *uuid.UUID) *OrderUserUpdate {
+	if u != nil {
+		ouu.SetRootUserID(*u)
+	}
+	return ouu
+}
+
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (ouu *OrderUserUpdate) ClearRootUserID() *OrderUserUpdate {
+	ouu.mutation.ClearRootUserID()
+	return ouu
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (ouu *OrderUserUpdate) SetGoodUserID(u uuid.UUID) *OrderUserUpdate {
 	ouu.mutation.SetGoodUserID(u)
+	return ouu
+}
+
+// SetNillableGoodUserID sets the "good_user_id" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableGoodUserID(u *uuid.UUID) *OrderUserUpdate {
+	if u != nil {
+		ouu.SetGoodUserID(*u)
+	}
+	return ouu
+}
+
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (ouu *OrderUserUpdate) ClearGoodUserID() *OrderUserUpdate {
+	ouu.mutation.ClearGoodUserID()
 	return ouu
 }
 
@@ -116,9 +144,37 @@ func (ouu *OrderUserUpdate) SetUserID(u uuid.UUID) *OrderUserUpdate {
 	return ouu
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableUserID(u *uuid.UUID) *OrderUserUpdate {
+	if u != nil {
+		ouu.SetUserID(*u)
+	}
+	return ouu
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (ouu *OrderUserUpdate) ClearUserID() *OrderUserUpdate {
+	ouu.mutation.ClearUserID()
+	return ouu
+}
+
 // SetAppID sets the "app_id" field.
 func (ouu *OrderUserUpdate) SetAppID(u uuid.UUID) *OrderUserUpdate {
 	ouu.mutation.SetAppID(u)
+	return ouu
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableAppID(u *uuid.UUID) *OrderUserUpdate {
+	if u != nil {
+		ouu.SetAppID(*u)
+	}
+	return ouu
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (ouu *OrderUserUpdate) ClearAppID() *OrderUserUpdate {
+	ouu.mutation.ClearAppID()
 	return ouu
 }
 
@@ -128,15 +184,57 @@ func (ouu *OrderUserUpdate) SetName(s string) *OrderUserUpdate {
 	return ouu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableName(s *string) *OrderUserUpdate {
+	if s != nil {
+		ouu.SetName(*s)
+	}
+	return ouu
+}
+
+// ClearName clears the value of the "name" field.
+func (ouu *OrderUserUpdate) ClearName() *OrderUserUpdate {
+	ouu.mutation.ClearName()
+	return ouu
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ouu *OrderUserUpdate) SetMiningpoolType(s string) *OrderUserUpdate {
 	ouu.mutation.SetMiningpoolType(s)
 	return ouu
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableMiningpoolType(s *string) *OrderUserUpdate {
+	if s != nil {
+		ouu.SetMiningpoolType(*s)
+	}
+	return ouu
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (ouu *OrderUserUpdate) ClearMiningpoolType() *OrderUserUpdate {
+	ouu.mutation.ClearMiningpoolType()
+	return ouu
+}
+
 // SetCoinType sets the "coin_type" field.
 func (ouu *OrderUserUpdate) SetCoinType(s string) *OrderUserUpdate {
 	ouu.mutation.SetCoinType(s)
+	return ouu
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableCoinType(s *string) *OrderUserUpdate {
+	if s != nil {
+		ouu.SetCoinType(*s)
+	}
+	return ouu
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (ouu *OrderUserUpdate) ClearCoinType() *OrderUserUpdate {
+	ouu.mutation.ClearCoinType()
 	return ouu
 }
 
@@ -190,6 +288,20 @@ func (ouu *OrderUserUpdate) ClearRevenueAddress() *OrderUserUpdate {
 // SetReadPageLink sets the "read_page_link" field.
 func (ouu *OrderUserUpdate) SetReadPageLink(s string) *OrderUserUpdate {
 	ouu.mutation.SetReadPageLink(s)
+	return ouu
+}
+
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (ouu *OrderUserUpdate) SetNillableReadPageLink(s *string) *OrderUserUpdate {
+	if s != nil {
+		ouu.SetReadPageLink(*s)
+	}
+	return ouu
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (ouu *OrderUserUpdate) ClearReadPageLink() *OrderUserUpdate {
+	ouu.mutation.ClearReadPageLink()
 	return ouu
 }
 
@@ -367,10 +479,22 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldRootUserID,
 		})
 	}
+	if ouu.mutation.RootUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: orderuser.FieldRootUserID,
+		})
+	}
 	if value, ok := ouu.mutation.GoodUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: orderuser.FieldGoodUserID,
+		})
+	}
+	if ouu.mutation.GoodUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: orderuser.FieldGoodUserID,
 		})
 	}
@@ -381,10 +505,22 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldUserID,
 		})
 	}
+	if ouu.mutation.UserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: orderuser.FieldUserID,
+		})
+	}
 	if value, ok := ouu.mutation.AppID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: orderuser.FieldAppID,
+		})
+	}
+	if ouu.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: orderuser.FieldAppID,
 		})
 	}
@@ -395,6 +531,12 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldName,
 		})
 	}
+	if ouu.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: orderuser.FieldName,
+		})
+	}
 	if value, ok := ouu.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -402,10 +544,22 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldMiningpoolType,
 		})
 	}
+	if ouu.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: orderuser.FieldMiningpoolType,
+		})
+	}
 	if value, ok := ouu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldCoinType,
+		})
+	}
+	if ouu.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldCoinType,
 		})
 	}
@@ -446,6 +600,12 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldReadPageLink,
+		})
+	}
+	if ouu.mutation.ReadPageLinkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldReadPageLink,
 		})
 	}
@@ -558,9 +718,37 @@ func (ouuo *OrderUserUpdateOne) SetRootUserID(u uuid.UUID) *OrderUserUpdateOne {
 	return ouuo
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableRootUserID(u *uuid.UUID) *OrderUserUpdateOne {
+	if u != nil {
+		ouuo.SetRootUserID(*u)
+	}
+	return ouuo
+}
+
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (ouuo *OrderUserUpdateOne) ClearRootUserID() *OrderUserUpdateOne {
+	ouuo.mutation.ClearRootUserID()
+	return ouuo
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (ouuo *OrderUserUpdateOne) SetGoodUserID(u uuid.UUID) *OrderUserUpdateOne {
 	ouuo.mutation.SetGoodUserID(u)
+	return ouuo
+}
+
+// SetNillableGoodUserID sets the "good_user_id" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableGoodUserID(u *uuid.UUID) *OrderUserUpdateOne {
+	if u != nil {
+		ouuo.SetGoodUserID(*u)
+	}
+	return ouuo
+}
+
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (ouuo *OrderUserUpdateOne) ClearGoodUserID() *OrderUserUpdateOne {
+	ouuo.mutation.ClearGoodUserID()
 	return ouuo
 }
 
@@ -570,9 +758,37 @@ func (ouuo *OrderUserUpdateOne) SetUserID(u uuid.UUID) *OrderUserUpdateOne {
 	return ouuo
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableUserID(u *uuid.UUID) *OrderUserUpdateOne {
+	if u != nil {
+		ouuo.SetUserID(*u)
+	}
+	return ouuo
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (ouuo *OrderUserUpdateOne) ClearUserID() *OrderUserUpdateOne {
+	ouuo.mutation.ClearUserID()
+	return ouuo
+}
+
 // SetAppID sets the "app_id" field.
 func (ouuo *OrderUserUpdateOne) SetAppID(u uuid.UUID) *OrderUserUpdateOne {
 	ouuo.mutation.SetAppID(u)
+	return ouuo
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableAppID(u *uuid.UUID) *OrderUserUpdateOne {
+	if u != nil {
+		ouuo.SetAppID(*u)
+	}
+	return ouuo
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (ouuo *OrderUserUpdateOne) ClearAppID() *OrderUserUpdateOne {
+	ouuo.mutation.ClearAppID()
 	return ouuo
 }
 
@@ -582,15 +798,57 @@ func (ouuo *OrderUserUpdateOne) SetName(s string) *OrderUserUpdateOne {
 	return ouuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableName(s *string) *OrderUserUpdateOne {
+	if s != nil {
+		ouuo.SetName(*s)
+	}
+	return ouuo
+}
+
+// ClearName clears the value of the "name" field.
+func (ouuo *OrderUserUpdateOne) ClearName() *OrderUserUpdateOne {
+	ouuo.mutation.ClearName()
+	return ouuo
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ouuo *OrderUserUpdateOne) SetMiningpoolType(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetMiningpoolType(s)
 	return ouuo
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableMiningpoolType(s *string) *OrderUserUpdateOne {
+	if s != nil {
+		ouuo.SetMiningpoolType(*s)
+	}
+	return ouuo
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (ouuo *OrderUserUpdateOne) ClearMiningpoolType() *OrderUserUpdateOne {
+	ouuo.mutation.ClearMiningpoolType()
+	return ouuo
+}
+
 // SetCoinType sets the "coin_type" field.
 func (ouuo *OrderUserUpdateOne) SetCoinType(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetCoinType(s)
+	return ouuo
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableCoinType(s *string) *OrderUserUpdateOne {
+	if s != nil {
+		ouuo.SetCoinType(*s)
+	}
+	return ouuo
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (ouuo *OrderUserUpdateOne) ClearCoinType() *OrderUserUpdateOne {
+	ouuo.mutation.ClearCoinType()
 	return ouuo
 }
 
@@ -644,6 +902,20 @@ func (ouuo *OrderUserUpdateOne) ClearRevenueAddress() *OrderUserUpdateOne {
 // SetReadPageLink sets the "read_page_link" field.
 func (ouuo *OrderUserUpdateOne) SetReadPageLink(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetReadPageLink(s)
+	return ouuo
+}
+
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (ouuo *OrderUserUpdateOne) SetNillableReadPageLink(s *string) *OrderUserUpdateOne {
+	if s != nil {
+		ouuo.SetReadPageLink(*s)
+	}
+	return ouuo
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (ouuo *OrderUserUpdateOne) ClearReadPageLink() *OrderUserUpdateOne {
+	ouuo.mutation.ClearReadPageLink()
 	return ouuo
 }
 
@@ -851,10 +1123,22 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldRootUserID,
 		})
 	}
+	if ouuo.mutation.RootUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: orderuser.FieldRootUserID,
+		})
+	}
 	if value, ok := ouuo.mutation.GoodUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: orderuser.FieldGoodUserID,
+		})
+	}
+	if ouuo.mutation.GoodUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: orderuser.FieldGoodUserID,
 		})
 	}
@@ -865,10 +1149,22 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldUserID,
 		})
 	}
+	if ouuo.mutation.UserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: orderuser.FieldUserID,
+		})
+	}
 	if value, ok := ouuo.mutation.AppID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: orderuser.FieldAppID,
+		})
+	}
+	if ouuo.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: orderuser.FieldAppID,
 		})
 	}
@@ -879,6 +1175,12 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldName,
 		})
 	}
+	if ouuo.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: orderuser.FieldName,
+		})
+	}
 	if value, ok := ouuo.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -886,10 +1188,22 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldMiningpoolType,
 		})
 	}
+	if ouuo.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: orderuser.FieldMiningpoolType,
+		})
+	}
 	if value, ok := ouuo.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldCoinType,
+		})
+	}
+	if ouuo.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldCoinType,
 		})
 	}
@@ -930,6 +1244,12 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: orderuser.FieldReadPageLink,
+		})
+	}
+	if ouuo.mutation.ReadPageLinkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: orderuser.FieldReadPageLink,
 		})
 	}

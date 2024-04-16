@@ -25,25 +25,41 @@ func (OrderUser) Mixin() []ent.Mixin {
 func (OrderUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("root_user_id", uuid.UUID{}),
+			UUID("root_user_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			UUID("good_user_id", uuid.UUID{}),
+			UUID("good_user_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			UUID("user_id", uuid.UUID{}),
+			UUID("user_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			UUID("app_id", uuid.UUID{}),
+			UUID("app_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			String("name"),
+			String("name").Optional().Default(""),
 		field.
-			String("miningpool_type"),
+			String("miningpool_type").Optional().Default(""),
 		field.
-			String("coin_type"),
+			String("coin_type").Optional().Default(""),
 		field.
 			Float32("proportion").Optional().Default(0),
 		field.
 			String("revenue_address").Optional().Default(""),
 		field.
-			String("read_page_link"),
+			Text("read_page_link").Optional().Default(""),
 		field.
 			Bool("auto_pay").Optional().Default(false),
 	}

@@ -476,6 +476,20 @@ func RootUserIDLTE(v uuid.UUID) predicate.GoodUser {
 	})
 }
 
+// RootUserIDIsNil applies the IsNil predicate on the "root_user_id" field.
+func RootUserIDIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRootUserID)))
+	})
+}
+
+// RootUserIDNotNil applies the NotNil predicate on the "root_user_id" field.
+func RootUserIDNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRootUserID)))
+	})
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -558,6 +572,20 @@ func NameHasPrefix(v string) predicate.GoodUser {
 func NameHasSuffix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldName), v))
+	})
+}
+
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldName)))
+	})
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldName)))
 	})
 }
 
@@ -660,6 +688,20 @@ func MiningpoolTypeHasSuffix(v string) predicate.GoodUser {
 	})
 }
 
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+	})
+}
+
 // MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
 func MiningpoolTypeEqualFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -756,6 +798,20 @@ func CoinTypeHasPrefix(v string) predicate.GoodUser {
 func CoinTypeHasSuffix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
+func CoinTypeIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldCoinType)))
+	})
+}
+
+// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
+func CoinTypeNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldCoinType)))
 	})
 }
 
@@ -936,6 +992,20 @@ func ReadPageLinkHasSuffix(v string) predicate.GoodUser {
 	})
 }
 
+// ReadPageLinkIsNil applies the IsNil predicate on the "read_page_link" field.
+func ReadPageLinkIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldReadPageLink)))
+	})
+}
+
+// ReadPageLinkNotNil applies the NotNil predicate on the "read_page_link" field.
+func ReadPageLinkNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldReadPageLink)))
+	})
+}
+
 // ReadPageLinkEqualFold applies the EqualFold predicate on the "read_page_link" field.
 func ReadPageLinkEqualFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -1032,6 +1102,20 @@ func RevenueTypeHasPrefix(v string) predicate.GoodUser {
 func RevenueTypeHasSuffix(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeIsNil applies the IsNil predicate on the "revenue_type" field.
+func RevenueTypeIsNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRevenueType)))
+	})
+}
+
+// RevenueTypeNotNil applies the NotNil predicate on the "revenue_type" field.
+func RevenueTypeNotNil() predicate.GoodUser {
+	return predicate.GoodUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRevenueType)))
 	})
 }
 

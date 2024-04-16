@@ -104,9 +104,37 @@ func (apu *AppPoolUpdate) SetAppID(u uuid.UUID) *AppPoolUpdate {
 	return apu
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (apu *AppPoolUpdate) SetNillableAppID(u *uuid.UUID) *AppPoolUpdate {
+	if u != nil {
+		apu.SetAppID(*u)
+	}
+	return apu
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (apu *AppPoolUpdate) ClearAppID() *AppPoolUpdate {
+	apu.mutation.ClearAppID()
+	return apu
+}
+
 // SetPoolID sets the "pool_id" field.
 func (apu *AppPoolUpdate) SetPoolID(u uuid.UUID) *AppPoolUpdate {
 	apu.mutation.SetPoolID(u)
+	return apu
+}
+
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (apu *AppPoolUpdate) SetNillablePoolID(u *uuid.UUID) *AppPoolUpdate {
+	if u != nil {
+		apu.SetPoolID(*u)
+	}
+	return apu
+}
+
+// ClearPoolID clears the value of the "pool_id" field.
+func (apu *AppPoolUpdate) ClearPoolID() *AppPoolUpdate {
+	apu.mutation.ClearPoolID()
 	return apu
 }
 
@@ -264,10 +292,22 @@ func (apu *AppPoolUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: apppool.FieldAppID,
 		})
 	}
+	if apu.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: apppool.FieldAppID,
+		})
+	}
 	if value, ok := apu.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: apppool.FieldPoolID,
+		})
+	}
+	if apu.mutation.PoolIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: apppool.FieldPoolID,
 		})
 	}
@@ -367,9 +407,37 @@ func (apuo *AppPoolUpdateOne) SetAppID(u uuid.UUID) *AppPoolUpdateOne {
 	return apuo
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (apuo *AppPoolUpdateOne) SetNillableAppID(u *uuid.UUID) *AppPoolUpdateOne {
+	if u != nil {
+		apuo.SetAppID(*u)
+	}
+	return apuo
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (apuo *AppPoolUpdateOne) ClearAppID() *AppPoolUpdateOne {
+	apuo.mutation.ClearAppID()
+	return apuo
+}
+
 // SetPoolID sets the "pool_id" field.
 func (apuo *AppPoolUpdateOne) SetPoolID(u uuid.UUID) *AppPoolUpdateOne {
 	apuo.mutation.SetPoolID(u)
+	return apuo
+}
+
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (apuo *AppPoolUpdateOne) SetNillablePoolID(u *uuid.UUID) *AppPoolUpdateOne {
+	if u != nil {
+		apuo.SetPoolID(*u)
+	}
+	return apuo
+}
+
+// ClearPoolID clears the value of the "pool_id" field.
+func (apuo *AppPoolUpdateOne) ClearPoolID() *AppPoolUpdateOne {
+	apuo.mutation.ClearPoolID()
 	return apuo
 }
 
@@ -557,10 +625,22 @@ func (apuo *AppPoolUpdateOne) sqlSave(ctx context.Context) (_node *AppPool, err 
 			Column: apppool.FieldAppID,
 		})
 	}
+	if apuo.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: apppool.FieldAppID,
+		})
+	}
 	if value, ok := apuo.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: apppool.FieldPoolID,
+		})
+	}
+	if apuo.mutation.PoolIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: apppool.FieldPoolID,
 		})
 	}

@@ -28,6 +28,8 @@ const (
 	FieldEmail = "email"
 	// FieldAuthToken holds the string denoting the auth_token field in the database.
 	FieldAuthToken = "auth_token"
+	// FieldAuthTokenSalt holds the string denoting the auth_token_salt field in the database.
+	FieldAuthTokenSalt = "auth_token_salt"
 	// FieldAuthed holds the string denoting the authed field in the database.
 	FieldAuthed = "authed"
 	// FieldRemark holds the string denoting the remark field in the database.
@@ -47,6 +49,7 @@ var Columns = []string{
 	FieldMiningpoolType,
 	FieldEmail,
 	FieldAuthToken,
+	FieldAuthTokenSalt,
 	FieldAuthed,
 	FieldRemark,
 }
@@ -79,8 +82,18 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName string
+	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
+	DefaultMiningpoolType string
 	// DefaultEmail holds the default value on creation for the "email" field.
 	DefaultEmail string
+	// DefaultAuthToken holds the default value on creation for the "auth_token" field.
+	DefaultAuthToken string
+	// DefaultAuthTokenSalt holds the default value on creation for the "auth_token_salt" field.
+	DefaultAuthTokenSalt string
+	// DefaultAuthed holds the default value on creation for the "authed" field.
+	DefaultAuthed bool
 	// DefaultRemark holds the default value on creation for the "remark" field.
 	DefaultRemark string
 )

@@ -504,6 +504,20 @@ func RootUserIDLTE(v uuid.UUID) predicate.OrderUser {
 	})
 }
 
+// RootUserIDIsNil applies the IsNil predicate on the "root_user_id" field.
+func RootUserIDIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRootUserID)))
+	})
+}
+
+// RootUserIDNotNil applies the NotNil predicate on the "root_user_id" field.
+func RootUserIDNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRootUserID)))
+	})
+}
+
 // GoodUserIDEQ applies the EQ predicate on the "good_user_id" field.
 func GoodUserIDEQ(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -565,6 +579,20 @@ func GoodUserIDLT(v uuid.UUID) predicate.OrderUser {
 func GoodUserIDLTE(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldGoodUserID), v))
+	})
+}
+
+// GoodUserIDIsNil applies the IsNil predicate on the "good_user_id" field.
+func GoodUserIDIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldGoodUserID)))
+	})
+}
+
+// GoodUserIDNotNil applies the NotNil predicate on the "good_user_id" field.
+func GoodUserIDNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldGoodUserID)))
 	})
 }
 
@@ -632,6 +660,20 @@ func UserIDLTE(v uuid.UUID) predicate.OrderUser {
 	})
 }
 
+// UserIDIsNil applies the IsNil predicate on the "user_id" field.
+func UserIDIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldUserID)))
+	})
+}
+
+// UserIDNotNil applies the NotNil predicate on the "user_id" field.
+func UserIDNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldUserID)))
+	})
+}
+
 // AppIDEQ applies the EQ predicate on the "app_id" field.
 func AppIDEQ(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -693,6 +735,20 @@ func AppIDLT(v uuid.UUID) predicate.OrderUser {
 func AppIDLTE(v uuid.UUID) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldAppID), v))
+	})
+}
+
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAppID)))
+	})
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAppID)))
 	})
 }
 
@@ -778,6 +834,20 @@ func NameHasPrefix(v string) predicate.OrderUser {
 func NameHasSuffix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldName), v))
+	})
+}
+
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldName)))
+	})
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldName)))
 	})
 }
 
@@ -880,6 +950,20 @@ func MiningpoolTypeHasSuffix(v string) predicate.OrderUser {
 	})
 }
 
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+	})
+}
+
 // MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
 func MiningpoolTypeEqualFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -976,6 +1060,20 @@ func CoinTypeHasPrefix(v string) predicate.OrderUser {
 func CoinTypeHasSuffix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
+func CoinTypeIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldCoinType)))
+	})
+}
+
+// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
+func CoinTypeNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldCoinType)))
 	})
 }
 
@@ -1266,6 +1364,20 @@ func ReadPageLinkHasPrefix(v string) predicate.OrderUser {
 func ReadPageLinkHasSuffix(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldReadPageLink), v))
+	})
+}
+
+// ReadPageLinkIsNil applies the IsNil predicate on the "read_page_link" field.
+func ReadPageLinkIsNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldReadPageLink)))
+	})
+}
+
+// ReadPageLinkNotNil applies the NotNil predicate on the "read_page_link" field.
+func ReadPageLinkNotNil() predicate.OrderUser {
+	return predicate.OrderUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldReadPageLink)))
 	})
 }
 

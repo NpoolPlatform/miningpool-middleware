@@ -84,9 +84,25 @@ func (ouc *OrderUserCreate) SetRootUserID(u uuid.UUID) *OrderUserCreate {
 	return ouc
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableRootUserID(u *uuid.UUID) *OrderUserCreate {
+	if u != nil {
+		ouc.SetRootUserID(*u)
+	}
+	return ouc
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (ouc *OrderUserCreate) SetGoodUserID(u uuid.UUID) *OrderUserCreate {
 	ouc.mutation.SetGoodUserID(u)
+	return ouc
+}
+
+// SetNillableGoodUserID sets the "good_user_id" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableGoodUserID(u *uuid.UUID) *OrderUserCreate {
+	if u != nil {
+		ouc.SetGoodUserID(*u)
+	}
 	return ouc
 }
 
@@ -96,9 +112,25 @@ func (ouc *OrderUserCreate) SetUserID(u uuid.UUID) *OrderUserCreate {
 	return ouc
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableUserID(u *uuid.UUID) *OrderUserCreate {
+	if u != nil {
+		ouc.SetUserID(*u)
+	}
+	return ouc
+}
+
 // SetAppID sets the "app_id" field.
 func (ouc *OrderUserCreate) SetAppID(u uuid.UUID) *OrderUserCreate {
 	ouc.mutation.SetAppID(u)
+	return ouc
+}
+
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableAppID(u *uuid.UUID) *OrderUserCreate {
+	if u != nil {
+		ouc.SetAppID(*u)
+	}
 	return ouc
 }
 
@@ -108,15 +140,39 @@ func (ouc *OrderUserCreate) SetName(s string) *OrderUserCreate {
 	return ouc
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableName(s *string) *OrderUserCreate {
+	if s != nil {
+		ouc.SetName(*s)
+	}
+	return ouc
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ouc *OrderUserCreate) SetMiningpoolType(s string) *OrderUserCreate {
 	ouc.mutation.SetMiningpoolType(s)
 	return ouc
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableMiningpoolType(s *string) *OrderUserCreate {
+	if s != nil {
+		ouc.SetMiningpoolType(*s)
+	}
+	return ouc
+}
+
 // SetCoinType sets the "coin_type" field.
 func (ouc *OrderUserCreate) SetCoinType(s string) *OrderUserCreate {
 	ouc.mutation.SetCoinType(s)
+	return ouc
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableCoinType(s *string) *OrderUserCreate {
+	if s != nil {
+		ouc.SetCoinType(*s)
+	}
 	return ouc
 }
 
@@ -151,6 +207,14 @@ func (ouc *OrderUserCreate) SetNillableRevenueAddress(s *string) *OrderUserCreat
 // SetReadPageLink sets the "read_page_link" field.
 func (ouc *OrderUserCreate) SetReadPageLink(s string) *OrderUserCreate {
 	ouc.mutation.SetReadPageLink(s)
+	return ouc
+}
+
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (ouc *OrderUserCreate) SetNillableReadPageLink(s *string) *OrderUserCreate {
+	if s != nil {
+		ouc.SetReadPageLink(*s)
+	}
 	return ouc
 }
 
@@ -281,6 +345,46 @@ func (ouc *OrderUserCreate) defaults() error {
 		v := orderuser.DefaultEntID()
 		ouc.mutation.SetEntID(v)
 	}
+	if _, ok := ouc.mutation.RootUserID(); !ok {
+		if orderuser.DefaultRootUserID == nil {
+			return fmt.Errorf("ent: uninitialized orderuser.DefaultRootUserID (forgotten import ent/runtime?)")
+		}
+		v := orderuser.DefaultRootUserID()
+		ouc.mutation.SetRootUserID(v)
+	}
+	if _, ok := ouc.mutation.GoodUserID(); !ok {
+		if orderuser.DefaultGoodUserID == nil {
+			return fmt.Errorf("ent: uninitialized orderuser.DefaultGoodUserID (forgotten import ent/runtime?)")
+		}
+		v := orderuser.DefaultGoodUserID()
+		ouc.mutation.SetGoodUserID(v)
+	}
+	if _, ok := ouc.mutation.UserID(); !ok {
+		if orderuser.DefaultUserID == nil {
+			return fmt.Errorf("ent: uninitialized orderuser.DefaultUserID (forgotten import ent/runtime?)")
+		}
+		v := orderuser.DefaultUserID()
+		ouc.mutation.SetUserID(v)
+	}
+	if _, ok := ouc.mutation.AppID(); !ok {
+		if orderuser.DefaultAppID == nil {
+			return fmt.Errorf("ent: uninitialized orderuser.DefaultAppID (forgotten import ent/runtime?)")
+		}
+		v := orderuser.DefaultAppID()
+		ouc.mutation.SetAppID(v)
+	}
+	if _, ok := ouc.mutation.Name(); !ok {
+		v := orderuser.DefaultName
+		ouc.mutation.SetName(v)
+	}
+	if _, ok := ouc.mutation.MiningpoolType(); !ok {
+		v := orderuser.DefaultMiningpoolType
+		ouc.mutation.SetMiningpoolType(v)
+	}
+	if _, ok := ouc.mutation.CoinType(); !ok {
+		v := orderuser.DefaultCoinType
+		ouc.mutation.SetCoinType(v)
+	}
 	if _, ok := ouc.mutation.Proportion(); !ok {
 		v := orderuser.DefaultProportion
 		ouc.mutation.SetProportion(v)
@@ -288,6 +392,10 @@ func (ouc *OrderUserCreate) defaults() error {
 	if _, ok := ouc.mutation.RevenueAddress(); !ok {
 		v := orderuser.DefaultRevenueAddress
 		ouc.mutation.SetRevenueAddress(v)
+	}
+	if _, ok := ouc.mutation.ReadPageLink(); !ok {
+		v := orderuser.DefaultReadPageLink
+		ouc.mutation.SetReadPageLink(v)
 	}
 	if _, ok := ouc.mutation.AutoPay(); !ok {
 		v := orderuser.DefaultAutoPay
@@ -309,30 +417,6 @@ func (ouc *OrderUserCreate) check() error {
 	}
 	if _, ok := ouc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "OrderUser.ent_id"`)}
-	}
-	if _, ok := ouc.mutation.RootUserID(); !ok {
-		return &ValidationError{Name: "root_user_id", err: errors.New(`ent: missing required field "OrderUser.root_user_id"`)}
-	}
-	if _, ok := ouc.mutation.GoodUserID(); !ok {
-		return &ValidationError{Name: "good_user_id", err: errors.New(`ent: missing required field "OrderUser.good_user_id"`)}
-	}
-	if _, ok := ouc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "OrderUser.user_id"`)}
-	}
-	if _, ok := ouc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "OrderUser.app_id"`)}
-	}
-	if _, ok := ouc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "OrderUser.name"`)}
-	}
-	if _, ok := ouc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "OrderUser.miningpool_type"`)}
-	}
-	if _, ok := ouc.mutation.CoinType(); !ok {
-		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "OrderUser.coin_type"`)}
-	}
-	if _, ok := ouc.mutation.ReadPageLink(); !ok {
-		return &ValidationError{Name: "read_page_link", err: errors.New(`ent: missing required field "OrderUser.read_page_link"`)}
 	}
 	return nil
 }
@@ -618,6 +702,12 @@ func (u *OrderUserUpsert) UpdateRootUserID() *OrderUserUpsert {
 	return u
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *OrderUserUpsert) ClearRootUserID() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldRootUserID)
+	return u
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsert) SetGoodUserID(v uuid.UUID) *OrderUserUpsert {
 	u.Set(orderuser.FieldGoodUserID, v)
@@ -627,6 +717,12 @@ func (u *OrderUserUpsert) SetGoodUserID(v uuid.UUID) *OrderUserUpsert {
 // UpdateGoodUserID sets the "good_user_id" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateGoodUserID() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldGoodUserID)
+	return u
+}
+
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (u *OrderUserUpsert) ClearGoodUserID() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldGoodUserID)
 	return u
 }
 
@@ -642,6 +738,12 @@ func (u *OrderUserUpsert) UpdateUserID() *OrderUserUpsert {
 	return u
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (u *OrderUserUpsert) ClearUserID() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldUserID)
+	return u
+}
+
 // SetAppID sets the "app_id" field.
 func (u *OrderUserUpsert) SetAppID(v uuid.UUID) *OrderUserUpsert {
 	u.Set(orderuser.FieldAppID, v)
@@ -651,6 +753,12 @@ func (u *OrderUserUpsert) SetAppID(v uuid.UUID) *OrderUserUpsert {
 // UpdateAppID sets the "app_id" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateAppID() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldAppID)
+	return u
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrderUserUpsert) ClearAppID() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldAppID)
 	return u
 }
 
@@ -666,6 +774,12 @@ func (u *OrderUserUpsert) UpdateName() *OrderUserUpsert {
 	return u
 }
 
+// ClearName clears the value of the "name" field.
+func (u *OrderUserUpsert) ClearName() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldName)
+	return u
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *OrderUserUpsert) SetMiningpoolType(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldMiningpoolType, v)
@@ -678,6 +792,12 @@ func (u *OrderUserUpsert) UpdateMiningpoolType() *OrderUserUpsert {
 	return u
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *OrderUserUpsert) ClearMiningpoolType() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldMiningpoolType)
+	return u
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsert) SetCoinType(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldCoinType, v)
@@ -687,6 +807,12 @@ func (u *OrderUserUpsert) SetCoinType(v string) *OrderUserUpsert {
 // UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateCoinType() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldCoinType)
+	return u
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *OrderUserUpsert) ClearCoinType() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldCoinType)
 	return u
 }
 
@@ -741,6 +867,12 @@ func (u *OrderUserUpsert) SetReadPageLink(v string) *OrderUserUpsert {
 // UpdateReadPageLink sets the "read_page_link" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateReadPageLink() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldReadPageLink)
+	return u
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *OrderUserUpsert) ClearReadPageLink() *OrderUserUpsert {
+	u.SetNull(orderuser.FieldReadPageLink)
 	return u
 }
 
@@ -901,6 +1033,13 @@ func (u *OrderUserUpsertOne) UpdateRootUserID() *OrderUserUpsertOne {
 	})
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *OrderUserUpsertOne) ClearRootUserID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearRootUserID()
+	})
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsertOne) SetGoodUserID(v uuid.UUID) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -912,6 +1051,13 @@ func (u *OrderUserUpsertOne) SetGoodUserID(v uuid.UUID) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateGoodUserID() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateGoodUserID()
+	})
+}
+
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (u *OrderUserUpsertOne) ClearGoodUserID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearGoodUserID()
 	})
 }
 
@@ -929,6 +1075,13 @@ func (u *OrderUserUpsertOne) UpdateUserID() *OrderUserUpsertOne {
 	})
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (u *OrderUserUpsertOne) ClearUserID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearUserID()
+	})
+}
+
 // SetAppID sets the "app_id" field.
 func (u *OrderUserUpsertOne) SetAppID(v uuid.UUID) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -940,6 +1093,13 @@ func (u *OrderUserUpsertOne) SetAppID(v uuid.UUID) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateAppID() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrderUserUpsertOne) ClearAppID() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearAppID()
 	})
 }
 
@@ -957,6 +1117,13 @@ func (u *OrderUserUpsertOne) UpdateName() *OrderUserUpsertOne {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *OrderUserUpsertOne) ClearName() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *OrderUserUpsertOne) SetMiningpoolType(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -971,6 +1138,13 @@ func (u *OrderUserUpsertOne) UpdateMiningpoolType() *OrderUserUpsertOne {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *OrderUserUpsertOne) ClearMiningpoolType() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsertOne) SetCoinType(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -982,6 +1156,13 @@ func (u *OrderUserUpsertOne) SetCoinType(v string) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateCoinType() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *OrderUserUpsertOne) ClearCoinType() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -1045,6 +1226,13 @@ func (u *OrderUserUpsertOne) SetReadPageLink(v string) *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) UpdateReadPageLink() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateReadPageLink()
+	})
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *OrderUserUpsertOne) ClearReadPageLink() *OrderUserUpsertOne {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearReadPageLink()
 	})
 }
 
@@ -1371,6 +1559,13 @@ func (u *OrderUserUpsertBulk) UpdateRootUserID() *OrderUserUpsertBulk {
 	})
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *OrderUserUpsertBulk) ClearRootUserID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearRootUserID()
+	})
+}
+
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsertBulk) SetGoodUserID(v uuid.UUID) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1382,6 +1577,13 @@ func (u *OrderUserUpsertBulk) SetGoodUserID(v uuid.UUID) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateGoodUserID() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateGoodUserID()
+	})
+}
+
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (u *OrderUserUpsertBulk) ClearGoodUserID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearGoodUserID()
 	})
 }
 
@@ -1399,6 +1601,13 @@ func (u *OrderUserUpsertBulk) UpdateUserID() *OrderUserUpsertBulk {
 	})
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (u *OrderUserUpsertBulk) ClearUserID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearUserID()
+	})
+}
+
 // SetAppID sets the "app_id" field.
 func (u *OrderUserUpsertBulk) SetAppID(v uuid.UUID) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1410,6 +1619,13 @@ func (u *OrderUserUpsertBulk) SetAppID(v uuid.UUID) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateAppID() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateAppID()
+	})
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (u *OrderUserUpsertBulk) ClearAppID() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearAppID()
 	})
 }
 
@@ -1427,6 +1643,13 @@ func (u *OrderUserUpsertBulk) UpdateName() *OrderUserUpsertBulk {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *OrderUserUpsertBulk) ClearName() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *OrderUserUpsertBulk) SetMiningpoolType(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1441,6 +1664,13 @@ func (u *OrderUserUpsertBulk) UpdateMiningpoolType() *OrderUserUpsertBulk {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *OrderUserUpsertBulk) ClearMiningpoolType() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *OrderUserUpsertBulk) SetCoinType(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1452,6 +1682,13 @@ func (u *OrderUserUpsertBulk) SetCoinType(v string) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateCoinType() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *OrderUserUpsertBulk) ClearCoinType() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -1515,6 +1752,13 @@ func (u *OrderUserUpsertBulk) SetReadPageLink(v string) *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) UpdateReadPageLink() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.UpdateReadPageLink()
+	})
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *OrderUserUpsertBulk) ClearReadPageLink() *OrderUserUpsertBulk {
+	return u.Update(func(s *OrderUserUpsert) {
+		s.ClearReadPageLink()
 	})
 }
 

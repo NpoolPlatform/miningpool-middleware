@@ -82,6 +82,16 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultAppID holds the default value on creation for the "app_id" field.
+	DefaultAppID func() uuid.UUID
+	// DefaultUserID holds the default value on creation for the "user_id" field.
+	DefaultUserID func() uuid.UUID
+	// DefaultOrderUserID holds the default value on creation for the "order_user_id" field.
+	DefaultOrderUserID func() uuid.UUID
+	// DefaultWithdrawState holds the default value on creation for the "withdraw_state" field.
+	DefaultWithdrawState string
+	// DefaultWithdrawTime holds the default value on creation for the "withdraw_time" field.
+	DefaultWithdrawTime uint32
 	// DefaultPayTime holds the default value on creation for the "pay_time" field.
 	DefaultPayTime uint32
 	// DefaultMsg holds the default value on creation for the "msg" field.

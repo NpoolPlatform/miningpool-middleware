@@ -23,15 +23,15 @@ func (FractionRule) Mixin() []ent.Mixin {
 func (FractionRule) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("miningpool_type"),
+			String("miningpool_type").Optional().Default(""),
 		field.
-			String("coin_type"),
+			String("coin_type").Optional().Default(""),
 		field.
-			Uint32("withdraw_interval"),
+			Uint32("withdraw_interval").Optional().Default(0),
 		field.
-			Float32("min_amount"),
+			Float32("min_amount").Optional().Default(0),
 		field.
-			Float32("withdraw_rate"),
+			Float32("withdraw_rate").Optional().Default(0),
 	}
 }
 

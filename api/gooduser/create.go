@@ -74,7 +74,7 @@ func newGoodUserInPool(ctx context.Context, req *npool.GoodUserReq) (*npool.Good
 	if err != nil {
 		return req, err
 	}
-	rootUser, err := h.GetRootUser(ctx)
+	rootUser, err := h.GetAuthToken(ctx)
 	if err != nil {
 		return req, err
 	}
@@ -82,7 +82,7 @@ func newGoodUserInPool(ctx context.Context, req *npool.GoodUserReq) (*npool.Good
 		return req, fmt.Errorf("have no rootuser,entid: %v", req.RootUserID)
 	}
 	req.MiningpoolType = &rootUser.MiningpoolType
-	mgr, err := pools.NewPoolManager(*req.MiningpoolType, *req.CoinType, rootUser.AuthToken)
+	mgr, err := pools.NewPoolManager(*req.MiningpoolType, *req.CoinType, rootUser.AuthTokenPlain)
 	if err != nil {
 		return req, err
 	}

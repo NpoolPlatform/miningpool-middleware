@@ -202,6 +202,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			rootuser.FieldMiningpoolType: {Type: field.TypeString, Column: rootuser.FieldMiningpoolType},
 			rootuser.FieldEmail:          {Type: field.TypeString, Column: rootuser.FieldEmail},
 			rootuser.FieldAuthToken:      {Type: field.TypeString, Column: rootuser.FieldAuthToken},
+			rootuser.FieldAuthTokenSalt:  {Type: field.TypeString, Column: rootuser.FieldAuthTokenSalt},
 			rootuser.FieldAuthed:         {Type: field.TypeBool, Column: rootuser.FieldAuthed},
 			rootuser.FieldRemark:         {Type: field.TypeString, Column: rootuser.FieldRemark},
 		},
@@ -928,6 +929,11 @@ func (f *RootUserFilter) WhereEmail(p entql.StringP) {
 // WhereAuthToken applies the entql string predicate on the auth_token field.
 func (f *RootUserFilter) WhereAuthToken(p entql.StringP) {
 	f.Where(p.Field(rootuser.FieldAuthToken))
+}
+
+// WhereAuthTokenSalt applies the entql string predicate on the auth_token_salt field.
+func (f *RootUserFilter) WhereAuthTokenSalt(p entql.StringP) {
+	f.Where(p.Field(rootuser.FieldAuthTokenSalt))
 }
 
 // WhereAuthed applies the entql bool predicate on the authed field.

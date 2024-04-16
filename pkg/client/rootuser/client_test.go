@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/config"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"bou.ke/monkey"
@@ -35,7 +36,6 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "mm_client_rootuser_test",
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
@@ -45,7 +45,6 @@ var ret = &npool.RootUser{
 
 var req = &npool.RootUserReq{
 	EntID:          &ret.EntID,
-	Name:           &ret.Name,
 	MiningpoolType: &ret.MiningpoolType,
 	Email:          &ret.Email,
 	AuthToken:      &ret.AuthToken,
@@ -54,7 +53,13 @@ var req = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
-	_, err := CreateRootUser(context.Background(), req)
+	name, err := f2pool.RandomF2PoolUser(7)
+	assert.Nil(t, err)
+
+	ret.Name = name
+	req.Name = &name
+
+	_, err = CreateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
@@ -63,16 +68,22 @@ func createRootUser(t *testing.T) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
+		ret.AuthToken = info.AuthToken
 		ret.EntID = info.EntID
 		assert.Equal(t, ret, info)
 	}
 }
 
 func updateRootUser(t *testing.T) {
-	ret.Name = "test_root_user"
-	req.ID = &ret.ID
+	name, err := f2pool.RandomF2PoolUser(7)
+	assert.Nil(t, err)
 
-	_, err := UpdateRootUser(context.Background(), req)
+	ret.Name = name
+	req.Name = &name
+	req.ID = &ret.ID
+	req.AuthToken = nil
+
+	_, err = UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
@@ -81,7 +92,8 @@ func updateRootUser(t *testing.T) {
 		assert.Equal(t, ret, info)
 	}
 
-	ret.Name = "test_api_client"
+	ret.Email = "test_api_client@ss.com"
+	req.Email = &ret.Email
 	_, err = UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 

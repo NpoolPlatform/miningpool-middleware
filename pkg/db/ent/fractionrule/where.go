@@ -483,6 +483,20 @@ func MiningpoolTypeHasSuffix(v string) predicate.FractionRule {
 	})
 }
 
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+	})
+}
+
 // MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
 func MiningpoolTypeEqualFold(v string) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
@@ -582,6 +596,20 @@ func CoinTypeHasSuffix(v string) predicate.FractionRule {
 	})
 }
 
+// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
+func CoinTypeIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldCoinType)))
+	})
+}
+
+// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
+func CoinTypeNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldCoinType)))
+	})
+}
+
 // CoinTypeEqualFold applies the EqualFold predicate on the "coin_type" field.
 func CoinTypeEqualFold(v string) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
@@ -660,6 +688,20 @@ func WithdrawIntervalLTE(v uint32) predicate.FractionRule {
 	})
 }
 
+// WithdrawIntervalIsNil applies the IsNil predicate on the "withdraw_interval" field.
+func WithdrawIntervalIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldWithdrawInterval)))
+	})
+}
+
+// WithdrawIntervalNotNil applies the NotNil predicate on the "withdraw_interval" field.
+func WithdrawIntervalNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldWithdrawInterval)))
+	})
+}
+
 // MinAmountEQ applies the EQ predicate on the "min_amount" field.
 func MinAmountEQ(v float32) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
@@ -724,6 +766,20 @@ func MinAmountLTE(v float32) predicate.FractionRule {
 	})
 }
 
+// MinAmountIsNil applies the IsNil predicate on the "min_amount" field.
+func MinAmountIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMinAmount)))
+	})
+}
+
+// MinAmountNotNil applies the NotNil predicate on the "min_amount" field.
+func MinAmountNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMinAmount)))
+	})
+}
+
 // WithdrawRateEQ applies the EQ predicate on the "withdraw_rate" field.
 func WithdrawRateEQ(v float32) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
@@ -785,6 +841,20 @@ func WithdrawRateLT(v float32) predicate.FractionRule {
 func WithdrawRateLTE(v float32) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldWithdrawRate), v))
+	})
+}
+
+// WithdrawRateIsNil applies the IsNil predicate on the "withdraw_rate" field.
+func WithdrawRateIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldWithdrawRate)))
+	})
+}
+
+// WithdrawRateNotNil applies the NotNil predicate on the "withdraw_rate" field.
+func WithdrawRateNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldWithdrawRate)))
 	})
 }
 

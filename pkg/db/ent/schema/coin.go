@@ -25,9 +25,9 @@ func (Coin) Mixin() []ent.Mixin {
 func (Coin) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("miningpool_type"),
+			String("miningpool_type").Optional().Default(""),
 		field.
-			String("coin_type"),
+			String("coin_type").Optional().Default(""),
 		field.
 			JSON("revenue_types", []string{}).Optional().Default([]string{}),
 		field.

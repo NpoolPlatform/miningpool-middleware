@@ -104,9 +104,37 @@ func (fu *FractionUpdate) SetAppID(u uuid.UUID) *FractionUpdate {
 	return fu
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableAppID(u *uuid.UUID) *FractionUpdate {
+	if u != nil {
+		fu.SetAppID(*u)
+	}
+	return fu
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (fu *FractionUpdate) ClearAppID() *FractionUpdate {
+	fu.mutation.ClearAppID()
+	return fu
+}
+
 // SetUserID sets the "user_id" field.
 func (fu *FractionUpdate) SetUserID(u uuid.UUID) *FractionUpdate {
 	fu.mutation.SetUserID(u)
+	return fu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableUserID(u *uuid.UUID) *FractionUpdate {
+	if u != nil {
+		fu.SetUserID(*u)
+	}
+	return fu
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (fu *FractionUpdate) ClearUserID() *FractionUpdate {
+	fu.mutation.ClearUserID()
 	return fu
 }
 
@@ -116,9 +144,37 @@ func (fu *FractionUpdate) SetOrderUserID(u uuid.UUID) *FractionUpdate {
 	return fu
 }
 
+// SetNillableOrderUserID sets the "order_user_id" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableOrderUserID(u *uuid.UUID) *FractionUpdate {
+	if u != nil {
+		fu.SetOrderUserID(*u)
+	}
+	return fu
+}
+
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (fu *FractionUpdate) ClearOrderUserID() *FractionUpdate {
+	fu.mutation.ClearOrderUserID()
+	return fu
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (fu *FractionUpdate) SetWithdrawState(s string) *FractionUpdate {
 	fu.mutation.SetWithdrawState(s)
+	return fu
+}
+
+// SetNillableWithdrawState sets the "withdraw_state" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableWithdrawState(s *string) *FractionUpdate {
+	if s != nil {
+		fu.SetWithdrawState(*s)
+	}
+	return fu
+}
+
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (fu *FractionUpdate) ClearWithdrawState() *FractionUpdate {
+	fu.mutation.ClearWithdrawState()
 	return fu
 }
 
@@ -129,9 +185,23 @@ func (fu *FractionUpdate) SetWithdrawTime(u uint32) *FractionUpdate {
 	return fu
 }
 
+// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableWithdrawTime(u *uint32) *FractionUpdate {
+	if u != nil {
+		fu.SetWithdrawTime(*u)
+	}
+	return fu
+}
+
 // AddWithdrawTime adds u to the "withdraw_time" field.
 func (fu *FractionUpdate) AddWithdrawTime(u int32) *FractionUpdate {
 	fu.mutation.AddWithdrawTime(u)
+	return fu
+}
+
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (fu *FractionUpdate) ClearWithdrawTime() *FractionUpdate {
+	fu.mutation.ClearWithdrawTime()
 	return fu
 }
 
@@ -336,10 +406,22 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldAppID,
 		})
 	}
+	if fu.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldAppID,
+		})
+	}
 	if value, ok := fu.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: fraction.FieldUserID,
+		})
+	}
+	if fu.mutation.UserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: fraction.FieldUserID,
 		})
 	}
@@ -350,10 +432,22 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldOrderUserID,
 		})
 	}
+	if fu.mutation.OrderUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldOrderUserID,
+		})
+	}
 	if value, ok := fu.mutation.WithdrawState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: fraction.FieldWithdrawState,
+		})
+	}
+	if fu.mutation.WithdrawStateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: fraction.FieldWithdrawState,
 		})
 	}
@@ -368,6 +462,12 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
+			Column: fraction.FieldWithdrawTime,
+		})
+	}
+	if fu.mutation.WithdrawTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
 			Column: fraction.FieldWithdrawTime,
 		})
 	}
@@ -500,9 +600,37 @@ func (fuo *FractionUpdateOne) SetAppID(u uuid.UUID) *FractionUpdateOne {
 	return fuo
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableAppID(u *uuid.UUID) *FractionUpdateOne {
+	if u != nil {
+		fuo.SetAppID(*u)
+	}
+	return fuo
+}
+
+// ClearAppID clears the value of the "app_id" field.
+func (fuo *FractionUpdateOne) ClearAppID() *FractionUpdateOne {
+	fuo.mutation.ClearAppID()
+	return fuo
+}
+
 // SetUserID sets the "user_id" field.
 func (fuo *FractionUpdateOne) SetUserID(u uuid.UUID) *FractionUpdateOne {
 	fuo.mutation.SetUserID(u)
+	return fuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableUserID(u *uuid.UUID) *FractionUpdateOne {
+	if u != nil {
+		fuo.SetUserID(*u)
+	}
+	return fuo
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (fuo *FractionUpdateOne) ClearUserID() *FractionUpdateOne {
+	fuo.mutation.ClearUserID()
 	return fuo
 }
 
@@ -512,9 +640,37 @@ func (fuo *FractionUpdateOne) SetOrderUserID(u uuid.UUID) *FractionUpdateOne {
 	return fuo
 }
 
+// SetNillableOrderUserID sets the "order_user_id" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableOrderUserID(u *uuid.UUID) *FractionUpdateOne {
+	if u != nil {
+		fuo.SetOrderUserID(*u)
+	}
+	return fuo
+}
+
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (fuo *FractionUpdateOne) ClearOrderUserID() *FractionUpdateOne {
+	fuo.mutation.ClearOrderUserID()
+	return fuo
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (fuo *FractionUpdateOne) SetWithdrawState(s string) *FractionUpdateOne {
 	fuo.mutation.SetWithdrawState(s)
+	return fuo
+}
+
+// SetNillableWithdrawState sets the "withdraw_state" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableWithdrawState(s *string) *FractionUpdateOne {
+	if s != nil {
+		fuo.SetWithdrawState(*s)
+	}
+	return fuo
+}
+
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (fuo *FractionUpdateOne) ClearWithdrawState() *FractionUpdateOne {
+	fuo.mutation.ClearWithdrawState()
 	return fuo
 }
 
@@ -525,9 +681,23 @@ func (fuo *FractionUpdateOne) SetWithdrawTime(u uint32) *FractionUpdateOne {
 	return fuo
 }
 
+// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableWithdrawTime(u *uint32) *FractionUpdateOne {
+	if u != nil {
+		fuo.SetWithdrawTime(*u)
+	}
+	return fuo
+}
+
 // AddWithdrawTime adds u to the "withdraw_time" field.
 func (fuo *FractionUpdateOne) AddWithdrawTime(u int32) *FractionUpdateOne {
 	fuo.mutation.AddWithdrawTime(u)
+	return fuo
+}
+
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (fuo *FractionUpdateOne) ClearWithdrawTime() *FractionUpdateOne {
+	fuo.mutation.ClearWithdrawTime()
 	return fuo
 }
 
@@ -762,10 +932,22 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 			Column: fraction.FieldAppID,
 		})
 	}
+	if fuo.mutation.AppIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldAppID,
+		})
+	}
 	if value, ok := fuo.mutation.UserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
+			Column: fraction.FieldUserID,
+		})
+	}
+	if fuo.mutation.UserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
 			Column: fraction.FieldUserID,
 		})
 	}
@@ -776,10 +958,22 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 			Column: fraction.FieldOrderUserID,
 		})
 	}
+	if fuo.mutation.OrderUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldOrderUserID,
+		})
+	}
 	if value, ok := fuo.mutation.WithdrawState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: fraction.FieldWithdrawState,
+		})
+	}
+	if fuo.mutation.WithdrawStateCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: fraction.FieldWithdrawState,
 		})
 	}
@@ -794,6 +988,12 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
+			Column: fraction.FieldWithdrawTime,
+		})
+	}
+	if fuo.mutation.WithdrawTimeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
 			Column: fraction.FieldWithdrawTime,
 		})
 	}

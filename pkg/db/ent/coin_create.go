@@ -85,9 +85,25 @@ func (cc *CoinCreate) SetMiningpoolType(s string) *CoinCreate {
 	return cc
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableMiningpoolType(s *string) *CoinCreate {
+	if s != nil {
+		cc.SetMiningpoolType(*s)
+	}
+	return cc
+}
+
 // SetCoinType sets the "coin_type" field.
 func (cc *CoinCreate) SetCoinType(s string) *CoinCreate {
 	cc.mutation.SetCoinType(s)
+	return cc
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableCoinType(s *string) *CoinCreate {
+	if s != nil {
+		cc.SetCoinType(*s)
+	}
 	return cc
 }
 
@@ -266,6 +282,14 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultEntID()
 		cc.mutation.SetEntID(v)
 	}
+	if _, ok := cc.mutation.MiningpoolType(); !ok {
+		v := coin.DefaultMiningpoolType
+		cc.mutation.SetMiningpoolType(v)
+	}
+	if _, ok := cc.mutation.CoinType(); !ok {
+		v := coin.DefaultCoinType
+		cc.mutation.SetCoinType(v)
+	}
 	if _, ok := cc.mutation.RevenueTypes(); !ok {
 		v := coin.DefaultRevenueTypes
 		cc.mutation.SetRevenueTypes(v)
@@ -302,12 +326,6 @@ func (cc *CoinCreate) check() error {
 	}
 	if _, ok := cc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "Coin.ent_id"`)}
-	}
-	if _, ok := cc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "Coin.miningpool_type"`)}
-	}
-	if _, ok := cc.mutation.CoinType(); !ok {
-		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "Coin.coin_type"`)}
 	}
 	return nil
 }
@@ -561,6 +579,12 @@ func (u *CoinUpsert) UpdateMiningpoolType() *CoinUpsert {
 	return u
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *CoinUpsert) ClearMiningpoolType() *CoinUpsert {
+	u.SetNull(coin.FieldMiningpoolType)
+	return u
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *CoinUpsert) SetCoinType(v string) *CoinUpsert {
 	u.Set(coin.FieldCoinType, v)
@@ -570,6 +594,12 @@ func (u *CoinUpsert) SetCoinType(v string) *CoinUpsert {
 // UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *CoinUpsert) UpdateCoinType() *CoinUpsert {
 	u.SetExcluded(coin.FieldCoinType)
+	return u
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *CoinUpsert) ClearCoinType() *CoinUpsert {
+	u.SetNull(coin.FieldCoinType)
 	return u
 }
 
@@ -802,6 +832,13 @@ func (u *CoinUpsertOne) UpdateMiningpoolType() *CoinUpsertOne {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *CoinUpsertOne) ClearMiningpoolType() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *CoinUpsertOne) SetCoinType(v string) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
@@ -813,6 +850,13 @@ func (u *CoinUpsertOne) SetCoinType(v string) *CoinUpsertOne {
 func (u *CoinUpsertOne) UpdateCoinType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *CoinUpsertOne) ClearCoinType() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -1223,6 +1267,13 @@ func (u *CoinUpsertBulk) UpdateMiningpoolType() *CoinUpsertBulk {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *CoinUpsertBulk) ClearMiningpoolType() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *CoinUpsertBulk) SetCoinType(v string) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
@@ -1234,6 +1285,13 @@ func (u *CoinUpsertBulk) SetCoinType(v string) *CoinUpsertBulk {
 func (u *CoinUpsertBulk) UpdateCoinType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *CoinUpsertBulk) ClearCoinType() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearCoinType()
 	})
 }
 

@@ -153,7 +153,7 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	rootUser, err := rootuserH.GetRootUser(ctx)
+	rootUser, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -167,6 +167,6 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 		CoinType:       orderUser.CoinType,
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,
-		AuthToken:      rootUser.AuthToken,
+		AuthToken:      rootUser.AuthTokenPlain,
 	}, nil
 }

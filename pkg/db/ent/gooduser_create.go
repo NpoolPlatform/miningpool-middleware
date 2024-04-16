@@ -84,9 +84,25 @@ func (guc *GoodUserCreate) SetRootUserID(u uuid.UUID) *GoodUserCreate {
 	return guc
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableRootUserID(u *uuid.UUID) *GoodUserCreate {
+	if u != nil {
+		guc.SetRootUserID(*u)
+	}
+	return guc
+}
+
 // SetName sets the "name" field.
 func (guc *GoodUserCreate) SetName(s string) *GoodUserCreate {
 	guc.mutation.SetName(s)
+	return guc
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableName(s *string) *GoodUserCreate {
+	if s != nil {
+		guc.SetName(*s)
+	}
 	return guc
 }
 
@@ -96,9 +112,25 @@ func (guc *GoodUserCreate) SetMiningpoolType(s string) *GoodUserCreate {
 	return guc
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableMiningpoolType(s *string) *GoodUserCreate {
+	if s != nil {
+		guc.SetMiningpoolType(*s)
+	}
+	return guc
+}
+
 // SetCoinType sets the "coin_type" field.
 func (guc *GoodUserCreate) SetCoinType(s string) *GoodUserCreate {
 	guc.mutation.SetCoinType(s)
+	return guc
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableCoinType(s *string) *GoodUserCreate {
+	if s != nil {
+		guc.SetCoinType(*s)
+	}
 	return guc
 }
 
@@ -122,9 +154,25 @@ func (guc *GoodUserCreate) SetReadPageLink(s string) *GoodUserCreate {
 	return guc
 }
 
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableReadPageLink(s *string) *GoodUserCreate {
+	if s != nil {
+		guc.SetReadPageLink(*s)
+	}
+	return guc
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (guc *GoodUserCreate) SetRevenueType(s string) *GoodUserCreate {
 	guc.mutation.SetRevenueType(s)
+	return guc
+}
+
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableRevenueType(s *string) *GoodUserCreate {
+	if s != nil {
+		guc.SetRevenueType(*s)
+	}
 	return guc
 }
 
@@ -241,9 +289,36 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultEntID()
 		guc.mutation.SetEntID(v)
 	}
+	if _, ok := guc.mutation.RootUserID(); !ok {
+		if gooduser.DefaultRootUserID == nil {
+			return fmt.Errorf("ent: uninitialized gooduser.DefaultRootUserID (forgotten import ent/runtime?)")
+		}
+		v := gooduser.DefaultRootUserID()
+		guc.mutation.SetRootUserID(v)
+	}
+	if _, ok := guc.mutation.Name(); !ok {
+		v := gooduser.DefaultName
+		guc.mutation.SetName(v)
+	}
+	if _, ok := guc.mutation.MiningpoolType(); !ok {
+		v := gooduser.DefaultMiningpoolType
+		guc.mutation.SetMiningpoolType(v)
+	}
+	if _, ok := guc.mutation.CoinType(); !ok {
+		v := gooduser.DefaultCoinType
+		guc.mutation.SetCoinType(v)
+	}
 	if _, ok := guc.mutation.HashRate(); !ok {
 		v := gooduser.DefaultHashRate
 		guc.mutation.SetHashRate(v)
+	}
+	if _, ok := guc.mutation.ReadPageLink(); !ok {
+		v := gooduser.DefaultReadPageLink
+		guc.mutation.SetReadPageLink(v)
+	}
+	if _, ok := guc.mutation.RevenueType(); !ok {
+		v := gooduser.DefaultRevenueType
+		guc.mutation.SetRevenueType(v)
 	}
 	return nil
 }
@@ -261,24 +336,6 @@ func (guc *GoodUserCreate) check() error {
 	}
 	if _, ok := guc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "GoodUser.ent_id"`)}
-	}
-	if _, ok := guc.mutation.RootUserID(); !ok {
-		return &ValidationError{Name: "root_user_id", err: errors.New(`ent: missing required field "GoodUser.root_user_id"`)}
-	}
-	if _, ok := guc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "GoodUser.name"`)}
-	}
-	if _, ok := guc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "GoodUser.miningpool_type"`)}
-	}
-	if _, ok := guc.mutation.CoinType(); !ok {
-		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "GoodUser.coin_type"`)}
-	}
-	if _, ok := guc.mutation.ReadPageLink(); !ok {
-		return &ValidationError{Name: "read_page_link", err: errors.New(`ent: missing required field "GoodUser.read_page_link"`)}
-	}
-	if _, ok := guc.mutation.RevenueType(); !ok {
-		return &ValidationError{Name: "revenue_type", err: errors.New(`ent: missing required field "GoodUser.revenue_type"`)}
 	}
 	return nil
 }
@@ -532,6 +589,12 @@ func (u *GoodUserUpsert) UpdateRootUserID() *GoodUserUpsert {
 	return u
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *GoodUserUpsert) ClearRootUserID() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldRootUserID)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsert) SetName(v string) *GoodUserUpsert {
 	u.Set(gooduser.FieldName, v)
@@ -541,6 +604,12 @@ func (u *GoodUserUpsert) SetName(v string) *GoodUserUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *GoodUserUpsert) UpdateName() *GoodUserUpsert {
 	u.SetExcluded(gooduser.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *GoodUserUpsert) ClearName() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldName)
 	return u
 }
 
@@ -556,6 +625,12 @@ func (u *GoodUserUpsert) UpdateMiningpoolType() *GoodUserUpsert {
 	return u
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *GoodUserUpsert) ClearMiningpoolType() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldMiningpoolType)
+	return u
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *GoodUserUpsert) SetCoinType(v string) *GoodUserUpsert {
 	u.Set(gooduser.FieldCoinType, v)
@@ -565,6 +640,12 @@ func (u *GoodUserUpsert) SetCoinType(v string) *GoodUserUpsert {
 // UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *GoodUserUpsert) UpdateCoinType() *GoodUserUpsert {
 	u.SetExcluded(gooduser.FieldCoinType)
+	return u
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *GoodUserUpsert) ClearCoinType() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldCoinType)
 	return u
 }
 
@@ -604,6 +685,12 @@ func (u *GoodUserUpsert) UpdateReadPageLink() *GoodUserUpsert {
 	return u
 }
 
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *GoodUserUpsert) ClearReadPageLink() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldReadPageLink)
+	return u
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (u *GoodUserUpsert) SetRevenueType(v string) *GoodUserUpsert {
 	u.Set(gooduser.FieldRevenueType, v)
@@ -613,6 +700,12 @@ func (u *GoodUserUpsert) SetRevenueType(v string) *GoodUserUpsert {
 // UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
 func (u *GoodUserUpsert) UpdateRevenueType() *GoodUserUpsert {
 	u.SetExcluded(gooduser.FieldRevenueType)
+	return u
+}
+
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *GoodUserUpsert) ClearRevenueType() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldRevenueType)
 	return u
 }
 
@@ -755,6 +848,13 @@ func (u *GoodUserUpsertOne) UpdateRootUserID() *GoodUserUpsertOne {
 	})
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *GoodUserUpsertOne) ClearRootUserID() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearRootUserID()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsertOne) SetName(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -766,6 +866,13 @@ func (u *GoodUserUpsertOne) SetName(v string) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateName() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *GoodUserUpsertOne) ClearName() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearName()
 	})
 }
 
@@ -783,6 +890,13 @@ func (u *GoodUserUpsertOne) UpdateMiningpoolType() *GoodUserUpsertOne {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *GoodUserUpsertOne) ClearMiningpoolType() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *GoodUserUpsertOne) SetCoinType(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -794,6 +908,13 @@ func (u *GoodUserUpsertOne) SetCoinType(v string) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateCoinType() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *GoodUserUpsertOne) ClearCoinType() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -839,6 +960,13 @@ func (u *GoodUserUpsertOne) UpdateReadPageLink() *GoodUserUpsertOne {
 	})
 }
 
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *GoodUserUpsertOne) ClearReadPageLink() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearReadPageLink()
+	})
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (u *GoodUserUpsertOne) SetRevenueType(v string) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -850,6 +978,13 @@ func (u *GoodUserUpsertOne) SetRevenueType(v string) *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) UpdateRevenueType() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateRevenueType()
+	})
+}
+
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *GoodUserUpsertOne) ClearRevenueType() *GoodUserUpsertOne {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearRevenueType()
 	})
 }
 
@@ -1155,6 +1290,13 @@ func (u *GoodUserUpsertBulk) UpdateRootUserID() *GoodUserUpsertBulk {
 	})
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (u *GoodUserUpsertBulk) ClearRootUserID() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearRootUserID()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *GoodUserUpsertBulk) SetName(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -1166,6 +1308,13 @@ func (u *GoodUserUpsertBulk) SetName(v string) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateName() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *GoodUserUpsertBulk) ClearName() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearName()
 	})
 }
 
@@ -1183,6 +1332,13 @@ func (u *GoodUserUpsertBulk) UpdateMiningpoolType() *GoodUserUpsertBulk {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *GoodUserUpsertBulk) ClearMiningpoolType() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *GoodUserUpsertBulk) SetCoinType(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -1194,6 +1350,13 @@ func (u *GoodUserUpsertBulk) SetCoinType(v string) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateCoinType() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *GoodUserUpsertBulk) ClearCoinType() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -1239,6 +1402,13 @@ func (u *GoodUserUpsertBulk) UpdateReadPageLink() *GoodUserUpsertBulk {
 	})
 }
 
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (u *GoodUserUpsertBulk) ClearReadPageLink() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearReadPageLink()
+	})
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (u *GoodUserUpsertBulk) SetRevenueType(v string) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
@@ -1250,6 +1420,13 @@ func (u *GoodUserUpsertBulk) SetRevenueType(v string) *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) UpdateRevenueType() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.UpdateRevenueType()
+	})
+}
+
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *GoodUserUpsertBulk) ClearRevenueType() *GoodUserUpsertBulk {
+	return u.Update(func(s *GoodUserUpsert) {
+		s.ClearRevenueType()
 	})
 }
 

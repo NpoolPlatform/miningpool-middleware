@@ -84,9 +84,25 @@ func (fc *FractionCreate) SetAppID(u uuid.UUID) *FractionCreate {
 	return fc
 }
 
+// SetNillableAppID sets the "app_id" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableAppID(u *uuid.UUID) *FractionCreate {
+	if u != nil {
+		fc.SetAppID(*u)
+	}
+	return fc
+}
+
 // SetUserID sets the "user_id" field.
 func (fc *FractionCreate) SetUserID(u uuid.UUID) *FractionCreate {
 	fc.mutation.SetUserID(u)
+	return fc
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableUserID(u *uuid.UUID) *FractionCreate {
+	if u != nil {
+		fc.SetUserID(*u)
+	}
 	return fc
 }
 
@@ -96,15 +112,39 @@ func (fc *FractionCreate) SetOrderUserID(u uuid.UUID) *FractionCreate {
 	return fc
 }
 
+// SetNillableOrderUserID sets the "order_user_id" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableOrderUserID(u *uuid.UUID) *FractionCreate {
+	if u != nil {
+		fc.SetOrderUserID(*u)
+	}
+	return fc
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (fc *FractionCreate) SetWithdrawState(s string) *FractionCreate {
 	fc.mutation.SetWithdrawState(s)
 	return fc
 }
 
+// SetNillableWithdrawState sets the "withdraw_state" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableWithdrawState(s *string) *FractionCreate {
+	if s != nil {
+		fc.SetWithdrawState(*s)
+	}
+	return fc
+}
+
 // SetWithdrawTime sets the "withdraw_time" field.
 func (fc *FractionCreate) SetWithdrawTime(u uint32) *FractionCreate {
 	fc.mutation.SetWithdrawTime(u)
+	return fc
+}
+
+// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableWithdrawTime(u *uint32) *FractionCreate {
+	if u != nil {
+		fc.SetWithdrawTime(*u)
+	}
 	return fc
 }
 
@@ -249,6 +289,35 @@ func (fc *FractionCreate) defaults() error {
 		v := fraction.DefaultEntID()
 		fc.mutation.SetEntID(v)
 	}
+	if _, ok := fc.mutation.AppID(); !ok {
+		if fraction.DefaultAppID == nil {
+			return fmt.Errorf("ent: uninitialized fraction.DefaultAppID (forgotten import ent/runtime?)")
+		}
+		v := fraction.DefaultAppID()
+		fc.mutation.SetAppID(v)
+	}
+	if _, ok := fc.mutation.UserID(); !ok {
+		if fraction.DefaultUserID == nil {
+			return fmt.Errorf("ent: uninitialized fraction.DefaultUserID (forgotten import ent/runtime?)")
+		}
+		v := fraction.DefaultUserID()
+		fc.mutation.SetUserID(v)
+	}
+	if _, ok := fc.mutation.OrderUserID(); !ok {
+		if fraction.DefaultOrderUserID == nil {
+			return fmt.Errorf("ent: uninitialized fraction.DefaultOrderUserID (forgotten import ent/runtime?)")
+		}
+		v := fraction.DefaultOrderUserID()
+		fc.mutation.SetOrderUserID(v)
+	}
+	if _, ok := fc.mutation.WithdrawState(); !ok {
+		v := fraction.DefaultWithdrawState
+		fc.mutation.SetWithdrawState(v)
+	}
+	if _, ok := fc.mutation.WithdrawTime(); !ok {
+		v := fraction.DefaultWithdrawTime
+		fc.mutation.SetWithdrawTime(v)
+	}
 	if _, ok := fc.mutation.PayTime(); !ok {
 		v := fraction.DefaultPayTime
 		fc.mutation.SetPayTime(v)
@@ -273,21 +342,6 @@ func (fc *FractionCreate) check() error {
 	}
 	if _, ok := fc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "Fraction.ent_id"`)}
-	}
-	if _, ok := fc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "Fraction.app_id"`)}
-	}
-	if _, ok := fc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Fraction.user_id"`)}
-	}
-	if _, ok := fc.mutation.OrderUserID(); !ok {
-		return &ValidationError{Name: "order_user_id", err: errors.New(`ent: missing required field "Fraction.order_user_id"`)}
-	}
-	if _, ok := fc.mutation.WithdrawState(); !ok {
-		return &ValidationError{Name: "withdraw_state", err: errors.New(`ent: missing required field "Fraction.withdraw_state"`)}
-	}
-	if _, ok := fc.mutation.WithdrawTime(); !ok {
-		return &ValidationError{Name: "withdraw_time", err: errors.New(`ent: missing required field "Fraction.withdraw_time"`)}
 	}
 	return nil
 }
@@ -541,6 +595,12 @@ func (u *FractionUpsert) UpdateAppID() *FractionUpsert {
 	return u
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *FractionUpsert) ClearAppID() *FractionUpsert {
+	u.SetNull(fraction.FieldAppID)
+	return u
+}
+
 // SetUserID sets the "user_id" field.
 func (u *FractionUpsert) SetUserID(v uuid.UUID) *FractionUpsert {
 	u.Set(fraction.FieldUserID, v)
@@ -550,6 +610,12 @@ func (u *FractionUpsert) SetUserID(v uuid.UUID) *FractionUpsert {
 // UpdateUserID sets the "user_id" field to the value that was provided on create.
 func (u *FractionUpsert) UpdateUserID() *FractionUpsert {
 	u.SetExcluded(fraction.FieldUserID)
+	return u
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *FractionUpsert) ClearUserID() *FractionUpsert {
+	u.SetNull(fraction.FieldUserID)
 	return u
 }
 
@@ -565,6 +631,12 @@ func (u *FractionUpsert) UpdateOrderUserID() *FractionUpsert {
 	return u
 }
 
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (u *FractionUpsert) ClearOrderUserID() *FractionUpsert {
+	u.SetNull(fraction.FieldOrderUserID)
+	return u
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (u *FractionUpsert) SetWithdrawState(v string) *FractionUpsert {
 	u.Set(fraction.FieldWithdrawState, v)
@@ -574,6 +646,12 @@ func (u *FractionUpsert) SetWithdrawState(v string) *FractionUpsert {
 // UpdateWithdrawState sets the "withdraw_state" field to the value that was provided on create.
 func (u *FractionUpsert) UpdateWithdrawState() *FractionUpsert {
 	u.SetExcluded(fraction.FieldWithdrawState)
+	return u
+}
+
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (u *FractionUpsert) ClearWithdrawState() *FractionUpsert {
+	u.SetNull(fraction.FieldWithdrawState)
 	return u
 }
 
@@ -592,6 +670,12 @@ func (u *FractionUpsert) UpdateWithdrawTime() *FractionUpsert {
 // AddWithdrawTime adds v to the "withdraw_time" field.
 func (u *FractionUpsert) AddWithdrawTime(v uint32) *FractionUpsert {
 	u.Add(fraction.FieldWithdrawTime, v)
+	return u
+}
+
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (u *FractionUpsert) ClearWithdrawTime() *FractionUpsert {
+	u.SetNull(fraction.FieldWithdrawTime)
 	return u
 }
 
@@ -776,6 +860,13 @@ func (u *FractionUpsertOne) UpdateAppID() *FractionUpsertOne {
 	})
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *FractionUpsertOne) ClearAppID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *FractionUpsertOne) SetUserID(v uuid.UUID) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
@@ -787,6 +878,13 @@ func (u *FractionUpsertOne) SetUserID(v uuid.UUID) *FractionUpsertOne {
 func (u *FractionUpsertOne) UpdateUserID() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *FractionUpsertOne) ClearUserID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearUserID()
 	})
 }
 
@@ -804,6 +902,13 @@ func (u *FractionUpsertOne) UpdateOrderUserID() *FractionUpsertOne {
 	})
 }
 
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (u *FractionUpsertOne) ClearOrderUserID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearOrderUserID()
+	})
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (u *FractionUpsertOne) SetWithdrawState(v string) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
@@ -815,6 +920,13 @@ func (u *FractionUpsertOne) SetWithdrawState(v string) *FractionUpsertOne {
 func (u *FractionUpsertOne) UpdateWithdrawState() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateWithdrawState()
+	})
+}
+
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (u *FractionUpsertOne) ClearWithdrawState() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearWithdrawState()
 	})
 }
 
@@ -836,6 +948,13 @@ func (u *FractionUpsertOne) AddWithdrawTime(v uint32) *FractionUpsertOne {
 func (u *FractionUpsertOne) UpdateWithdrawTime() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateWithdrawTime()
+	})
+}
+
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (u *FractionUpsertOne) ClearWithdrawTime() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearWithdrawTime()
 	})
 }
 
@@ -1190,6 +1309,13 @@ func (u *FractionUpsertBulk) UpdateAppID() *FractionUpsertBulk {
 	})
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (u *FractionUpsertBulk) ClearAppID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearAppID()
+	})
+}
+
 // SetUserID sets the "user_id" field.
 func (u *FractionUpsertBulk) SetUserID(v uuid.UUID) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
@@ -1201,6 +1327,13 @@ func (u *FractionUpsertBulk) SetUserID(v uuid.UUID) *FractionUpsertBulk {
 func (u *FractionUpsertBulk) UpdateUserID() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateUserID()
+	})
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (u *FractionUpsertBulk) ClearUserID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearUserID()
 	})
 }
 
@@ -1218,6 +1351,13 @@ func (u *FractionUpsertBulk) UpdateOrderUserID() *FractionUpsertBulk {
 	})
 }
 
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (u *FractionUpsertBulk) ClearOrderUserID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearOrderUserID()
+	})
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (u *FractionUpsertBulk) SetWithdrawState(v string) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
@@ -1229,6 +1369,13 @@ func (u *FractionUpsertBulk) SetWithdrawState(v string) *FractionUpsertBulk {
 func (u *FractionUpsertBulk) UpdateWithdrawState() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateWithdrawState()
+	})
+}
+
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (u *FractionUpsertBulk) ClearWithdrawState() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearWithdrawState()
 	})
 }
 
@@ -1250,6 +1397,13 @@ func (u *FractionUpsertBulk) AddWithdrawTime(v uint32) *FractionUpsertBulk {
 func (u *FractionUpsertBulk) UpdateWithdrawTime() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.UpdateWithdrawTime()
+	})
+}
+
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (u *FractionUpsertBulk) ClearWithdrawTime() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearWithdrawTime()
 	})
 }
 

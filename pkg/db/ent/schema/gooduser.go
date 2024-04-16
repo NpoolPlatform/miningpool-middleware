@@ -25,19 +25,23 @@ func (GoodUser) Mixin() []ent.Mixin {
 func (GoodUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("root_user_id", uuid.UUID{}),
+			UUID("root_user_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			String("name"),
+			String("name").Optional().Default(""),
 		field.
-			String("miningpool_type"),
+			String("miningpool_type").Optional().Default(""),
 		field.
-			String("coin_type"),
+			String("coin_type").Optional().Default(""),
 		field.
 			Float32("hash_rate").Optional().Default(0),
 		field.
-			String("read_page_link"),
+			Text("read_page_link").Optional().Default(""),
 		field.
-			String("revenue_type"),
+			String("revenue_type").Optional().Default(""),
 	}
 }
 

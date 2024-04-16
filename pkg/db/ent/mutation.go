@@ -402,9 +402,22 @@ func (m *AppPoolMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error)
 	return oldValue.AppID, nil
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (m *AppPoolMutation) ClearAppID() {
+	m.app_id = nil
+	m.clearedFields[apppool.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *AppPoolMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[apppool.FieldAppID]
+	return ok
+}
+
 // ResetAppID resets all changes to the "app_id" field.
 func (m *AppPoolMutation) ResetAppID() {
 	m.app_id = nil
+	delete(m.clearedFields, apppool.FieldAppID)
 }
 
 // SetPoolID sets the "pool_id" field.
@@ -438,9 +451,22 @@ func (m *AppPoolMutation) OldPoolID(ctx context.Context) (v uuid.UUID, err error
 	return oldValue.PoolID, nil
 }
 
+// ClearPoolID clears the value of the "pool_id" field.
+func (m *AppPoolMutation) ClearPoolID() {
+	m.pool_id = nil
+	m.clearedFields[apppool.FieldPoolID] = struct{}{}
+}
+
+// PoolIDCleared returns if the "pool_id" field was cleared in this mutation.
+func (m *AppPoolMutation) PoolIDCleared() bool {
+	_, ok := m.clearedFields[apppool.FieldPoolID]
+	return ok
+}
+
 // ResetPoolID resets all changes to the "pool_id" field.
 func (m *AppPoolMutation) ResetPoolID() {
 	m.pool_id = nil
+	delete(m.clearedFields, apppool.FieldPoolID)
 }
 
 // Where appends a list predicates to the AppPoolMutation builder.
@@ -641,7 +667,14 @@ func (m *AppPoolMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *AppPoolMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(apppool.FieldAppID) {
+		fields = append(fields, apppool.FieldAppID)
+	}
+	if m.FieldCleared(apppool.FieldPoolID) {
+		fields = append(fields, apppool.FieldPoolID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -654,6 +687,14 @@ func (m *AppPoolMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *AppPoolMutation) ClearField(name string) error {
+	switch name {
+	case apppool.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case apppool.FieldPoolID:
+		m.ClearPoolID()
+		return nil
+	}
 	return fmt.Errorf("unknown AppPool nullable field %s", name)
 }
 
@@ -1096,9 +1137,22 @@ func (m *CoinMutation) OldMiningpoolType(ctx context.Context) (v string, err err
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *CoinMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[coin.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *CoinMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[coin.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *CoinMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, coin.FieldMiningpoolType)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -1132,9 +1186,22 @@ func (m *CoinMutation) OldCoinType(ctx context.Context) (v string, err error) {
 	return oldValue.CoinType, nil
 }
 
+// ClearCoinType clears the value of the "coin_type" field.
+func (m *CoinMutation) ClearCoinType() {
+	m.coin_type = nil
+	m.clearedFields[coin.FieldCoinType] = struct{}{}
+}
+
+// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
+func (m *CoinMutation) CoinTypeCleared() bool {
+	_, ok := m.clearedFields[coin.FieldCoinType]
+	return ok
+}
+
 // ResetCoinType resets all changes to the "coin_type" field.
 func (m *CoinMutation) ResetCoinType() {
 	m.coin_type = nil
+	delete(m.clearedFields, coin.FieldCoinType)
 }
 
 // SetRevenueTypes sets the "revenue_types" field.
@@ -1651,6 +1718,12 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *CoinMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(coin.FieldMiningpoolType) {
+		fields = append(fields, coin.FieldMiningpoolType)
+	}
+	if m.FieldCleared(coin.FieldCoinType) {
+		fields = append(fields, coin.FieldCoinType)
+	}
 	if m.FieldCleared(coin.FieldRevenueTypes) {
 		fields = append(fields, coin.FieldRevenueTypes)
 	}
@@ -1680,6 +1753,12 @@ func (m *CoinMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *CoinMutation) ClearField(name string) error {
 	switch name {
+	case coin.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
+	case coin.FieldCoinType:
+		m.ClearCoinType()
+		return nil
 	case coin.FieldRevenueTypes:
 		m.ClearRevenueTypes()
 		return nil
@@ -2155,9 +2234,22 @@ func (m *FractionMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error
 	return oldValue.AppID, nil
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (m *FractionMutation) ClearAppID() {
+	m.app_id = nil
+	m.clearedFields[fraction.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *FractionMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldAppID]
+	return ok
+}
+
 // ResetAppID resets all changes to the "app_id" field.
 func (m *FractionMutation) ResetAppID() {
 	m.app_id = nil
+	delete(m.clearedFields, fraction.FieldAppID)
 }
 
 // SetUserID sets the "user_id" field.
@@ -2191,9 +2283,22 @@ func (m *FractionMutation) OldUserID(ctx context.Context) (v uuid.UUID, err erro
 	return oldValue.UserID, nil
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (m *FractionMutation) ClearUserID() {
+	m.user_id = nil
+	m.clearedFields[fraction.FieldUserID] = struct{}{}
+}
+
+// UserIDCleared returns if the "user_id" field was cleared in this mutation.
+func (m *FractionMutation) UserIDCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldUserID]
+	return ok
+}
+
 // ResetUserID resets all changes to the "user_id" field.
 func (m *FractionMutation) ResetUserID() {
 	m.user_id = nil
+	delete(m.clearedFields, fraction.FieldUserID)
 }
 
 // SetOrderUserID sets the "order_user_id" field.
@@ -2227,9 +2332,22 @@ func (m *FractionMutation) OldOrderUserID(ctx context.Context) (v uuid.UUID, err
 	return oldValue.OrderUserID, nil
 }
 
+// ClearOrderUserID clears the value of the "order_user_id" field.
+func (m *FractionMutation) ClearOrderUserID() {
+	m.order_user_id = nil
+	m.clearedFields[fraction.FieldOrderUserID] = struct{}{}
+}
+
+// OrderUserIDCleared returns if the "order_user_id" field was cleared in this mutation.
+func (m *FractionMutation) OrderUserIDCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldOrderUserID]
+	return ok
+}
+
 // ResetOrderUserID resets all changes to the "order_user_id" field.
 func (m *FractionMutation) ResetOrderUserID() {
 	m.order_user_id = nil
+	delete(m.clearedFields, fraction.FieldOrderUserID)
 }
 
 // SetWithdrawState sets the "withdraw_state" field.
@@ -2263,9 +2381,22 @@ func (m *FractionMutation) OldWithdrawState(ctx context.Context) (v string, err 
 	return oldValue.WithdrawState, nil
 }
 
+// ClearWithdrawState clears the value of the "withdraw_state" field.
+func (m *FractionMutation) ClearWithdrawState() {
+	m.withdraw_state = nil
+	m.clearedFields[fraction.FieldWithdrawState] = struct{}{}
+}
+
+// WithdrawStateCleared returns if the "withdraw_state" field was cleared in this mutation.
+func (m *FractionMutation) WithdrawStateCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldWithdrawState]
+	return ok
+}
+
 // ResetWithdrawState resets all changes to the "withdraw_state" field.
 func (m *FractionMutation) ResetWithdrawState() {
 	m.withdraw_state = nil
+	delete(m.clearedFields, fraction.FieldWithdrawState)
 }
 
 // SetWithdrawTime sets the "withdraw_time" field.
@@ -2318,10 +2449,24 @@ func (m *FractionMutation) AddedWithdrawTime() (r int32, exists bool) {
 	return *v, true
 }
 
+// ClearWithdrawTime clears the value of the "withdraw_time" field.
+func (m *FractionMutation) ClearWithdrawTime() {
+	m.withdraw_time = nil
+	m.addwithdraw_time = nil
+	m.clearedFields[fraction.FieldWithdrawTime] = struct{}{}
+}
+
+// WithdrawTimeCleared returns if the "withdraw_time" field was cleared in this mutation.
+func (m *FractionMutation) WithdrawTimeCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldWithdrawTime]
+	return ok
+}
+
 // ResetWithdrawTime resets all changes to the "withdraw_time" field.
 func (m *FractionMutation) ResetWithdrawTime() {
 	m.withdraw_time = nil
 	m.addwithdraw_time = nil
+	delete(m.clearedFields, fraction.FieldWithdrawTime)
 }
 
 // SetPayTime sets the "pay_time" field.
@@ -2736,6 +2881,21 @@ func (m *FractionMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *FractionMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(fraction.FieldAppID) {
+		fields = append(fields, fraction.FieldAppID)
+	}
+	if m.FieldCleared(fraction.FieldUserID) {
+		fields = append(fields, fraction.FieldUserID)
+	}
+	if m.FieldCleared(fraction.FieldOrderUserID) {
+		fields = append(fields, fraction.FieldOrderUserID)
+	}
+	if m.FieldCleared(fraction.FieldWithdrawState) {
+		fields = append(fields, fraction.FieldWithdrawState)
+	}
+	if m.FieldCleared(fraction.FieldWithdrawTime) {
+		fields = append(fields, fraction.FieldWithdrawTime)
+	}
 	if m.FieldCleared(fraction.FieldPayTime) {
 		fields = append(fields, fraction.FieldPayTime)
 	}
@@ -2756,6 +2916,21 @@ func (m *FractionMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *FractionMutation) ClearField(name string) error {
 	switch name {
+	case fraction.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case fraction.FieldUserID:
+		m.ClearUserID()
+		return nil
+	case fraction.FieldOrderUserID:
+		m.ClearOrderUserID()
+		return nil
+	case fraction.FieldWithdrawState:
+		m.ClearWithdrawState()
+		return nil
+	case fraction.FieldWithdrawTime:
+		m.ClearWithdrawTime()
+		return nil
 	case fraction.FieldPayTime:
 		m.ClearPayTime()
 		return nil
@@ -3221,9 +3396,22 @@ func (m *FractionRuleMutation) OldMiningpoolType(ctx context.Context) (v string,
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *FractionRuleMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[fractionrule.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *FractionRuleMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *FractionRuleMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, fractionrule.FieldMiningpoolType)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -3257,9 +3445,22 @@ func (m *FractionRuleMutation) OldCoinType(ctx context.Context) (v string, err e
 	return oldValue.CoinType, nil
 }
 
+// ClearCoinType clears the value of the "coin_type" field.
+func (m *FractionRuleMutation) ClearCoinType() {
+	m.coin_type = nil
+	m.clearedFields[fractionrule.FieldCoinType] = struct{}{}
+}
+
+// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
+func (m *FractionRuleMutation) CoinTypeCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldCoinType]
+	return ok
+}
+
 // ResetCoinType resets all changes to the "coin_type" field.
 func (m *FractionRuleMutation) ResetCoinType() {
 	m.coin_type = nil
+	delete(m.clearedFields, fractionrule.FieldCoinType)
 }
 
 // SetWithdrawInterval sets the "withdraw_interval" field.
@@ -3312,10 +3513,24 @@ func (m *FractionRuleMutation) AddedWithdrawInterval() (r int32, exists bool) {
 	return *v, true
 }
 
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (m *FractionRuleMutation) ClearWithdrawInterval() {
+	m.withdraw_interval = nil
+	m.addwithdraw_interval = nil
+	m.clearedFields[fractionrule.FieldWithdrawInterval] = struct{}{}
+}
+
+// WithdrawIntervalCleared returns if the "withdraw_interval" field was cleared in this mutation.
+func (m *FractionRuleMutation) WithdrawIntervalCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldWithdrawInterval]
+	return ok
+}
+
 // ResetWithdrawInterval resets all changes to the "withdraw_interval" field.
 func (m *FractionRuleMutation) ResetWithdrawInterval() {
 	m.withdraw_interval = nil
 	m.addwithdraw_interval = nil
+	delete(m.clearedFields, fractionrule.FieldWithdrawInterval)
 }
 
 // SetMinAmount sets the "min_amount" field.
@@ -3368,10 +3583,24 @@ func (m *FractionRuleMutation) AddedMinAmount() (r float32, exists bool) {
 	return *v, true
 }
 
+// ClearMinAmount clears the value of the "min_amount" field.
+func (m *FractionRuleMutation) ClearMinAmount() {
+	m.min_amount = nil
+	m.addmin_amount = nil
+	m.clearedFields[fractionrule.FieldMinAmount] = struct{}{}
+}
+
+// MinAmountCleared returns if the "min_amount" field was cleared in this mutation.
+func (m *FractionRuleMutation) MinAmountCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldMinAmount]
+	return ok
+}
+
 // ResetMinAmount resets all changes to the "min_amount" field.
 func (m *FractionRuleMutation) ResetMinAmount() {
 	m.min_amount = nil
 	m.addmin_amount = nil
+	delete(m.clearedFields, fractionrule.FieldMinAmount)
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
@@ -3424,10 +3653,24 @@ func (m *FractionRuleMutation) AddedWithdrawRate() (r float32, exists bool) {
 	return *v, true
 }
 
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (m *FractionRuleMutation) ClearWithdrawRate() {
+	m.withdraw_rate = nil
+	m.addwithdraw_rate = nil
+	m.clearedFields[fractionrule.FieldWithdrawRate] = struct{}{}
+}
+
+// WithdrawRateCleared returns if the "withdraw_rate" field was cleared in this mutation.
+func (m *FractionRuleMutation) WithdrawRateCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldWithdrawRate]
+	return ok
+}
+
 // ResetWithdrawRate resets all changes to the "withdraw_rate" field.
 func (m *FractionRuleMutation) ResetWithdrawRate() {
 	m.withdraw_rate = nil
 	m.addwithdraw_rate = nil
+	delete(m.clearedFields, fractionrule.FieldWithdrawRate)
 }
 
 // Where appends a list predicates to the FractionRuleMutation builder.
@@ -3706,7 +3949,23 @@ func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *FractionRuleMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(fractionrule.FieldMiningpoolType) {
+		fields = append(fields, fractionrule.FieldMiningpoolType)
+	}
+	if m.FieldCleared(fractionrule.FieldCoinType) {
+		fields = append(fields, fractionrule.FieldCoinType)
+	}
+	if m.FieldCleared(fractionrule.FieldWithdrawInterval) {
+		fields = append(fields, fractionrule.FieldWithdrawInterval)
+	}
+	if m.FieldCleared(fractionrule.FieldMinAmount) {
+		fields = append(fields, fractionrule.FieldMinAmount)
+	}
+	if m.FieldCleared(fractionrule.FieldWithdrawRate) {
+		fields = append(fields, fractionrule.FieldWithdrawRate)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3719,6 +3978,23 @@ func (m *FractionRuleMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *FractionRuleMutation) ClearField(name string) error {
+	switch name {
+	case fractionrule.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
+	case fractionrule.FieldCoinType:
+		m.ClearCoinType()
+		return nil
+	case fractionrule.FieldWithdrawInterval:
+		m.ClearWithdrawInterval()
+		return nil
+	case fractionrule.FieldMinAmount:
+		m.ClearMinAmount()
+		return nil
+	case fractionrule.FieldWithdrawRate:
+		m.ClearWithdrawRate()
+		return nil
+	}
 	return fmt.Errorf("unknown FractionRule nullable field %s", name)
 }
 
@@ -4171,9 +4447,22 @@ func (m *GoodUserMutation) OldRootUserID(ctx context.Context) (v uuid.UUID, err 
 	return oldValue.RootUserID, nil
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (m *GoodUserMutation) ClearRootUserID() {
+	m.root_user_id = nil
+	m.clearedFields[gooduser.FieldRootUserID] = struct{}{}
+}
+
+// RootUserIDCleared returns if the "root_user_id" field was cleared in this mutation.
+func (m *GoodUserMutation) RootUserIDCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldRootUserID]
+	return ok
+}
+
 // ResetRootUserID resets all changes to the "root_user_id" field.
 func (m *GoodUserMutation) ResetRootUserID() {
 	m.root_user_id = nil
+	delete(m.clearedFields, gooduser.FieldRootUserID)
 }
 
 // SetName sets the "name" field.
@@ -4207,9 +4496,22 @@ func (m *GoodUserMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *GoodUserMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[gooduser.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *GoodUserMutation) NameCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *GoodUserMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, gooduser.FieldName)
 }
 
 // SetMiningpoolType sets the "miningpool_type" field.
@@ -4243,9 +4545,22 @@ func (m *GoodUserMutation) OldMiningpoolType(ctx context.Context) (v string, err
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *GoodUserMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[gooduser.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *GoodUserMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *GoodUserMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, gooduser.FieldMiningpoolType)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -4279,9 +4594,22 @@ func (m *GoodUserMutation) OldCoinType(ctx context.Context) (v string, err error
 	return oldValue.CoinType, nil
 }
 
+// ClearCoinType clears the value of the "coin_type" field.
+func (m *GoodUserMutation) ClearCoinType() {
+	m.coin_type = nil
+	m.clearedFields[gooduser.FieldCoinType] = struct{}{}
+}
+
+// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
+func (m *GoodUserMutation) CoinTypeCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldCoinType]
+	return ok
+}
+
 // ResetCoinType resets all changes to the "coin_type" field.
 func (m *GoodUserMutation) ResetCoinType() {
 	m.coin_type = nil
+	delete(m.clearedFields, gooduser.FieldCoinType)
 }
 
 // SetHashRate sets the "hash_rate" field.
@@ -4385,9 +4713,22 @@ func (m *GoodUserMutation) OldReadPageLink(ctx context.Context) (v string, err e
 	return oldValue.ReadPageLink, nil
 }
 
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (m *GoodUserMutation) ClearReadPageLink() {
+	m.read_page_link = nil
+	m.clearedFields[gooduser.FieldReadPageLink] = struct{}{}
+}
+
+// ReadPageLinkCleared returns if the "read_page_link" field was cleared in this mutation.
+func (m *GoodUserMutation) ReadPageLinkCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldReadPageLink]
+	return ok
+}
+
 // ResetReadPageLink resets all changes to the "read_page_link" field.
 func (m *GoodUserMutation) ResetReadPageLink() {
 	m.read_page_link = nil
+	delete(m.clearedFields, gooduser.FieldReadPageLink)
 }
 
 // SetRevenueType sets the "revenue_type" field.
@@ -4421,9 +4762,22 @@ func (m *GoodUserMutation) OldRevenueType(ctx context.Context) (v string, err er
 	return oldValue.RevenueType, nil
 }
 
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (m *GoodUserMutation) ClearRevenueType() {
+	m.revenue_type = nil
+	m.clearedFields[gooduser.FieldRevenueType] = struct{}{}
+}
+
+// RevenueTypeCleared returns if the "revenue_type" field was cleared in this mutation.
+func (m *GoodUserMutation) RevenueTypeCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldRevenueType]
+	return ok
+}
+
 // ResetRevenueType resets all changes to the "revenue_type" field.
 func (m *GoodUserMutation) ResetRevenueType() {
 	m.revenue_type = nil
+	delete(m.clearedFields, gooduser.FieldRevenueType)
 }
 
 // Where appends a list predicates to the GoodUserMutation builder.
@@ -4707,8 +5061,26 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *GoodUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(gooduser.FieldRootUserID) {
+		fields = append(fields, gooduser.FieldRootUserID)
+	}
+	if m.FieldCleared(gooduser.FieldName) {
+		fields = append(fields, gooduser.FieldName)
+	}
+	if m.FieldCleared(gooduser.FieldMiningpoolType) {
+		fields = append(fields, gooduser.FieldMiningpoolType)
+	}
+	if m.FieldCleared(gooduser.FieldCoinType) {
+		fields = append(fields, gooduser.FieldCoinType)
+	}
 	if m.FieldCleared(gooduser.FieldHashRate) {
 		fields = append(fields, gooduser.FieldHashRate)
+	}
+	if m.FieldCleared(gooduser.FieldReadPageLink) {
+		fields = append(fields, gooduser.FieldReadPageLink)
+	}
+	if m.FieldCleared(gooduser.FieldRevenueType) {
+		fields = append(fields, gooduser.FieldRevenueType)
 	}
 	return fields
 }
@@ -4724,8 +5096,26 @@ func (m *GoodUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *GoodUserMutation) ClearField(name string) error {
 	switch name {
+	case gooduser.FieldRootUserID:
+		m.ClearRootUserID()
+		return nil
+	case gooduser.FieldName:
+		m.ClearName()
+		return nil
+	case gooduser.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
+	case gooduser.FieldCoinType:
+		m.ClearCoinType()
+		return nil
 	case gooduser.FieldHashRate:
 		m.ClearHashRate()
+		return nil
+	case gooduser.FieldReadPageLink:
+		m.ClearReadPageLink()
+		return nil
+	case gooduser.FieldRevenueType:
+		m.ClearRevenueType()
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser nullable field %s", name)
@@ -5190,9 +5580,22 @@ func (m *OrderUserMutation) OldRootUserID(ctx context.Context) (v uuid.UUID, err
 	return oldValue.RootUserID, nil
 }
 
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (m *OrderUserMutation) ClearRootUserID() {
+	m.root_user_id = nil
+	m.clearedFields[orderuser.FieldRootUserID] = struct{}{}
+}
+
+// RootUserIDCleared returns if the "root_user_id" field was cleared in this mutation.
+func (m *OrderUserMutation) RootUserIDCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldRootUserID]
+	return ok
+}
+
 // ResetRootUserID resets all changes to the "root_user_id" field.
 func (m *OrderUserMutation) ResetRootUserID() {
 	m.root_user_id = nil
+	delete(m.clearedFields, orderuser.FieldRootUserID)
 }
 
 // SetGoodUserID sets the "good_user_id" field.
@@ -5226,9 +5629,22 @@ func (m *OrderUserMutation) OldGoodUserID(ctx context.Context) (v uuid.UUID, err
 	return oldValue.GoodUserID, nil
 }
 
+// ClearGoodUserID clears the value of the "good_user_id" field.
+func (m *OrderUserMutation) ClearGoodUserID() {
+	m.good_user_id = nil
+	m.clearedFields[orderuser.FieldGoodUserID] = struct{}{}
+}
+
+// GoodUserIDCleared returns if the "good_user_id" field was cleared in this mutation.
+func (m *OrderUserMutation) GoodUserIDCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldGoodUserID]
+	return ok
+}
+
 // ResetGoodUserID resets all changes to the "good_user_id" field.
 func (m *OrderUserMutation) ResetGoodUserID() {
 	m.good_user_id = nil
+	delete(m.clearedFields, orderuser.FieldGoodUserID)
 }
 
 // SetUserID sets the "user_id" field.
@@ -5262,9 +5678,22 @@ func (m *OrderUserMutation) OldUserID(ctx context.Context) (v uuid.UUID, err err
 	return oldValue.UserID, nil
 }
 
+// ClearUserID clears the value of the "user_id" field.
+func (m *OrderUserMutation) ClearUserID() {
+	m.user_id = nil
+	m.clearedFields[orderuser.FieldUserID] = struct{}{}
+}
+
+// UserIDCleared returns if the "user_id" field was cleared in this mutation.
+func (m *OrderUserMutation) UserIDCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldUserID]
+	return ok
+}
+
 // ResetUserID resets all changes to the "user_id" field.
 func (m *OrderUserMutation) ResetUserID() {
 	m.user_id = nil
+	delete(m.clearedFields, orderuser.FieldUserID)
 }
 
 // SetAppID sets the "app_id" field.
@@ -5298,9 +5727,22 @@ func (m *OrderUserMutation) OldAppID(ctx context.Context) (v uuid.UUID, err erro
 	return oldValue.AppID, nil
 }
 
+// ClearAppID clears the value of the "app_id" field.
+func (m *OrderUserMutation) ClearAppID() {
+	m.app_id = nil
+	m.clearedFields[orderuser.FieldAppID] = struct{}{}
+}
+
+// AppIDCleared returns if the "app_id" field was cleared in this mutation.
+func (m *OrderUserMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldAppID]
+	return ok
+}
+
 // ResetAppID resets all changes to the "app_id" field.
 func (m *OrderUserMutation) ResetAppID() {
 	m.app_id = nil
+	delete(m.clearedFields, orderuser.FieldAppID)
 }
 
 // SetName sets the "name" field.
@@ -5334,9 +5776,22 @@ func (m *OrderUserMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *OrderUserMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[orderuser.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *OrderUserMutation) NameCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *OrderUserMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, orderuser.FieldName)
 }
 
 // SetMiningpoolType sets the "miningpool_type" field.
@@ -5370,9 +5825,22 @@ func (m *OrderUserMutation) OldMiningpoolType(ctx context.Context) (v string, er
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *OrderUserMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[orderuser.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *OrderUserMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *OrderUserMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, orderuser.FieldMiningpoolType)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -5406,9 +5874,22 @@ func (m *OrderUserMutation) OldCoinType(ctx context.Context) (v string, err erro
 	return oldValue.CoinType, nil
 }
 
+// ClearCoinType clears the value of the "coin_type" field.
+func (m *OrderUserMutation) ClearCoinType() {
+	m.coin_type = nil
+	m.clearedFields[orderuser.FieldCoinType] = struct{}{}
+}
+
+// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
+func (m *OrderUserMutation) CoinTypeCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldCoinType]
+	return ok
+}
+
 // ResetCoinType resets all changes to the "coin_type" field.
 func (m *OrderUserMutation) ResetCoinType() {
 	m.coin_type = nil
+	delete(m.clearedFields, orderuser.FieldCoinType)
 }
 
 // SetProportion sets the "proportion" field.
@@ -5561,9 +6042,22 @@ func (m *OrderUserMutation) OldReadPageLink(ctx context.Context) (v string, err 
 	return oldValue.ReadPageLink, nil
 }
 
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (m *OrderUserMutation) ClearReadPageLink() {
+	m.read_page_link = nil
+	m.clearedFields[orderuser.FieldReadPageLink] = struct{}{}
+}
+
+// ReadPageLinkCleared returns if the "read_page_link" field was cleared in this mutation.
+func (m *OrderUserMutation) ReadPageLinkCleared() bool {
+	_, ok := m.clearedFields[orderuser.FieldReadPageLink]
+	return ok
+}
+
 // ResetReadPageLink resets all changes to the "read_page_link" field.
 func (m *OrderUserMutation) ResetReadPageLink() {
 	m.read_page_link = nil
+	delete(m.clearedFields, orderuser.FieldReadPageLink)
 }
 
 // SetAutoPay sets the "auto_pay" field.
@@ -5952,11 +6446,35 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *OrderUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(orderuser.FieldRootUserID) {
+		fields = append(fields, orderuser.FieldRootUserID)
+	}
+	if m.FieldCleared(orderuser.FieldGoodUserID) {
+		fields = append(fields, orderuser.FieldGoodUserID)
+	}
+	if m.FieldCleared(orderuser.FieldUserID) {
+		fields = append(fields, orderuser.FieldUserID)
+	}
+	if m.FieldCleared(orderuser.FieldAppID) {
+		fields = append(fields, orderuser.FieldAppID)
+	}
+	if m.FieldCleared(orderuser.FieldName) {
+		fields = append(fields, orderuser.FieldName)
+	}
+	if m.FieldCleared(orderuser.FieldMiningpoolType) {
+		fields = append(fields, orderuser.FieldMiningpoolType)
+	}
+	if m.FieldCleared(orderuser.FieldCoinType) {
+		fields = append(fields, orderuser.FieldCoinType)
+	}
 	if m.FieldCleared(orderuser.FieldProportion) {
 		fields = append(fields, orderuser.FieldProportion)
 	}
 	if m.FieldCleared(orderuser.FieldRevenueAddress) {
 		fields = append(fields, orderuser.FieldRevenueAddress)
+	}
+	if m.FieldCleared(orderuser.FieldReadPageLink) {
+		fields = append(fields, orderuser.FieldReadPageLink)
 	}
 	if m.FieldCleared(orderuser.FieldAutoPay) {
 		fields = append(fields, orderuser.FieldAutoPay)
@@ -5975,11 +6493,35 @@ func (m *OrderUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *OrderUserMutation) ClearField(name string) error {
 	switch name {
+	case orderuser.FieldRootUserID:
+		m.ClearRootUserID()
+		return nil
+	case orderuser.FieldGoodUserID:
+		m.ClearGoodUserID()
+		return nil
+	case orderuser.FieldUserID:
+		m.ClearUserID()
+		return nil
+	case orderuser.FieldAppID:
+		m.ClearAppID()
+		return nil
+	case orderuser.FieldName:
+		m.ClearName()
+		return nil
+	case orderuser.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
+	case orderuser.FieldCoinType:
+		m.ClearCoinType()
+		return nil
 	case orderuser.FieldProportion:
 		m.ClearProportion()
 		return nil
 	case orderuser.FieldRevenueAddress:
 		m.ClearRevenueAddress()
+		return nil
+	case orderuser.FieldReadPageLink:
+		m.ClearReadPageLink()
 		return nil
 	case orderuser.FieldAutoPay:
 		m.ClearAutoPay()
@@ -6451,9 +6993,22 @@ func (m *PoolMutation) OldMiningpoolType(ctx context.Context) (v string, err err
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *PoolMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[pool.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *PoolMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[pool.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *PoolMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, pool.FieldMiningpoolType)
 }
 
 // SetName sets the "name" field.
@@ -6487,9 +7042,22 @@ func (m *PoolMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *PoolMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[pool.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *PoolMutation) NameCleared() bool {
+	_, ok := m.clearedFields[pool.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *PoolMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, pool.FieldName)
 }
 
 // SetSite sets the "site" field.
@@ -6817,6 +7385,12 @@ func (m *PoolMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PoolMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(pool.FieldMiningpoolType) {
+		fields = append(fields, pool.FieldMiningpoolType)
+	}
+	if m.FieldCleared(pool.FieldName) {
+		fields = append(fields, pool.FieldName)
+	}
 	if m.FieldCleared(pool.FieldSite) {
 		fields = append(fields, pool.FieldSite)
 	}
@@ -6837,6 +7411,12 @@ func (m *PoolMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PoolMutation) ClearField(name string) error {
 	switch name {
+	case pool.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
+	case pool.FieldName:
+		m.ClearName()
+		return nil
 	case pool.FieldSite:
 		m.ClearSite()
 		return nil
@@ -6944,6 +7524,7 @@ type RootUserMutation struct {
 	miningpool_type *string
 	email           *string
 	auth_token      *string
+	auth_token_salt *string
 	authed          *bool
 	remark          *string
 	clearedFields   map[string]struct{}
@@ -7291,9 +7872,22 @@ func (m *RootUserMutation) OldName(ctx context.Context) (v string, err error) {
 	return oldValue.Name, nil
 }
 
+// ClearName clears the value of the "name" field.
+func (m *RootUserMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[rootuser.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *RootUserMutation) NameCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldName]
+	return ok
+}
+
 // ResetName resets all changes to the "name" field.
 func (m *RootUserMutation) ResetName() {
 	m.name = nil
+	delete(m.clearedFields, rootuser.FieldName)
 }
 
 // SetMiningpoolType sets the "miningpool_type" field.
@@ -7327,9 +7921,22 @@ func (m *RootUserMutation) OldMiningpoolType(ctx context.Context) (v string, err
 	return oldValue.MiningpoolType, nil
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (m *RootUserMutation) ClearMiningpoolType() {
+	m.miningpool_type = nil
+	m.clearedFields[rootuser.FieldMiningpoolType] = struct{}{}
+}
+
+// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
+func (m *RootUserMutation) MiningpoolTypeCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldMiningpoolType]
+	return ok
+}
+
 // ResetMiningpoolType resets all changes to the "miningpool_type" field.
 func (m *RootUserMutation) ResetMiningpoolType() {
 	m.miningpool_type = nil
+	delete(m.clearedFields, rootuser.FieldMiningpoolType)
 }
 
 // SetEmail sets the "email" field.
@@ -7412,9 +8019,71 @@ func (m *RootUserMutation) OldAuthToken(ctx context.Context) (v string, err erro
 	return oldValue.AuthToken, nil
 }
 
+// ClearAuthToken clears the value of the "auth_token" field.
+func (m *RootUserMutation) ClearAuthToken() {
+	m.auth_token = nil
+	m.clearedFields[rootuser.FieldAuthToken] = struct{}{}
+}
+
+// AuthTokenCleared returns if the "auth_token" field was cleared in this mutation.
+func (m *RootUserMutation) AuthTokenCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldAuthToken]
+	return ok
+}
+
 // ResetAuthToken resets all changes to the "auth_token" field.
 func (m *RootUserMutation) ResetAuthToken() {
 	m.auth_token = nil
+	delete(m.clearedFields, rootuser.FieldAuthToken)
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (m *RootUserMutation) SetAuthTokenSalt(s string) {
+	m.auth_token_salt = &s
+}
+
+// AuthTokenSalt returns the value of the "auth_token_salt" field in the mutation.
+func (m *RootUserMutation) AuthTokenSalt() (r string, exists bool) {
+	v := m.auth_token_salt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuthTokenSalt returns the old "auth_token_salt" field's value of the RootUser entity.
+// If the RootUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RootUserMutation) OldAuthTokenSalt(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuthTokenSalt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuthTokenSalt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuthTokenSalt: %w", err)
+	}
+	return oldValue.AuthTokenSalt, nil
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (m *RootUserMutation) ClearAuthTokenSalt() {
+	m.auth_token_salt = nil
+	m.clearedFields[rootuser.FieldAuthTokenSalt] = struct{}{}
+}
+
+// AuthTokenSaltCleared returns if the "auth_token_salt" field was cleared in this mutation.
+func (m *RootUserMutation) AuthTokenSaltCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldAuthTokenSalt]
+	return ok
+}
+
+// ResetAuthTokenSalt resets all changes to the "auth_token_salt" field.
+func (m *RootUserMutation) ResetAuthTokenSalt() {
+	m.auth_token_salt = nil
+	delete(m.clearedFields, rootuser.FieldAuthTokenSalt)
 }
 
 // SetAuthed sets the "authed" field.
@@ -7448,9 +8117,22 @@ func (m *RootUserMutation) OldAuthed(ctx context.Context) (v bool, err error) {
 	return oldValue.Authed, nil
 }
 
+// ClearAuthed clears the value of the "authed" field.
+func (m *RootUserMutation) ClearAuthed() {
+	m.authed = nil
+	m.clearedFields[rootuser.FieldAuthed] = struct{}{}
+}
+
+// AuthedCleared returns if the "authed" field was cleared in this mutation.
+func (m *RootUserMutation) AuthedCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldAuthed]
+	return ok
+}
+
 // ResetAuthed resets all changes to the "authed" field.
 func (m *RootUserMutation) ResetAuthed() {
 	m.authed = nil
+	delete(m.clearedFields, rootuser.FieldAuthed)
 }
 
 // SetRemark sets the "remark" field.
@@ -7521,7 +8203,7 @@ func (m *RootUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RootUserMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, rootuser.FieldCreatedAt)
 	}
@@ -7545,6 +8227,9 @@ func (m *RootUserMutation) Fields() []string {
 	}
 	if m.auth_token != nil {
 		fields = append(fields, rootuser.FieldAuthToken)
+	}
+	if m.auth_token_salt != nil {
+		fields = append(fields, rootuser.FieldAuthTokenSalt)
 	}
 	if m.authed != nil {
 		fields = append(fields, rootuser.FieldAuthed)
@@ -7576,6 +8261,8 @@ func (m *RootUserMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case rootuser.FieldAuthToken:
 		return m.AuthToken()
+	case rootuser.FieldAuthTokenSalt:
+		return m.AuthTokenSalt()
 	case rootuser.FieldAuthed:
 		return m.Authed()
 	case rootuser.FieldRemark:
@@ -7605,6 +8292,8 @@ func (m *RootUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEmail(ctx)
 	case rootuser.FieldAuthToken:
 		return m.OldAuthToken(ctx)
+	case rootuser.FieldAuthTokenSalt:
+		return m.OldAuthTokenSalt(ctx)
 	case rootuser.FieldAuthed:
 		return m.OldAuthed(ctx)
 	case rootuser.FieldRemark:
@@ -7673,6 +8362,13 @@ func (m *RootUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAuthToken(v)
+		return nil
+	case rootuser.FieldAuthTokenSalt:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuthTokenSalt(v)
 		return nil
 	case rootuser.FieldAuthed:
 		v, ok := value.(bool)
@@ -7757,8 +8453,23 @@ func (m *RootUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *RootUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(rootuser.FieldName) {
+		fields = append(fields, rootuser.FieldName)
+	}
+	if m.FieldCleared(rootuser.FieldMiningpoolType) {
+		fields = append(fields, rootuser.FieldMiningpoolType)
+	}
 	if m.FieldCleared(rootuser.FieldEmail) {
 		fields = append(fields, rootuser.FieldEmail)
+	}
+	if m.FieldCleared(rootuser.FieldAuthToken) {
+		fields = append(fields, rootuser.FieldAuthToken)
+	}
+	if m.FieldCleared(rootuser.FieldAuthTokenSalt) {
+		fields = append(fields, rootuser.FieldAuthTokenSalt)
+	}
+	if m.FieldCleared(rootuser.FieldAuthed) {
+		fields = append(fields, rootuser.FieldAuthed)
 	}
 	if m.FieldCleared(rootuser.FieldRemark) {
 		fields = append(fields, rootuser.FieldRemark)
@@ -7777,8 +8488,23 @@ func (m *RootUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *RootUserMutation) ClearField(name string) error {
 	switch name {
+	case rootuser.FieldName:
+		m.ClearName()
+		return nil
+	case rootuser.FieldMiningpoolType:
+		m.ClearMiningpoolType()
+		return nil
 	case rootuser.FieldEmail:
 		m.ClearEmail()
+		return nil
+	case rootuser.FieldAuthToken:
+		m.ClearAuthToken()
+		return nil
+	case rootuser.FieldAuthTokenSalt:
+		m.ClearAuthTokenSalt()
+		return nil
+	case rootuser.FieldAuthed:
+		m.ClearAuthed()
 		return nil
 	case rootuser.FieldRemark:
 		m.ClearRemark()
@@ -7814,6 +8540,9 @@ func (m *RootUserMutation) ResetField(name string) error {
 		return nil
 	case rootuser.FieldAuthToken:
 		m.ResetAuthToken()
+		return nil
+	case rootuser.FieldAuthTokenSalt:
+		m.ResetAuthTokenSalt()
 		return nil
 	case rootuser.FieldAuthed:
 		m.ResetAuthed()

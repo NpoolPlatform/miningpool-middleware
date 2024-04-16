@@ -135,6 +135,13 @@ func AuthToken(v string) predicate.RootUser {
 	})
 }
 
+// AuthTokenSalt applies equality check predicate on the "auth_token_salt" field. It's identical to AuthTokenSaltEQ.
+func AuthTokenSalt(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
 // Authed applies equality check predicate on the "authed" field. It's identical to AuthedEQ.
 func Authed(v bool) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
@@ -490,6 +497,20 @@ func NameHasSuffix(v string) predicate.RootUser {
 	})
 }
 
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldName)))
+	})
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldName)))
+	})
+}
+
 // NameEqualFold applies the EqualFold predicate on the "name" field.
 func NameEqualFold(v string) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
@@ -586,6 +607,20 @@ func MiningpoolTypeHasPrefix(v string) predicate.RootUser {
 func MiningpoolTypeHasSuffix(v string) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
+	})
+}
+
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
 	})
 }
 
@@ -801,6 +836,20 @@ func AuthTokenHasSuffix(v string) predicate.RootUser {
 	})
 }
 
+// AuthTokenIsNil applies the IsNil predicate on the "auth_token" field.
+func AuthTokenIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAuthToken)))
+	})
+}
+
+// AuthTokenNotNil applies the NotNil predicate on the "auth_token" field.
+func AuthTokenNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAuthToken)))
+	})
+}
+
 // AuthTokenEqualFold applies the EqualFold predicate on the "auth_token" field.
 func AuthTokenEqualFold(v string) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
@@ -815,6 +864,119 @@ func AuthTokenContainsFold(v string) predicate.RootUser {
 	})
 }
 
+// AuthTokenSaltEQ applies the EQ predicate on the "auth_token_salt" field.
+func AuthTokenSaltEQ(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltNEQ applies the NEQ predicate on the "auth_token_salt" field.
+func AuthTokenSaltNEQ(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltIn applies the In predicate on the "auth_token_salt" field.
+func AuthTokenSaltIn(vs ...string) predicate.RootUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldAuthTokenSalt), v...))
+	})
+}
+
+// AuthTokenSaltNotIn applies the NotIn predicate on the "auth_token_salt" field.
+func AuthTokenSaltNotIn(vs ...string) predicate.RootUser {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldAuthTokenSalt), v...))
+	})
+}
+
+// AuthTokenSaltGT applies the GT predicate on the "auth_token_salt" field.
+func AuthTokenSaltGT(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltGTE applies the GTE predicate on the "auth_token_salt" field.
+func AuthTokenSaltGTE(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltLT applies the LT predicate on the "auth_token_salt" field.
+func AuthTokenSaltLT(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltLTE applies the LTE predicate on the "auth_token_salt" field.
+func AuthTokenSaltLTE(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltContains applies the Contains predicate on the "auth_token_salt" field.
+func AuthTokenSaltContains(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltHasPrefix applies the HasPrefix predicate on the "auth_token_salt" field.
+func AuthTokenSaltHasPrefix(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltHasSuffix applies the HasSuffix predicate on the "auth_token_salt" field.
+func AuthTokenSaltHasSuffix(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltIsNil applies the IsNil predicate on the "auth_token_salt" field.
+func AuthTokenSaltIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAuthTokenSalt)))
+	})
+}
+
+// AuthTokenSaltNotNil applies the NotNil predicate on the "auth_token_salt" field.
+func AuthTokenSaltNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAuthTokenSalt)))
+	})
+}
+
+// AuthTokenSaltEqualFold applies the EqualFold predicate on the "auth_token_salt" field.
+func AuthTokenSaltEqualFold(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
+// AuthTokenSaltContainsFold applies the ContainsFold predicate on the "auth_token_salt" field.
+func AuthTokenSaltContainsFold(v string) predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldAuthTokenSalt), v))
+	})
+}
+
 // AuthedEQ applies the EQ predicate on the "authed" field.
 func AuthedEQ(v bool) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
@@ -826,6 +988,20 @@ func AuthedEQ(v bool) predicate.RootUser {
 func AuthedNEQ(v bool) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldAuthed), v))
+	})
+}
+
+// AuthedIsNil applies the IsNil predicate on the "authed" field.
+func AuthedIsNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAuthed)))
+	})
+}
+
+// AuthedNotNil applies the NotNil predicate on the "authed" field.
+func AuthedNotNil() predicate.RootUser {
+	return predicate.RootUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAuthed)))
 	})
 }
 

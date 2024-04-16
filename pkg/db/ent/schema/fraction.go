@@ -25,15 +25,27 @@ func (Fraction) Mixin() []ent.Mixin {
 func (Fraction) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("app_id", uuid.UUID{}),
+			UUID("app_id", uuid.UUID{}).Optional().
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			UUID("user_id", uuid.UUID{}),
+			UUID("user_id", uuid.UUID{}).Optional().
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			UUID("order_user_id", uuid.UUID{}),
+			UUID("order_user_id", uuid.UUID{}).Optional().
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			String("withdraw_state"),
+			String("withdraw_state").Optional().Default(""),
 		field.
-			Uint32("withdraw_time"),
+			Uint32("withdraw_time").Optional().Default(0),
 		field.
 			Uint32("pay_time").Optional().Default(0),
 		field.

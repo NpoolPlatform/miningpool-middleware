@@ -134,7 +134,7 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 
 func WithHashRate(hashrate *float32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if hashrate == nil {
+		if hashrate == nil || *hashrate <= 0 {
 			if must {
 				return fmt.Errorf("invalid hashrate")
 			}

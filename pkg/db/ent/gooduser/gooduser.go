@@ -82,6 +82,18 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultRootUserID holds the default value on creation for the "root_user_id" field.
+	DefaultRootUserID func() uuid.UUID
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName string
+	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
+	DefaultMiningpoolType string
+	// DefaultCoinType holds the default value on creation for the "coin_type" field.
+	DefaultCoinType string
 	// DefaultHashRate holds the default value on creation for the "hash_rate" field.
 	DefaultHashRate float32
+	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
+	DefaultReadPageLink string
+	// DefaultRevenueType holds the default value on creation for the "revenue_type" field.
+	DefaultRevenueType string
 )

@@ -104,9 +104,37 @@ func (ruu *RootUserUpdate) SetName(s string) *RootUserUpdate {
 	return ruu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableName(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetName(*s)
+	}
+	return ruu
+}
+
+// ClearName clears the value of the "name" field.
+func (ruu *RootUserUpdate) ClearName() *RootUserUpdate {
+	ruu.mutation.ClearName()
+	return ruu
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ruu *RootUserUpdate) SetMiningpoolType(s string) *RootUserUpdate {
 	ruu.mutation.SetMiningpoolType(s)
+	return ruu
+}
+
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableMiningpoolType(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetMiningpoolType(*s)
+	}
+	return ruu
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (ruu *RootUserUpdate) ClearMiningpoolType() *RootUserUpdate {
+	ruu.mutation.ClearMiningpoolType()
 	return ruu
 }
 
@@ -136,9 +164,57 @@ func (ruu *RootUserUpdate) SetAuthToken(s string) *RootUserUpdate {
 	return ruu
 }
 
+// SetNillableAuthToken sets the "auth_token" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableAuthToken(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetAuthToken(*s)
+	}
+	return ruu
+}
+
+// ClearAuthToken clears the value of the "auth_token" field.
+func (ruu *RootUserUpdate) ClearAuthToken() *RootUserUpdate {
+	ruu.mutation.ClearAuthToken()
+	return ruu
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (ruu *RootUserUpdate) SetAuthTokenSalt(s string) *RootUserUpdate {
+	ruu.mutation.SetAuthTokenSalt(s)
+	return ruu
+}
+
+// SetNillableAuthTokenSalt sets the "auth_token_salt" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableAuthTokenSalt(s *string) *RootUserUpdate {
+	if s != nil {
+		ruu.SetAuthTokenSalt(*s)
+	}
+	return ruu
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (ruu *RootUserUpdate) ClearAuthTokenSalt() *RootUserUpdate {
+	ruu.mutation.ClearAuthTokenSalt()
+	return ruu
+}
+
 // SetAuthed sets the "authed" field.
 func (ruu *RootUserUpdate) SetAuthed(b bool) *RootUserUpdate {
 	ruu.mutation.SetAuthed(b)
+	return ruu
+}
+
+// SetNillableAuthed sets the "authed" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillableAuthed(b *bool) *RootUserUpdate {
+	if b != nil {
+		ruu.SetAuthed(*b)
+	}
+	return ruu
+}
+
+// ClearAuthed clears the value of the "authed" field.
+func (ruu *RootUserUpdate) ClearAuthed() *RootUserUpdate {
+	ruu.mutation.ClearAuthed()
 	return ruu
 }
 
@@ -316,10 +392,22 @@ func (ruu *RootUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: rootuser.FieldName,
 		})
 	}
+	if ruu.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldName,
+		})
+	}
 	if value, ok := ruu.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: rootuser.FieldMiningpoolType,
+		})
+	}
+	if ruu.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: rootuser.FieldMiningpoolType,
 		})
 	}
@@ -343,10 +431,35 @@ func (ruu *RootUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: rootuser.FieldAuthToken,
 		})
 	}
+	if ruu.mutation.AuthTokenCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldAuthToken,
+		})
+	}
+	if value, ok := ruu.mutation.AuthTokenSalt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: rootuser.FieldAuthTokenSalt,
+		})
+	}
+	if ruu.mutation.AuthTokenSaltCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldAuthTokenSalt,
+		})
+	}
 	if value, ok := ruu.mutation.Authed(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Value:  value,
+			Column: rootuser.FieldAuthed,
+		})
+	}
+	if ruu.mutation.AuthedCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
 			Column: rootuser.FieldAuthed,
 		})
 	}
@@ -459,9 +572,37 @@ func (ruuo *RootUserUpdateOne) SetName(s string) *RootUserUpdateOne {
 	return ruuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableName(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetName(*s)
+	}
+	return ruuo
+}
+
+// ClearName clears the value of the "name" field.
+func (ruuo *RootUserUpdateOne) ClearName() *RootUserUpdateOne {
+	ruuo.mutation.ClearName()
+	return ruuo
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ruuo *RootUserUpdateOne) SetMiningpoolType(s string) *RootUserUpdateOne {
 	ruuo.mutation.SetMiningpoolType(s)
+	return ruuo
+}
+
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableMiningpoolType(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetMiningpoolType(*s)
+	}
+	return ruuo
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (ruuo *RootUserUpdateOne) ClearMiningpoolType() *RootUserUpdateOne {
+	ruuo.mutation.ClearMiningpoolType()
 	return ruuo
 }
 
@@ -491,9 +632,57 @@ func (ruuo *RootUserUpdateOne) SetAuthToken(s string) *RootUserUpdateOne {
 	return ruuo
 }
 
+// SetNillableAuthToken sets the "auth_token" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableAuthToken(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetAuthToken(*s)
+	}
+	return ruuo
+}
+
+// ClearAuthToken clears the value of the "auth_token" field.
+func (ruuo *RootUserUpdateOne) ClearAuthToken() *RootUserUpdateOne {
+	ruuo.mutation.ClearAuthToken()
+	return ruuo
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (ruuo *RootUserUpdateOne) SetAuthTokenSalt(s string) *RootUserUpdateOne {
+	ruuo.mutation.SetAuthTokenSalt(s)
+	return ruuo
+}
+
+// SetNillableAuthTokenSalt sets the "auth_token_salt" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableAuthTokenSalt(s *string) *RootUserUpdateOne {
+	if s != nil {
+		ruuo.SetAuthTokenSalt(*s)
+	}
+	return ruuo
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (ruuo *RootUserUpdateOne) ClearAuthTokenSalt() *RootUserUpdateOne {
+	ruuo.mutation.ClearAuthTokenSalt()
+	return ruuo
+}
+
 // SetAuthed sets the "authed" field.
 func (ruuo *RootUserUpdateOne) SetAuthed(b bool) *RootUserUpdateOne {
 	ruuo.mutation.SetAuthed(b)
+	return ruuo
+}
+
+// SetNillableAuthed sets the "authed" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillableAuthed(b *bool) *RootUserUpdateOne {
+	if b != nil {
+		ruuo.SetAuthed(*b)
+	}
+	return ruuo
+}
+
+// ClearAuthed clears the value of the "authed" field.
+func (ruuo *RootUserUpdateOne) ClearAuthed() *RootUserUpdateOne {
+	ruuo.mutation.ClearAuthed()
 	return ruuo
 }
 
@@ -701,10 +890,22 @@ func (ruuo *RootUserUpdateOne) sqlSave(ctx context.Context) (_node *RootUser, er
 			Column: rootuser.FieldName,
 		})
 	}
+	if ruuo.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldName,
+		})
+	}
 	if value, ok := ruuo.mutation.MiningpoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: rootuser.FieldMiningpoolType,
+		})
+	}
+	if ruuo.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: rootuser.FieldMiningpoolType,
 		})
 	}
@@ -728,10 +929,35 @@ func (ruuo *RootUserUpdateOne) sqlSave(ctx context.Context) (_node *RootUser, er
 			Column: rootuser.FieldAuthToken,
 		})
 	}
+	if ruuo.mutation.AuthTokenCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldAuthToken,
+		})
+	}
+	if value, ok := ruuo.mutation.AuthTokenSalt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: rootuser.FieldAuthTokenSalt,
+		})
+	}
+	if ruuo.mutation.AuthTokenSaltCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: rootuser.FieldAuthTokenSalt,
+		})
+	}
 	if value, ok := ruuo.mutation.Authed(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeBool,
 			Value:  value,
+			Column: rootuser.FieldAuthed,
+		})
+	}
+	if ruuo.mutation.AuthedCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
 			Column: rootuser.FieldAuthed,
 		})
 	}

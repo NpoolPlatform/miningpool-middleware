@@ -84,9 +84,25 @@ func (pc *PoolCreate) SetMiningpoolType(s string) *PoolCreate {
 	return pc
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (pc *PoolCreate) SetNillableMiningpoolType(s *string) *PoolCreate {
+	if s != nil {
+		pc.SetMiningpoolType(*s)
+	}
+	return pc
+}
+
 // SetName sets the "name" field.
 func (pc *PoolCreate) SetName(s string) *PoolCreate {
 	pc.mutation.SetName(s)
+	return pc
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (pc *PoolCreate) SetNillableName(s *string) *PoolCreate {
+	if s != nil {
+		pc.SetName(*s)
+	}
 	return pc
 }
 
@@ -231,6 +247,14 @@ func (pc *PoolCreate) defaults() error {
 		v := pool.DefaultEntID()
 		pc.mutation.SetEntID(v)
 	}
+	if _, ok := pc.mutation.MiningpoolType(); !ok {
+		v := pool.DefaultMiningpoolType
+		pc.mutation.SetMiningpoolType(v)
+	}
+	if _, ok := pc.mutation.Name(); !ok {
+		v := pool.DefaultName
+		pc.mutation.SetName(v)
+	}
 	if _, ok := pc.mutation.Site(); !ok {
 		v := pool.DefaultSite
 		pc.mutation.SetSite(v)
@@ -255,12 +279,6 @@ func (pc *PoolCreate) check() error {
 	}
 	if _, ok := pc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "Pool.ent_id"`)}
-	}
-	if _, ok := pc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "Pool.miningpool_type"`)}
-	}
-	if _, ok := pc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Pool.name"`)}
 	}
 	return nil
 }
@@ -490,6 +508,12 @@ func (u *PoolUpsert) UpdateMiningpoolType() *PoolUpsert {
 	return u
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *PoolUpsert) ClearMiningpoolType() *PoolUpsert {
+	u.SetNull(pool.FieldMiningpoolType)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *PoolUpsert) SetName(v string) *PoolUpsert {
 	u.Set(pool.FieldName, v)
@@ -499,6 +523,12 @@ func (u *PoolUpsert) SetName(v string) *PoolUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *PoolUpsert) UpdateName() *PoolUpsert {
 	u.SetExcluded(pool.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PoolUpsert) ClearName() *PoolUpsert {
+	u.SetNull(pool.FieldName)
 	return u
 }
 
@@ -677,6 +707,13 @@ func (u *PoolUpsertOne) UpdateMiningpoolType() *PoolUpsertOne {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *PoolUpsertOne) ClearMiningpoolType() *PoolUpsertOne {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *PoolUpsertOne) SetName(v string) *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
@@ -688,6 +725,13 @@ func (u *PoolUpsertOne) SetName(v string) *PoolUpsertOne {
 func (u *PoolUpsertOne) UpdateName() *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PoolUpsertOne) ClearName() *PoolUpsertOne {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearName()
 	})
 }
 
@@ -1035,6 +1079,13 @@ func (u *PoolUpsertBulk) UpdateMiningpoolType() *PoolUpsertBulk {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *PoolUpsertBulk) ClearMiningpoolType() *PoolUpsertBulk {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *PoolUpsertBulk) SetName(v string) *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
@@ -1046,6 +1097,13 @@ func (u *PoolUpsertBulk) SetName(v string) *PoolUpsertBulk {
 func (u *PoolUpsertBulk) UpdateName() *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
 		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PoolUpsertBulk) ClearName() *PoolUpsertBulk {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearName()
 	})
 }
 

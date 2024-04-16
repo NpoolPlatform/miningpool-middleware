@@ -104,9 +104,37 @@ func (guu *GoodUserUpdate) SetRootUserID(u uuid.UUID) *GoodUserUpdate {
 	return guu
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableRootUserID(u *uuid.UUID) *GoodUserUpdate {
+	if u != nil {
+		guu.SetRootUserID(*u)
+	}
+	return guu
+}
+
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (guu *GoodUserUpdate) ClearRootUserID() *GoodUserUpdate {
+	guu.mutation.ClearRootUserID()
+	return guu
+}
+
 // SetName sets the "name" field.
 func (guu *GoodUserUpdate) SetName(s string) *GoodUserUpdate {
 	guu.mutation.SetName(s)
+	return guu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableName(s *string) *GoodUserUpdate {
+	if s != nil {
+		guu.SetName(*s)
+	}
+	return guu
+}
+
+// ClearName clears the value of the "name" field.
+func (guu *GoodUserUpdate) ClearName() *GoodUserUpdate {
+	guu.mutation.ClearName()
 	return guu
 }
 
@@ -116,9 +144,37 @@ func (guu *GoodUserUpdate) SetMiningpoolType(s string) *GoodUserUpdate {
 	return guu
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableMiningpoolType(s *string) *GoodUserUpdate {
+	if s != nil {
+		guu.SetMiningpoolType(*s)
+	}
+	return guu
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (guu *GoodUserUpdate) ClearMiningpoolType() *GoodUserUpdate {
+	guu.mutation.ClearMiningpoolType()
+	return guu
+}
+
 // SetCoinType sets the "coin_type" field.
 func (guu *GoodUserUpdate) SetCoinType(s string) *GoodUserUpdate {
 	guu.mutation.SetCoinType(s)
+	return guu
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableCoinType(s *string) *GoodUserUpdate {
+	if s != nil {
+		guu.SetCoinType(*s)
+	}
+	return guu
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (guu *GoodUserUpdate) ClearCoinType() *GoodUserUpdate {
+	guu.mutation.ClearCoinType()
 	return guu
 }
 
@@ -155,9 +211,37 @@ func (guu *GoodUserUpdate) SetReadPageLink(s string) *GoodUserUpdate {
 	return guu
 }
 
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableReadPageLink(s *string) *GoodUserUpdate {
+	if s != nil {
+		guu.SetReadPageLink(*s)
+	}
+	return guu
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (guu *GoodUserUpdate) ClearReadPageLink() *GoodUserUpdate {
+	guu.mutation.ClearReadPageLink()
+	return guu
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (guu *GoodUserUpdate) SetRevenueType(s string) *GoodUserUpdate {
 	guu.mutation.SetRevenueType(s)
+	return guu
+}
+
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillableRevenueType(s *string) *GoodUserUpdate {
+	if s != nil {
+		guu.SetRevenueType(*s)
+	}
+	return guu
+}
+
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (guu *GoodUserUpdate) ClearRevenueType() *GoodUserUpdate {
+	guu.mutation.ClearRevenueType()
 	return guu
 }
 
@@ -315,10 +399,22 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldRootUserID,
 		})
 	}
+	if guu.mutation.RootUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: gooduser.FieldRootUserID,
+		})
+	}
 	if value, ok := guu.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldName,
+		})
+	}
+	if guu.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldName,
 		})
 	}
@@ -329,10 +425,22 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldMiningpoolType,
 		})
 	}
+	if guu.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: gooduser.FieldMiningpoolType,
+		})
+	}
 	if value, ok := guu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldCoinType,
+		})
+	}
+	if guu.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldCoinType,
 		})
 	}
@@ -363,10 +471,22 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldReadPageLink,
 		})
 	}
+	if guu.mutation.ReadPageLinkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: gooduser.FieldReadPageLink,
+		})
+	}
 	if value, ok := guu.mutation.RevenueType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldRevenueType,
+		})
+	}
+	if guu.mutation.RevenueTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldRevenueType,
 		})
 	}
@@ -466,9 +586,37 @@ func (guuo *GoodUserUpdateOne) SetRootUserID(u uuid.UUID) *GoodUserUpdateOne {
 	return guuo
 }
 
+// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableRootUserID(u *uuid.UUID) *GoodUserUpdateOne {
+	if u != nil {
+		guuo.SetRootUserID(*u)
+	}
+	return guuo
+}
+
+// ClearRootUserID clears the value of the "root_user_id" field.
+func (guuo *GoodUserUpdateOne) ClearRootUserID() *GoodUserUpdateOne {
+	guuo.mutation.ClearRootUserID()
+	return guuo
+}
+
 // SetName sets the "name" field.
 func (guuo *GoodUserUpdateOne) SetName(s string) *GoodUserUpdateOne {
 	guuo.mutation.SetName(s)
+	return guuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableName(s *string) *GoodUserUpdateOne {
+	if s != nil {
+		guuo.SetName(*s)
+	}
+	return guuo
+}
+
+// ClearName clears the value of the "name" field.
+func (guuo *GoodUserUpdateOne) ClearName() *GoodUserUpdateOne {
+	guuo.mutation.ClearName()
 	return guuo
 }
 
@@ -478,9 +626,37 @@ func (guuo *GoodUserUpdateOne) SetMiningpoolType(s string) *GoodUserUpdateOne {
 	return guuo
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableMiningpoolType(s *string) *GoodUserUpdateOne {
+	if s != nil {
+		guuo.SetMiningpoolType(*s)
+	}
+	return guuo
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (guuo *GoodUserUpdateOne) ClearMiningpoolType() *GoodUserUpdateOne {
+	guuo.mutation.ClearMiningpoolType()
+	return guuo
+}
+
 // SetCoinType sets the "coin_type" field.
 func (guuo *GoodUserUpdateOne) SetCoinType(s string) *GoodUserUpdateOne {
 	guuo.mutation.SetCoinType(s)
+	return guuo
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableCoinType(s *string) *GoodUserUpdateOne {
+	if s != nil {
+		guuo.SetCoinType(*s)
+	}
+	return guuo
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (guuo *GoodUserUpdateOne) ClearCoinType() *GoodUserUpdateOne {
+	guuo.mutation.ClearCoinType()
 	return guuo
 }
 
@@ -517,9 +693,37 @@ func (guuo *GoodUserUpdateOne) SetReadPageLink(s string) *GoodUserUpdateOne {
 	return guuo
 }
 
+// SetNillableReadPageLink sets the "read_page_link" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableReadPageLink(s *string) *GoodUserUpdateOne {
+	if s != nil {
+		guuo.SetReadPageLink(*s)
+	}
+	return guuo
+}
+
+// ClearReadPageLink clears the value of the "read_page_link" field.
+func (guuo *GoodUserUpdateOne) ClearReadPageLink() *GoodUserUpdateOne {
+	guuo.mutation.ClearReadPageLink()
+	return guuo
+}
+
 // SetRevenueType sets the "revenue_type" field.
 func (guuo *GoodUserUpdateOne) SetRevenueType(s string) *GoodUserUpdateOne {
 	guuo.mutation.SetRevenueType(s)
+	return guuo
+}
+
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillableRevenueType(s *string) *GoodUserUpdateOne {
+	if s != nil {
+		guuo.SetRevenueType(*s)
+	}
+	return guuo
+}
+
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (guuo *GoodUserUpdateOne) ClearRevenueType() *GoodUserUpdateOne {
+	guuo.mutation.ClearRevenueType()
 	return guuo
 }
 
@@ -707,10 +911,22 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldRootUserID,
 		})
 	}
+	if guuo.mutation.RootUserIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: gooduser.FieldRootUserID,
+		})
+	}
 	if value, ok := guuo.mutation.Name(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldName,
+		})
+	}
+	if guuo.mutation.NameCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldName,
 		})
 	}
@@ -721,10 +937,22 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldMiningpoolType,
 		})
 	}
+	if guuo.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: gooduser.FieldMiningpoolType,
+		})
+	}
 	if value, ok := guuo.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldCoinType,
+		})
+	}
+	if guuo.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldCoinType,
 		})
 	}
@@ -755,10 +983,22 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldReadPageLink,
 		})
 	}
+	if guuo.mutation.ReadPageLinkCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: gooduser.FieldReadPageLink,
+		})
+	}
 	if value, ok := guuo.mutation.RevenueType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: gooduser.FieldRevenueType,
+		})
+	}
+	if guuo.mutation.RevenueTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: gooduser.FieldRevenueType,
 		})
 	}

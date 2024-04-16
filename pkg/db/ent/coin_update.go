@@ -105,9 +105,37 @@ func (cu *CoinUpdate) SetMiningpoolType(s string) *CoinUpdate {
 	return cu
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableMiningpoolType(s *string) *CoinUpdate {
+	if s != nil {
+		cu.SetMiningpoolType(*s)
+	}
+	return cu
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (cu *CoinUpdate) ClearMiningpoolType() *CoinUpdate {
+	cu.mutation.ClearMiningpoolType()
+	return cu
+}
+
 // SetCoinType sets the "coin_type" field.
 func (cu *CoinUpdate) SetCoinType(s string) *CoinUpdate {
 	cu.mutation.SetCoinType(s)
+	return cu
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableCoinType(s *string) *CoinUpdate {
+	if s != nil {
+		cu.SetCoinType(*s)
+	}
+	return cu
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (cu *CoinUpdate) ClearCoinType() *CoinUpdate {
+	cu.mutation.ClearCoinType()
 	return cu
 }
 
@@ -357,10 +385,22 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldMiningpoolType,
 		})
 	}
+	if cu.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: coin.FieldMiningpoolType,
+		})
+	}
 	if value, ok := cu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: coin.FieldCoinType,
+		})
+	}
+	if cu.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: coin.FieldCoinType,
 		})
 	}
@@ -525,9 +565,37 @@ func (cuo *CoinUpdateOne) SetMiningpoolType(s string) *CoinUpdateOne {
 	return cuo
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableMiningpoolType(s *string) *CoinUpdateOne {
+	if s != nil {
+		cuo.SetMiningpoolType(*s)
+	}
+	return cuo
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (cuo *CoinUpdateOne) ClearMiningpoolType() *CoinUpdateOne {
+	cuo.mutation.ClearMiningpoolType()
+	return cuo
+}
+
 // SetCoinType sets the "coin_type" field.
 func (cuo *CoinUpdateOne) SetCoinType(s string) *CoinUpdateOne {
 	cuo.mutation.SetCoinType(s)
+	return cuo
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableCoinType(s *string) *CoinUpdateOne {
+	if s != nil {
+		cuo.SetCoinType(*s)
+	}
+	return cuo
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (cuo *CoinUpdateOne) ClearCoinType() *CoinUpdateOne {
+	cuo.mutation.ClearCoinType()
 	return cuo
 }
 
@@ -807,10 +875,22 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldMiningpoolType,
 		})
 	}
+	if cuo.mutation.MiningpoolTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: coin.FieldMiningpoolType,
+		})
+	}
 	if value, ok := cuo.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: coin.FieldCoinType,
+		})
+	}
+	if cuo.mutation.CoinTypeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: coin.FieldCoinType,
 		})
 	}

@@ -84,9 +84,25 @@ func (ruc *RootUserCreate) SetName(s string) *RootUserCreate {
 	return ruc
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableName(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetName(*s)
+	}
+	return ruc
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (ruc *RootUserCreate) SetMiningpoolType(s string) *RootUserCreate {
 	ruc.mutation.SetMiningpoolType(s)
+	return ruc
+}
+
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableMiningpoolType(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetMiningpoolType(*s)
+	}
 	return ruc
 }
 
@@ -110,9 +126,39 @@ func (ruc *RootUserCreate) SetAuthToken(s string) *RootUserCreate {
 	return ruc
 }
 
+// SetNillableAuthToken sets the "auth_token" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableAuthToken(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetAuthToken(*s)
+	}
+	return ruc
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (ruc *RootUserCreate) SetAuthTokenSalt(s string) *RootUserCreate {
+	ruc.mutation.SetAuthTokenSalt(s)
+	return ruc
+}
+
+// SetNillableAuthTokenSalt sets the "auth_token_salt" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableAuthTokenSalt(s *string) *RootUserCreate {
+	if s != nil {
+		ruc.SetAuthTokenSalt(*s)
+	}
+	return ruc
+}
+
 // SetAuthed sets the "authed" field.
 func (ruc *RootUserCreate) SetAuthed(b bool) *RootUserCreate {
 	ruc.mutation.SetAuthed(b)
+	return ruc
+}
+
+// SetNillableAuthed sets the "authed" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillableAuthed(b *bool) *RootUserCreate {
+	if b != nil {
+		ruc.SetAuthed(*b)
+	}
 	return ruc
 }
 
@@ -243,9 +289,29 @@ func (ruc *RootUserCreate) defaults() error {
 		v := rootuser.DefaultEntID()
 		ruc.mutation.SetEntID(v)
 	}
+	if _, ok := ruc.mutation.Name(); !ok {
+		v := rootuser.DefaultName
+		ruc.mutation.SetName(v)
+	}
+	if _, ok := ruc.mutation.MiningpoolType(); !ok {
+		v := rootuser.DefaultMiningpoolType
+		ruc.mutation.SetMiningpoolType(v)
+	}
 	if _, ok := ruc.mutation.Email(); !ok {
 		v := rootuser.DefaultEmail
 		ruc.mutation.SetEmail(v)
+	}
+	if _, ok := ruc.mutation.AuthToken(); !ok {
+		v := rootuser.DefaultAuthToken
+		ruc.mutation.SetAuthToken(v)
+	}
+	if _, ok := ruc.mutation.AuthTokenSalt(); !ok {
+		v := rootuser.DefaultAuthTokenSalt
+		ruc.mutation.SetAuthTokenSalt(v)
+	}
+	if _, ok := ruc.mutation.Authed(); !ok {
+		v := rootuser.DefaultAuthed
+		ruc.mutation.SetAuthed(v)
 	}
 	if _, ok := ruc.mutation.Remark(); !ok {
 		v := rootuser.DefaultRemark
@@ -267,18 +333,6 @@ func (ruc *RootUserCreate) check() error {
 	}
 	if _, ok := ruc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "RootUser.ent_id"`)}
-	}
-	if _, ok := ruc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "RootUser.name"`)}
-	}
-	if _, ok := ruc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "RootUser.miningpool_type"`)}
-	}
-	if _, ok := ruc.mutation.AuthToken(); !ok {
-		return &ValidationError{Name: "auth_token", err: errors.New(`ent: missing required field "RootUser.auth_token"`)}
-	}
-	if _, ok := ruc.mutation.Authed(); !ok {
-		return &ValidationError{Name: "authed", err: errors.New(`ent: missing required field "RootUser.authed"`)}
 	}
 	return nil
 }
@@ -377,6 +431,14 @@ func (ruc *RootUserCreate) createSpec() (*RootUser, *sqlgraph.CreateSpec) {
 			Column: rootuser.FieldAuthToken,
 		})
 		_node.AuthToken = value
+	}
+	if value, ok := ruc.mutation.AuthTokenSalt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: rootuser.FieldAuthTokenSalt,
+		})
+		_node.AuthTokenSalt = value
 	}
 	if value, ok := ruc.mutation.Authed(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -524,6 +586,12 @@ func (u *RootUserUpsert) UpdateName() *RootUserUpsert {
 	return u
 }
 
+// ClearName clears the value of the "name" field.
+func (u *RootUserUpsert) ClearName() *RootUserUpsert {
+	u.SetNull(rootuser.FieldName)
+	return u
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *RootUserUpsert) SetMiningpoolType(v string) *RootUserUpsert {
 	u.Set(rootuser.FieldMiningpoolType, v)
@@ -533,6 +601,12 @@ func (u *RootUserUpsert) SetMiningpoolType(v string) *RootUserUpsert {
 // UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
 func (u *RootUserUpsert) UpdateMiningpoolType() *RootUserUpsert {
 	u.SetExcluded(rootuser.FieldMiningpoolType)
+	return u
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *RootUserUpsert) ClearMiningpoolType() *RootUserUpsert {
+	u.SetNull(rootuser.FieldMiningpoolType)
 	return u
 }
 
@@ -566,6 +640,30 @@ func (u *RootUserUpsert) UpdateAuthToken() *RootUserUpsert {
 	return u
 }
 
+// ClearAuthToken clears the value of the "auth_token" field.
+func (u *RootUserUpsert) ClearAuthToken() *RootUserUpsert {
+	u.SetNull(rootuser.FieldAuthToken)
+	return u
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (u *RootUserUpsert) SetAuthTokenSalt(v string) *RootUserUpsert {
+	u.Set(rootuser.FieldAuthTokenSalt, v)
+	return u
+}
+
+// UpdateAuthTokenSalt sets the "auth_token_salt" field to the value that was provided on create.
+func (u *RootUserUpsert) UpdateAuthTokenSalt() *RootUserUpsert {
+	u.SetExcluded(rootuser.FieldAuthTokenSalt)
+	return u
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (u *RootUserUpsert) ClearAuthTokenSalt() *RootUserUpsert {
+	u.SetNull(rootuser.FieldAuthTokenSalt)
+	return u
+}
+
 // SetAuthed sets the "authed" field.
 func (u *RootUserUpsert) SetAuthed(v bool) *RootUserUpsert {
 	u.Set(rootuser.FieldAuthed, v)
@@ -575,6 +673,12 @@ func (u *RootUserUpsert) SetAuthed(v bool) *RootUserUpsert {
 // UpdateAuthed sets the "authed" field to the value that was provided on create.
 func (u *RootUserUpsert) UpdateAuthed() *RootUserUpsert {
 	u.SetExcluded(rootuser.FieldAuthed)
+	return u
+}
+
+// ClearAuthed clears the value of the "authed" field.
+func (u *RootUserUpsert) ClearAuthed() *RootUserUpsert {
+	u.SetNull(rootuser.FieldAuthed)
 	return u
 }
 
@@ -735,6 +839,13 @@ func (u *RootUserUpsertOne) UpdateName() *RootUserUpsertOne {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *RootUserUpsertOne) ClearName() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *RootUserUpsertOne) SetMiningpoolType(v string) *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
@@ -746,6 +857,13 @@ func (u *RootUserUpsertOne) SetMiningpoolType(v string) *RootUserUpsertOne {
 func (u *RootUserUpsertOne) UpdateMiningpoolType() *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateMiningpoolType()
+	})
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *RootUserUpsertOne) ClearMiningpoolType() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearMiningpoolType()
 	})
 }
 
@@ -784,6 +902,34 @@ func (u *RootUserUpsertOne) UpdateAuthToken() *RootUserUpsertOne {
 	})
 }
 
+// ClearAuthToken clears the value of the "auth_token" field.
+func (u *RootUserUpsertOne) ClearAuthToken() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthToken()
+	})
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (u *RootUserUpsertOne) SetAuthTokenSalt(v string) *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.SetAuthTokenSalt(v)
+	})
+}
+
+// UpdateAuthTokenSalt sets the "auth_token_salt" field to the value that was provided on create.
+func (u *RootUserUpsertOne) UpdateAuthTokenSalt() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.UpdateAuthTokenSalt()
+	})
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (u *RootUserUpsertOne) ClearAuthTokenSalt() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthTokenSalt()
+	})
+}
+
 // SetAuthed sets the "authed" field.
 func (u *RootUserUpsertOne) SetAuthed(v bool) *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
@@ -795,6 +941,13 @@ func (u *RootUserUpsertOne) SetAuthed(v bool) *RootUserUpsertOne {
 func (u *RootUserUpsertOne) UpdateAuthed() *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateAuthed()
+	})
+}
+
+// ClearAuthed clears the value of the "authed" field.
+func (u *RootUserUpsertOne) ClearAuthed() *RootUserUpsertOne {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthed()
 	})
 }
 
@@ -1121,6 +1274,13 @@ func (u *RootUserUpsertBulk) UpdateName() *RootUserUpsertBulk {
 	})
 }
 
+// ClearName clears the value of the "name" field.
+func (u *RootUserUpsertBulk) ClearName() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearName()
+	})
+}
+
 // SetMiningpoolType sets the "miningpool_type" field.
 func (u *RootUserUpsertBulk) SetMiningpoolType(v string) *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
@@ -1132,6 +1292,13 @@ func (u *RootUserUpsertBulk) SetMiningpoolType(v string) *RootUserUpsertBulk {
 func (u *RootUserUpsertBulk) UpdateMiningpoolType() *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateMiningpoolType()
+	})
+}
+
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *RootUserUpsertBulk) ClearMiningpoolType() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearMiningpoolType()
 	})
 }
 
@@ -1170,6 +1337,34 @@ func (u *RootUserUpsertBulk) UpdateAuthToken() *RootUserUpsertBulk {
 	})
 }
 
+// ClearAuthToken clears the value of the "auth_token" field.
+func (u *RootUserUpsertBulk) ClearAuthToken() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthToken()
+	})
+}
+
+// SetAuthTokenSalt sets the "auth_token_salt" field.
+func (u *RootUserUpsertBulk) SetAuthTokenSalt(v string) *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.SetAuthTokenSalt(v)
+	})
+}
+
+// UpdateAuthTokenSalt sets the "auth_token_salt" field to the value that was provided on create.
+func (u *RootUserUpsertBulk) UpdateAuthTokenSalt() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.UpdateAuthTokenSalt()
+	})
+}
+
+// ClearAuthTokenSalt clears the value of the "auth_token_salt" field.
+func (u *RootUserUpsertBulk) ClearAuthTokenSalt() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthTokenSalt()
+	})
+}
+
 // SetAuthed sets the "authed" field.
 func (u *RootUserUpsertBulk) SetAuthed(v bool) *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
@@ -1181,6 +1376,13 @@ func (u *RootUserUpsertBulk) SetAuthed(v bool) *RootUserUpsertBulk {
 func (u *RootUserUpsertBulk) UpdateAuthed() *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
 		s.UpdateAuthed()
+	})
+}
+
+// ClearAuthed clears the value of the "authed" field.
+func (u *RootUserUpsertBulk) ClearAuthed() *RootUserUpsertBulk {
+	return u.Update(func(s *RootUserUpsert) {
+		s.ClearAuthed()
 	})
 }
 

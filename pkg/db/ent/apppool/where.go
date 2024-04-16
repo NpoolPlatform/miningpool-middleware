@@ -441,6 +441,20 @@ func AppIDLTE(v uuid.UUID) predicate.AppPool {
 	})
 }
 
+// AppIDIsNil applies the IsNil predicate on the "app_id" field.
+func AppIDIsNil() predicate.AppPool {
+	return predicate.AppPool(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAppID)))
+	})
+}
+
+// AppIDNotNil applies the NotNil predicate on the "app_id" field.
+func AppIDNotNil() predicate.AppPool {
+	return predicate.AppPool(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAppID)))
+	})
+}
+
 // PoolIDEQ applies the EQ predicate on the "pool_id" field.
 func PoolIDEQ(v uuid.UUID) predicate.AppPool {
 	return predicate.AppPool(func(s *sql.Selector) {
@@ -502,6 +516,20 @@ func PoolIDLT(v uuid.UUID) predicate.AppPool {
 func PoolIDLTE(v uuid.UUID) predicate.AppPool {
 	return predicate.AppPool(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldPoolID), v))
+	})
+}
+
+// PoolIDIsNil applies the IsNil predicate on the "pool_id" field.
+func PoolIDIsNil() predicate.AppPool {
+	return predicate.AppPool(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldPoolID)))
+	})
+}
+
+// PoolIDNotNil applies the NotNil predicate on the "pool_id" field.
+func PoolIDNotNil() predicate.AppPool {
+	return predicate.AppPool(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldPoolID)))
 	})
 }
 

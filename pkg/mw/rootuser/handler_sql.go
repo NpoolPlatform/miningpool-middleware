@@ -54,6 +54,13 @@ func (h *Handler) baseKeys() (map[string]string, error) {
 		}
 		vals[rootuser.FieldAuthToken] = string(strBytes)
 	}
+	if h.AuthTokenSalt != nil {
+		strBytes, err := json.Marshal(*h.AuthTokenSalt)
+		if err != nil {
+			return vals, err
+		}
+		vals[rootuser.FieldAuthTokenSalt] = string(strBytes)
+	}
 	if h.Authed != nil {
 		strBytes, err := json.Marshal(*h.Authed)
 		if err != nil {
@@ -170,6 +177,5 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		strings.Join(subQKeys, " AND "),
 	)
 
-	fmt.Println(sql)
 	return sql, nil
 }

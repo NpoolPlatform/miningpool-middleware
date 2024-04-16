@@ -84,9 +84,25 @@ func (frc *FractionRuleCreate) SetMiningpoolType(s string) *FractionRuleCreate {
 	return frc
 }
 
+// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableMiningpoolType(s *string) *FractionRuleCreate {
+	if s != nil {
+		frc.SetMiningpoolType(*s)
+	}
+	return frc
+}
+
 // SetCoinType sets the "coin_type" field.
 func (frc *FractionRuleCreate) SetCoinType(s string) *FractionRuleCreate {
 	frc.mutation.SetCoinType(s)
+	return frc
+}
+
+// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableCoinType(s *string) *FractionRuleCreate {
+	if s != nil {
+		frc.SetCoinType(*s)
+	}
 	return frc
 }
 
@@ -96,15 +112,39 @@ func (frc *FractionRuleCreate) SetWithdrawInterval(u uint32) *FractionRuleCreate
 	return frc
 }
 
+// SetNillableWithdrawInterval sets the "withdraw_interval" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableWithdrawInterval(u *uint32) *FractionRuleCreate {
+	if u != nil {
+		frc.SetWithdrawInterval(*u)
+	}
+	return frc
+}
+
 // SetMinAmount sets the "min_amount" field.
 func (frc *FractionRuleCreate) SetMinAmount(f float32) *FractionRuleCreate {
 	frc.mutation.SetMinAmount(f)
 	return frc
 }
 
+// SetNillableMinAmount sets the "min_amount" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableMinAmount(f *float32) *FractionRuleCreate {
+	if f != nil {
+		frc.SetMinAmount(*f)
+	}
+	return frc
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (frc *FractionRuleCreate) SetWithdrawRate(f float32) *FractionRuleCreate {
 	frc.mutation.SetWithdrawRate(f)
+	return frc
+}
+
+// SetNillableWithdrawRate sets the "withdraw_rate" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableWithdrawRate(f *float32) *FractionRuleCreate {
+	if f != nil {
+		frc.SetWithdrawRate(*f)
+	}
 	return frc
 }
 
@@ -221,6 +261,26 @@ func (frc *FractionRuleCreate) defaults() error {
 		v := fractionrule.DefaultEntID()
 		frc.mutation.SetEntID(v)
 	}
+	if _, ok := frc.mutation.MiningpoolType(); !ok {
+		v := fractionrule.DefaultMiningpoolType
+		frc.mutation.SetMiningpoolType(v)
+	}
+	if _, ok := frc.mutation.CoinType(); !ok {
+		v := fractionrule.DefaultCoinType
+		frc.mutation.SetCoinType(v)
+	}
+	if _, ok := frc.mutation.WithdrawInterval(); !ok {
+		v := fractionrule.DefaultWithdrawInterval
+		frc.mutation.SetWithdrawInterval(v)
+	}
+	if _, ok := frc.mutation.MinAmount(); !ok {
+		v := fractionrule.DefaultMinAmount
+		frc.mutation.SetMinAmount(v)
+	}
+	if _, ok := frc.mutation.WithdrawRate(); !ok {
+		v := fractionrule.DefaultWithdrawRate
+		frc.mutation.SetWithdrawRate(v)
+	}
 	return nil
 }
 
@@ -237,21 +297,6 @@ func (frc *FractionRuleCreate) check() error {
 	}
 	if _, ok := frc.mutation.EntID(); !ok {
 		return &ValidationError{Name: "ent_id", err: errors.New(`ent: missing required field "FractionRule.ent_id"`)}
-	}
-	if _, ok := frc.mutation.MiningpoolType(); !ok {
-		return &ValidationError{Name: "miningpool_type", err: errors.New(`ent: missing required field "FractionRule.miningpool_type"`)}
-	}
-	if _, ok := frc.mutation.CoinType(); !ok {
-		return &ValidationError{Name: "coin_type", err: errors.New(`ent: missing required field "FractionRule.coin_type"`)}
-	}
-	if _, ok := frc.mutation.WithdrawInterval(); !ok {
-		return &ValidationError{Name: "withdraw_interval", err: errors.New(`ent: missing required field "FractionRule.withdraw_interval"`)}
-	}
-	if _, ok := frc.mutation.MinAmount(); !ok {
-		return &ValidationError{Name: "min_amount", err: errors.New(`ent: missing required field "FractionRule.min_amount"`)}
-	}
-	if _, ok := frc.mutation.WithdrawRate(); !ok {
-		return &ValidationError{Name: "withdraw_rate", err: errors.New(`ent: missing required field "FractionRule.withdraw_rate"`)}
 	}
 	return nil
 }
@@ -489,6 +534,12 @@ func (u *FractionRuleUpsert) UpdateMiningpoolType() *FractionRuleUpsert {
 	return u
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *FractionRuleUpsert) ClearMiningpoolType() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldMiningpoolType)
+	return u
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *FractionRuleUpsert) SetCoinType(v string) *FractionRuleUpsert {
 	u.Set(fractionrule.FieldCoinType, v)
@@ -498,6 +549,12 @@ func (u *FractionRuleUpsert) SetCoinType(v string) *FractionRuleUpsert {
 // UpdateCoinType sets the "coin_type" field to the value that was provided on create.
 func (u *FractionRuleUpsert) UpdateCoinType() *FractionRuleUpsert {
 	u.SetExcluded(fractionrule.FieldCoinType)
+	return u
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *FractionRuleUpsert) ClearCoinType() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldCoinType)
 	return u
 }
 
@@ -519,6 +576,12 @@ func (u *FractionRuleUpsert) AddWithdrawInterval(v uint32) *FractionRuleUpsert {
 	return u
 }
 
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (u *FractionRuleUpsert) ClearWithdrawInterval() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldWithdrawInterval)
+	return u
+}
+
 // SetMinAmount sets the "min_amount" field.
 func (u *FractionRuleUpsert) SetMinAmount(v float32) *FractionRuleUpsert {
 	u.Set(fractionrule.FieldMinAmount, v)
@@ -537,6 +600,12 @@ func (u *FractionRuleUpsert) AddMinAmount(v float32) *FractionRuleUpsert {
 	return u
 }
 
+// ClearMinAmount clears the value of the "min_amount" field.
+func (u *FractionRuleUpsert) ClearMinAmount() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldMinAmount)
+	return u
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (u *FractionRuleUpsert) SetWithdrawRate(v float32) *FractionRuleUpsert {
 	u.Set(fractionrule.FieldWithdrawRate, v)
@@ -552,6 +621,12 @@ func (u *FractionRuleUpsert) UpdateWithdrawRate() *FractionRuleUpsert {
 // AddWithdrawRate adds v to the "withdraw_rate" field.
 func (u *FractionRuleUpsert) AddWithdrawRate(v float32) *FractionRuleUpsert {
 	u.Add(fractionrule.FieldWithdrawRate, v)
+	return u
+}
+
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (u *FractionRuleUpsert) ClearWithdrawRate() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldWithdrawRate)
 	return u
 }
 
@@ -694,6 +769,13 @@ func (u *FractionRuleUpsertOne) UpdateMiningpoolType() *FractionRuleUpsertOne {
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *FractionRuleUpsertOne) ClearMiningpoolType() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *FractionRuleUpsertOne) SetCoinType(v string) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -705,6 +787,13 @@ func (u *FractionRuleUpsertOne) SetCoinType(v string) *FractionRuleUpsertOne {
 func (u *FractionRuleUpsertOne) UpdateCoinType() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *FractionRuleUpsertOne) ClearCoinType() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -729,6 +818,13 @@ func (u *FractionRuleUpsertOne) UpdateWithdrawInterval() *FractionRuleUpsertOne 
 	})
 }
 
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (u *FractionRuleUpsertOne) ClearWithdrawInterval() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearWithdrawInterval()
+	})
+}
+
 // SetMinAmount sets the "min_amount" field.
 func (u *FractionRuleUpsertOne) SetMinAmount(v float32) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -750,6 +846,13 @@ func (u *FractionRuleUpsertOne) UpdateMinAmount() *FractionRuleUpsertOne {
 	})
 }
 
+// ClearMinAmount clears the value of the "min_amount" field.
+func (u *FractionRuleUpsertOne) ClearMinAmount() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearMinAmount()
+	})
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (u *FractionRuleUpsertOne) SetWithdrawRate(v float32) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -768,6 +871,13 @@ func (u *FractionRuleUpsertOne) AddWithdrawRate(v float32) *FractionRuleUpsertOn
 func (u *FractionRuleUpsertOne) UpdateWithdrawRate() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.UpdateWithdrawRate()
+	})
+}
+
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (u *FractionRuleUpsertOne) ClearWithdrawRate() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearWithdrawRate()
 	})
 }
 
@@ -1073,6 +1183,13 @@ func (u *FractionRuleUpsertBulk) UpdateMiningpoolType() *FractionRuleUpsertBulk 
 	})
 }
 
+// ClearMiningpoolType clears the value of the "miningpool_type" field.
+func (u *FractionRuleUpsertBulk) ClearMiningpoolType() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearMiningpoolType()
+	})
+}
+
 // SetCoinType sets the "coin_type" field.
 func (u *FractionRuleUpsertBulk) SetCoinType(v string) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -1084,6 +1201,13 @@ func (u *FractionRuleUpsertBulk) SetCoinType(v string) *FractionRuleUpsertBulk {
 func (u *FractionRuleUpsertBulk) UpdateCoinType() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.UpdateCoinType()
+	})
+}
+
+// ClearCoinType clears the value of the "coin_type" field.
+func (u *FractionRuleUpsertBulk) ClearCoinType() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearCoinType()
 	})
 }
 
@@ -1108,6 +1232,13 @@ func (u *FractionRuleUpsertBulk) UpdateWithdrawInterval() *FractionRuleUpsertBul
 	})
 }
 
+// ClearWithdrawInterval clears the value of the "withdraw_interval" field.
+func (u *FractionRuleUpsertBulk) ClearWithdrawInterval() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearWithdrawInterval()
+	})
+}
+
 // SetMinAmount sets the "min_amount" field.
 func (u *FractionRuleUpsertBulk) SetMinAmount(v float32) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -1129,6 +1260,13 @@ func (u *FractionRuleUpsertBulk) UpdateMinAmount() *FractionRuleUpsertBulk {
 	})
 }
 
+// ClearMinAmount clears the value of the "min_amount" field.
+func (u *FractionRuleUpsertBulk) ClearMinAmount() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearMinAmount()
+	})
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (u *FractionRuleUpsertBulk) SetWithdrawRate(v float32) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
@@ -1147,6 +1285,13 @@ func (u *FractionRuleUpsertBulk) AddWithdrawRate(v float32) *FractionRuleUpsertB
 func (u *FractionRuleUpsertBulk) UpdateWithdrawRate() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.UpdateWithdrawRate()
+	})
+}
+
+// ClearWithdrawRate clears the value of the "withdraw_rate" field.
+func (u *FractionRuleUpsertBulk) ClearWithdrawRate() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearWithdrawRate()
 	})
 }
 

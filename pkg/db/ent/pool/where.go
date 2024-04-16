@@ -476,6 +476,20 @@ func MiningpoolTypeHasSuffix(v string) predicate.Pool {
 	})
 }
 
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+	})
+}
+
 // MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
 func MiningpoolTypeEqualFold(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
@@ -572,6 +586,20 @@ func NameHasPrefix(v string) predicate.Pool {
 func NameHasSuffix(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldName), v))
+	})
+}
+
+// NameIsNil applies the IsNil predicate on the "name" field.
+func NameIsNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldName)))
+	})
+}
+
+// NameNotNil applies the NotNil predicate on the "name" field.
+func NameNotNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldName)))
 	})
 }
 

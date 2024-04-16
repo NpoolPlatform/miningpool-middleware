@@ -32,6 +32,8 @@ type RootUser struct {
 	Email string `json:"email,omitempty"`
 	// AuthToken holds the value of the "auth_token" field.
 	AuthToken string `json:"auth_token,omitempty"`
+	// AuthTokenSalt holds the value of the "auth_token_salt" field.
+	AuthTokenSalt string `json:"auth_token_salt,omitempty"`
 	// Authed holds the value of the "authed" field.
 	Authed bool `json:"authed,omitempty"`
 	// Remark holds the value of the "remark" field.
@@ -47,7 +49,7 @@ func (*RootUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case rootuser.FieldID, rootuser.FieldCreatedAt, rootuser.FieldUpdatedAt, rootuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case rootuser.FieldName, rootuser.FieldMiningpoolType, rootuser.FieldEmail, rootuser.FieldAuthToken, rootuser.FieldRemark:
+		case rootuser.FieldName, rootuser.FieldMiningpoolType, rootuser.FieldEmail, rootuser.FieldAuthToken, rootuser.FieldAuthTokenSalt, rootuser.FieldRemark:
 			values[i] = new(sql.NullString)
 		case rootuser.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -120,6 +122,12 @@ func (ru *RootUser) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ru.AuthToken = value.String
 			}
+		case rootuser.FieldAuthTokenSalt:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field auth_token_salt", values[i])
+			} else if value.Valid {
+				ru.AuthTokenSalt = value.String
+			}
 		case rootuser.FieldAuthed:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field authed", values[i])
@@ -183,6 +191,9 @@ func (ru *RootUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("auth_token=")
 	builder.WriteString(ru.AuthToken)
+	builder.WriteString(", ")
+	builder.WriteString("auth_token_salt=")
+	builder.WriteString(ru.AuthTokenSalt)
 	builder.WriteString(", ")
 	builder.WriteString("authed=")
 	builder.WriteString(fmt.Sprintf("%v", ru.Authed))

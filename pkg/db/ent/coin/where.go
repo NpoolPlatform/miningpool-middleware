@@ -491,6 +491,20 @@ func MiningpoolTypeHasSuffix(v string) predicate.Coin {
 	})
 }
 
+// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
+func MiningpoolTypeIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+	})
+}
+
+// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
+func MiningpoolTypeNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+	})
+}
+
 // MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
 func MiningpoolTypeEqualFold(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
@@ -587,6 +601,20 @@ func CoinTypeHasPrefix(v string) predicate.Coin {
 func CoinTypeHasSuffix(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
+	})
+}
+
+// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
+func CoinTypeIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldCoinType)))
+	})
+}
+
+// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
+func CoinTypeNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldCoinType)))
 	})
 }
 

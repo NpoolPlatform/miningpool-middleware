@@ -73,6 +73,10 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
+	DefaultMiningpoolType string
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName string
 	// DefaultSite holds the default value on creation for the "site" field.
 	DefaultSite string
 	// DefaultDescription holds the default value on creation for the "description" field.

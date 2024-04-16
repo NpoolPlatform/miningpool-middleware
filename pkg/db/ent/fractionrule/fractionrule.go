@@ -76,4 +76,14 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
+	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
+	DefaultMiningpoolType string
+	// DefaultCoinType holds the default value on creation for the "coin_type" field.
+	DefaultCoinType string
+	// DefaultWithdrawInterval holds the default value on creation for the "withdraw_interval" field.
+	DefaultWithdrawInterval uint32
+	// DefaultMinAmount holds the default value on creation for the "min_amount" field.
+	DefaultMinAmount float32
+	// DefaultWithdrawRate holds the default value on creation for the "withdraw_rate" field.
+	DefaultWithdrawRate float32
 )

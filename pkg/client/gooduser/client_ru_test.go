@@ -2,13 +2,10 @@ package gooduser
 
 import (
 	"context"
-	"fmt"
-	"os"
-	"strconv"
 	"testing"
 
 	rootuserclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/rootuser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -19,18 +16,8 @@ import (
 	"github.com/google/uuid"
 )
 
-func init() {
-	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
-		return
-	}
-	if err := testinit.Init(); err != nil {
-		fmt.Printf("cannot init test stub: %v\n", err)
-	}
-}
-
 var rootUserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "mm_client_rootuser_test",
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
@@ -40,7 +27,6 @@ var rootUserRet = &npool.RootUser{
 
 var rootUserReq = &npool.RootUserReq{
 	EntID:          &rootUserRet.EntID,
-	Name:           &rootUserRet.Name,
 	MiningpoolType: &rootUserRet.MiningpoolType,
 	Email:          &rootUserRet.Email,
 	AuthToken:      &rootUserRet.AuthToken,
@@ -49,7 +35,13 @@ var rootUserReq = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
-	_, err := rootuserclient.CreateRootUser(context.Background(), rootUserReq)
+	name, err := f2pool.RandomF2PoolUser(7)
+	assert.Nil(t, err)
+
+	rootUserRet.Name = name
+	rootUserReq.Name = &name
+
+	_, err = rootuserclient.CreateRootUser(context.Background(), rootUserReq)
 	assert.Nil(t, err)
 
 	info, err := rootuserclient.GetRootUser(context.Background(), *rootUserReq.EntID)
@@ -58,6 +50,7 @@ func createRootUser(t *testing.T) {
 		rootUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		rootUserRet.UpdatedAt = info.UpdatedAt
 		rootUserRet.ID = info.ID
+		rootUserRet.AuthToken = info.AuthToken
 		rootUserRet.EntID = info.EntID
 		assert.Equal(t, rootUserRet, info)
 	}

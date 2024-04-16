@@ -43,7 +43,7 @@ func (s *Server) UpdatePool(ctx context.Context, in *npool.UpdatePoolRequest) (*
 		return &npool.UpdatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdatePool(ctx)
+	err = handler.UpdatePool(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdatePool",
@@ -53,7 +53,5 @@ func (s *Server) UpdatePool(ctx context.Context, in *npool.UpdatePoolRequest) (*
 		return &npool.UpdatePoolResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdatePoolResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdatePoolResponse{}, nil
 }

@@ -26,7 +26,6 @@ func (s *Server) CreateFractionRule(ctx context.Context, in *npool.CreateFractio
 	req := in.GetInfo()
 	handler, err := fractionrule.NewHandler(
 		ctx,
-		fractionrule.WithID(req.ID, false),
 		fractionrule.WithEntID(req.EntID, false),
 		fractionrule.WithMiningpoolType(req.MiningpoolType, true),
 		fractionrule.WithCoinType(req.CoinType, true),

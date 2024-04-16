@@ -105,7 +105,10 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdateOrderUser(context.Background())
+	err = handler.UpdateOrderUser(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
@@ -128,7 +131,7 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdateOrderUser(context.Background())
+	err = handler.UpdateOrderUser(context.Background())
 	assert.Nil(t, err)
 }
 

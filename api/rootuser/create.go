@@ -40,7 +40,6 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 
 	handler, err := rootuser.NewHandler(
 		ctx,
-		rootuser.WithID(req.ID, false),
 		rootuser.WithEntID(req.EntID, false),
 		rootuser.WithName(req.Name, true),
 		rootuser.WithMiningpoolType(req.MiningpoolType, true),

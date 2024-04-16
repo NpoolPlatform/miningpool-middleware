@@ -27,7 +27,6 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 	req := in.GetInfo()
 	handler, err := coin.NewHandler(
 		ctx,
-		coin.WithID(req.ID, false),
 		coin.WithEntID(req.EntID, false),
 		coin.WithMiningpoolType(req.MiningpoolType, true),
 		coin.WithCoinType(req.CoinType, true),

@@ -40,7 +40,6 @@ func (s *Server) CreateFraction(ctx context.Context, in *npool.CreateFractionReq
 	}
 	handler, err := fraction.NewHandler(
 		ctx,
-		fraction.WithID(req.ID, false),
 		fraction.WithEntID(req.EntID, false),
 		fraction.WithAppID(req.AppID, true),
 		fraction.WithUserID(req.UserID, true),

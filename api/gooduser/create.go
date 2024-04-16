@@ -38,7 +38,6 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 
 	handler, err := gooduser.NewHandler(
 		ctx,
-		gooduser.WithID(req.ID, false),
 		gooduser.WithEntID(req.EntID, false),
 		gooduser.WithName(req.Name, true),
 		gooduser.WithRootUserID(req.RootUserID, true),

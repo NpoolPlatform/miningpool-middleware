@@ -95,7 +95,10 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdateGoodUser(context.Background())
+	err = handler.UpdateGoodUser(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
@@ -116,7 +119,7 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdateGoodUser(context.Background())
+	err = handler.UpdateGoodUser(context.Background())
 	assert.Nil(t, err)
 }
 

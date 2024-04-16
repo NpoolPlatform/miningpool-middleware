@@ -46,7 +46,7 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 		return &npool.UpdateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateCoin(ctx)
+	err = handler.UpdateCoin(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateCoin",
@@ -56,7 +56,5 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 		return &npool.UpdateCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateCoinResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateCoinResponse{}, nil
 }

@@ -44,7 +44,7 @@ func (s *Server) UpdateFractionRule(ctx context.Context, in *npool.UpdateFractio
 		return &npool.UpdateFractionRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateFractionRule(ctx)
+	err = handler.UpdateFractionRule(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateFractionRule",
@@ -54,7 +54,5 @@ func (s *Server) UpdateFractionRule(ctx context.Context, in *npool.UpdateFractio
 		return &npool.UpdateFractionRuleResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateFractionRuleResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateFractionRuleResponse{}, nil
 }

@@ -74,7 +74,10 @@ func updatePool(t *testing.T) {
 	req.AppID = &ret.AppID
 	req.ID = &ret.ID
 
-	info, err := UpdatePool(context.Background(), req)
+	_, err := UpdatePool(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetPool(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
@@ -82,7 +85,10 @@ func updatePool(t *testing.T) {
 
 	ret.PoolID = uuid.NewString()
 	req.PoolID = &ret.PoolID
-	info, err = UpdatePool(context.Background(), req)
+	_, err = UpdatePool(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err = GetPool(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)

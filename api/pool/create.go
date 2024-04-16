@@ -27,7 +27,6 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 	req := in.GetInfo()
 	handler, err := pool.NewHandler(
 		ctx,
-		pool.WithID(req.ID, false),
 		pool.WithEntID(req.EntID, false),
 		pool.WithMiningpoolType(req.MiningpoolType, true),
 		pool.WithName(req.Name, true),

@@ -88,7 +88,10 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdatePool(context.Background())
+	err = handler.UpdatePool(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetPool(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
@@ -102,7 +105,7 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdatePool(context.Background())
+	err = handler.UpdatePool(context.Background())
 	assert.Nil(t, err)
 }
 

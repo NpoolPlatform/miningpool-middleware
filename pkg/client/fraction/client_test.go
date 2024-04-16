@@ -66,7 +66,10 @@ func updateFraction(t *testing.T) {
 	ret.Msg = "test"
 	req.Msg = &ret.Msg
 	req.ID = &ret.ID
-	info, err := UpdateFraction(context.Background(), req)
+	_, err := UpdateFraction(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetFraction(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
@@ -74,7 +77,10 @@ func updateFraction(t *testing.T) {
 
 	ret.Msg = "test1"
 	req.Msg = &ret.Msg
-	info, err = UpdateFraction(context.Background(), req)
+	_, err = UpdateFraction(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err = GetFraction(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)

@@ -4,49 +4,48 @@ import (
 	"context"
 	"fmt"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
-	apppoolcrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/app/pool"
-
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	apppoolent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
+	"github.com/google/uuid"
 )
 
-func (h *Handler) UpdatePool(ctx context.Context) (*npool.Pool, error) {
-	if h.ID == nil {
-		return nil, fmt.Errorf("invalid id")
+//nolint:gocognit
+func (h *Handler) UpdatePool(ctx context.Context) error {
+	info, err := h.GetPool(ctx)
+	if err != nil {
+		return err
 	}
 
-	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		info, err := cli.
-			AppPool.
-			Query().
-			Where(
-				apppoolent.ID(*h.ID),
-			).
-			Only(_ctx)
+	if info == nil {
+		return fmt.Errorf("invalid id or ent_id")
+	}
+
+	if appID, err := uuid.Parse(info.AppID); h.AppID == nil && err != nil {
+		h.AppID = &appID
+	} else if err != nil {
+		return fmt.Errorf("invalid appid")
+	}
+
+	if poolID, err := uuid.Parse(info.PoolID); h.PoolID == nil && err != nil {
+		h.PoolID = &poolID
+	} else if err != nil {
+		return fmt.Errorf("invalid poolid")
+	}
+
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+		sql, err := h.genUpdateSQL()
 		if err != nil {
 			return err
 		}
 
-		stm, err := apppoolcrud.UpdateSet(
-			info.Update(),
-			&apppoolcrud.Req{
-				AppID:  h.AppID,
-				PoolID: h.PoolID,
-			},
-		)
+		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err
 		}
-		if _, err := stm.Save(_ctx); err != nil {
-			return err
+
+		if n, err := rc.RowsAffected(); err != nil || n != 1 {
+			return fmt.Errorf("failed to update rootuser: %v", err)
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return h.GetPool(ctx)
 }

@@ -77,7 +77,10 @@ func updateGoodUser(t *testing.T) {
 	ret.HashRate = 77
 	req.ID = &ret.ID
 	req.HashRate = &ret.HashRate
-	info, err := UpdateGoodUser(context.Background(), req)
+	_, err := UpdateGoodUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err := GetGoodUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
@@ -86,7 +89,10 @@ func updateGoodUser(t *testing.T) {
 	ret.HashRate = 88
 	req.ID = &ret.ID
 	req.HashRate = &ret.HashRate
-	info, err = UpdateGoodUser(context.Background(), req)
+	_, err = UpdateGoodUser(context.Background(), req)
+	assert.Nil(t, err)
+
+	info, err = GetGoodUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)

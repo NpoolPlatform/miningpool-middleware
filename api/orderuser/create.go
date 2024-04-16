@@ -40,7 +40,6 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 
 	handler, err := orderuser.NewHandler(
 		ctx,
-		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
 		orderuser.WithName(req.Name, true),
 		orderuser.WithRootUserID(req.RootUserID, true),

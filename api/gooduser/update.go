@@ -40,7 +40,7 @@ func (s *Server) UpdateGoodUser(ctx context.Context, in *npool.UpdateGoodUserReq
 		return &npool.UpdateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateGoodUser(ctx)
+	err = handler.UpdateGoodUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateGoodUser",
@@ -50,7 +50,5 @@ func (s *Server) UpdateGoodUser(ctx context.Context, in *npool.UpdateGoodUserReq
 		return &npool.UpdateGoodUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateGoodUserResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateGoodUserResponse{}, nil
 }

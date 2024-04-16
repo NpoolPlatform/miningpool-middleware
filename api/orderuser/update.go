@@ -55,7 +55,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateOrderUser(ctx)
+	err = handler.UpdateOrderUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateOrderUser",
@@ -65,9 +65,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateOrderUserResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateOrderUserResponse{}, nil
 }
 
 func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
@@ -97,7 +95,6 @@ func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.Order
 		autoPay := *req.AutoPay
 		paused := true
 
-		logger.Sugar().Error(autoPay, paused)
 		if autoPay {
 			autoPay, err = mgr.ResumePayment(ctx, baseInfo.Recipient)
 		} else {

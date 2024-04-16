@@ -14,6 +14,10 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 		return err
 	}
 
+	if info == nil {
+		return fmt.Errorf("invalid id or ent_id")
+	}
+
 	if h.MiningpoolType == nil {
 		h.MiningpoolType = &info.MiningpoolType
 	}
@@ -36,7 +40,7 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 		}
 
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("fail update rootuser: %v", err)
+			return fmt.Errorf("failed to update rootuser: %v", err)
 		}
 		return nil
 	})

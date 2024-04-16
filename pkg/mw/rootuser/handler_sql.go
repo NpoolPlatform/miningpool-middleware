@@ -9,6 +9,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 )
 
+//nolint:gocognit
 func (h *Handler) baseKeys() (map[string]string, error) {
 	vals := make(map[string]string)
 	if h.ID != nil {
@@ -89,7 +90,6 @@ func (h *Handler) idKeys() (map[string]string, error) {
 	return vals, nil
 }
 
-//nolint:gocognit
 func (h *Handler) genCreateSQL() (string, error) {
 	vals, err := h.baseKeys()
 	if err != nil {
@@ -169,5 +169,7 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		strings.Join(idKeys, " AND "),
 		strings.Join(subQKeys, " AND "),
 	)
+
+	fmt.Println(sql)
 	return sql, nil
 }

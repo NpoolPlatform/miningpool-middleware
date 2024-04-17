@@ -70,6 +70,9 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 }
 
 func newGoodUserInPool(ctx context.Context, req *npool.GoodUserReq) (*npool.GoodUserReq, error) {
+	if req.CoinType == nil {
+		return req, fmt.Errorf("invalid cointype")
+	}
 	h, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
 	if err != nil {
 		return req, err

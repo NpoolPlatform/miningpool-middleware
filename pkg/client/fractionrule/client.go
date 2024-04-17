@@ -104,6 +104,22 @@ func UpdateFractionRule(ctx context.Context, in *npool.FractionRuleReq) (*npool.
 	return info.(*npool.FractionRule), nil
 }
 
+func ExistFractionRule(ctx context.Context, id string) (bool, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.ExistFractionRule(ctx, &npool.ExistFractionRuleRequest{
+			EntID: id,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return false, err
+	}
+	return info.(bool), nil
+}
+
 func ExistFractionRuleConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistFractionRuleConds(ctx, &npool.ExistFractionRuleCondsRequest{

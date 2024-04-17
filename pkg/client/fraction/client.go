@@ -104,6 +104,22 @@ func UpdateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction
 	return info.(*npool.Fraction), nil
 }
 
+func ExistFraction(ctx context.Context, id string) (bool, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.ExistFraction(ctx, &npool.ExistFractionRequest{
+			EntID: id,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return false, err
+	}
+	return info.(bool), nil
+}
+
 func ExistFractionConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistFractionConds(ctx, &npool.ExistFractionCondsRequest{

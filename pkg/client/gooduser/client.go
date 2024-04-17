@@ -104,6 +104,22 @@ func UpdateGoodUser(ctx context.Context, in *npool.GoodUserReq) (*npool.GoodUser
 	return info.(*npool.GoodUser), nil
 }
 
+func ExistGoodUser(ctx context.Context, id string) (bool, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.ExistGoodUser(ctx, &npool.ExistGoodUserRequest{
+			EntID: id,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return false, err
+	}
+	return info.(bool), nil
+}
+
 func ExistGoodUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistGoodUserConds(ctx, &npool.ExistGoodUserCondsRequest{

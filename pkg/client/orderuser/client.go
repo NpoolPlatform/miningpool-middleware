@@ -104,6 +104,22 @@ func UpdateOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderU
 	return info.(*npool.OrderUser), nil
 }
 
+func ExistOrderUser(ctx context.Context, id string) (bool, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.ExistOrderUser(ctx, &npool.ExistOrderUserRequest{
+			EntID: id,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return false, err
+	}
+	return info.(bool), nil
+}
+
 func ExistOrderUserConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.ExistOrderUserConds(ctx, &npool.ExistOrderUserCondsRequest{

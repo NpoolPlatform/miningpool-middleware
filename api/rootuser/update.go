@@ -81,7 +81,11 @@ func checkUpdateAuthed(ctx context.Context, req *npool.RootUserReq) (*npool.Root
 	req.Authed = &authed
 
 	if req.AuthToken == nil || req.MiningpoolType == nil {
-		h, err := rootuser.NewHandler(ctx, rootuser.WithID(req.ID, true))
+		h, err := rootuser.NewHandler(
+			ctx,
+			rootuser.WithID(req.ID, false),
+			rootuser.WithEntID(req.EntID, false),
+		)
 		if err != nil {
 			return req, err
 		}

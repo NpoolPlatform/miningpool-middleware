@@ -43,7 +43,7 @@ func (h *queryHandler) selectOrderUser(stm *ent.OrderUserQuery) {
 
 func (h *queryHandler) queryOrderUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return fmt.Errorf("invalid id or ent_id")
 	}
 	stm := cli.OrderUser.Query().Where(orderuserent.DeletedAt(0))
 	if h.ID != nil {

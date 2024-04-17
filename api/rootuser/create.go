@@ -71,6 +71,9 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 }
 
 func checkCreateAuthed(ctx context.Context, req *npool.RootUserReq) (bool, error) {
+	if req.AuthToken == nil || req.MiningpoolType == nil {
+		return false, fmt.Errorf("invalid auth_token or miningpool_type")
+	}
 	defaultCoinType := v1.CoinType_BitCoin
 	mgr, err := pools.NewPoolManager(*req.MiningpoolType, defaultCoinType, *req.AuthToken)
 	if err != nil {

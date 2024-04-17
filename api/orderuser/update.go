@@ -69,7 +69,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 }
 
 func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
-	baseInfo, err := getBaseInfo(ctx, req.EntID)
+	baseInfo, err := getBaseInfo(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,12 @@ type baseInfo struct {
 	Distributor    string
 }
 
-func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
-	orderuserH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(entid, true))
+func getBaseInfo(ctx context.Context, req *npool.OrderUserReq) (*baseInfo, error) {
+	orderuserH, err := orderuser.NewHandler(
+		ctx,
+		orderuser.WithEntID(req.EntID, false),
+		orderuser.WithID(req.ID, false),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +136,7 @@ func getBaseInfo(ctx context.Context, entid *string) (*baseInfo, error) {
 		return nil, err
 	}
 	if orderUser == nil {
-		err = fmt.Errorf("have no record of orderuser with entid %v", entid)
+		err = fmt.Errorf("have no record of orderuser")
 		return nil, err
 	}
 

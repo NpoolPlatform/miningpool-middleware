@@ -30,6 +30,10 @@ func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
 	if err != nil {
 		return nil, fmt.Errorf("invalid id or ent_id")
 	}
+	if info == nil {
+		return nil, fmt.Errorf("invalid id or ent_id")
+	}
+
 	h.ID = &info.ID
 
 	handler := &updateHandler{

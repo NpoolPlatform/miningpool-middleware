@@ -43,7 +43,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 		rootuser.WithEntID(req.EntID, false),
 		rootuser.WithName(req.Name, true),
 		rootuser.WithMiningpoolType(req.MiningpoolType, true),
-		rootuser.WithEmail(req.Email, false),
+		rootuser.WithEmail(req.Email, true),
 		rootuser.WithAuthToken(req.AuthToken, true),
 		rootuser.WithAuthed(req.Authed, true),
 		rootuser.WithRemark(req.Remark, false),
@@ -71,9 +71,16 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 }
 
 func checkCreateAuthed(ctx context.Context, req *npool.RootUserReq) (bool, error) {
-	if req.AuthToken == nil || req.MiningpoolType == nil || req.Name == nil {
-		return false, fmt.Errorf("invalid auth_token or miningpool_type")
+	if req.AuthToken == nil {
+		return false, fmt.Errorf("invalid auth_token")
 	}
+	if req.MiningpoolType == nil {
+		return false, fmt.Errorf("invalid miningpool_type")
+	}
+	if req.Name == nil {
+		return false, fmt.Errorf("invalid name")
+	}
+
 	defaultCoinType := v1.CoinType_BitCoin
 	mgr, err := pools.NewPoolManager(*req.MiningpoolType, defaultCoinType, *req.AuthToken)
 	if err != nil {

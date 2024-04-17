@@ -13,9 +13,8 @@ import (
 )
 
 func (h *Handler) CreateFraction(ctx context.Context) (*npool.Fraction, error) {
-	id := uuid.New()
 	if h.EntID == nil {
-		h.EntID = &id
+		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
 
 	err := db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {

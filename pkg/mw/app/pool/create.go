@@ -25,9 +25,8 @@ func (h *Handler) CreatePool(ctx context.Context) error {
 		return fmt.Errorf("invalid pool id")
 	}
 
-	id := uuid.New()
 	if h.EntID == nil {
-		h.EntID = &id
+		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
 
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {

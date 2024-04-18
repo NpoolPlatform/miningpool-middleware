@@ -73,6 +73,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 }
 
 func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
+
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
 	if err != nil {
 		return req, err
@@ -97,10 +98,14 @@ func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.Or
 		return req, fmt.Errorf("have no gooduser,entid: %v", req.GoodUserID)
 	}
 
+	req.MiningpoolType = &goodUser.MiningpoolType
+	req.CoinType = &goodUser.CoinType
+
 	mgr, err := pools.NewPoolManager(*req.MiningpoolType, *req.CoinType, rootUser.AuthTokenPlain)
 	if err != nil {
 		return req, err
 	}
+
 	name, pagelink, err := mgr.AddMiningUser(ctx)
 	if err != nil {
 		return req, err
@@ -114,7 +119,6 @@ func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.Or
 	}
 	autopay := !paused
 	req.AutoPay = &autopay
-	req.MiningpoolType = &goodUser.MiningpoolType
-	req.CoinType = &goodUser.CoinType
+
 	return req, nil
 }

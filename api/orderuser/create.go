@@ -73,7 +73,6 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 }
 
 func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
-
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
 	if err != nil {
 		return req, err

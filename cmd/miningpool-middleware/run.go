@@ -34,12 +34,13 @@ var runCmd = &cli.Command{
 }
 
 func run(ctx context.Context) error {
-	if err := migrator.Migrate(ctx); err != nil {
-		return err
-	}
 	if err := db.Init(); err != nil {
 		return err
 	}
+	if err := migrator.Migrate(ctx); err != nil {
+		return err
+	}
+
 	pools.Init()
 	return nil
 }

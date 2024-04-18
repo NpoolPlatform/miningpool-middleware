@@ -73,18 +73,6 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 }
 
 func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.OrderUserReq, error) {
-	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
-	if err != nil {
-		return req, err
-	}
-	rootUser, err := rootuserH.GetAuthToken(ctx)
-	if err != nil {
-		return req, err
-	}
-	if rootUser == nil {
-		return req, fmt.Errorf("have no rootuser,entid: %v", req.RootUserID)
-	}
-
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(req.GoodUserID, true))
 	if err != nil {
 		return req, err
@@ -99,6 +87,22 @@ func newOrderUserInPool(ctx context.Context, req *npool.OrderUserReq) (*npool.Or
 
 	req.MiningpoolType = &goodUser.MiningpoolType
 	req.CoinType = &goodUser.CoinType
+
+	if req.RootUserID == nil || *req.RootUserID != goodUser.RootUserID {
+		return req, fmt.Errorf("invalid rootuserid")
+	}
+
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(req.RootUserID, true))
+	if err != nil {
+		return req, err
+	}
+	rootUser, err := rootuserH.GetAuthToken(ctx)
+	if err != nil {
+		return req, err
+	}
+	if rootUser == nil {
+		return req, fmt.Errorf("have no rootuser,entid: %v", req.RootUserID)
+	}
 
 	mgr, err := pools.NewPoolManager(*req.MiningpoolType, *req.CoinType, rootUser.AuthTokenPlain)
 	if err != nil {

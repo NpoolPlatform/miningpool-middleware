@@ -98,7 +98,7 @@ func deletePool(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeletePool(context.Background(), ret.ID)
+	info, err := DeletePool(context.Background(), ret.ID, ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

@@ -161,10 +161,13 @@ func GetOrderUserOnly(ctx context.Context, conds *npool.Conds) (*npool.OrderUser
 	return infos.([]*npool.OrderUser)[0], nil
 }
 
-func DeleteOrderUser(ctx context.Context, id uint32) (*npool.OrderUser, error) {
+func DeleteOrderUser(ctx context.Context, id uint32, entID string) (*npool.OrderUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteOrderUser(ctx, &npool.DeleteOrderUserRequest{
-			Info: &npool.OrderUserReq{ID: &id},
+			Info: &npool.OrderUserReq{
+				ID:    &id,
+				EntID: &entID,
+			},
 		})
 		if err != nil {
 			return nil, err

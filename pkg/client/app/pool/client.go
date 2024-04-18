@@ -145,11 +145,12 @@ func GetPoolOnly(ctx context.Context, conds *npool.Conds) (*npool.Pool, error) {
 	return infos.([]*npool.Pool)[0], nil
 }
 
-func DeletePool(ctx context.Context, id uint32) (*npool.Pool, error) {
+func DeletePool(ctx context.Context, id uint32, entID string) (*npool.Pool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeletePool(ctx, &npool.DeletePoolRequest{
 			Info: &npool.PoolReq{
-				ID: &id,
+				ID:    &id,
+				EntID: &entID,
 			},
 		})
 		if err != nil {

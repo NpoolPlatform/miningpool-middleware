@@ -65,7 +65,7 @@ func deleteOrderUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := orderuserclient.DeleteOrderUser(context.Background(), orderserRet.ID)
+	info, err := orderuserclient.DeleteOrderUser(context.Background(), orderserRet.ID, orderserRet.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, orderserRet)
 	}

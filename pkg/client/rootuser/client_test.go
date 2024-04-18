@@ -133,7 +133,7 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteRootUser(context.Background(), ret.ID)
+	info, err := DeleteRootUser(context.Background(), ret.ID, ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, ret, info)
 	}

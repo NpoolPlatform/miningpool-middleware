@@ -161,10 +161,13 @@ func GetFractionOnly(ctx context.Context, conds *npool.Conds) (*npool.Fraction, 
 	return infos.([]*npool.Fraction)[0], nil
 }
 
-func DeleteFraction(ctx context.Context, id uint32) (*npool.Fraction, error) {
+func DeleteFraction(ctx context.Context, id uint32, entID string) (*npool.Fraction, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
-			Info: &npool.FractionReq{ID: &id},
+			Info: &npool.FractionReq{
+				ID:    &id,
+				EntID: &entID,
+			},
 		})
 		if err != nil {
 			return nil, err

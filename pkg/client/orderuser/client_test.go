@@ -173,7 +173,7 @@ func deleteOrderUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteOrderUser(context.Background(), ret.ID)
+	info, err := DeleteOrderUser(context.Background(), ret.ID, ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

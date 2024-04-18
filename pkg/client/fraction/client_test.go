@@ -116,7 +116,7 @@ func deleteFraction(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteFraction(context.Background(), ret.ID)
+	info, err := DeleteFraction(context.Background(), ret.ID, ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, info, ret)
 	}

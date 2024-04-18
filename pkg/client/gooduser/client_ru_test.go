@@ -67,7 +67,7 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := rootuserclient.DeleteRootUser(context.Background(), rootUserRet.ID)
+	info, err := rootuserclient.DeleteRootUser(context.Background(), rootUserRet.ID, rootUserRet.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, rootUserRet, info)
 	}

@@ -161,10 +161,13 @@ func GetGoodUserOnly(ctx context.Context, conds *npool.Conds) (*npool.GoodUser, 
 	return infos.([]*npool.GoodUser)[0], nil
 }
 
-func DeleteGoodUser(ctx context.Context, id uint32) (*npool.GoodUser, error) {
+func DeleteGoodUser(ctx context.Context, id uint32, entID string) (*npool.GoodUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteGoodUser(ctx, &npool.DeleteGoodUserRequest{
-			Info: &npool.GoodUserReq{ID: &id},
+			Info: &npool.GoodUserReq{
+				ID:    &id,
+				EntID: &entID,
+			},
 		})
 		if err != nil {
 			return nil, err

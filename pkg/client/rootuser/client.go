@@ -161,10 +161,13 @@ func GetRootUserOnly(ctx context.Context, conds *npool.Conds) (*npool.RootUser, 
 	return infos.([]*npool.RootUser)[0], nil
 }
 
-func DeleteRootUser(ctx context.Context, id uint32) (*npool.RootUser, error) {
+func DeleteRootUser(ctx context.Context, id uint32, entID string) (*npool.RootUser, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.DeleteRootUser(ctx, &npool.DeleteRootUserRequest{
-			Info: &npool.RootUserReq{ID: &id},
+			Info: &npool.RootUserReq{
+				ID:    &id,
+				EntID: &entID,
+			},
 		})
 		if err != nil {
 			return nil, err

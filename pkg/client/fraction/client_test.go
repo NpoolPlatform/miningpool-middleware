@@ -34,8 +34,8 @@ func init() {
 
 var ret = &npool.Fraction{
 	EntID:       uuid.NewString(),
-	AppID:       uuid.NewString(),
-	UserID:      uuid.NewString(),
+	AppID:       orderserRet.AppID,
+	UserID:      orderserRet.UserID,
 	OrderUserID: orderserRet.EntID,
 }
 

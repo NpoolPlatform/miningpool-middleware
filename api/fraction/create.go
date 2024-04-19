@@ -89,11 +89,11 @@ func fractionInPool(ctx context.Context, info *npool.FractionReq) (*npool.Fracti
 		return info, fmt.Errorf("have no orderuser,entid: %v", *info.OrderUserID)
 	}
 
-	if info.AppID == nil || info.AppID != &orderUser.AppID {
+	if info.AppID == nil || *info.AppID != orderUser.AppID {
 		return info, fmt.Errorf("invalid appid")
 	}
 
-	if info.UserID == nil || info.UserID != &orderUser.UserID {
+	if info.UserID == nil || *info.UserID != orderUser.UserID {
 		return info, fmt.Errorf("invalid userid")
 	}
 

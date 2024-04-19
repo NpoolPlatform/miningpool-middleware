@@ -177,6 +177,5 @@ func (h *Handler) genUpdateSQL() (string, error) {
 		strings.Join(subQKeys, " AND "),
 	)
 
-	fmt.Println(sql)
 	return sql, nil
 }

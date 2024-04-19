@@ -187,10 +187,10 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 		return err
 	}
 	if proportionDec.Cmp(MinProportion) < 0 || proportionDec.Cmp(MaxProportion) > 0 {
-		return fmt.Errorf("wront proportion,please input[%v,%v]", MinProportion, MaxProportion)
+		return fmt.Errorf("wront proportion, please input[%v,%v]", MinProportion, MaxProportion)
 	}
 	if proportionDec.Truncate(ProportionExp).StringFixed(ProportionExp) != proportionDec.RoundCeil(ProportionExp).StringFixed(ProportionExp) {
-		return fmt.Errorf("wront proportion precision,please enter %v decimal places", ProportionExp)
+		return fmt.Errorf("wront proportion precision, please enter %v decimal places", ProportionExp)
 	}
 	proportionDec = proportionDec.Truncate(ProportionExp)
 	infoResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{

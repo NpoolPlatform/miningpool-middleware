@@ -36,7 +36,7 @@ var ret = &npool.OrderUser{
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
 	CoinType:       basetypes.CoinType_BitCoin,
-	Proportion:     5.0,
+	Proportion:     "5.0",
 	RevenueAddress: "sssss",
 	ReadPageLink:   "sssss",
 	AutoPay:        false,
@@ -93,7 +93,7 @@ func create(t *testing.T) {
 func update(t *testing.T) {
 	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
 	ret.CoinType = basetypes.CoinType_BitCoin
-	ret.Proportion = 666
+	ret.Proportion = "66"
 
 	handler, err := NewHandler(
 		context.Background(),

@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // ID filters vertices based on their ID field.
@@ -157,7 +158,7 @@ func CoinType(v string) predicate.OrderUser {
 }
 
 // Proportion applies equality check predicate on the "proportion" field. It's identical to ProportionEQ.
-func Proportion(v float32) predicate.OrderUser {
+func Proportion(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldProportion), v))
 	})
@@ -1092,21 +1093,21 @@ func CoinTypeContainsFold(v string) predicate.OrderUser {
 }
 
 // ProportionEQ applies the EQ predicate on the "proportion" field.
-func ProportionEQ(v float32) predicate.OrderUser {
+func ProportionEQ(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldProportion), v))
 	})
 }
 
 // ProportionNEQ applies the NEQ predicate on the "proportion" field.
-func ProportionNEQ(v float32) predicate.OrderUser {
+func ProportionNEQ(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldProportion), v))
 	})
 }
 
 // ProportionIn applies the In predicate on the "proportion" field.
-func ProportionIn(vs ...float32) predicate.OrderUser {
+func ProportionIn(vs ...decimal.Decimal) predicate.OrderUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1117,7 +1118,7 @@ func ProportionIn(vs ...float32) predicate.OrderUser {
 }
 
 // ProportionNotIn applies the NotIn predicate on the "proportion" field.
-func ProportionNotIn(vs ...float32) predicate.OrderUser {
+func ProportionNotIn(vs ...decimal.Decimal) predicate.OrderUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1128,28 +1129,28 @@ func ProportionNotIn(vs ...float32) predicate.OrderUser {
 }
 
 // ProportionGT applies the GT predicate on the "proportion" field.
-func ProportionGT(v float32) predicate.OrderUser {
+func ProportionGT(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldProportion), v))
 	})
 }
 
 // ProportionGTE applies the GTE predicate on the "proportion" field.
-func ProportionGTE(v float32) predicate.OrderUser {
+func ProportionGTE(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldProportion), v))
 	})
 }
 
 // ProportionLT applies the LT predicate on the "proportion" field.
-func ProportionLT(v float32) predicate.OrderUser {
+func ProportionLT(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldProportion), v))
 	})
 }
 
 // ProportionLTE applies the LTE predicate on the "proportion" field.
-func ProportionLTE(v float32) predicate.OrderUser {
+func ProportionLTE(v decimal.Decimal) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldProportion), v))
 	})

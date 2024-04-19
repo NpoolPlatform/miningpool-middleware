@@ -170,7 +170,7 @@ var (
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "proportion", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "proportion", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "revenue_address", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 		{Name: "auto_pay", Type: field.TypeBool, Nullable: true, Default: false},

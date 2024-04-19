@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 )
 
@@ -125,8 +124,6 @@ func (h *Handler) genCreateSQL() (string, error) {
 		h.MiningpoolType.String(),
 		*h.Name,
 	)
-
-	logger.Sugar().Error(sql)
 
 	return sql, nil
 }

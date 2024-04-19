@@ -372,7 +372,7 @@ func init() {
 	// orderuserDescProportion is the schema descriptor for proportion field.
 	orderuserDescProportion := orderuserFields[7].Descriptor()
 	// orderuser.DefaultProportion holds the default value on creation for the proportion field.
-	orderuser.DefaultProportion = orderuserDescProportion.Default.(float32)
+	orderuser.DefaultProportion = orderuserDescProportion.Default.(decimal.Decimal)
 	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
 	orderuserDescRevenueAddress := orderuserFields[8].Descriptor()
 	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.

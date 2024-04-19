@@ -14,6 +14,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/mr-tron/base58"
+	"github.com/shopspring/decimal"
 )
 
 type Manager struct {
@@ -34,7 +35,10 @@ var (
 	CoinType2FeeRate map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "0.04",
 	}
-	MaxRetries = 10
+	MaxRetries    = 10
+	MaxProportion = decimal.NewFromFloat(100)
+	MinProportion = decimal.NewFromFloat(0.00)
+	ProportionExp = int32(2)
 )
 
 const (
@@ -176,7 +180,19 @@ func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 	return nil
 }
 
-func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recipient string, proportion float64) error {
+//nolint:gocognit
+func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recipient, proportion string) error {
+	proportionDec, err := decimal.NewFromString(proportion)
+	if err != nil {
+		return err
+	}
+	if proportionDec.Cmp(MinProportion) < 0 || proportionDec.Cmp(MaxProportion) > 0 {
+		return fmt.Errorf("wront proportion,please input[%v,%v]", MinProportion, MaxProportion)
+	}
+	if proportionDec.Truncate(ProportionExp).StringFixed(ProportionExp) != proportionDec.RoundCeil(ProportionExp).StringFixed(ProportionExp) {
+		return fmt.Errorf("wront proportion precision,please enter %v decimal places", ProportionExp)
+	}
+	proportionDec = proportionDec.Truncate(ProportionExp)
 	infoResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Currency:    mgr.currency,
 		Distributor: distributor,
@@ -185,7 +201,7 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 
 	if err == nil && infoResp != nil {
 		for _, v := range infoResp.Data {
-			if v.Distributor != distributor || v.Currency != mgr.currency {
+			if v.Distributor != distributor || v.Currency != mgr.currency || v.Recipient != recipient {
 				continue
 			}
 			_, err = mgr.cli.RevenueDistributionDelete(ctx, &types.RevenueDistributionDeleteReq{
@@ -198,11 +214,16 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 		}
 	}
 
+	if proportionDec.Cmp(MinProportion) == 0 {
+		return nil
+	}
+
+	_proportion := proportionDec.InexactFloat64()
 	addResp, err := mgr.cli.RevenueDistributionAdd(ctx, &types.RevenueDistributionAddReq{
 		Currency:    mgr.currency,
 		Distributor: distributor,
 		Recipient:   recipient,
-		Proportion:  proportion,
+		Proportion:  _proportion,
 	})
 	if err != nil {
 		return err

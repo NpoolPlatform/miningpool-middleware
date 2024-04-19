@@ -78,7 +78,7 @@ func handleUpdateReq(ctx context.Context, req *npool.OrderUserReq) (*npool.Order
 		return nil, err
 	}
 	if req.Proportion != nil {
-		err = mgr.SetRevenueProportion(ctx, baseInfo.Distributor, baseInfo.Recipient, float64(*req.Proportion))
+		err = mgr.SetRevenueProportion(ctx, baseInfo.Distributor, baseInfo.Recipient, *req.Proportion)
 		if err != nil {
 			return nil, err
 		}

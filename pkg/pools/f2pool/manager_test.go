@@ -69,7 +69,7 @@ func proportion(t *testing.T) {
 		return
 	}
 
-	propotion := 0.1
+	propotion := "0.1"
 	err = mgr.SetRevenueProportion(context.Background(), "cococonut2", "cococonut001", propotion)
 	assert.Nil(t, err)
 

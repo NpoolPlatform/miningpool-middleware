@@ -24,7 +24,7 @@ type Handler struct {
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
-	Proportion     *float32
+	Proportion     *string
 	RevenueAddress *string
 	ReadPageLink   *string
 	AutoPay        *bool
@@ -187,7 +187,7 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 	}
 }
 
-func WithProportion(proportion *float32, must bool) func(context.Context, *Handler) error {
+func WithProportion(proportion *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if proportion == nil {
 			if must {

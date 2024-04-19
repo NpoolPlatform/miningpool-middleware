@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // OrderUser is the model entity for the OrderUser schema.
@@ -39,7 +40,7 @@ type OrderUser struct {
 	// CoinType holds the value of the "coin_type" field.
 	CoinType string `json:"coin_type,omitempty"`
 	// Proportion holds the value of the "proportion" field.
-	Proportion float32 `json:"proportion,omitempty"`
+	Proportion decimal.Decimal `json:"proportion,omitempty"`
 	// RevenueAddress holds the value of the "revenue_address" field.
 	RevenueAddress string `json:"revenue_address,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
@@ -53,10 +54,10 @@ func (*OrderUser) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case orderuser.FieldProportion:
+			values[i] = new(decimal.Decimal)
 		case orderuser.FieldAutoPay:
 			values[i] = new(sql.NullBool)
-		case orderuser.FieldProportion:
-			values[i] = new(sql.NullFloat64)
 		case orderuser.FieldID, orderuser.FieldCreatedAt, orderuser.FieldUpdatedAt, orderuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case orderuser.FieldName, orderuser.FieldMiningpoolType, orderuser.FieldCoinType, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
@@ -151,10 +152,10 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 				ou.CoinType = value.String
 			}
 		case orderuser.FieldProportion:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field proportion", values[i])
-			} else if value.Valid {
-				ou.Proportion = float32(value.Float64)
+			} else if value != nil {
+				ou.Proportion = *value
 			}
 		case orderuser.FieldRevenueAddress:
 			if value, ok := values[i].(*sql.NullString); !ok {

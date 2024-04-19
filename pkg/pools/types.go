@@ -15,7 +15,7 @@ type PoolManager interface {
 	DeleteReadPageLink(ctx context.Context, userName string) error
 
 	// revenue
-	SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion float64) error
+	SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion string) error
 	GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error)
 	SetRevenueAddress(ctx context.Context, userName string, address string) error
 	GetRevenueAddress(ctx context.Context, userName string) (string, error)

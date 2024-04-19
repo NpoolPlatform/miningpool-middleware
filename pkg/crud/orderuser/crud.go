@@ -7,6 +7,7 @@ import (
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/shopspring/decimal"
 
 	"github.com/google/uuid"
 )
@@ -20,7 +21,7 @@ type Req struct {
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
-	Proportion     *float32
+	Proportion     *decimal.Decimal
 	RevenueAddress *string
 	ReadPageLink   *string
 	AutoPay        *bool

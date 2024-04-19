@@ -10,6 +10,7 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	"bou.ke/monkey"
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
@@ -73,18 +74,25 @@ func createOrderUser(t *testing.T) {
 
 func updateOrderUser(t *testing.T) {
 	req.ID = &ret.ID
-	ret.Proportion = 50.1
+	dec, err := decimal.NewFromString("50.1")
+	assert.Nil(t, err)
+
+	ret.Proportion = dec.StringFixed(2)
 	req.Proportion = &ret.Proportion
-	_, err := UpdateOrderUser(context.Background(), req)
+	_, err = UpdateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
+		ret.Proportion = dec.StringFixed(18)
 		assert.Equal(t, info, ret)
 	}
 
-	ret.Proportion = 99
+	dec, err = decimal.NewFromString("99")
+	assert.Nil(t, err)
+
+	ret.Proportion = dec.StringFixed(2)
 	req.Proportion = &ret.Proportion
 	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:         req.ID,
@@ -94,6 +102,7 @@ func updateOrderUser(t *testing.T) {
 	assert.Nil(t, err)
 	info, err = GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
+		ret.Proportion = dec.StringFixed(18)
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}

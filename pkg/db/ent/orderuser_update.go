@@ -13,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // OrderUserUpdate is the builder for updating OrderUser entities.
@@ -239,23 +240,16 @@ func (ouu *OrderUserUpdate) ClearCoinType() *OrderUserUpdate {
 }
 
 // SetProportion sets the "proportion" field.
-func (ouu *OrderUserUpdate) SetProportion(f float32) *OrderUserUpdate {
-	ouu.mutation.ResetProportion()
-	ouu.mutation.SetProportion(f)
+func (ouu *OrderUserUpdate) SetProportion(d decimal.Decimal) *OrderUserUpdate {
+	ouu.mutation.SetProportion(d)
 	return ouu
 }
 
 // SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableProportion(f *float32) *OrderUserUpdate {
-	if f != nil {
-		ouu.SetProportion(*f)
+func (ouu *OrderUserUpdate) SetNillableProportion(d *decimal.Decimal) *OrderUserUpdate {
+	if d != nil {
+		ouu.SetProportion(*d)
 	}
-	return ouu
-}
-
-// AddProportion adds f to the "proportion" field.
-func (ouu *OrderUserUpdate) AddProportion(f float32) *OrderUserUpdate {
-	ouu.mutation.AddProportion(f)
 	return ouu
 }
 
@@ -565,21 +559,14 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ouu.mutation.Proportion(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if value, ok := ouu.mutation.AddedProportion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: orderuser.FieldProportion,
 		})
 	}
 	if ouu.mutation.ProportionCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: orderuser.FieldProportion,
 		})
 	}
@@ -853,23 +840,16 @@ func (ouuo *OrderUserUpdateOne) ClearCoinType() *OrderUserUpdateOne {
 }
 
 // SetProportion sets the "proportion" field.
-func (ouuo *OrderUserUpdateOne) SetProportion(f float32) *OrderUserUpdateOne {
-	ouuo.mutation.ResetProportion()
-	ouuo.mutation.SetProportion(f)
+func (ouuo *OrderUserUpdateOne) SetProportion(d decimal.Decimal) *OrderUserUpdateOne {
+	ouuo.mutation.SetProportion(d)
 	return ouuo
 }
 
 // SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableProportion(f *float32) *OrderUserUpdateOne {
-	if f != nil {
-		ouuo.SetProportion(*f)
+func (ouuo *OrderUserUpdateOne) SetNillableProportion(d *decimal.Decimal) *OrderUserUpdateOne {
+	if d != nil {
+		ouuo.SetProportion(*d)
 	}
-	return ouuo
-}
-
-// AddProportion adds f to the "proportion" field.
-func (ouuo *OrderUserUpdateOne) AddProportion(f float32) *OrderUserUpdateOne {
-	ouuo.mutation.AddProportion(f)
 	return ouuo
 }
 
@@ -1209,21 +1189,14 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 	}
 	if value, ok := ouuo.mutation.Proportion(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if value, ok := ouuo.mutation.AddedProportion(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: orderuser.FieldProportion,
 		})
 	}
 	if ouuo.mutation.ProportionCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Column: orderuser.FieldProportion,
 		})
 	}

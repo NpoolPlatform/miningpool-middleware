@@ -156,7 +156,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			orderuser.FieldName:           {Type: field.TypeString, Column: orderuser.FieldName},
 			orderuser.FieldMiningpoolType: {Type: field.TypeString, Column: orderuser.FieldMiningpoolType},
 			orderuser.FieldCoinType:       {Type: field.TypeString, Column: orderuser.FieldCoinType},
-			orderuser.FieldProportion:     {Type: field.TypeFloat32, Column: orderuser.FieldProportion},
+			orderuser.FieldProportion:     {Type: field.TypeOther, Column: orderuser.FieldProportion},
 			orderuser.FieldRevenueAddress: {Type: field.TypeString, Column: orderuser.FieldRevenueAddress},
 			orderuser.FieldReadPageLink:   {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
 			orderuser.FieldAutoPay:        {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
@@ -751,8 +751,8 @@ func (f *OrderUserFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldCoinType))
 }
 
-// WhereProportion applies the entql float32 predicate on the proportion field.
-func (f *OrderUserFilter) WhereProportion(p entql.Float32P) {
+// WhereProportion applies the entql other predicate on the proportion field.
+func (f *OrderUserFilter) WhereProportion(p entql.OtherP) {
 	f.Where(p.Field(orderuser.FieldProportion))
 }
 

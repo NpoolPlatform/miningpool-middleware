@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // OrderUserCreate is the builder for creating a OrderUser entity.
@@ -177,15 +178,15 @@ func (ouc *OrderUserCreate) SetNillableCoinType(s *string) *OrderUserCreate {
 }
 
 // SetProportion sets the "proportion" field.
-func (ouc *OrderUserCreate) SetProportion(f float32) *OrderUserCreate {
-	ouc.mutation.SetProportion(f)
+func (ouc *OrderUserCreate) SetProportion(d decimal.Decimal) *OrderUserCreate {
+	ouc.mutation.SetProportion(d)
 	return ouc
 }
 
 // SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableProportion(f *float32) *OrderUserCreate {
-	if f != nil {
-		ouc.SetProportion(*f)
+func (ouc *OrderUserCreate) SetNillableProportion(d *decimal.Decimal) *OrderUserCreate {
+	if d != nil {
+		ouc.SetProportion(*d)
 	}
 	return ouc
 }
@@ -542,7 +543,7 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := ouc.mutation.Proportion(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: orderuser.FieldProportion,
 		})
@@ -817,7 +818,7 @@ func (u *OrderUserUpsert) ClearCoinType() *OrderUserUpsert {
 }
 
 // SetProportion sets the "proportion" field.
-func (u *OrderUserUpsert) SetProportion(v float32) *OrderUserUpsert {
+func (u *OrderUserUpsert) SetProportion(v decimal.Decimal) *OrderUserUpsert {
 	u.Set(orderuser.FieldProportion, v)
 	return u
 }
@@ -825,12 +826,6 @@ func (u *OrderUserUpsert) SetProportion(v float32) *OrderUserUpsert {
 // UpdateProportion sets the "proportion" field to the value that was provided on create.
 func (u *OrderUserUpsert) UpdateProportion() *OrderUserUpsert {
 	u.SetExcluded(orderuser.FieldProportion)
-	return u
-}
-
-// AddProportion adds v to the "proportion" field.
-func (u *OrderUserUpsert) AddProportion(v float32) *OrderUserUpsert {
-	u.Add(orderuser.FieldProportion, v)
 	return u
 }
 
@@ -1167,16 +1162,9 @@ func (u *OrderUserUpsertOne) ClearCoinType() *OrderUserUpsertOne {
 }
 
 // SetProportion sets the "proportion" field.
-func (u *OrderUserUpsertOne) SetProportion(v float32) *OrderUserUpsertOne {
+func (u *OrderUserUpsertOne) SetProportion(v decimal.Decimal) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.SetProportion(v)
-	})
-}
-
-// AddProportion adds v to the "proportion" field.
-func (u *OrderUserUpsertOne) AddProportion(v float32) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddProportion(v)
 	})
 }
 
@@ -1693,16 +1681,9 @@ func (u *OrderUserUpsertBulk) ClearCoinType() *OrderUserUpsertBulk {
 }
 
 // SetProportion sets the "proportion" field.
-func (u *OrderUserUpsertBulk) SetProportion(v float32) *OrderUserUpsertBulk {
+func (u *OrderUserUpsertBulk) SetProportion(v decimal.Decimal) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.SetProportion(v)
-	})
-}
-
-// AddProportion adds v to the "proportion" field.
-func (u *OrderUserUpsertBulk) AddProportion(v float32) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.AddProportion(v)
 	})
 }
 

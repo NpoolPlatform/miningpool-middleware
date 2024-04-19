@@ -5,6 +5,7 @@ package orderuser
 import (
 	"entgo.io/ent"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -109,7 +110,7 @@ var (
 	// DefaultCoinType holds the default value on creation for the "coin_type" field.
 	DefaultCoinType string
 	// DefaultProportion holds the default value on creation for the "proportion" field.
-	DefaultProportion float32
+	DefaultProportion decimal.Decimal
 	// DefaultRevenueAddress holds the default value on creation for the "revenue_address" field.
 	DefaultRevenueAddress string
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.

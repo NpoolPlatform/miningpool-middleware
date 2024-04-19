@@ -5230,8 +5230,7 @@ type OrderUserMutation struct {
 	name            *string
 	miningpool_type *string
 	coin_type       *string
-	proportion      *float32
-	addproportion   *float32
+	proportion      *decimal.Decimal
 	revenue_address *string
 	read_page_link  *string
 	auto_pay        *bool
@@ -5893,13 +5892,12 @@ func (m *OrderUserMutation) ResetCoinType() {
 }
 
 // SetProportion sets the "proportion" field.
-func (m *OrderUserMutation) SetProportion(f float32) {
-	m.proportion = &f
-	m.addproportion = nil
+func (m *OrderUserMutation) SetProportion(d decimal.Decimal) {
+	m.proportion = &d
 }
 
 // Proportion returns the value of the "proportion" field in the mutation.
-func (m *OrderUserMutation) Proportion() (r float32, exists bool) {
+func (m *OrderUserMutation) Proportion() (r decimal.Decimal, exists bool) {
 	v := m.proportion
 	if v == nil {
 		return
@@ -5910,7 +5908,7 @@ func (m *OrderUserMutation) Proportion() (r float32, exists bool) {
 // OldProportion returns the old "proportion" field's value of the OrderUser entity.
 // If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldProportion(ctx context.Context) (v float32, err error) {
+func (m *OrderUserMutation) OldProportion(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldProportion is only allowed on UpdateOne operations")
 	}
@@ -5924,28 +5922,9 @@ func (m *OrderUserMutation) OldProportion(ctx context.Context) (v float32, err e
 	return oldValue.Proportion, nil
 }
 
-// AddProportion adds f to the "proportion" field.
-func (m *OrderUserMutation) AddProportion(f float32) {
-	if m.addproportion != nil {
-		*m.addproportion += f
-	} else {
-		m.addproportion = &f
-	}
-}
-
-// AddedProportion returns the value that was added to the "proportion" field in this mutation.
-func (m *OrderUserMutation) AddedProportion() (r float32, exists bool) {
-	v := m.addproportion
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearProportion clears the value of the "proportion" field.
 func (m *OrderUserMutation) ClearProportion() {
 	m.proportion = nil
-	m.addproportion = nil
 	m.clearedFields[orderuser.FieldProportion] = struct{}{}
 }
 
@@ -5958,7 +5937,6 @@ func (m *OrderUserMutation) ProportionCleared() bool {
 // ResetProportion resets all changes to the "proportion" field.
 func (m *OrderUserMutation) ResetProportion() {
 	m.proportion = nil
-	m.addproportion = nil
 	delete(m.clearedFields, orderuser.FieldProportion)
 }
 
@@ -6338,7 +6316,7 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		m.SetCoinType(v)
 		return nil
 	case orderuser.FieldProportion:
-		v, ok := value.(float32)
+		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -6382,9 +6360,6 @@ func (m *OrderUserMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, orderuser.FieldDeletedAt)
 	}
-	if m.addproportion != nil {
-		fields = append(fields, orderuser.FieldProportion)
-	}
 	return fields
 }
 
@@ -6399,8 +6374,6 @@ func (m *OrderUserMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case orderuser.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case orderuser.FieldProportion:
-		return m.AddedProportion()
 	}
 	return nil, false
 }
@@ -6430,13 +6403,6 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeletedAt(v)
-		return nil
-	case orderuser.FieldProportion:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddProportion(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser numeric field %s", name)

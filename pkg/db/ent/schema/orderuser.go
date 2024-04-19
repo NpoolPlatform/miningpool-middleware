@@ -2,11 +2,13 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // OrderUser holds the schema definition for the OrderUser entity.
@@ -55,7 +57,12 @@ func (OrderUser) Fields() []ent.Field {
 		field.
 			String("coin_type").Optional().Default(""),
 		field.
-			Float32("proportion").Optional().Default(0),
+			Other("proportion", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 		field.
 			String("revenue_address").Optional().Default(""),
 		field.

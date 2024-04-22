@@ -39,7 +39,7 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 		return &npool.DeletePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeletePool(ctx)
+	err = handler.DeletePool(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeletePool",
@@ -49,7 +49,5 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeletePoolResponse{
-		Info: info,
-	}, nil
+	return &npool.DeletePoolResponse{}, nil
 }

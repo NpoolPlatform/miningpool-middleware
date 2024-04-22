@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreatePool(ctx context.Context, in *npool.PoolReq) (*npool.Pool, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreatePool(ctx, &npool.CreatePoolRequest{
+func CreatePool(ctx context.Context, in *npool.PoolReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreatePool(ctx, &npool.CreatePoolRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Pool), nil
+	})
+	return err
 }
 
 func GetPool(ctx context.Context, id string) (*npool.Pool, error) {
@@ -145,21 +139,15 @@ func GetPoolOnly(ctx context.Context, conds *npool.Conds) (*npool.Pool, error) {
 	return infos.([]*npool.Pool)[0], nil
 }
 
-func DeletePool(ctx context.Context, id uint32, entID string) (*npool.Pool, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeletePool(ctx, &npool.DeletePoolRequest{
+func DeletePool(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeletePool(ctx, &npool.DeletePoolRequest{
 			Info: &npool.PoolReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Pool), nil
+	})
+	return err
 }

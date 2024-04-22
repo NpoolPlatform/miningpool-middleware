@@ -13,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
+	"github.com/google/uuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -32,12 +33,14 @@ func init() {
 }
 
 var ret = &npool.Fraction{
+	EntID:       uuid.NewString(),
 	OrderUserID: orderuserRet.EntID,
 	AppID:       orderuserRet.AppID,
 	UserID:      orderuserRet.UserID,
 }
 
 var req = &npool.FractionReq{
+	EntID:         &ret.EntID,
 	AppID:         &ret.AppID,
 	UserID:        &ret.UserID,
 	OrderUserID:   &ret.OrderUserID,
@@ -49,13 +52,17 @@ var req = &npool.FractionReq{
 func create(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
+		WithEntID(req.EntID, true),
 		WithAppID(req.AppID, true),
 		WithUserID(req.UserID, true),
 		WithOrderUserID(req.OrderUserID, true),
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.CreateFraction(context.Background())
+	err = handler.CreateFraction(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetFraction(context.Background())
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
@@ -151,11 +158,8 @@ func deleteRow(t *testing.T) {
 		WithLimit(2),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteFraction(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-		assert.Equal(t, deletedItem, ret)
-	}
+	err = handler.DeleteFraction(context.Background())
+	assert.Nil(t, err)
 
 	handler, err = NewHandler(
 		context.Background(),

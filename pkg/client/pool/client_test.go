@@ -50,7 +50,7 @@ func createPool(t *testing.T) {
 		return
 	}
 
-	_, err = CreatePool(context.Background(), req)
+	err = CreatePool(context.Background(), req)
 	assert.NotNil(t, err)
 
 	info, err := GetPool(context.Background(), infos[0].EntID)

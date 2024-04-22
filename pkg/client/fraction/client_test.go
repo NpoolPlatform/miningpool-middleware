@@ -42,7 +42,9 @@ var req = &npool.FractionReq{
 }
 
 func createFraction(t *testing.T) {
-	info, err := CreateFraction(context.Background(), req)
+	err := CreateFraction(context.Background(), req)
+	assert.Nil(t, err)
+	info, err := GetFraction(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
 		ret.WithdrawStateStr = info.WithdrawStateStr
@@ -111,10 +113,8 @@ func deleteFraction(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteFraction(context.Background(), ret.ID, ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
+	err = DeleteFraction(context.Background(), ret.ID, ret.EntID)
+	assert.Nil(t, err)
 
 	exist, err = ExistFractionConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

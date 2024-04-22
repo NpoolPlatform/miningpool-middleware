@@ -39,7 +39,7 @@ func (s *Server) DeleteFraction(ctx context.Context, in *npool.DeleteFractionReq
 		return &npool.DeleteFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeleteFraction(ctx)
+	err = handler.DeleteFraction(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeleteFraction",
@@ -49,7 +49,5 @@ func (s *Server) DeleteFraction(ctx context.Context, in *npool.DeleteFractionReq
 		return &npool.DeleteFractionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteFractionResponse{
-		Info: info,
-	}, nil
+	return &npool.DeleteFractionResponse{}, nil
 }

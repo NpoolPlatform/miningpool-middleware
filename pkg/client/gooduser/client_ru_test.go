@@ -41,7 +41,7 @@ func createRootUser(t *testing.T) {
 	rootUserRet.Name = name
 	rootUserReq.Name = &name
 
-	_, err = rootuserclient.CreateRootUser(context.Background(), rootUserReq)
+	err = rootuserclient.CreateRootUser(context.Background(), rootUserReq)
 	assert.Nil(t, err)
 
 	info, err := rootuserclient.GetRootUser(context.Background(), *rootUserReq.EntID)
@@ -67,10 +67,8 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := rootuserclient.DeleteRootUser(context.Background(), rootUserRet.ID, rootUserRet.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, rootUserRet, info)
-	}
+	err = rootuserclient.DeleteRootUser(context.Background(), rootUserRet.ID, rootUserRet.EntID)
+	assert.Nil(t, err)
 
 	exist, err = rootuserclient.ExistRootUserConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

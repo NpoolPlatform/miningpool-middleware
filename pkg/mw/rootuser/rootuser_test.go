@@ -154,11 +154,8 @@ func deleteRow(t *testing.T) {
 		WithLimit(2),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteRootUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-		assert.Equal(t, deletedItem, ret)
-	}
+	err = handler.DeleteRootUser(context.Background())
+	assert.Nil(t, err)
 
 	handler, err = NewHandler(
 		context.Background(),

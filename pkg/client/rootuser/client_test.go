@@ -54,7 +54,7 @@ func createRootUser(t *testing.T) {
 	ret.Name = name
 	req.Name = &name
 
-	_, err = CreateRootUser(context.Background(), req)
+	err = CreateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
@@ -128,10 +128,8 @@ func deleteRootUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteRootUser(context.Background(), ret.ID, ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, ret, info)
-	}
+	err = DeleteRootUser(context.Background(), ret.ID, ret.EntID)
+	assert.Nil(t, err)
 
 	exist, err = ExistRootUserConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

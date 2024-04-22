@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,14 +28,14 @@ func (h *deleteHandler) deleteGoodUserBase(ctx context.Context, tx *ent.Tx) erro
 	return nil
 }
 
-func (h *Handler) DeleteGoodUser(ctx context.Context) (*npool.GoodUser, error) {
+func (h *Handler) DeleteGoodUser(ctx context.Context) error {
 	info, err := h.GetGoodUser(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -45,15 +43,10 @@ func (h *Handler) DeleteGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteGoodUserBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

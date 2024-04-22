@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateFraction(ctx, &npool.CreateFractionRequest{
+func CreateFraction(ctx context.Context, in *npool.FractionReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateFraction(ctx, &npool.CreateFractionRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Fraction), nil
+	})
+	return err
 }
 
 func GetFraction(ctx context.Context, id string) (*npool.Fraction, error) {
@@ -161,21 +155,15 @@ func GetFractionOnly(ctx context.Context, conds *npool.Conds) (*npool.Fraction, 
 	return infos.([]*npool.Fraction)[0], nil
 }
 
-func DeleteFraction(ctx context.Context, id uint32, entID string) (*npool.Fraction, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
+func DeleteFraction(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
 			Info: &npool.FractionReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Fraction), nil
+	})
+	return err
 }

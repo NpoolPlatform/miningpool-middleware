@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -31,14 +29,14 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 	return nil
 }
 
-func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error) {
+func (h *Handler) DeleteOrderUser(ctx context.Context) error {
 	info, err := h.GetOrderUser(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -46,16 +44,10 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error)
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteOrderUserBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

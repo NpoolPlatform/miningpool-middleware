@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateGoodUser(ctx context.Context, in *npool.GoodUserReq) (*npool.GoodUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateGoodUser(ctx, &npool.CreateGoodUserRequest{
+func CreateGoodUser(ctx context.Context, in *npool.GoodUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateGoodUser(ctx, &npool.CreateGoodUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.GoodUser), nil
+	})
+	return err
 }
 
 func GetGoodUser(ctx context.Context, id string) (*npool.GoodUser, error) {
@@ -161,21 +155,15 @@ func GetGoodUserOnly(ctx context.Context, conds *npool.Conds) (*npool.GoodUser, 
 	return infos.([]*npool.GoodUser)[0], nil
 }
 
-func DeleteGoodUser(ctx context.Context, id uint32, entID string) (*npool.GoodUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteGoodUser(ctx, &npool.DeleteGoodUserRequest{
+func DeleteGoodUser(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteGoodUser(ctx, &npool.DeleteGoodUserRequest{
 			Info: &npool.GoodUserReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.GoodUser), nil
+	})
+	return err
 }

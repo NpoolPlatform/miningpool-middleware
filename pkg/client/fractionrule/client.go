@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateFractionRule(ctx context.Context, in *npool.FractionRuleReq) (*npool.FractionRule, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateFractionRule(ctx, &npool.CreateFractionRuleRequest{
+func CreateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateFractionRule(ctx, &npool.CreateFractionRuleRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.FractionRule), nil
+	})
+	return err
 }
 
 func GetFractionRule(ctx context.Context, id string) (*npool.FractionRule, error) {
@@ -161,21 +155,15 @@ func GetFractionRuleOnly(ctx context.Context, conds *npool.Conds) (*npool.Fracti
 	return infos.([]*npool.FractionRule)[0], nil
 }
 
-func DeleteFractionRule(ctx context.Context, id uint32, entID string) (*npool.FractionRule, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteFractionRule(ctx, &npool.DeleteFractionRuleRequest{
+func DeleteFractionRule(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteFractionRule(ctx, &npool.DeleteFractionRuleRequest{
 			Info: &npool.FractionRuleReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.FractionRule), nil
+	})
+	return err
 }

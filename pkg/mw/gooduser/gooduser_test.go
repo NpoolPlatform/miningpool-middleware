@@ -9,7 +9,6 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -31,10 +30,9 @@ func init() {
 var ret = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	HashRate:       5.0,
-	ReadPageLink:   "sssss",
 	RevenueType:    basetypes.RevenueType_FPPS,
 }
 
@@ -44,27 +42,17 @@ var req = &npool.GoodUserReq{
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
 	HashRate:       &ret.HashRate,
-	ReadPageLink:   &ret.ReadPageLink,
 	RevenueType:    &ret.RevenueType,
 }
 
 func create(t *testing.T) {
-	name, err := f2pool.RandomF2PoolUser(8)
-	if !assert.Nil(t, err) {
-		return
-	}
-	ret.Name = name
-	req.Name = &name
-
 	handler, err := NewHandler(
 		context.Background(),
-		WithName(req.Name, true),
 		WithEntID(req.EntID, true),
 		WithRootUserID(req.RootUserID, true),
 		WithMiningpoolType(req.MiningpoolType, true),
 		WithCoinType(req.CoinType, true),
 		WithHashRate(req.HashRate, true),
-		WithReadPageLink(req.ReadPageLink, true),
 		WithRevenueType(req.RevenueType, true),
 	)
 	if !assert.Nil(t, err) {
@@ -85,6 +73,8 @@ func create(t *testing.T) {
 		ret.RevenueTypeStr = info.RevenueTypeStr
 		ret.ID = info.ID
 		ret.EntID = info.EntID
+		ret.Name = info.Name
+		ret.ReadPageLink = info.ReadPageLink
 		assert.Equal(t, info, ret)
 	}
 }
@@ -177,11 +167,8 @@ func deleteRow(t *testing.T) {
 		WithLimit(2),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteGoodUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-		assert.Equal(t, deletedItem, ret)
-	}
+	err = handler.DeleteGoodUser(context.Background())
+	assert.Nil(t, err)
 
 	handler, err = NewHandler(
 		context.Background(),

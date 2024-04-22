@@ -6,7 +6,6 @@ import (
 	"time"
 
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
@@ -74,17 +73,17 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 	return nil
 }
 
-func (h *Handler) CreateFraction(ctx context.Context) (*npool.Fraction, error) {
+func (h *Handler) CreateFraction(ctx context.Context) error {
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
 
 	err := h.fractionInPool(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
+	return db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
 		info, err := fractioncrud.CreateSet(
 			cli.Fraction.Create(),
 			&fractioncrud.Req{
@@ -104,9 +103,4 @@ func (h *Handler) CreateFraction(ctx context.Context) (*npool.Fraction, error) {
 		h.ID = &info.ID
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return h.GetFraction(ctx)
 }

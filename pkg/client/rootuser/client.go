@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateRootUser(ctx, &npool.CreateRootUserRequest{
+func CreateRootUser(ctx context.Context, in *npool.RootUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateRootUser(ctx, &npool.CreateRootUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.RootUser), nil
+	})
+	return err
 }
 
 func GetRootUser(ctx context.Context, id string) (*npool.RootUser, error) {
@@ -161,21 +155,15 @@ func GetRootUserOnly(ctx context.Context, conds *npool.Conds) (*npool.RootUser, 
 	return infos.([]*npool.RootUser)[0], nil
 }
 
-func DeleteRootUser(ctx context.Context, id uint32, entID string) (*npool.RootUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteRootUser(ctx, &npool.DeleteRootUserRequest{
+func DeleteRootUser(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteRootUser(ctx, &npool.DeleteRootUserRequest{
 			Info: &npool.RootUserReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.RootUser), nil
+	})
+	return err
 }

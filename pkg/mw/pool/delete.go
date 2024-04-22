@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/pool"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,13 +28,13 @@ func (h *deleteHandler) deletePoolBase(ctx context.Context, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *Handler) DeletePool(ctx context.Context) (*npool.Pool, error) {
+func (h *Handler) DeletePool(ctx context.Context) error {
 	info, err := h.GetPool(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -44,15 +42,10 @@ func (h *Handler) DeletePool(ctx context.Context) (*npool.Pool, error) {
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deletePoolBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

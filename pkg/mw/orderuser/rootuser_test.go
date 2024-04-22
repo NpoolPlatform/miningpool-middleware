@@ -16,7 +16,7 @@ import (
 
 var rootuserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "gggo@go.go",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
@@ -73,8 +73,6 @@ func deleteRootUser(t *testing.T) {
 		rootuser.WithEntID(&rootuserRet.EntID, true),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteRootUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, deletedItem, rootuserRet)
-	}
+	err = handler.DeleteRootUser(context.Background())
+	assert.Nil(t, err)
 }

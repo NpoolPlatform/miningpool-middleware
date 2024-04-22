@@ -56,7 +56,7 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeleteOrderUser(ctx)
+	err = handler.DeleteOrderUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeleteOrderUser",
@@ -66,7 +66,5 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteOrderUserResponse{
-		Info: info,
-	}, nil
+	return &npool.DeleteOrderUserResponse{}, nil
 }

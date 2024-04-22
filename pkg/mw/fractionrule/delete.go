@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,14 +28,14 @@ func (h *deleteHandler) deleteFractionRuleBase(ctx context.Context, tx *ent.Tx) 
 	return nil
 }
 
-func (h *Handler) DeleteFractionRule(ctx context.Context) (*npool.FractionRule, error) {
+func (h *Handler) DeleteFractionRule(ctx context.Context) error {
 	info, err := h.GetFractionRule(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -45,15 +43,10 @@ func (h *Handler) DeleteFractionRule(ctx context.Context) (*npool.FractionRule, 
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteFractionRuleBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

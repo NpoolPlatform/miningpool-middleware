@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,14 +28,14 @@ func (h *deleteHandler) deleteRootUserBase(ctx context.Context, tx *ent.Tx) erro
 	return nil
 }
 
-func (h *Handler) DeleteRootUser(ctx context.Context) (*npool.RootUser, error) {
+func (h *Handler) DeleteRootUser(ctx context.Context) error {
 	info, err := h.GetRootUser(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -45,15 +43,10 @@ func (h *Handler) DeleteRootUser(ctx context.Context) (*npool.RootUser, error) {
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteRootUserBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

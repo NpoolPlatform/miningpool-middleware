@@ -51,7 +51,7 @@ func createPool(t *testing.T) {
 	ret.PoolID = infos[0].EntID
 	req.PoolID = &infos[0].EntID
 
-	_, err = CreatePool(context.Background(), req)
+	err = CreatePool(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetPool(context.Background(), *req.EntID)
@@ -93,10 +93,8 @@ func deletePool(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeletePool(context.Background(), ret.ID, ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
+	err = DeletePool(context.Background(), ret.ID, ret.EntID)
+	assert.Nil(t, err)
 
 	exist, err = ExistPoolConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

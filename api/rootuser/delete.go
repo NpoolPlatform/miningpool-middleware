@@ -39,7 +39,7 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 		return &npool.DeleteRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeleteRootUser(ctx)
+	err = handler.DeleteRootUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeleteRootUser",
@@ -49,7 +49,5 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteRootUserResponse{
-		Info: info,
-	}, nil
+	return &npool.DeleteRootUserResponse{}, nil
 }

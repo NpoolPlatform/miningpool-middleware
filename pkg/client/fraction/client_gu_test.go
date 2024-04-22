@@ -38,7 +38,7 @@ var goodUserReq = &npool.GoodUserReq{
 }
 
 func createGoodUser(t *testing.T) {
-	_, err := gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
+	err := gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
 	assert.Nil(t, err)
 
 	info, err := gooduserclient.GetGoodUser(context.Background(), *goodUserReq.EntID)
@@ -67,10 +67,8 @@ func deleteGoodUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := gooduserclient.DeleteGoodUser(context.Background(), goodUserRet.ID, goodUserRet.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, goodUserRet)
-	}
+	err = gooduserclient.DeleteGoodUser(context.Background(), goodUserRet.ID, goodUserRet.EntID)
+	assert.Nil(t, err)
 
 	exist, err = gooduserclient.ExistGoodUserConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

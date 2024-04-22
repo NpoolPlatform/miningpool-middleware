@@ -60,7 +60,7 @@ func createCoin(t *testing.T) {
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
 
-	_, err = CreateCoin(context.Background(), req)
+	err = CreateCoin(context.Background(), req)
 	assert.NotNil(t, err)
 
 	info, err := GetCoin(context.Background(), infos[0].EntID)

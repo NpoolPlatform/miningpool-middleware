@@ -23,7 +23,6 @@ var orderuserRet = &npool.OrderUser{
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	RevenueAddress: "sssss",
-	ReadPageLink:   "sssss",
 	AutoPay:        false,
 }
 
@@ -36,7 +35,6 @@ var orderuserReq = &npool.OrderUserReq{
 	MiningpoolType: &orderuserRet.MiningpoolType,
 	CoinType:       &orderuserRet.CoinType,
 	RevenueAddress: &orderuserRet.RevenueAddress,
-	ReadPageLink:   &orderuserRet.ReadPageLink,
 	AutoPay:        &orderuserRet.AutoPay,
 }
 
@@ -59,7 +57,6 @@ func createOrderUser(t *testing.T) {
 		orderuser.WithMiningpoolType(orderuserReq.MiningpoolType, true),
 		orderuser.WithCoinType(orderuserReq.CoinType, true),
 		orderuser.WithRevenueAddress(orderuserReq.RevenueAddress, true),
-		orderuser.WithReadPageLink(orderuserReq.ReadPageLink, true),
 		orderuser.WithAutoPay(orderuserReq.AutoPay, true),
 	)
 	assert.Nil(t, err)
@@ -77,6 +74,7 @@ func createOrderUser(t *testing.T) {
 		orderuserRet.ID = info.ID
 		orderuserRet.EntID = info.EntID
 		orderuserRet.Name = info.Name
+		orderuserRet.ReadPageLink = info.ReadPageLink
 		assert.Equal(t, info, orderuserRet)
 	}
 }
@@ -88,8 +86,6 @@ func deleteOrderUser(t *testing.T) {
 		orderuser.WithEntID(&orderuserRet.EntID, true),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteOrderUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, deletedItem, orderuserRet)
-	}
+	err = handler.DeleteOrderUser(context.Background())
+	assert.Nil(t, err)
 }

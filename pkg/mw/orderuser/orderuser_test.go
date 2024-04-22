@@ -35,10 +35,9 @@ var ret = &npool.OrderUser{
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	RevenueAddress: "sssss",
-	ReadPageLink:   "sssss",
 	AutoPay:        false,
 }
 
@@ -51,7 +50,6 @@ var req = &npool.OrderUserReq{
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
 	RevenueAddress: &ret.RevenueAddress,
-	ReadPageLink:   &ret.ReadPageLink,
 	AutoPay:        &ret.AutoPay,
 }
 
@@ -74,7 +72,6 @@ func create(t *testing.T) {
 		WithMiningpoolType(req.MiningpoolType, true),
 		WithCoinType(req.CoinType, true),
 		WithRevenueAddress(req.RevenueAddress, true),
-		WithReadPageLink(req.ReadPageLink, true),
 		WithAutoPay(req.AutoPay, true),
 	)
 	assert.Nil(t, err)
@@ -92,6 +89,7 @@ func create(t *testing.T) {
 		ret.ID = info.ID
 		ret.EntID = info.EntID
 		ret.Name = info.Name
+		ret.ReadPageLink = info.ReadPageLink
 		assert.Equal(t, info, ret)
 	}
 }
@@ -187,11 +185,8 @@ func deleteRow(t *testing.T) {
 		WithLimit(2),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteOrderUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, true, exist)
-		assert.Equal(t, deletedItem, ret)
-	}
+	err = handler.DeleteOrderUser(context.Background())
+	assert.Nil(t, err)
 
 	handler, err = NewHandler(
 		context.Background(),

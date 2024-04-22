@@ -56,7 +56,7 @@ func createFractionRule(t *testing.T) {
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
 
-	_, err = CreateFractionRule(context.Background(), req)
+	err = CreateFractionRule(context.Background(), req)
 	assert.NotNil(t, err)
 
 	info, err := GetFractionRule(context.Background(), infos[0].EntID)

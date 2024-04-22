@@ -41,7 +41,7 @@ func (s *Server) CreateFraction(ctx context.Context, in *npool.CreateFractionReq
 		return &npool.CreateFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.CreateFraction(ctx)
+	err = handler.CreateFraction(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"CreateFraction",
@@ -51,7 +51,5 @@ func (s *Server) CreateFraction(ctx context.Context, in *npool.CreateFractionReq
 		return &npool.CreateFractionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.CreateFractionResponse{
-		Info: info,
-	}, nil
+	return &npool.CreateFractionResponse{}, nil
 }

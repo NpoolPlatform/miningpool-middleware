@@ -73,8 +73,6 @@ func deleteRootUser(t *testing.T) {
 		rootuser.WithEntID(&rootuserRet.EntID, true),
 	)
 	assert.Nil(t, err)
-	deletedItem, err := handler.DeleteRootUser(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, deletedItem, rootuserRet)
-	}
+	err = handler.DeleteRootUser(context.Background())
+	assert.Nil(t, err)
 }

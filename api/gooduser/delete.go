@@ -39,7 +39,7 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 		return &npool.DeleteGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeleteGoodUser(ctx)
+	err = handler.DeleteGoodUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeleteGoodUser",
@@ -49,7 +49,5 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteGoodUserResponse{
-		Info: info,
-	}, nil
+	return &npool.DeleteGoodUserResponse{}, nil
 }

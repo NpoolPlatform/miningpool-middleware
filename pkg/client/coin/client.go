@@ -33,20 +33,17 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateCoin(ctx context.Context, in *npool.CoinReq) (*npool.Coin, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateCoin(ctx, &npool.CreateCoinRequest{
+func CreateCoin(ctx context.Context, in *npool.CoinReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateCoin(ctx, &npool.CreateCoinRequest{
 			Info: in,
 		})
 		if err != nil {
 			return nil, err
 		}
-		return resp.Info, nil
+		return nil, nil
 	})
-	if err != nil {
-		return nil, err
-	}
-	return info.(*npool.Coin), nil
+	return err
 }
 
 func GetCoin(ctx context.Context, id string) (*npool.Coin, error) {
@@ -161,21 +158,15 @@ func GetCoinOnly(ctx context.Context, conds *npool.Conds) (*npool.Coin, error) {
 	return infos.([]*npool.Coin)[0], nil
 }
 
-func DeleteCoin(ctx context.Context, id uint32, entID string) (*npool.Coin, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteCoin(ctx, &npool.DeleteCoinRequest{
+func DeleteCoin(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteCoin(ctx, &npool.DeleteCoinRequest{
 			Info: &npool.CoinReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Coin), nil
+	})
+	return err
 }

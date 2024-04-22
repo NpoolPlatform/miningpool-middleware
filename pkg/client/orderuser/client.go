@@ -33,20 +33,14 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.CreateOrderUser(ctx, &npool.CreateOrderUserRequest{
+func CreateOrderUser(ctx context.Context, in *npool.OrderUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.CreateOrderUser(ctx, &npool.CreateOrderUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.OrderUser), nil
+	})
+	return err
 }
 
 func GetOrderUser(ctx context.Context, id string) (*npool.OrderUser, error) {
@@ -161,21 +155,15 @@ func GetOrderUserOnly(ctx context.Context, conds *npool.Conds) (*npool.OrderUser
 	return infos.([]*npool.OrderUser)[0], nil
 }
 
-func DeleteOrderUser(ctx context.Context, id uint32, entID string) (*npool.OrderUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.DeleteOrderUser(ctx, &npool.DeleteOrderUserRequest{
+func DeleteOrderUser(ctx context.Context, id uint32, entID string) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.DeleteOrderUser(ctx, &npool.DeleteOrderUserRequest{
 			Info: &npool.OrderUserReq{
 				ID:    &id,
 				EntID: &entID,
 			},
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.OrderUser), nil
+	})
+	return err
 }

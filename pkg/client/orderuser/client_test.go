@@ -49,7 +49,7 @@ var req = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	_, err := CreateOrderUser(context.Background(), req)
+	err := CreateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetOrderUser(context.Background(), *req.EntID)
@@ -176,10 +176,8 @@ func deleteOrderUser(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	info, err := DeleteOrderUser(context.Background(), ret.ID, ret.EntID)
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, ret)
-	}
+	err = DeleteOrderUser(context.Background(), ret.ID, ret.EntID)
+	assert.Nil(t, err)
 
 	exist, err = ExistOrderUserConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{

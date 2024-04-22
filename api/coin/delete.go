@@ -39,7 +39,7 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 		return &npool.DeleteCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.DeleteCoin(ctx)
+	err = handler.DeleteCoin(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"DeleteCoin",
@@ -49,7 +49,5 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.DeleteCoinResponse{
-		Info: info,
-	}, nil
+	return &npool.DeleteCoinResponse{}, nil
 }

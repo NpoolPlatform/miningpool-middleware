@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
-
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,14 +28,14 @@ func (h *deleteHandler) deleteCoinBase(ctx context.Context, tx *ent.Tx) error {
 	return nil
 }
 
-func (h *Handler) DeleteCoin(ctx context.Context) (*npool.Coin, error) {
+func (h *Handler) DeleteCoin(ctx context.Context) error {
 	info, err := h.GetCoin(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if info == nil {
-		return nil, nil
+		return nil
 	}
 
 	h.ID = &info.ID
@@ -45,15 +43,10 @@ func (h *Handler) DeleteCoin(ctx context.Context) (*npool.Coin, error) {
 		Handler: h,
 	}
 
-	err = db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteCoinBase(_ctx, tx); err != nil {
 			return err
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return info, nil
 }

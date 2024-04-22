@@ -6,10 +6,8 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	rootuser "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,16 +25,6 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 	}
 
 	req := in.GetInfo()
-	req, err := checkUpdateAuthed(ctx, req)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"UpdateRootUser",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	handler, err := rootuser.NewHandler(
 		ctx,
 		rootuser.WithID(req.ID, false),
@@ -44,7 +32,6 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 		rootuser.WithName(req.Name, false),
 		rootuser.WithEmail(req.Email, false),
 		rootuser.WithAuthToken(req.AuthToken, false),
-		rootuser.WithAuthed(req.Authed, false),
 		rootuser.WithRemark(req.Remark, false),
 	)
 	if err != nil {
@@ -67,48 +54,4 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 	}
 
 	return &npool.UpdateRootUserResponse{}, nil
-}
-
-func checkUpdateAuthed(ctx context.Context, req *npool.RootUserReq) (*npool.RootUserReq, error) {
-	if req.AuthToken == nil && req.MiningpoolType == nil {
-		return req, nil
-	}
-
-	defaultCoinType := v1.CoinType_BitCoin
-	miningtype := req.MiningpoolType
-	authtoken := req.AuthToken
-	authed := false
-	req.Authed = &authed
-
-	if req.AuthToken == nil || req.MiningpoolType == nil {
-		h, err := rootuser.NewHandler(
-			ctx,
-			rootuser.WithID(req.ID, false),
-			rootuser.WithEntID(req.EntID, false),
-		)
-		if err != nil {
-			return req, err
-		}
-		info, err := h.GetAuthToken(ctx)
-		if err != nil {
-			return req, err
-		}
-		if req.AuthToken == nil {
-			authtoken = &info.AuthTokenPlain
-		}
-		if req.MiningpoolType == nil {
-			miningtype = &info.MiningpoolType
-		}
-	}
-
-	mgr, err := pools.NewPoolManager(*miningtype, defaultCoinType, *authtoken)
-	if err != nil {
-		return req, err
-	}
-	err = mgr.CheckAuth(ctx)
-	if err != nil {
-		return req, fmt.Errorf("have no permission to opreate pool,err: %v", err)
-	}
-	authed = true
-	return req, nil
 }

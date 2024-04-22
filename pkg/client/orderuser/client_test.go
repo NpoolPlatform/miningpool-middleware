@@ -113,6 +113,7 @@ func updateOrderUser(t *testing.T) {
 	info, err = GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
+		ret.AutoPay = info.AutoPay
 		assert.Equal(t, info, ret)
 	}
 

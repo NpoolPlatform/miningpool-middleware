@@ -6,11 +6,23 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 
 	"github.com/google/uuid"
 )
 
 func (h *Handler) CreateGoodUser(ctx context.Context) error {
+	rootuserID := h.RootUserID.String()
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&rootuserID, true))
+	if err != nil {
+		return err
+	}
+
+	info, err := rootuserH.GetRootUser(ctx)
+	if info == nil || err != nil {
+		return fmt.Errorf("invalid rootuserid")
+	}
+
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}

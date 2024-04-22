@@ -14,7 +14,7 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
-	sqlH := NewSqlHandler(h)
+	sqlH := newSQLHandler(h)
 	sql, err := sqlH.genCreateSQL()
 	if err != nil {
 		return err

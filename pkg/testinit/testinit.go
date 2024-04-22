@@ -6,7 +6,12 @@ import (
 	"path"
 	"runtime"
 
+	"bou.ke/monkey"
 	"github.com/NpoolPlatform/go-service-framework/pkg/app"
+	"github.com/NpoolPlatform/go-service-framework/pkg/config"
+	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 
@@ -49,6 +54,15 @@ func Init() error {
 	if err != nil {
 		return fmt.Errorf("cannot init database: %v", err)
 	}
+
+	gport := config.GetIntValueWithNameSpace("", config.KeyGRPCPort)
+
+	monkey.Patch(grpc2.GetGRPCConn, func(service string, tags ...string) (*grpc.ClientConn, error) {
+		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	})
+	monkey.Patch(grpc2.GetGRPCConnV1, func(service string, recvMsgBytes int, tags ...string) (*grpc.ClientConn, error) {
+		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	})
 
 	return nil
 }

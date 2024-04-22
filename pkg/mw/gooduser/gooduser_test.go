@@ -9,6 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -28,9 +29,8 @@ func init() {
 }
 
 var ret = &npool.GoodUser{
-	Name:           "sssss",
 	EntID:          uuid.NewString(),
-	RootUserID:     uuid.NewString(),
+	RootUserID:     rootuserRet.EntID,
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
 	CoinType:       basetypes.CoinType_BitCoin,
 	HashRate:       5.0,
@@ -39,7 +39,6 @@ var ret = &npool.GoodUser{
 }
 
 var req = &npool.GoodUserReq{
-	Name:           &ret.Name,
 	EntID:          &ret.EntID,
 	RootUserID:     &ret.RootUserID,
 	MiningpoolType: &ret.MiningpoolType,
@@ -50,6 +49,13 @@ var req = &npool.GoodUserReq{
 }
 
 func create(t *testing.T) {
+	name, err := f2pool.RandomF2PoolUser(8)
+	if !assert.Nil(t, err) {
+		return
+	}
+	ret.Name = name
+	req.Name = &name
+
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),
@@ -61,9 +67,14 @@ func create(t *testing.T) {
 		WithReadPageLink(req.ReadPageLink, true),
 		WithRevenueType(req.RevenueType, true),
 	)
-	assert.Nil(t, err)
+	if !assert.Nil(t, err) {
+		return
+	}
+
 	err = handler.CreateGoodUser(context.Background())
-	assert.Nil(t, err)
+	if !assert.Nil(t, err) {
+		return
+	}
 
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
@@ -194,7 +205,9 @@ func TestGoodUser(t *testing.T) {
 		return
 	}
 
+	t.Run("create", createRootUser)
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
+	t.Run("deleteRow", deleteRootUser)
 }

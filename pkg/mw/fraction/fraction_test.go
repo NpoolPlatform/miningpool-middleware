@@ -7,10 +7,14 @@ import (
 	"strconv"
 	"testing"
 
+	"bou.ke/monkey"
+	"github.com/NpoolPlatform/go-service-framework/pkg/config"
+	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
-	"github.com/google/uuid"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -28,13 +32,9 @@ func init() {
 }
 
 var ret = &npool.Fraction{
-	OrderUserID:   uuid.NewString(),
-	AppID:         uuid.NewString(),
-	UserID:        uuid.NewString(),
-	WithdrawState: basetypes.WithdrawState_WithdrawStateProccessing,
-	WithdrawTime:  5555,
-	PayTime:       7777,
-	Msg:           "7777",
+	OrderUserID: orderuserRet.EntID,
+	AppID:       orderuserRet.AppID,
+	UserID:      orderuserRet.UserID,
 }
 
 var req = &npool.FractionReq{
@@ -44,7 +44,6 @@ var req = &npool.FractionReq{
 	WithdrawState: &ret.WithdrawState,
 	WithdrawTime:  &ret.WithdrawTime,
 	PayTime:       &ret.PayTime,
-	Msg:           &ret.Msg,
 }
 
 func create(t *testing.T) {
@@ -53,10 +52,6 @@ func create(t *testing.T) {
 		WithAppID(req.AppID, true),
 		WithUserID(req.UserID, true),
 		WithOrderUserID(req.OrderUserID, true),
-		WithWithdrawState(req.WithdrawState, true),
-		WithWithdrawTime(req.WithdrawTime, true),
-		WithPayTime(req.PayTime, true),
-		WithMsg(req.Msg, true),
 	)
 	assert.Nil(t, err)
 
@@ -67,6 +62,10 @@ func create(t *testing.T) {
 		ret.WithdrawStateStr = info.WithdrawStateStr
 		ret.ID = info.ID
 		ret.EntID = info.EntID
+		ret.WithdrawState = info.WithdrawState
+		ret.WithdrawTime = info.WithdrawTime
+		ret.PayTime = info.PayTime
+		ret.Msg = info.Msg
 		assert.Equal(t, info, ret)
 	}
 }
@@ -179,8 +178,22 @@ func TestFraction(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
+	gport := config.GetIntValueWithNameSpace("", config.KeyGRPCPort)
 
+	monkey.Patch(grpc2.GetGRPCConn, func(service string, tags ...string) (*grpc.ClientConn, error) {
+		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	})
+	monkey.Patch(grpc2.GetGRPCConnV1, func(service string, recvMsgBytes int, tags ...string) (*grpc.ClientConn, error) {
+		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	})
+
+	t.Run("create", createRootUser)
+	t.Run("create", createGoodUser)
+	t.Run("create", createOrderUser)
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
+	t.Run("deleteRow", deleteOrderUser)
+	t.Run("deleteRow", deleteGoodUser)
+	t.Run("deleteRow", deleteRootUser)
 }

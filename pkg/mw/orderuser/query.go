@@ -79,7 +79,13 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.Proportion = func() string { amount, _ := decimal.NewFromString(info.Proportion); return amount.String() }()
+		info.Proportion = func() string {
+			amount, err := decimal.NewFromString(info.Proportion)
+			if err != nil {
+				return decimal.Zero.String()
+			}
+			return amount.String()
+		}()
 		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}

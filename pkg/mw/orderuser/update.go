@@ -26,7 +26,7 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 		h.Name = &info.Name
 	}
 
-	sqlH := NewSqlHandler(h)
+	sqlH := newSQLHandler(h)
 	sql, err := sqlH.genUpdateSQL()
 	if err != nil {
 		return err

@@ -48,6 +48,7 @@ func createOrderUser(t *testing.T) {
 		orderserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		orderserRet.CoinTypeStr = info.CoinTypeStr
 		orderserRet.UpdatedAt = info.UpdatedAt
+		orderserRet.Proportion = info.Proportion
 		orderserRet.ID = info.ID
 		orderserRet.EntID = info.EntID
 		assert.Equal(t, orderserRet, info)

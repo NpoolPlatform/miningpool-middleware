@@ -9,6 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -29,10 +30,9 @@ func init() {
 }
 
 var ret = &npool.OrderUser{
-	Name:           uuid.NewString(),
 	EntID:          uuid.NewString(),
-	RootUserID:     uuid.NewString(),
-	GoodUserID:     uuid.NewString(),
+	RootUserID:     rootuserRet.EntID,
+	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
@@ -43,7 +43,6 @@ var ret = &npool.OrderUser{
 }
 
 var req = &npool.OrderUserReq{
-	Name:           &ret.Name,
 	EntID:          &ret.EntID,
 	RootUserID:     &ret.RootUserID,
 	GoodUserID:     &ret.GoodUserID,
@@ -57,6 +56,13 @@ var req = &npool.OrderUserReq{
 }
 
 func create(t *testing.T) {
+	name, err := f2pool.RandomF2PoolUser(8)
+	if !assert.Nil(t, err) {
+		return
+	}
+	ret.Name = name
+	req.Name = &name
+
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),
@@ -85,6 +91,7 @@ func create(t *testing.T) {
 		ret.Proportion = info.Proportion
 		ret.ID = info.ID
 		ret.EntID = info.EntID
+		ret.Name = info.Name
 		assert.Equal(t, info, ret)
 	}
 }
@@ -208,7 +215,11 @@ func TestOrderUser(t *testing.T) {
 		return
 	}
 
+	t.Run("create", createRootUser)
+	t.Run("create", createGoodUser)
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
+	t.Run("deleteRow", deleteGoodUser)
+	t.Run("deleteRow", deleteRootUser)
 }

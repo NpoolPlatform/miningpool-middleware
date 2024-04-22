@@ -7,14 +7,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/go-service-framework/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
-	"bou.ke/monkey"
-	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -137,15 +132,6 @@ func TestClient(t *testing.T) {
 		return
 	}
 	// Here won't pass test due to we always test with localhost
-
-	gport := config.GetIntValueWithNameSpace("", config.KeyGRPCPort)
-
-	monkey.Patch(grpc2.GetGRPCConn, func(service string, tags ...string) (*grpc.ClientConn, error) {
-		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	})
-	monkey.Patch(grpc2.GetGRPCConnV1, func(service string, recvMsgBytes int, tags ...string) (*grpc.ClientConn, error) {
-		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
-	})
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)

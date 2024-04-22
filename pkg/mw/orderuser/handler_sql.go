@@ -17,7 +17,7 @@ type sqlHandler struct {
 	idVals   map[string]string
 }
 
-func NewSqlHandler(h *Handler) *sqlHandler {
+func newSQLHandler(h *Handler) *sqlHandler {
 	return &sqlHandler{
 		Handler:  h,
 		baseVals: make(map[string]string),

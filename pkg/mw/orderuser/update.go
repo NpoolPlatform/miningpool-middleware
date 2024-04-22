@@ -26,12 +26,13 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 		h.Name = &info.Name
 	}
 
-	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genUpdateSQL()
-		if err != nil {
-			return err
-		}
+	sqlH := NewSqlHandler(h)
+	sql, err := sqlH.genUpdateSQL()
+	if err != nil {
+		return err
+	}
 
+	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

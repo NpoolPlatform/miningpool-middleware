@@ -11,6 +11,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -28,7 +29,7 @@ func init() {
 }
 
 var ret = &npool.OrderUser{
-	Name:           "sssss",
+	Name:           uuid.NewString(),
 	EntID:          uuid.NewString(),
 	RootUserID:     uuid.NewString(),
 	GoodUserID:     uuid.NewString(),
@@ -36,7 +37,6 @@ var ret = &npool.OrderUser{
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_AntPool,
 	CoinType:       basetypes.CoinType_BitCoin,
-	Proportion:     "5.0",
 	RevenueAddress: "sssss",
 	ReadPageLink:   "sssss",
 	AutoPay:        false,
@@ -51,7 +51,6 @@ var req = &npool.OrderUserReq{
 	UserID:         &ret.UserID,
 	MiningpoolType: &ret.MiningpoolType,
 	CoinType:       &ret.CoinType,
-	Proportion:     &ret.Proportion,
 	RevenueAddress: &ret.RevenueAddress,
 	ReadPageLink:   &ret.ReadPageLink,
 	AutoPay:        &ret.AutoPay,
@@ -68,7 +67,6 @@ func create(t *testing.T) {
 		WithUserID(req.UserID, true),
 		WithMiningpoolType(req.MiningpoolType, true),
 		WithCoinType(req.CoinType, true),
-		WithProportion(req.Proportion, true),
 		WithRevenueAddress(req.RevenueAddress, true),
 		WithReadPageLink(req.ReadPageLink, true),
 		WithAutoPay(req.AutoPay, true),
@@ -84,6 +82,7 @@ func create(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
+		ret.Proportion = info.Proportion
 		ret.ID = info.ID
 		ret.EntID = info.EntID
 		assert.Equal(t, info, ret)
@@ -93,7 +92,7 @@ func create(t *testing.T) {
 func update(t *testing.T) {
 	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
 	ret.CoinType = basetypes.CoinType_BitCoin
-	ret.Proportion = "66"
+	ret.Proportion = decimal.NewFromFloat(66).String()
 
 	handler, err := NewHandler(
 		context.Background(),

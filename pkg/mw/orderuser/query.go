@@ -6,6 +6,7 @@ import (
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -78,6 +79,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
+		info.Proportion = func() string { amount, _ := decimal.NewFromString(info.Proportion); return amount.String() }()
 		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}

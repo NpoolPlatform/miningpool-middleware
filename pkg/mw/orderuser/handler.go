@@ -8,6 +8,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -24,7 +25,7 @@ type Handler struct {
 	Name           *string
 	MiningpoolType *basetypes.MiningpoolType
 	CoinType       *basetypes.CoinType
-	Proportion     *string
+	Proportion     *decimal.Decimal
 	RevenueAddress *string
 	ReadPageLink   *string
 	AutoPay        *bool
@@ -195,7 +196,11 @@ func WithProportion(proportion *string, must bool) func(context.Context, *Handle
 			}
 			return nil
 		}
-		h.Proportion = proportion
+		_proportion, err := decimal.NewFromString(*proportion)
+		if err != nil {
+			return fmt.Errorf("invalid proportion,err: %v", err)
+		}
+		h.Proportion = &_proportion
 		return nil
 	}
 }

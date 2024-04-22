@@ -67,6 +67,7 @@ func createOrderUser(t *testing.T) {
 		ret.CoinTypeStr = info.CoinTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
+		ret.Proportion = info.Proportion
 		ret.EntID = info.EntID
 		assert.Equal(t, ret, info)
 	}
@@ -77,7 +78,7 @@ func updateOrderUser(t *testing.T) {
 	dec, err := decimal.NewFromString("50.1")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.StringFixed(2)
+	ret.Proportion = dec.String()
 	req.Proportion = &ret.Proportion
 	_, err = UpdateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
@@ -85,14 +86,13 @@ func updateOrderUser(t *testing.T) {
 	info, err := GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
-		ret.Proportion = dec.StringFixed(18)
 		assert.Equal(t, info, ret)
 	}
 
 	dec, err = decimal.NewFromString("99")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.StringFixed(2)
+	ret.Proportion = dec.String()
 	req.Proportion = &ret.Proportion
 	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:         req.ID,
@@ -102,7 +102,6 @@ func updateOrderUser(t *testing.T) {
 	assert.Nil(t, err)
 	info, err = GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
-		ret.Proportion = dec.StringFixed(18)
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}

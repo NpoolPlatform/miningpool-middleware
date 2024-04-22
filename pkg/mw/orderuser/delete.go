@@ -27,6 +27,7 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -51,6 +52,7 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) (*npool.OrderUser, error)
 		}
 		return nil
 	})
+
 	if err != nil {
 		return nil, err
 	}

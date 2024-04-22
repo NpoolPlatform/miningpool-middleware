@@ -14,11 +14,12 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
+	sqlH := NewSqlHandler(h)
+	sql, err := sqlH.genCreateSQL()
+	if err != nil {
+		return err
+	}
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genCreateSQL()
-		if err != nil {
-			return err
-		}
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

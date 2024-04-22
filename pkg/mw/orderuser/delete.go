@@ -38,8 +38,23 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) error {
 	if info == nil {
 		return nil
 	}
-
 	h.ID = &info.ID
+
+	zeroProportion := "0"
+	updateH, err := NewHandler(ctx,
+		WithID(h.ID, true),
+		WithEntID(&info.EntID, true),
+		WithProportion(&zeroProportion, true),
+	)
+	if err != nil {
+		return err
+	}
+
+	err = updateH.UpdateOrderUser(ctx)
+	if err != nil {
+		return err
+	}
+
 	handler := &deleteHandler{
 		Handler: h,
 	}

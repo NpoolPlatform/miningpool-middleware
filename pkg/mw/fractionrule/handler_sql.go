@@ -121,6 +121,11 @@ func (h *Handler) genUpdateSQL() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	if len(vals) == 0 {
+		return "", fmt.Errorf("update nothing")
+	}
+
 	delete(vals, fractionrule.FieldID)
 	delete(vals, fractionrule.FieldEntID)
 	now := uint32(time.Now().Unix())

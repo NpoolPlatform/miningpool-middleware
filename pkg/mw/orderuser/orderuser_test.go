@@ -119,24 +119,6 @@ func update(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
-
-	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
-	ret.AppID = uuid.NewString()
-	ret.UserID = uuid.NewString()
-
-	handler, err = NewHandler(
-		context.Background(),
-		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithCoinType(&ret.CoinType, false),
-		WithAppID(&ret.AppID, false),
-		WithUserID(&ret.UserID, false),
-		WithRevenueAddress(nil, false),
-	)
-	assert.Nil(t, err)
-
-	err = handler.UpdateOrderUser(context.Background())
-	assert.Nil(t, err)
 }
 
 func deleteRow(t *testing.T) {

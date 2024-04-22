@@ -200,6 +200,11 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	}
 	delete(h.baseVals, orderuser.FieldID)
 	delete(h.baseVals, orderuser.FieldEntID)
+
+	if len(h.baseVals) == 0 {
+		return "", fmt.Errorf("update nothing")
+	}
+
 	now := uint32(time.Now().Unix())
 	h.baseVals[orderuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 

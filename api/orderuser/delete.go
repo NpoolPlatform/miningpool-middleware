@@ -39,23 +39,6 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	zeroProportion := "0"
-	_req := &npool.OrderUserReq{
-		ID:         req.ID,
-		EntID:      req.EntID,
-		Proportion: &zeroProportion,
-	}
-	_req.Proportion = &zeroProportion
-	_, err = handleUpdateReq(ctx, _req)
-	if err != nil {
-		logger.Sugar().Errorw(
-			"DeleteOrderUser",
-			"In", in,
-			"Error", err,
-		)
-		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	err = handler.DeleteOrderUser(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(

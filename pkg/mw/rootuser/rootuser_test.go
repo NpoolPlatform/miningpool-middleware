@@ -9,6 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -29,8 +30,7 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	Name:           "mm_mw_rootuser_test_data",
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "gggo@go.go",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
@@ -39,7 +39,6 @@ var ret = &npool.RootUser{
 
 var req = &npool.RootUserReq{
 	EntID:          &ret.EntID,
-	Name:           &ret.Name,
 	MiningpoolType: &ret.MiningpoolType,
 	Email:          &ret.Email,
 	AuthToken:      &ret.AuthToken,
@@ -48,6 +47,11 @@ var req = &npool.RootUserReq{
 }
 
 func create(t *testing.T) {
+	name, err := f2pool.RandomF2PoolUser(8)
+	assert.Nil(t, err)
+
+	ret.Name = name
+	req.Name = &name
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),
@@ -75,13 +79,13 @@ func create(t *testing.T) {
 }
 
 func update(t *testing.T) {
-	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
+	ret.Email = "ok@true.right"
+	req.Email = &ret.Email
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithEmail(nil, false),
+		WithEmail(&ret.Email, false),
 	)
 	assert.Nil(t, err)
 
@@ -94,19 +98,6 @@ func update(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
-
-	ret.MiningpoolType = basetypes.MiningpoolType_AntPool
-
-	handler, err = NewHandler(
-		context.Background(),
-		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithEmail(nil, false),
-	)
-	assert.Nil(t, err)
-
-	err = handler.UpdateRootUser(context.Background())
-	assert.Nil(t, err)
 }
 
 func deleteRow(t *testing.T) {

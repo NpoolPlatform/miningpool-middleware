@@ -114,6 +114,11 @@ func (h *Handler) genUpdateSQL() (string, error) {
 	}
 	delete(vals, pool.FieldID)
 	delete(vals, pool.FieldEntID)
+
+	if len(vals) == 0 {
+		return "", fmt.Errorf("update nothing")
+	}
+
 	now := uint32(time.Now().Unix())
 	vals[pool.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 

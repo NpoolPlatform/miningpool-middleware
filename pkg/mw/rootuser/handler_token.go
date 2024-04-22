@@ -22,7 +22,7 @@ const (
 
 //nolint:gocognit
 func (h *Handler) withAuthTokenEncrypt() error {
-	if h.AuthToken == nil {
+	if h.AuthTokenPlain == nil {
 		return fmt.Errorf("invalid authtoken")
 	}
 	authTokenSalt := make([]byte, TokenSaltLen)
@@ -32,7 +32,7 @@ func (h *Handler) withAuthTokenEncrypt() error {
 	}
 
 	secure.SALT = authTokenSalt
-	cipher, err := secure.EncryptAES([]byte(*h.AuthToken))
+	cipher, err := secure.EncryptAES([]byte(*h.AuthTokenPlain))
 	if err != nil {
 		return err
 	}

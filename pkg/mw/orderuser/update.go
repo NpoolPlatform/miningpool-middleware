@@ -68,6 +68,7 @@ type updateInPoolHandle struct {
 	baseInfo *baseInfo
 }
 
+//nolint:gocognit
 func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 	err := h.getBaseInfo(ctx)
 	if err != nil {
@@ -98,7 +99,7 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 	if h.AutoPay != nil &&
 		*h.AutoPay &&
 		h.RevenueAddress == nil &&
-		len(h.baseInfo.RevenueAddress) == 0 {
+		h.baseInfo.RevenueAddress == "" {
 		return fmt.Errorf("cannot set autopay to true without an revenue address")
 	}
 

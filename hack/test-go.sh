@@ -12,6 +12,7 @@ TEST_TIMEOUT=${TIMEOUT:-1800}
 # Write go test artifacts here
 ARTIFACTS=${ARTIFACTS:-"${REPO_ROOT}/tmp"}
 pkg=github.com/NpoolPlatform/go-service-framework/pkg/version
+export F2POOL_API="http://127.0.0.1:20180"
 
 for arg in "$@"
 do

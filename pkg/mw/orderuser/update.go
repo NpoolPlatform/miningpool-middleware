@@ -60,6 +60,7 @@ type baseInfo struct {
 	AuthToken      string
 	Recipient      string
 	Distributor    string
+	RevenueAddress string
 }
 
 type updateInPoolHandle struct {
@@ -92,6 +93,13 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 			autopay := true
 			h.AutoPay = &autopay
 		}
+	}
+
+	if h.AutoPay != nil &&
+		*h.AutoPay &&
+		h.RevenueAddress == nil &&
+		len(h.baseInfo.RevenueAddress) == 0 {
+		return fmt.Errorf("cannot set autopay to true without an revenue address")
 	}
 
 	if h.AutoPay != nil {
@@ -166,6 +174,7 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,
 		AuthToken:      rootUser.AuthTokenPlain,
+		RevenueAddress: orderUser.RevenueAddress,
 	}
 	return nil
 }

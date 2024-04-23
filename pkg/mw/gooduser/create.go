@@ -33,8 +33,10 @@ func (h *Handler) CreateGoodUser(ctx context.Context) error {
 		return err
 	}
 
+	sqlH := h.newSQLHandler()
+
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genCreateSQL()
+		sql, err := sqlH.genCreateSQL()
 		if err != nil {
 			return err
 		}

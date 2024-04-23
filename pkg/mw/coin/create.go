@@ -13,11 +13,14 @@ func (h *Handler) CreateCoin(ctx context.Context) error {
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
+
+	sqlH := h.newSQLHandler()
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genCreateSQL()
+		sql, err := sqlH.genCreateSQL()
 		if err != nil {
 			return err
 		}
+
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

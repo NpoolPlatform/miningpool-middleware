@@ -18,16 +18,12 @@ func (h *Handler) UpdateGoodUser(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	if h.MiningpoolType == nil {
-		h.MiningpoolType = &info.MiningpoolType
-	}
-
-	if h.Name == nil {
-		h.Name = &info.Name
-	}
+	sqlH := h.newSQLHandler()
+	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondName = &info.Name
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genUpdateSQL()
+		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
 			return err
 		}

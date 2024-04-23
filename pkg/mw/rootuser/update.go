@@ -25,18 +25,13 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 		return err
 	}
 
-	if h.MiningpoolType == nil {
-		h.MiningpoolType = &info.MiningpoolType
-	}
-	if h.Email == nil {
-		h.Email = &info.Email
-	}
-	if h.Name == nil {
-		h.Name = &info.Name
-	}
+	sqlH := h.newSQLHandler()
+	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondEmail = &info.Email
+	sqlH.BondName = &info.Name
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genUpdateSQL()
+		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
 			return err
 		}

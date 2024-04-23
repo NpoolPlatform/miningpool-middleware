@@ -18,20 +18,15 @@ func (h *Handler) UpdateCoin(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	if h.MiningpoolType == nil {
-		h.MiningpoolType = &info.MiningpoolType
-	}
-
-	if h.CoinType == nil {
-		h.CoinType = &info.CoinType
-	}
+	sqlH := h.newSQLHandler()
+	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondCoinType = &info.CoinType
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genUpdateSQL()
+		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
 			return err
 		}
-
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

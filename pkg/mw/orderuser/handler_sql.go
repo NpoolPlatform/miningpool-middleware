@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -13,13 +14,17 @@ import (
 
 type sqlHandler struct {
 	*Handler
-	baseVals map[string]string
-	idVals   map[string]string
+	BondMiningpoolType *basetypes.MiningpoolType
+	BondName           *string
+	bondVals           map[string]string
+	baseVals           map[string]string
+	idVals             map[string]string
 }
 
-func newSQLHandler(h *Handler) *sqlHandler {
+func (h *Handler) newSQLHandler() *sqlHandler {
 	return &sqlHandler{
 		Handler:  h,
+		bondVals: make(map[string]string),
 		baseVals: make(map[string]string),
 		idVals:   make(map[string]string),
 	}
@@ -40,7 +45,7 @@ func (h *sqlHandler) baseKeysDefault() error {
 	return nil
 }
 
-//nolint:gocognit
+//nolint:gocognit,gocyclo
 func (h *sqlHandler) baseKeysFiled() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
@@ -90,6 +95,7 @@ func (h *sqlHandler) baseKeysFiled() error {
 			return err
 		}
 		h.baseVals[orderuser.FieldName] = string(strBytes)
+		h.BondName = h.Name
 	}
 	if h.MiningpoolType != nil {
 		strBytes, err := json.Marshal(h.MiningpoolType.String())
@@ -97,6 +103,7 @@ func (h *sqlHandler) baseKeysFiled() error {
 			return err
 		}
 		h.baseVals[orderuser.FieldMiningpoolType] = string(strBytes)
+		h.BondMiningpoolType = h.MiningpoolType
 	}
 	if h.CoinType != nil {
 		strBytes, err := json.Marshal(h.CoinType.String())
@@ -133,6 +140,24 @@ func (h *sqlHandler) baseKeysFiled() error {
 		}
 		h.baseVals[orderuser.FieldAutoPay] = string(strBytes)
 	}
+
+	if h.BondMiningpoolType == nil {
+		return fmt.Errorf("please give miningpooltype")
+	}
+	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[orderuser.FieldMiningpoolType] = string(strBytes)
+
+	if h.BondName == nil {
+		return fmt.Errorf("please give name")
+	}
+	strBytes, err = json.Marshal(*h.BondName)
+	if err != nil {
+		return err
+	}
+	h.bondVals[orderuser.FieldName] = string(strBytes)
 	return nil
 }
 
@@ -173,19 +198,23 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 
 	keys := []string{}
 	selectVals := []string{}
+	bondVals := []string{}
 
 	for k, v := range h.baseVals {
 		keys = append(keys, k)
 		selectVals = append(selectVals, fmt.Sprintf("%v as %v", v, k))
 	}
 
-	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where miningpool_type='%v' and name='%v' and  deleted_at=0);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and  deleted_at=0);",
 		orderuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
 		orderuser.Table,
-		h.MiningpoolType.String(),
-		*h.Name,
+		strings.Join(bondVals, " AND "),
 	)
 
 	return sql, nil
@@ -224,22 +253,22 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get id and ent_id feilds
 	idKeys := []string{}
 	// get sub query feilds
-	subQKeys := []string{}
+	bondVals := []string{}
 	for k, v := range h.idVals {
 		idKeys = append(idKeys, fmt.Sprintf("%v=%v", k, v))
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
-	}
-	if v, ok := h.baseVals[orderuser.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", orderuser.FieldMiningpoolType, v))
-	}
-	if v, ok := h.baseVals[orderuser.FieldName]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", orderuser.FieldName, v))
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 
-	sql := fmt.Sprintf("update order_users set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from order_users as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("update %v set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from %v as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+		orderuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(idKeys, " AND "),
-		strings.Join(subQKeys, " AND "),
+		orderuser.Table,
+		strings.Join(bondVals, " AND "),
 	)
 	return sql, nil
 }

@@ -6,180 +6,230 @@ import (
 	"strings"
 	"time"
 
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 )
 
+type sqlHandler struct {
+	*Handler
+	BondMiningpoolType *basetypes.MiningpoolType
+	BondName           *string
+	BondEmail          *string
+	bondVals           map[string]string
+	baseVals           map[string]string
+	idVals             map[string]string
+}
+
+func (h *Handler) newSQLHandler() *sqlHandler {
+	return &sqlHandler{
+		Handler:  h,
+		bondVals: make(map[string]string),
+		baseVals: make(map[string]string),
+		idVals:   make(map[string]string),
+	}
+}
+
 //nolint:gocognit
-func (h *Handler) baseKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldID] = string(strBytes)
+		h.baseVals[rootuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldEntID] = string(strBytes)
+		h.baseVals[rootuser.FieldEntID] = string(strBytes)
 	}
 	if h.MiningpoolType != nil {
 		strBytes, err := json.Marshal(h.MiningpoolType.String())
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldMiningpoolType] = string(strBytes)
+		h.baseVals[rootuser.FieldMiningpoolType] = string(strBytes)
+		h.BondMiningpoolType = h.MiningpoolType
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldName] = string(strBytes)
+		h.baseVals[rootuser.FieldName] = string(strBytes)
+		h.BondName = h.Name
 	}
 	if h.Email != nil {
 		strBytes, err := json.Marshal(*h.Email)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldEmail] = string(strBytes)
+		h.baseVals[rootuser.FieldEmail] = string(strBytes)
+		h.BondEmail = h.Email
 	}
 	if h.AuthToken != nil {
 		strBytes, err := json.Marshal(*h.AuthToken)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldAuthToken] = string(strBytes)
+		h.baseVals[rootuser.FieldAuthToken] = string(strBytes)
 	}
 	if h.AuthTokenSalt != nil {
 		strBytes, err := json.Marshal(*h.AuthTokenSalt)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldAuthTokenSalt] = string(strBytes)
+		h.baseVals[rootuser.FieldAuthTokenSalt] = string(strBytes)
 	}
 	if h.Authed != nil {
 		strBytes, err := json.Marshal(*h.Authed)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldAuthed] = string(strBytes)
+		h.baseVals[rootuser.FieldAuthed] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldRemark] = string(strBytes)
+		h.baseVals[rootuser.FieldRemark] = string(strBytes)
 	}
-	return vals, nil
+
+	if h.BondMiningpoolType == nil {
+		return fmt.Errorf("please give miningpooltype")
+	}
+	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[rootuser.FieldMiningpoolType] = string(strBytes)
+
+	if h.BondName == nil {
+		return fmt.Errorf("please give name")
+	}
+	strBytes, err = json.Marshal(*h.BondName)
+	if err != nil {
+		return err
+	}
+
+	h.bondVals[rootuser.FieldName] = string(strBytes)
+	if h.BondEmail == nil {
+		return fmt.Errorf("please give email")
+	}
+	strBytes, err = json.Marshal(*h.BondEmail)
+	if err != nil {
+		return err
+	}
+	h.bondVals[rootuser.FieldEmail] = string(strBytes)
+	return nil
 }
 
-func (h *Handler) idKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldID] = string(strBytes)
+		h.idVals[rootuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[rootuser.FieldEntID] = string(strBytes)
+		h.idVals[rootuser.FieldEntID] = string(strBytes)
 	}
-	return vals, nil
+	return nil
 }
 
-func (h *Handler) genCreateSQL() (string, error) {
-	vals, err := h.baseKeys()
+func (h *sqlHandler) genCreateSQL() (string, error) {
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
-	delete(vals, rootuser.FieldID)
+	delete(h.baseVals, rootuser.FieldID)
 
 	now := uint32(time.Now().Unix())
-	vals[rootuser.FieldCreatedAt] = fmt.Sprintf("%v", now)
-	vals[rootuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
-	vals[rootuser.FieldDeletedAt] = fmt.Sprintf("%v", 0)
+	h.baseVals[rootuser.FieldCreatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[rootuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[rootuser.FieldDeletedAt] = fmt.Sprintf("%v", 0)
 
 	keys := []string{}
 	selectVals := []string{}
+	bondVals := []string{}
 
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, k)
 		selectVals = append(selectVals, fmt.Sprintf("%v as %v", v, k))
 	}
 
-	sql := fmt.Sprintf("insert into root_users (%v) select * from (select %v) as tmp where not exists (select * from root_users where miningpool_type='%v' and name='%v' and email='%v' and  deleted_at=0);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and  deleted_at=0);",
+		rootuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
-		h.MiningpoolType.String(),
-		*h.Name,
-		*h.Email,
+		rootuser.Table,
+		strings.Join(bondVals, " AND "),
 	)
 
 	return sql, nil
 }
 
 //nolint:gocognit
-func (h *Handler) genUpdateSQL() (string, error) {
+func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
-	vals, err := h.baseKeys()
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
-	delete(vals, rootuser.FieldID)
-	delete(vals, rootuser.FieldEntID)
+	delete(h.baseVals, rootuser.FieldID)
+	delete(h.baseVals, rootuser.FieldEntID)
 
-	if len(vals) == 0 {
+	if len(h.baseVals) == 0 {
 		return "", fmt.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
-	vals[rootuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[rootuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 
 	keys := []string{}
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	idVals, err := h.idKeys()
+	err = h.idKeys()
 	if err != nil {
 		return "", err
 	}
-	if len(idVals) == 0 {
+	if len(h.idVals) == 0 {
 		return "", fmt.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds
 	idKeys := []string{}
 	// get sub query feilds
-	subQKeys := []string{}
-	for k, v := range idVals {
+	bondVals := []string{}
+	for k, v := range h.idVals {
 		idKeys = append(idKeys, fmt.Sprintf("%v=%v", k, v))
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
-	}
-	if v, ok := vals[rootuser.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldMiningpoolType, v))
-	}
-	if v, ok := vals[rootuser.FieldName]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldName, v))
-	}
-	if v, ok := vals[rootuser.FieldEmail]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", rootuser.FieldEmail, v))
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 
-	sql := fmt.Sprintf("update root_users set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from root_users as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("update %v set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from %v as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+		rootuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(idKeys, " AND "),
-		strings.Join(subQKeys, " AND "),
+		rootuser.Table,
+		strings.Join(bondVals, " AND "),
 	)
 
 	return sql, nil

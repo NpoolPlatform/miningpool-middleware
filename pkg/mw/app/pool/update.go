@@ -20,24 +20,24 @@ func (h *Handler) UpdatePool(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	if appID, err := uuid.Parse(info.AppID); h.AppID == nil && err != nil {
-		h.AppID = &appID
-	} else if err != nil {
+	sqlH := h.newSQLHandler()
+	if appID, err := uuid.Parse(info.AppID); err == nil {
+		sqlH.BondAppID = &appID
+	} else {
 		return fmt.Errorf("invalid appid")
 	}
 
-	if poolID, err := uuid.Parse(info.PoolID); h.PoolID == nil && err != nil {
-		h.PoolID = &poolID
-	} else if err != nil {
+	if poolID, err := uuid.Parse(info.PoolID); err == nil {
+		sqlH.BondPoolID = &poolID
+	} else {
 		return fmt.Errorf("invalid poolid")
 	}
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		sql, err := h.genUpdateSQL()
+		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
 			return err
 		}
-
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

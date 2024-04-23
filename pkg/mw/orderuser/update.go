@@ -13,21 +13,34 @@ import (
 )
 
 func (h *Handler) UpdateOrderUser(ctx context.Context) error {
+	info, err := h.GetOrderUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	if info == nil {
+		return fmt.Errorf("invalid id or ent_id")
+	}
+
 	updateH := updateInPoolHandle{
 		Handler: h,
 	}
-	err := updateH.handleUpdateReq(ctx)
+
+	err = updateH.handleUpdateReq(ctx)
 	if err != nil {
 		return err
 	}
 
-	sqlH := newSQLHandler(h)
-	sql, err := sqlH.genUpdateSQL()
-	if err != nil {
-		return err
-	}
+	sqlH := h.newSQLHandler()
+	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondName = &info.Name
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
+		sql, err := sqlH.genUpdateSQL()
+		if err != nil {
+			return err
+		}
+
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
 			return err

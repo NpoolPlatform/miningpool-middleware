@@ -6,163 +6,206 @@ import (
 	"strings"
 	"time"
 
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 )
 
+type sqlHandler struct {
+	*Handler
+	BondMiningpoolType *basetypes.MiningpoolType
+	BondCoinType       *basetypes.CoinType
+	bondVals           map[string]string
+	baseVals           map[string]string
+	idVals             map[string]string
+}
+
+func (h *Handler) newSQLHandler() *sqlHandler {
+	return &sqlHandler{
+		Handler:  h,
+		bondVals: make(map[string]string),
+		baseVals: make(map[string]string),
+		idVals:   make(map[string]string),
+	}
+}
+
 //nolint:gocognit
-func (h *Handler) baseKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldID] = string(strBytes)
+		h.baseVals[fractionrule.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldEntID] = string(strBytes)
+		h.baseVals[fractionrule.FieldEntID] = string(strBytes)
 	}
 	if h.MiningpoolType != nil {
 		strBytes, err := json.Marshal(h.MiningpoolType.String())
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldMiningpoolType] = string(strBytes)
+		h.baseVals[fractionrule.FieldMiningpoolType] = string(strBytes)
+		h.BondMiningpoolType = h.MiningpoolType
 	}
 	if h.CoinType != nil {
 		strBytes, err := json.Marshal(h.CoinType.String())
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldCoinType] = string(strBytes)
+		h.baseVals[fractionrule.FieldCoinType] = string(strBytes)
+		h.BondCoinType = h.CoinType
 	}
 	if h.WithdrawInterval != nil {
 		strBytes, err := json.Marshal(*h.WithdrawInterval)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldWithdrawInterval] = string(strBytes)
+		h.baseVals[fractionrule.FieldWithdrawInterval] = string(strBytes)
 	}
 	if h.MinAmount != nil {
 		strBytes, err := json.Marshal(*h.MinAmount)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldMinAmount] = string(strBytes)
+		h.baseVals[fractionrule.FieldMinAmount] = string(strBytes)
 	}
 	if h.WithdrawRate != nil {
 		strBytes, err := json.Marshal(*h.WithdrawRate)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldWithdrawRate] = string(strBytes)
+		h.baseVals[fractionrule.FieldWithdrawRate] = string(strBytes)
 	}
-	return vals, nil
+
+	if h.BondMiningpoolType == nil {
+		return fmt.Errorf("please give miningpooltype")
+	}
+	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[fractionrule.FieldMiningpoolType] = string(strBytes)
+
+	if h.BondCoinType == nil {
+		return fmt.Errorf("please give cointype")
+	}
+	strBytes, err = json.Marshal(h.BondCoinType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[fractionrule.FieldCoinType] = string(strBytes)
+	return nil
 }
 
-func (h *Handler) idKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldID] = string(strBytes)
+		h.idVals[fractionrule.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[fractionrule.FieldEntID] = string(strBytes)
+		h.idVals[fractionrule.FieldEntID] = string(strBytes)
 	}
-	return vals, nil
+	return nil
 }
 
 //nolint:gocognit
-func (h *Handler) genCreateSQL() (string, error) {
-	vals, err := h.baseKeys()
+func (h *sqlHandler) genCreateSQL() (string, error) {
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
-	delete(vals, fractionrule.FieldID)
+	delete(h.baseVals, fractionrule.FieldID)
 
 	now := uint32(time.Now().Unix())
-	vals[fractionrule.FieldCreatedAt] = fmt.Sprintf("%v", now)
-	vals[fractionrule.FieldUpdatedAt] = fmt.Sprintf("%v", now)
-	vals[fractionrule.FieldDeletedAt] = fmt.Sprintf("%v", 0)
+	h.baseVals[fractionrule.FieldCreatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[fractionrule.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[fractionrule.FieldDeletedAt] = fmt.Sprintf("%v", 0)
 
 	keys := []string{}
 	selectVals := []string{}
+	bondVals := []string{}
 
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, k)
 		selectVals = append(selectVals, fmt.Sprintf("%v as %v", v, k))
 	}
 
-	sql := fmt.Sprintf("insert into fraction_rules (%v) select * from (select %v) as tmp where not exists (select * from fraction_rules where miningpool_type='%v' and coin_type='%v' and deleted_at=0);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and deleted_at=0);",
+		fractionrule.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
-		h.MiningpoolType.String(),
-		h.CoinType.String(),
+		fractionrule.Table,
+		strings.Join(bondVals, " AND "),
 	)
 
 	return sql, nil
 }
 
 //nolint:gocognit
-func (h *Handler) genUpdateSQL() (string, error) {
+func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
-	vals, err := h.baseKeys()
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
 
-	if len(vals) == 0 {
+	delete(h.baseVals, fractionrule.FieldID)
+	delete(h.baseVals, fractionrule.FieldEntID)
+
+	if len(h.baseVals) == 0 {
 		return "", fmt.Errorf("update nothing")
 	}
 
-	delete(vals, fractionrule.FieldID)
-	delete(vals, fractionrule.FieldEntID)
 	now := uint32(time.Now().Unix())
-	vals[fractionrule.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[fractionrule.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 
 	keys := []string{}
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	idVals, err := h.idKeys()
+	err = h.idKeys()
 	if err != nil {
 		return "", err
 	}
-	if len(idVals) == 0 {
+	if len(h.idVals) == 0 {
 		return "", fmt.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds
 	idKeys := []string{}
 	// get sub query feilds
-	subQKeys := []string{}
-	for k, v := range idVals {
+	bondVals := []string{}
+	for k, v := range h.idVals {
 		idKeys = append(idKeys, fmt.Sprintf("%v=%v", k, v))
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
-	}
-	if v, ok := vals[fractionrule.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", fractionrule.FieldMiningpoolType, v))
-	}
-	if v, ok := vals[fractionrule.FieldCoinType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", fractionrule.FieldCoinType, v))
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 
-	sql := fmt.Sprintf("update fraction_rules set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from fraction_rules as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v=%v", k, v))
+	}
+	sql := fmt.Sprintf("update %v set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from %v as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+		fractionrule.Table,
 		strings.Join(keys, ","),
 		strings.Join(idKeys, " AND "),
-		strings.Join(subQKeys, " AND "),
+		fractionrule.Table,
+		strings.Join(bondVals, " AND "),
 	)
 	return sql, nil
 }

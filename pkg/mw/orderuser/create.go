@@ -23,7 +23,7 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 		return err
 	}
 
-	sqlH := newSQLHandler(h)
+	sqlH := h.newSQLHandler()
 	sql, err := sqlH.genCreateSQL()
 	if err != nil {
 		return err

@@ -6,40 +6,60 @@ import (
 	"strings"
 	"time"
 
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 )
 
+type sqlHandler struct {
+	*Handler
+	BondMiningpoolType *basetypes.MiningpoolType
+	BondCoinType       *basetypes.CoinType
+	bondVals           map[string]string
+	baseVals           map[string]string
+	idVals             map[string]string
+}
+
+func (h *Handler) newSQLHandler() *sqlHandler {
+	return &sqlHandler{
+		Handler:  h,
+		bondVals: make(map[string]string),
+		baseVals: make(map[string]string),
+		idVals:   make(map[string]string),
+	}
+}
+
 //nolint:gocognit
-func (h *Handler) baseKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldID] = string(strBytes)
+		h.baseVals[coin.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldEntID] = string(strBytes)
+		h.baseVals[coin.FieldEntID] = string(strBytes)
 	}
 	if h.MiningpoolType != nil {
 		strBytes, err := json.Marshal(h.MiningpoolType.String())
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldMiningpoolType] = string(strBytes)
+		h.baseVals[coin.FieldMiningpoolType] = string(strBytes)
+		h.BondMiningpoolType = h.MiningpoolType
 	}
 	if h.CoinType != nil {
 		fmt.Println(*h.CoinType)
 		strBytes, err := json.Marshal(h.CoinType.String())
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldCoinType] = string(strBytes)
+		h.baseVals[coin.FieldCoinType] = string(strBytes)
+		h.BondCoinType = h.CoinType
 	}
 	if h.RevenueTypes != nil {
 		revenueTypes := []string{}
@@ -48,139 +68,162 @@ func (h *Handler) baseKeys() (map[string]string, error) {
 		}
 		strBytes, err := json.Marshal(revenueTypes)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldRevenueTypes] = fmt.Sprintf("'%v'", string(strBytes))
+		h.baseVals[coin.FieldRevenueTypes] = fmt.Sprintf("'%v'", string(strBytes))
 	}
 	if h.FeeRate != nil {
 		strBytes, err := json.Marshal(*h.FeeRate)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldFeeRate] = string(strBytes)
+		h.baseVals[coin.FieldFeeRate] = string(strBytes)
 	}
 	if h.FixedRevenueAble != nil {
 		strBytes, err := json.Marshal(*h.FixedRevenueAble)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldFixedRevenueAble] = string(strBytes)
+		h.baseVals[coin.FieldFixedRevenueAble] = string(strBytes)
 	}
 	if h.Threshold != nil {
 		strBytes, err := json.Marshal(*h.Threshold)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldThreshold] = string(strBytes)
+		h.baseVals[coin.FieldThreshold] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldRemark] = string(strBytes)
+		h.baseVals[coin.FieldRemark] = string(strBytes)
 	}
-	return vals, nil
+
+	if h.BondMiningpoolType == nil {
+		return fmt.Errorf("please give miningpooltype")
+	}
+	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[coin.FieldMiningpoolType] = string(strBytes)
+
+	if h.BondCoinType == nil {
+		return fmt.Errorf("please give cointype")
+	}
+	strBytes, err = json.Marshal(h.BondCoinType.String())
+	if err != nil {
+		return err
+	}
+	h.bondVals[coin.FieldCoinType] = string(strBytes)
+	return nil
 }
 
-func (h *Handler) idKeys() (map[string]string, error) {
-	vals := make(map[string]string)
+func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldID] = string(strBytes)
+		h.idVals[coin.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return vals, err
+			return err
 		}
-		vals[coin.FieldEntID] = string(strBytes)
+		h.idVals[coin.FieldEntID] = string(strBytes)
 	}
-	return vals, nil
+	return nil
 }
 
 //nolint:gocognit
-func (h *Handler) genCreateSQL() (string, error) {
-	vals, err := h.baseKeys()
+func (h *sqlHandler) genCreateSQL() (string, error) {
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
-	delete(vals, coin.FieldID)
+	delete(h.baseVals, coin.FieldID)
 
 	now := uint32(time.Now().Unix())
-	vals[coin.FieldCreatedAt] = fmt.Sprintf("%v", now)
-	vals[coin.FieldUpdatedAt] = fmt.Sprintf("%v", now)
-	vals[coin.FieldDeletedAt] = fmt.Sprintf("%v", 0)
+	h.baseVals[coin.FieldCreatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[coin.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[coin.FieldDeletedAt] = fmt.Sprintf("%v", 0)
 
 	keys := []string{}
 	selectVals := []string{}
+	bondVals := []string{}
 
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, k)
 		selectVals = append(selectVals, fmt.Sprintf("%v as %v", v, k))
 	}
 
-	sql := fmt.Sprintf("insert into coins (%v) select * from (select %v) as tmp where not exists (select * from coins where miningpool_type='%v' and coin_type='%v' and deleted_at=0);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and deleted_at=0);",
+		coin.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
-		h.MiningpoolType.String(),
-		h.CoinType.String(),
+		coin.Table,
+		strings.Join(bondVals, " AND "),
 	)
 	return sql, nil
 }
 
 //nolint:gocognit
-func (h *Handler) genUpdateSQL() (string, error) {
+func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
-	vals, err := h.baseKeys()
+	err := h.baseKeys()
 	if err != nil {
 		return "", err
 	}
-	delete(vals, coin.FieldID)
-	delete(vals, coin.FieldEntID)
+	delete(h.baseVals, coin.FieldID)
+	delete(h.baseVals, coin.FieldEntID)
 
-	if len(vals) == 0 {
+	if len(h.baseVals) == 0 {
 		return "", fmt.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
-	vals[coin.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+	h.baseVals[coin.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 
 	keys := []string{}
-	for k, v := range vals {
+	for k, v := range h.baseVals {
 		keys = append(keys, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	idVals, err := h.idKeys()
+	err = h.idKeys()
 	if err != nil {
 		return "", err
 	}
-	if len(idVals) == 0 {
+	if len(h.idVals) == 0 {
 		return "", fmt.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds
 	idKeys := []string{}
 	// get sub query feilds
-	subQKeys := []string{}
-	for k, v := range idVals {
+	bondVals := []string{}
+	for k, v := range h.idVals {
 		idKeys = append(idKeys, fmt.Sprintf("%v=%v", k, v))
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v!=%v", k, v))
-	}
-	if v, ok := vals[coin.FieldMiningpoolType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", coin.FieldMiningpoolType, v))
-	}
-	if v, ok := vals[coin.FieldCoinType]; ok {
-		subQKeys = append(subQKeys, fmt.Sprintf("tmp_table.%v=%v", coin.FieldCoinType, v))
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v!=%v", k, v))
 	}
 
-	sql := fmt.Sprintf("update coins set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from coins as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+	for k, v := range h.bondVals {
+		bondVals = append(bondVals, fmt.Sprintf("tmp_table.%v=%v", k, v))
+	}
+
+	sql := fmt.Sprintf("update %v set %v where %v and deleted_at=0 and  not exists (select 1 from(select * from %v as tmp_table where %v and tmp_table.deleted_at=0 limit 1) as tmp);",
+		coin.Table,
 		strings.Join(keys, ","),
 		strings.Join(idKeys, " AND "),
-		strings.Join(subQKeys, " AND "),
+		coin.Table,
+		strings.Join(bondVals, " AND "),
 	)
 	return sql, nil
 }

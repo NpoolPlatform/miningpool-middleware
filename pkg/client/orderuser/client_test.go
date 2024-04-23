@@ -75,7 +75,7 @@ func updateOrderUser(t *testing.T) {
 
 	ret.Proportion = dec.String()
 	req.Proportion = &ret.Proportion
-	_, err = UpdateOrderUser(context.Background(), req)
+	err = UpdateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetOrderUser(context.Background(), *req.EntID)
@@ -89,7 +89,7 @@ func updateOrderUser(t *testing.T) {
 
 	ret.Proportion = dec.String()
 	req.Proportion = &ret.Proportion
-	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:         req.ID,
 		EntID:      &ret.EntID,
 		Proportion: &ret.Proportion,
@@ -103,7 +103,7 @@ func updateOrderUser(t *testing.T) {
 
 	ret.RevenueAddress = "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
 	req.RevenueAddress = &ret.RevenueAddress
-	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:             req.ID,
 		EntID:          &ret.EntID,
 		RevenueAddress: &ret.RevenueAddress,
@@ -119,7 +119,7 @@ func updateOrderUser(t *testing.T) {
 
 	ret.AutoPay = true
 	req.AutoPay = &ret.AutoPay
-	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:      req.ID,
 		EntID:   &ret.EntID,
 		AutoPay: &ret.AutoPay,
@@ -134,7 +134,7 @@ func updateOrderUser(t *testing.T) {
 
 	ret.AutoPay = false
 	req.AutoPay = &ret.AutoPay
-	_, err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:      req.ID,
 		EntID:   &ret.EntID,
 		AutoPay: &ret.AutoPay,

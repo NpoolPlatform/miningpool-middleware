@@ -82,20 +82,14 @@ func GetFractions(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	return infos.([]*npool.Fraction), total, nil
 }
 
-func UpdateFraction(ctx context.Context, in *npool.FractionReq) (*npool.Fraction, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateFraction(ctx, &npool.UpdateFractionRequest{
+func UpdateFraction(ctx context.Context, in *npool.FractionReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateFraction(ctx, &npool.UpdateFractionRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Fraction), nil
+	})
+	return err
 }
 
 func ExistFraction(ctx context.Context, id string) (bool, error) {

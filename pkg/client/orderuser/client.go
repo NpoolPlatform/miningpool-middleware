@@ -82,20 +82,14 @@ func GetOrderUsers(ctx context.Context, conds *npool.Conds, offset, limit int32)
 	return infos.([]*npool.OrderUser), total, nil
 }
 
-func UpdateOrderUser(ctx context.Context, in *npool.OrderUserReq) (*npool.OrderUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateOrderUser(ctx, &npool.UpdateOrderUserRequest{
+func UpdateOrderUser(ctx context.Context, in *npool.OrderUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateOrderUser(ctx, &npool.UpdateOrderUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.OrderUser), nil
+	})
+	return err
 }
 
 func ExistOrderUser(ctx context.Context, id string) (bool, error) {

@@ -82,20 +82,14 @@ func GetRootUsers(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	return infos.([]*npool.RootUser), total, nil
 }
 
-func UpdateRootUser(ctx context.Context, in *npool.RootUserReq) (*npool.RootUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateRootUser(ctx, &npool.UpdateRootUserRequest{
+func UpdateRootUser(ctx context.Context, in *npool.RootUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateRootUser(ctx, &npool.UpdateRootUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.RootUser), nil
+	})
+	return err
 }
 
 func ExistRootUser(ctx context.Context, id string) (bool, error) {

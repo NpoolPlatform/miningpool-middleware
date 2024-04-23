@@ -82,20 +82,14 @@ func GetGoodUsers(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	return infos.([]*npool.GoodUser), total, nil
 }
 
-func UpdateGoodUser(ctx context.Context, in *npool.GoodUserReq) (*npool.GoodUser, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateGoodUser(ctx, &npool.UpdateGoodUserRequest{
+func UpdateGoodUser(ctx context.Context, in *npool.GoodUserReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateGoodUser(ctx, &npool.UpdateGoodUserRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.GoodUser), nil
+	})
+	return err
 }
 
 func ExistGoodUser(ctx context.Context, id string) (bool, error) {

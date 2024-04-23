@@ -78,7 +78,7 @@ func updateRootUser(t *testing.T) {
 	req.ID = &ret.ID
 	req.AuthToken = nil
 
-	_, err = UpdateRootUser(context.Background(), req)
+	err = UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
@@ -89,7 +89,7 @@ func updateRootUser(t *testing.T) {
 
 	ret.Email = "test_api_client@ss.com"
 	req.Email = &ret.Email
-	_, err = UpdateRootUser(context.Background(), req)
+	err = UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err = GetRootUser(context.Background(), *req.EntID)

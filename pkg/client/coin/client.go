@@ -85,20 +85,14 @@ func GetCoins(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*
 	return infos.([]*npool.Coin), total, nil
 }
 
-func UpdateCoin(ctx context.Context, in *npool.CoinReq) (*npool.Coin, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateCoin(ctx, &npool.UpdateCoinRequest{
+func UpdateCoin(ctx context.Context, in *npool.CoinReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateCoin(ctx, &npool.UpdateCoinRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.Coin), nil
+	})
+	return err
 }
 
 func ExistCoin(ctx context.Context, id string) (bool, error) {

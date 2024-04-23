@@ -82,20 +82,14 @@ func GetFractionRules(ctx context.Context, conds *npool.Conds, offset, limit int
 	return infos.([]*npool.FractionRule), total, nil
 }
 
-func UpdateFractionRule(ctx context.Context, in *npool.FractionRuleReq) (*npool.FractionRule, error) {
-	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.UpdateFractionRule(ctx, &npool.UpdateFractionRuleRequest{
+func UpdateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
+	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		_, err := cli.UpdateFractionRule(ctx, &npool.UpdateFractionRuleRequest{
 			Info: in,
 		})
-		if err != nil {
-			return nil, err
-		}
-		return resp.Info, nil
-	})
-	if err != nil {
 		return nil, err
-	}
-	return info.(*npool.FractionRule), nil
+	})
+	return err
 }
 
 func ExistFractionRule(ctx context.Context, id string) (bool, error) {

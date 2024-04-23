@@ -90,7 +90,10 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	info, err := handler.UpdateFraction(context.Background())
+	err = handler.UpdateFraction(context.Background())
+	assert.Nil(t, err)
+
+	info, err := handler.GetFraction(context.Background())
 	if assert.Nil(t, err) {
 		ret.WithdrawStateStr = info.WithdrawStateStr
 		ret.UpdatedAt = info.UpdatedAt
@@ -109,7 +112,7 @@ func update(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	_, err = handler.UpdateFraction(context.Background())
+	err = handler.UpdateFraction(context.Background())
 	assert.Nil(t, err)
 }
 

@@ -40,7 +40,7 @@ func (s *Server) UpdateFraction(ctx context.Context, in *npool.UpdateFractionReq
 		return &npool.UpdateFractionResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	info, err := handler.UpdateFraction(ctx)
+	err = handler.UpdateFraction(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(
 			"UpdateFraction",
@@ -50,7 +50,5 @@ func (s *Server) UpdateFraction(ctx context.Context, in *npool.UpdateFractionReq
 		return &npool.UpdateFractionResponse{}, status.Error(codes.Internal, err.Error())
 	}
 
-	return &npool.UpdateFractionResponse{
-		Info: info,
-	}, nil
+	return &npool.UpdateFractionResponse{}, nil
 }

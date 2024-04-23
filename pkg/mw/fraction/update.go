@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -25,13 +24,13 @@ func (h *updateHandler) validateState(info *ent.Fraction) error {
 	return nil
 }
 
-func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
+func (h *Handler) UpdateFraction(ctx context.Context) error {
 	info, err := h.GetFraction(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("invalid id or ent_id")
+		return fmt.Errorf("invalid id or ent_id")
 	}
 	if info == nil {
-		return nil, fmt.Errorf("invalid id or ent_id")
+		return fmt.Errorf("invalid id or ent_id")
 	}
 
 	h.ID = &info.ID
@@ -40,7 +39,7 @@ func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
 		Handler: h,
 	}
 
-	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
+	return db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		info, err := cli.
 			Fraction.
 			Query().
@@ -76,9 +75,4 @@ func (h *Handler) UpdateFraction(ctx context.Context) (*npool.Fraction, error) {
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	return h.GetFraction(ctx)
 }

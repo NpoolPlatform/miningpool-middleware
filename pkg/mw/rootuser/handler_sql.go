@@ -114,8 +114,8 @@ func (h *sqlHandler) baseKeys() error {
 	if err != nil {
 		return err
 	}
-
 	h.bondVals[rootuser.FieldName] = string(strBytes)
+
 	if h.BondEmail == nil {
 		return fmt.Errorf("please give email")
 	}

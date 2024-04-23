@@ -135,14 +135,6 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 		return err
 	}
 
-	if h.MiningpoolType == nil {
-		h.MiningpoolType = &orderUser.MiningpoolType
-	}
-
-	if h.Name == nil {
-		h.Name = &orderUser.Name
-	}
-
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&orderUser.GoodUserID, true))
 	if err != nil {
 		return err

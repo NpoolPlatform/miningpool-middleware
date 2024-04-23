@@ -32,8 +32,8 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 		orderuser.WithGoodUserID(req.GoodUserID, true),
 		orderuser.WithAppID(req.AppID, true),
 		orderuser.WithUserID(req.UserID, true),
-		orderuser.WithMiningpoolType(req.MiningpoolType, true),
-		orderuser.WithCoinType(req.CoinType, true),
+		orderuser.WithMiningpoolType(req.MiningpoolType, false),
+		orderuser.WithCoinType(req.CoinType, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

@@ -54,6 +54,13 @@ func (h *Handler) newOrderUserInPool(ctx context.Context) error {
 		return fmt.Errorf("have no gooduser,entid: %v", gooduserID)
 	}
 
+	if h.MiningpoolType == nil {
+		h.MiningpoolType = &goodUser.MiningpoolType
+	}
+	if h.CoinType == nil {
+		h.CoinType = &goodUser.CoinType
+	}
+
 	if h.MiningpoolType.String() != goodUser.MiningpoolType.String() {
 		return fmt.Errorf("the miningpool type is different from type of gooduser")
 	}

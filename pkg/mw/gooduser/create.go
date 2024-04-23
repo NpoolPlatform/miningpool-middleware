@@ -65,6 +65,10 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
+	if h.MiningpoolType == nil {
+		h.MiningpoolType = &rootUser.MiningpoolType
+	}
+
 	if h.MiningpoolType.String() != rootUser.MiningpoolType.String() {
 		return fmt.Errorf("the miningpool type is different from type of rootuser")
 	}

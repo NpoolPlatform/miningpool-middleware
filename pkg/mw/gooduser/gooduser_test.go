@@ -8,7 +8,9 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	coinmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -30,19 +32,40 @@ func init() {
 var ret = &npool.GoodUser{
 	EntID:       uuid.NewString(),
 	RootUserID:  rootuserRet.EntID,
-	CoinID:      uuid.NewString(),
 	HashRate:    5.0,
+	CoinType:    basetypes.CoinType_BitCoin,
 	RevenueType: basetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{
 	EntID:      &ret.EntID,
 	RootUserID: &ret.RootUserID,
-	CoinID:     &ret.CoinID,
 	HashRate:   &ret.HashRate,
 }
 
 func create(t *testing.T) {
+	coinH, err := coin.NewHandler(context.Background(),
+		coin.WithConds(&coinmw.Conds{
+			CoinType: &v1.Uint32Val{
+				Op:    cruder.EQ,
+				Value: uint32(ret.CoinType),
+			},
+		}),
+		coin.WithOffset(0),
+		coin.WithLimit(2),
+	)
+	assert.Nil(t, err)
+
+	coinInfos, _, err := coinH.GetCoins(context.Background())
+	assert.Nil(t, err)
+
+	if !assert.NotEqual(t, 0, len(coinInfos)) {
+		return
+	}
+
+	ret.CoinID = coinInfos[0].EntID
+	req.CoinID = &coinInfos[0].EntID
+
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),

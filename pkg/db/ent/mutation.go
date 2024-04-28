@@ -4063,7 +4063,6 @@ type GoodUserMutation struct {
 	root_user_id   *uuid.UUID
 	name           *string
 	coin_id        *uuid.UUID
-	revenue_id     *uuid.UUID
 	hash_rate      *float32
 	addhash_rate   *float32
 	read_page_link *string
@@ -4528,55 +4527,6 @@ func (m *GoodUserMutation) ResetCoinID() {
 	delete(m.clearedFields, gooduser.FieldCoinID)
 }
 
-// SetRevenueID sets the "revenue_id" field.
-func (m *GoodUserMutation) SetRevenueID(u uuid.UUID) {
-	m.revenue_id = &u
-}
-
-// RevenueID returns the value of the "revenue_id" field in the mutation.
-func (m *GoodUserMutation) RevenueID() (r uuid.UUID, exists bool) {
-	v := m.revenue_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueID returns the old "revenue_id" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldRevenueID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueID: %w", err)
-	}
-	return oldValue.RevenueID, nil
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (m *GoodUserMutation) ClearRevenueID() {
-	m.revenue_id = nil
-	m.clearedFields[gooduser.FieldRevenueID] = struct{}{}
-}
-
-// RevenueIDCleared returns if the "revenue_id" field was cleared in this mutation.
-func (m *GoodUserMutation) RevenueIDCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldRevenueID]
-	return ok
-}
-
-// ResetRevenueID resets all changes to the "revenue_id" field.
-func (m *GoodUserMutation) ResetRevenueID() {
-	m.revenue_id = nil
-	delete(m.clearedFields, gooduser.FieldRevenueID)
-}
-
 // SetHashRate sets the "hash_rate" field.
 func (m *GoodUserMutation) SetHashRate(f float32) {
 	m.hash_rate = &f
@@ -4715,7 +4665,7 @@ func (m *GoodUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodUserMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, gooduser.FieldCreatedAt)
 	}
@@ -4736,9 +4686,6 @@ func (m *GoodUserMutation) Fields() []string {
 	}
 	if m.coin_id != nil {
 		fields = append(fields, gooduser.FieldCoinID)
-	}
-	if m.revenue_id != nil {
-		fields = append(fields, gooduser.FieldRevenueID)
 	}
 	if m.hash_rate != nil {
 		fields = append(fields, gooduser.FieldHashRate)
@@ -4768,8 +4715,6 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case gooduser.FieldCoinID:
 		return m.CoinID()
-	case gooduser.FieldRevenueID:
-		return m.RevenueID()
 	case gooduser.FieldHashRate:
 		return m.HashRate()
 	case gooduser.FieldReadPageLink:
@@ -4797,8 +4742,6 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldName(ctx)
 	case gooduser.FieldCoinID:
 		return m.OldCoinID(ctx)
-	case gooduser.FieldRevenueID:
-		return m.OldRevenueID(ctx)
 	case gooduser.FieldHashRate:
 		return m.OldHashRate(ctx)
 	case gooduser.FieldReadPageLink:
@@ -4860,13 +4803,6 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCoinID(v)
-		return nil
-	case gooduser.FieldRevenueID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueID(v)
 		return nil
 	case gooduser.FieldHashRate:
 		v, ok := value.(float32)
@@ -4972,9 +4908,6 @@ func (m *GoodUserMutation) ClearedFields() []string {
 	if m.FieldCleared(gooduser.FieldCoinID) {
 		fields = append(fields, gooduser.FieldCoinID)
 	}
-	if m.FieldCleared(gooduser.FieldRevenueID) {
-		fields = append(fields, gooduser.FieldRevenueID)
-	}
 	if m.FieldCleared(gooduser.FieldHashRate) {
 		fields = append(fields, gooduser.FieldHashRate)
 	}
@@ -5003,9 +4936,6 @@ func (m *GoodUserMutation) ClearField(name string) error {
 		return nil
 	case gooduser.FieldCoinID:
 		m.ClearCoinID()
-		return nil
-	case gooduser.FieldRevenueID:
-		m.ClearRevenueID()
 		return nil
 	case gooduser.FieldHashRate:
 		m.ClearHashRate()
@@ -5041,9 +4971,6 @@ func (m *GoodUserMutation) ResetField(name string) error {
 		return nil
 	case gooduser.FieldCoinID:
 		m.ResetCoinID()
-		return nil
-	case gooduser.FieldRevenueID:
-		m.ResetRevenueID()
 		return nil
 	case gooduser.FieldHashRate:
 		m.ResetHashRate()

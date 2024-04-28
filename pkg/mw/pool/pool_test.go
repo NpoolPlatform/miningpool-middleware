@@ -27,7 +27,7 @@ func init() {
 
 var ret = &npool.Pool{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_AntPool,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Name:           "5.4",
 	Site:           "false.com",
 	Description:    "asdfaf",

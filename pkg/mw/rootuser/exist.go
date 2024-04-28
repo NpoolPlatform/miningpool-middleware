@@ -2,6 +2,7 @@ package rootuser
 
 import (
 	"context"
+	"fmt"
 
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -10,6 +11,9 @@ import (
 )
 
 func (h *Handler) ExistRootUser(ctx context.Context) (bool, error) {
+	if h.EntID == nil {
+		return false, fmt.Errorf("invalid entid")
+	}
 	exist := false
 	var err error
 

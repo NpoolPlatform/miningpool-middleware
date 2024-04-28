@@ -128,13 +128,6 @@ func CoinID(v uuid.UUID) predicate.GoodUser {
 	})
 }
 
-// RevenueID applies equality check predicate on the "revenue_id" field. It's identical to RevenueIDEQ.
-func RevenueID(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueID), v))
-	})
-}
-
 // HashRate applies equality check predicate on the "hash_rate" field. It's identical to HashRateEQ.
 func HashRate(v float32) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -671,84 +664,6 @@ func CoinIDIsNil() predicate.GoodUser {
 func CoinIDNotNil() predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldCoinID)))
-	})
-}
-
-// RevenueIDEQ applies the EQ predicate on the "revenue_id" field.
-func RevenueIDEQ(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDNEQ applies the NEQ predicate on the "revenue_id" field.
-func RevenueIDNEQ(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDIn applies the In predicate on the "revenue_id" field.
-func RevenueIDIn(vs ...uuid.UUID) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRevenueID), v...))
-	})
-}
-
-// RevenueIDNotIn applies the NotIn predicate on the "revenue_id" field.
-func RevenueIDNotIn(vs ...uuid.UUID) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRevenueID), v...))
-	})
-}
-
-// RevenueIDGT applies the GT predicate on the "revenue_id" field.
-func RevenueIDGT(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDGTE applies the GTE predicate on the "revenue_id" field.
-func RevenueIDGTE(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDLT applies the LT predicate on the "revenue_id" field.
-func RevenueIDLT(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDLTE applies the LTE predicate on the "revenue_id" field.
-func RevenueIDLTE(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRevenueID), v))
-	})
-}
-
-// RevenueIDIsNil applies the IsNil predicate on the "revenue_id" field.
-func RevenueIDIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueID)))
-	})
-}
-
-// RevenueIDNotNil applies the NotNil predicate on the "revenue_id" field.
-func RevenueIDNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueID)))
 	})
 }
 

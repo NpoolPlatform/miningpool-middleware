@@ -9,6 +9,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -80,11 +81,19 @@ func WithPoolID(id *string, must bool) func(context.Context, *Handler) error {
 			}
 			return nil
 		}
-		_id, err := uuid.Parse(*id)
+		poolH, err := pool.NewHandler(ctx, pool.WithEntID(id, true))
 		if err != nil {
 			return err
 		}
-		h.PoolID = &_id
+
+		exist, err := poolH.ExistPool(ctx)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return fmt.Errorf("invalid poolid")
+		}
+		h.PoolID = poolH.EntID
 		return nil
 	}
 }

@@ -65,6 +65,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[pool.FieldSite] = string(strBytes)
 	}
+	if h.Logo != nil {
+		strBytes, err := json.Marshal(*h.Logo)
+		if err != nil {
+			return err
+		}
+		h.baseVals[pool.FieldLogo] = string(strBytes)
+	}
 	if h.Description != nil {
 		strBytes, err := json.Marshal(*h.Description)
 		if err != nil {

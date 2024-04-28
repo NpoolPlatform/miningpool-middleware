@@ -39,12 +39,6 @@ func (GoodUser) Fields() []ent.Field {
 				return uuid.Nil
 			}),
 		field.
-			UUID("revenue_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.Nil
-			}),
-		field.
 			Float32("hash_rate").Optional().Default(0),
 		field.
 			Text("read_page_link").Optional().Default(""),
@@ -59,6 +53,5 @@ func (GoodUser) Edges() []ent.Edge {
 func (GoodUser) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("root_user_id"),
-		index.Fields("coin_id", "revenue_id"),
 	}
 }

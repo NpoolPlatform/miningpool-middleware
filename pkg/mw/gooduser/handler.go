@@ -20,7 +20,6 @@ type Handler struct {
 	EntID        *uuid.UUID
 	RootUserID   *uuid.UUID
 	CoinID       *uuid.UUID
-	RevenueID    *uuid.UUID
 	Name         *string
 	HashRate     *float32
 	ReadPageLink *string
@@ -104,7 +103,7 @@ func WithRootUserID(rootuserid *string, must bool) func(context.Context, *Handle
 			}
 			return nil
 		}
-		rootuserH, err := rootuser.NewHandler(ctx)
+		rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(rootuserid, true))
 		if err != nil {
 			return err
 		}

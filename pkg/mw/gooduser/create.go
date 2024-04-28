@@ -6,7 +6,9 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"github.com/google/uuid"
 )
@@ -56,31 +58,44 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	rootUser, err := rootuserH.GetAuthToken(ctx)
+	rootuserToken, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
 		return err
 	}
-	if rootUser == nil {
+	if rootuserToken == nil {
 		return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
-	// if h.MiningpoolType == nil {
-	// 	h.MiningpoolType = &rootUser.MiningpoolType
-	// }
+	ruInfo, err := rootuserH.GetRootUser(ctx)
+	if err != nil {
+		return err
+	}
+	if ruInfo == nil {
+		return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
+	}
 
-	// if h.MiningpoolType.String() != rootUser.MiningpoolType.String() {
-	// 	return fmt.Errorf("the miningpool type is different from type of rootuser")
-	// }
+	coinID := h.CoinID.String()
+	coinH, err := coin.NewHandler(ctx, coin.WithEntID(&coinID, true))
+	if err != nil {
+		return err
+	}
+	coinInfo, err := coinH.GetCoin(ctx)
+	if err != nil {
+		return err
+	}
+	if ruInfo.PoolID != coinInfo.PoolID {
+		return fmt.Errorf("pool not match between coinid and poolid")
+	}
 
-	// mgr, err := pools.NewPoolManager(*h.MiningpoolType, *h.CoinID, rootUser.AuthTokenPlain)
-	// if err != nil {
-	// 	return err
-	// }
-	// name, pageLink, err := mgr.AddMiningUser(ctx)
-	// if err != nil {
-	// 	return err
-	// }
-	// h.Name = &name
-	// h.ReadPageLink = &pageLink
+	mgr, err := pools.NewPoolManager(coinInfo.MiningpoolType, coinInfo.CoinType, rootuserToken.AuthTokenPlain)
+	if err != nil {
+		return err
+	}
+	name, pageLink, err := mgr.AddMiningUser(ctx)
+	if err != nil {
+		return err
+	}
+	h.Name = &name
+	h.ReadPageLink = &pageLink
 	return nil
 }

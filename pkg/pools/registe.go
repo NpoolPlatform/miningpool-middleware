@@ -161,6 +161,7 @@ func RegisteCoinInfo(ctx context.Context) {
 			coin.WithFeeRatio(&info.FeeRatio, true),
 			coin.WithFixedRevenueAble(&info.FixedRevenueAble, true),
 			coin.WithLeastTransferAmount(&info.LeastTransferAmount, true),
+			coin.WithBenefitIntervalSeconds(&info.BenefitIntervalSeconds, true),
 		)
 		if err != nil {
 			logger.Sugar().Error(err)

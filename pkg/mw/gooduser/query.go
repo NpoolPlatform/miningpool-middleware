@@ -4,12 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	gooduserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 )
@@ -30,7 +33,6 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldRootUserID,
 		gooduserent.FieldName,
 		gooduserent.FieldCoinID,
-		gooduserent.FieldRevenueID,
 		gooduserent.FieldHashRate,
 		gooduserent.FieldReadPageLink,
 	)
@@ -67,6 +69,33 @@ func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) erro
 	return nil
 }
 
+func (h *queryHandler) queryJoin() {
+	h.stm.Modify(h.queryJoinCoin)
+}
+
+func (h *queryHandler) queryJoinCoin(s *sql.Selector) {
+	coinT := sql.Table(coin.Table)
+	s.LeftJoin(coinT).On(
+		s.C(gooduserent.FieldCoinID),
+		coinT.C(coin.FieldEntID),
+	).AppendSelect(
+		coinT.C(coin.FieldCoinType),
+		coinT.C(coin.FieldRevenueType),
+		coinT.C(coin.FieldFeeRatio),
+		// coinT.C(coin.FieldPoolID),
+	)
+}
+
+func (h *queryHandler) queryJoinPool(s *sql.Selector) {
+	poolT := sql.Table(pool.Table)
+	s.LeftJoin(poolT).On(
+		s.C(coin.FieldPoolID),
+		poolT.C(pool.FieldEntID),
+	).AppendSelect(
+		poolT.C(pool.FieldMiningpoolType),
+	)
+}
+
 func (h *queryHandler) scan(ctx context.Context) error {
 	return h.stm.Scan(ctx, &h.infos)
 }
@@ -88,6 +117,7 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 		if err := handler.queryGoodUser(cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -115,6 +145,7 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 		if err := handler.queryGoodUsers(ctx, cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

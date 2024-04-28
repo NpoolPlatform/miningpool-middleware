@@ -128,7 +128,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			gooduser.FieldRootUserID:   {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
 			gooduser.FieldName:         {Type: field.TypeString, Column: gooduser.FieldName},
 			gooduser.FieldCoinID:       {Type: field.TypeUUID, Column: gooduser.FieldCoinID},
-			gooduser.FieldRevenueID:    {Type: field.TypeUUID, Column: gooduser.FieldRevenueID},
 			gooduser.FieldHashRate:     {Type: field.TypeFloat32, Column: gooduser.FieldHashRate},
 			gooduser.FieldReadPageLink: {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
 		},
@@ -631,11 +630,6 @@ func (f *GoodUserFilter) WhereName(p entql.StringP) {
 // WhereCoinID applies the entql [16]byte predicate on the coin_id field.
 func (f *GoodUserFilter) WhereCoinID(p entql.ValueP) {
 	f.Where(p.Field(gooduser.FieldCoinID))
-}
-
-// WhereRevenueID applies the entql [16]byte predicate on the revenue_id field.
-func (f *GoodUserFilter) WhereRevenueID(p entql.ValueP) {
-	f.Where(p.Field(gooduser.FieldRevenueID))
 }
 
 // WhereHashRate applies the entql float32 predicate on the hash_rate field.

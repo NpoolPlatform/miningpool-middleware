@@ -120,20 +120,6 @@ func (guc *GoodUserCreate) SetNillableCoinID(u *uuid.UUID) *GoodUserCreate {
 	return guc
 }
 
-// SetRevenueID sets the "revenue_id" field.
-func (guc *GoodUserCreate) SetRevenueID(u uuid.UUID) *GoodUserCreate {
-	guc.mutation.SetRevenueID(u)
-	return guc
-}
-
-// SetNillableRevenueID sets the "revenue_id" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableRevenueID(u *uuid.UUID) *GoodUserCreate {
-	if u != nil {
-		guc.SetRevenueID(*u)
-	}
-	return guc
-}
-
 // SetHashRate sets the "hash_rate" field.
 func (guc *GoodUserCreate) SetHashRate(f float32) *GoodUserCreate {
 	guc.mutation.SetHashRate(f)
@@ -293,13 +279,6 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultCoinID()
 		guc.mutation.SetCoinID(v)
 	}
-	if _, ok := guc.mutation.RevenueID(); !ok {
-		if gooduser.DefaultRevenueID == nil {
-			return fmt.Errorf("ent: uninitialized gooduser.DefaultRevenueID (forgotten import ent/runtime?)")
-		}
-		v := gooduser.DefaultRevenueID()
-		guc.mutation.SetRevenueID(v)
-	}
 	if _, ok := guc.mutation.HashRate(); !ok {
 		v := gooduser.DefaultHashRate
 		guc.mutation.SetHashRate(v)
@@ -414,14 +393,6 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 			Column: gooduser.FieldCoinID,
 		})
 		_node.CoinID = value
-	}
-	if value, ok := guc.mutation.RevenueID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldRevenueID,
-		})
-		_node.RevenueID = value
 	}
 	if value, ok := guc.mutation.HashRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -608,24 +579,6 @@ func (u *GoodUserUpsert) UpdateCoinID() *GoodUserUpsert {
 // ClearCoinID clears the value of the "coin_id" field.
 func (u *GoodUserUpsert) ClearCoinID() *GoodUserUpsert {
 	u.SetNull(gooduser.FieldCoinID)
-	return u
-}
-
-// SetRevenueID sets the "revenue_id" field.
-func (u *GoodUserUpsert) SetRevenueID(v uuid.UUID) *GoodUserUpsert {
-	u.Set(gooduser.FieldRevenueID, v)
-	return u
-}
-
-// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateRevenueID() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldRevenueID)
-	return u
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (u *GoodUserUpsert) ClearRevenueID() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldRevenueID)
 	return u
 }
 
@@ -856,27 +809,6 @@ func (u *GoodUserUpsertOne) UpdateCoinID() *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) ClearCoinID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearCoinID()
-	})
-}
-
-// SetRevenueID sets the "revenue_id" field.
-func (u *GoodUserUpsertOne) SetRevenueID(v uuid.UUID) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetRevenueID(v)
-	})
-}
-
-// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateRevenueID() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateRevenueID()
-	})
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (u *GoodUserUpsertOne) ClearRevenueID() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearRevenueID()
 	})
 }
 
@@ -1277,27 +1209,6 @@ func (u *GoodUserUpsertBulk) UpdateCoinID() *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) ClearCoinID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearCoinID()
-	})
-}
-
-// SetRevenueID sets the "revenue_id" field.
-func (u *GoodUserUpsertBulk) SetRevenueID(v uuid.UUID) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetRevenueID(v)
-	})
-}
-
-// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateRevenueID() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateRevenueID()
-	})
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (u *GoodUserUpsertBulk) ClearRevenueID() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearRevenueID()
 	})
 }
 

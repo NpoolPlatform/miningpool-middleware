@@ -26,8 +26,6 @@ const (
 	FieldName = "name"
 	// FieldCoinID holds the string denoting the coin_id field in the database.
 	FieldCoinID = "coin_id"
-	// FieldRevenueID holds the string denoting the revenue_id field in the database.
-	FieldRevenueID = "revenue_id"
 	// FieldHashRate holds the string denoting the hash_rate field in the database.
 	FieldHashRate = "hash_rate"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
@@ -46,7 +44,6 @@ var Columns = []string{
 	FieldRootUserID,
 	FieldName,
 	FieldCoinID,
-	FieldRevenueID,
 	FieldHashRate,
 	FieldReadPageLink,
 }
@@ -85,8 +82,6 @@ var (
 	DefaultName string
 	// DefaultCoinID holds the default value on creation for the "coin_id" field.
 	DefaultCoinID func() uuid.UUID
-	// DefaultRevenueID holds the default value on creation for the "revenue_id" field.
-	DefaultRevenueID func() uuid.UUID
 	// DefaultHashRate holds the default value on creation for the "hash_rate" field.
 	DefaultHashRate float32
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.

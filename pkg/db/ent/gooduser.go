@@ -30,8 +30,6 @@ type GoodUser struct {
 	Name string `json:"name,omitempty"`
 	// CoinID holds the value of the "coin_id" field.
 	CoinID uuid.UUID `json:"coin_id,omitempty"`
-	// RevenueID holds the value of the "revenue_id" field.
-	RevenueID uuid.UUID `json:"revenue_id,omitempty"`
 	// HashRate holds the value of the "hash_rate" field.
 	HashRate float32 `json:"hash_rate,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
@@ -49,7 +47,7 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case gooduser.FieldName, gooduser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldCoinID, gooduser.FieldRevenueID:
+		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldCoinID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -114,12 +112,6 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				gu.CoinID = *value
 			}
-		case gooduser.FieldRevenueID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_id", values[i])
-			} else if value != nil {
-				gu.RevenueID = *value
-			}
 		case gooduser.FieldHashRate:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
 				return fmt.Errorf("unexpected type %T for field hash_rate", values[i])
@@ -180,9 +172,6 @@ func (gu *GoodUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("coin_id=")
 	builder.WriteString(fmt.Sprintf("%v", gu.CoinID))
-	builder.WriteString(", ")
-	builder.WriteString("revenue_id=")
-	builder.WriteString(fmt.Sprintf("%v", gu.RevenueID))
 	builder.WriteString(", ")
 	builder.WriteString("hash_rate=")
 	builder.WriteString(fmt.Sprintf("%v", gu.HashRate))

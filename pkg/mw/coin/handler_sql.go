@@ -62,6 +62,22 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[coin.FieldCoinType] = string(strBytes)
 		h.BondCoinType = h.CoinType
 	}
+	if h.FeeRatio != nil {
+		fmt.Println(*h.FeeRatio)
+		strBytes, err := json.Marshal(h.FeeRatio.String())
+		if err != nil {
+			return err
+		}
+		h.baseVals[coin.FieldFeeRatio] = string(strBytes)
+	}
+	if h.RevenueType != nil {
+		fmt.Println(*h.RevenueType)
+		strBytes, err := json.Marshal(h.RevenueType.String())
+		if err != nil {
+			return err
+		}
+		h.baseVals[coin.FieldRevenueType] = string(strBytes)
+	}
 	if h.FixedRevenueAble != nil {
 		strBytes, err := json.Marshal(*h.FixedRevenueAble)
 		if err != nil {
@@ -75,6 +91,13 @@ func (h *sqlHandler) baseKeys() error {
 			return err
 		}
 		h.baseVals[coin.FieldLeastTransferAmount] = string(strBytes)
+	}
+	if h.BenefitIntervalSeconds != nil {
+		strBytes, err := json.Marshal(*h.BenefitIntervalSeconds)
+		if err != nil {
+			return err
+		}
+		h.baseVals[coin.FieldBenefitIntervalSeconds] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)

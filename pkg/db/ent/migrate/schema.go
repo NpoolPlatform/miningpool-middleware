@@ -128,7 +128,6 @@ var (
 		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "coin_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "revenue_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "hash_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 	}
@@ -147,11 +146,6 @@ var (
 				Name:    "gooduser_root_user_id",
 				Unique:  false,
 				Columns: []*schema.Column{GoodUsersColumns[5]},
-			},
-			{
-				Name:    "gooduser_coin_id_revenue_id",
-				Unique:  false,
-				Columns: []*schema.Column{GoodUsersColumns[7], GoodUsersColumns[8]},
 			},
 		},
 	}

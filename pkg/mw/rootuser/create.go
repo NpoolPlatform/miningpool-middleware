@@ -39,6 +39,9 @@ func (h *Handler) CreateRootUser(ctx context.Context) error {
 }
 
 func (h *Handler) checkCreateAuthed(ctx context.Context) error {
+	if h.PoolID == nil || h.Name == nil {
+		return fmt.Errorf("have no poolid or name")
+	}
 	poolID := h.PoolID.String()
 	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
 	if err != nil {

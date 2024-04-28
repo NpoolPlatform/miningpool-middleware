@@ -291,16 +291,12 @@ func init() {
 	gooduserDescCoinID := gooduserFields[2].Descriptor()
 	// gooduser.DefaultCoinID holds the default value on creation for the coin_id field.
 	gooduser.DefaultCoinID = gooduserDescCoinID.Default.(func() uuid.UUID)
-	// gooduserDescRevenueID is the schema descriptor for revenue_id field.
-	gooduserDescRevenueID := gooduserFields[3].Descriptor()
-	// gooduser.DefaultRevenueID holds the default value on creation for the revenue_id field.
-	gooduser.DefaultRevenueID = gooduserDescRevenueID.Default.(func() uuid.UUID)
 	// gooduserDescHashRate is the schema descriptor for hash_rate field.
-	gooduserDescHashRate := gooduserFields[4].Descriptor()
+	gooduserDescHashRate := gooduserFields[3].Descriptor()
 	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
 	gooduser.DefaultHashRate = gooduserDescHashRate.Default.(float32)
 	// gooduserDescReadPageLink is the schema descriptor for read_page_link field.
-	gooduserDescReadPageLink := gooduserFields[5].Descriptor()
+	gooduserDescReadPageLink := gooduserFields[4].Descriptor()
 	// gooduser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	gooduser.DefaultReadPageLink = gooduserDescReadPageLink.Default.(string)
 	orderuserMixin := schema.OrderUser{}.Mixin()

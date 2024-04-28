@@ -158,26 +158,6 @@ func (guu *GoodUserUpdate) ClearCoinID() *GoodUserUpdate {
 	return guu
 }
 
-// SetRevenueID sets the "revenue_id" field.
-func (guu *GoodUserUpdate) SetRevenueID(u uuid.UUID) *GoodUserUpdate {
-	guu.mutation.SetRevenueID(u)
-	return guu
-}
-
-// SetNillableRevenueID sets the "revenue_id" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillableRevenueID(u *uuid.UUID) *GoodUserUpdate {
-	if u != nil {
-		guu.SetRevenueID(*u)
-	}
-	return guu
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (guu *GoodUserUpdate) ClearRevenueID() *GoodUserUpdate {
-	guu.mutation.ClearRevenueID()
-	return guu
-}
-
 // SetHashRate sets the "hash_rate" field.
 func (guu *GoodUserUpdate) SetHashRate(f float32) *GoodUserUpdate {
 	guu.mutation.ResetHashRate()
@@ -411,19 +391,6 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldCoinID,
 		})
 	}
-	if value, ok := guu.mutation.RevenueID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldRevenueID,
-		})
-	}
-	if guu.mutation.RevenueIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: gooduser.FieldRevenueID,
-		})
-	}
 	if value, ok := guu.mutation.HashRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeFloat32,
@@ -604,26 +571,6 @@ func (guuo *GoodUserUpdateOne) SetNillableCoinID(u *uuid.UUID) *GoodUserUpdateOn
 // ClearCoinID clears the value of the "coin_id" field.
 func (guuo *GoodUserUpdateOne) ClearCoinID() *GoodUserUpdateOne {
 	guuo.mutation.ClearCoinID()
-	return guuo
-}
-
-// SetRevenueID sets the "revenue_id" field.
-func (guuo *GoodUserUpdateOne) SetRevenueID(u uuid.UUID) *GoodUserUpdateOne {
-	guuo.mutation.SetRevenueID(u)
-	return guuo
-}
-
-// SetNillableRevenueID sets the "revenue_id" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillableRevenueID(u *uuid.UUID) *GoodUserUpdateOne {
-	if u != nil {
-		guuo.SetRevenueID(*u)
-	}
-	return guuo
-}
-
-// ClearRevenueID clears the value of the "revenue_id" field.
-func (guuo *GoodUserUpdateOne) ClearRevenueID() *GoodUserUpdateOne {
-	guuo.mutation.ClearRevenueID()
 	return guuo
 }
 
@@ -888,19 +835,6 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: gooduser.FieldCoinID,
-		})
-	}
-	if value, ok := guuo.mutation.RevenueID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldRevenueID,
-		})
-	}
-	if guuo.mutation.RevenueIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: gooduser.FieldRevenueID,
 		})
 	}
 	if value, ok := guuo.mutation.HashRate(); ok {

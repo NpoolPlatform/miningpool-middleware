@@ -5,6 +5,7 @@ package fractionrule
 import (
 	"entgo.io/ent"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -20,10 +21,8 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
-	FieldMiningpoolType = "miningpool_type"
-	// FieldCoinType holds the string denoting the coin_type field in the database.
-	FieldCoinType = "coin_type"
+	// FieldCoinID holds the string denoting the coin_id field in the database.
+	FieldCoinID = "coin_id"
 	// FieldWithdrawInterval holds the string denoting the withdraw_interval field in the database.
 	FieldWithdrawInterval = "withdraw_interval"
 	// FieldMinAmount holds the string denoting the min_amount field in the database.
@@ -41,8 +40,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldMiningpoolType,
-	FieldCoinType,
+	FieldCoinID,
 	FieldWithdrawInterval,
 	FieldMinAmount,
 	FieldWithdrawRate,
@@ -76,14 +74,12 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
-	DefaultMiningpoolType string
-	// DefaultCoinType holds the default value on creation for the "coin_type" field.
-	DefaultCoinType string
+	// DefaultCoinID holds the default value on creation for the "coin_id" field.
+	DefaultCoinID func() uuid.UUID
 	// DefaultWithdrawInterval holds the default value on creation for the "withdraw_interval" field.
 	DefaultWithdrawInterval uint32
 	// DefaultMinAmount holds the default value on creation for the "min_amount" field.
-	DefaultMinAmount float32
+	DefaultMinAmount decimal.Decimal
 	// DefaultWithdrawRate holds the default value on creation for the "withdraw_rate" field.
-	DefaultWithdrawRate float32
+	DefaultWithdrawRate decimal.Decimal
 )

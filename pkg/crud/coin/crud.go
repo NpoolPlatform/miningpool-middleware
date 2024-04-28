@@ -13,42 +13,43 @@ import (
 )
 
 type Req struct {
-	EntID            *uuid.UUID
-	MiningpoolType   *basetypes.MiningpoolType
-	CoinType         *basetypes.CoinType
-	RevenueTypes     *[]basetypes.RevenueType
-	FeeRate          *decimal.Decimal
-	FixedRevenueAble *bool
-	Threshold        *decimal.Decimal
-	Remark           *string
-	DeletedAt        *uint32
+	ID                     *uint32
+	EntID                  *uuid.UUID
+	PoolID                 *uuid.UUID
+	CoinType               *basetypes.CoinType
+	RevenueType            *basetypes.RevenueType
+	FeeRatio               *decimal.Decimal
+	FixedRevenueAble       *bool
+	LeastTransferAmount    *decimal.Decimal
+	BenefitIntervalSeconds *uint32
+	Remark                 *string
+	DeletedAt              *uint32
 }
 
 func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
 	}
-	if req.MiningpoolType != nil {
-		c.SetMiningpoolType(req.MiningpoolType.String())
+	if req.PoolID != nil {
+		c.SetPoolID(*req.PoolID)
 	}
 	if req.CoinType != nil {
 		c.SetCoinType(req.CoinType.String())
 	}
-	if req.RevenueTypes != nil {
-		revenueTypes := []string{}
-		for _, v := range *req.RevenueTypes {
-			revenueTypes = append(revenueTypes, v.String())
-		}
-		c.SetRevenueTypes(revenueTypes)
+	if req.RevenueType != nil {
+		c.SetCoinType(req.CoinType.String())
 	}
-	if req.FeeRate != nil {
-		c.SetFeeRate(*req.FeeRate)
+	if req.FeeRatio != nil {
+		c.SetFeeRatio(*req.FeeRatio)
 	}
 	if req.FixedRevenueAble != nil {
 		c.SetFixedRevenueAble(*req.FixedRevenueAble)
 	}
-	if req.Threshold != nil {
-		c.SetThreshold(*req.Threshold)
+	if req.LeastTransferAmount != nil {
+		c.SetLeastTransferAmount(*req.LeastTransferAmount)
+	}
+	if req.BenefitIntervalSeconds != nil {
+		c.SetBenefitIntervalSeconds(*req.BenefitIntervalSeconds)
 	}
 	if req.Remark != nil {
 		c.SetRemark(*req.Remark)
@@ -57,27 +58,26 @@ func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 }
 
 func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
-	if req.MiningpoolType != nil {
-		u = u.SetMiningpoolType(req.MiningpoolType.String())
+	if req.PoolID != nil {
+		u = u.SetPoolID(*req.PoolID)
 	}
 	if req.CoinType != nil {
 		u = u.SetCoinType(req.CoinType.String())
 	}
-	if req.RevenueTypes != nil {
-		revenueTypes := []string{}
-		for _, v := range *req.RevenueTypes {
-			revenueTypes = append(revenueTypes, v.String())
-		}
-		u = u.SetRevenueTypes(revenueTypes)
+	if req.RevenueType != nil {
+		u = u.SetRevenueType(req.RevenueType.String())
 	}
-	if req.FeeRate != nil {
-		u = u.SetFeeRate(*req.FeeRate)
+	if req.FeeRatio != nil {
+		u = u.SetFeeRatio(*req.FeeRatio)
 	}
 	if req.FixedRevenueAble != nil {
 		u = u.SetFixedRevenueAble(*req.FixedRevenueAble)
 	}
-	if req.Threshold != nil {
-		u = u.SetThreshold(*req.Threshold)
+	if req.LeastTransferAmount != nil {
+		u = u.SetLeastTransferAmount(*req.LeastTransferAmount)
+	}
+	if req.BenefitIntervalSeconds != nil {
+		u = u.SetBenefitIntervalSeconds(*req.BenefitIntervalSeconds)
 	}
 	if req.Remark != nil {
 		u = u.SetRemark(*req.Remark)
@@ -91,9 +91,9 @@ func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 type Conds struct {
 	ID               *cruder.Cond
 	EntID            *cruder.Cond
-	MiningpoolType   *cruder.Cond
+	PoolID           *cruder.Cond
 	CoinType         *cruder.Cond
-	Site             *cruder.Cond
+	RevenueType      *cruder.Cond
 	FixedRevenueAble *cruder.Cond
 	EntIDs           *cruder.Cond
 }
@@ -138,16 +138,16 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			return nil, fmt.Errorf("invalid entids field")
 		}
 	}
-	if conds.MiningpoolType != nil {
-		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
+	if conds.PoolID != nil {
+		poolid, ok := conds.PoolID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid miningpooltype")
+			return nil, fmt.Errorf("invalid poolid")
 		}
-		switch conds.MiningpoolType.Op {
+		switch conds.PoolID.Op {
 		case cruder.EQ:
-			q.Where(coinent.MiningpoolType(miningpooltype.String()))
+			q.Where(coinent.PoolID(poolid))
 		default:
-			return nil, fmt.Errorf("invalid miningpooltype field")
+			return nil, fmt.Errorf("invalid poolid field")
 		}
 	}
 	if conds.CoinType != nil {
@@ -160,6 +160,18 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			q.Where(coinent.CoinType(cointype.String()))
 		default:
 			return nil, fmt.Errorf("invalid cointype field")
+		}
+	}
+	if conds.RevenueType != nil {
+		revenuetype, ok := conds.RevenueType.Val.(basetypes.RevenueType)
+		if !ok {
+			return nil, fmt.Errorf("invalid revenuetype")
+		}
+		switch conds.RevenueType.Op {
+		case cruder.EQ:
+			q.Where(coinent.RevenueType(revenuetype.String()))
+		default:
+			return nil, fmt.Errorf("invalid revenuetype field")
 		}
 	}
 	if conds.FixedRevenueAble != nil {

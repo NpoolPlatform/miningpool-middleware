@@ -6,6 +6,7 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/google/uuid"
 )
 
 func (h *Handler) UpdateCoin(ctx context.Context) error {
@@ -18,8 +19,13 @@ func (h *Handler) UpdateCoin(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
+	poolID, err := uuid.Parse(info.PoolID)
+	if err != nil {
+		return fmt.Errorf("invalid poolid")
+	}
+
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondPoolID = &poolID
 	sqlH.BondCoinType = &info.CoinType
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

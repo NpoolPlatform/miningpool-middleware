@@ -61,8 +61,8 @@ func (cli *Client) MiningUserPaymentResume(ctx context.Context, req *types.Minin
 	return resp, err
 }
 
-func (cli *Client) MiningUserThresholdUpdate(ctx context.Context, req *types.MiningUserThresholdUpdateReq) (*types.MiningUserThresholdUpdateResp, error) {
-	resp := &types.MiningUserThresholdUpdateResp{}
-	err := cli.post(types.MiningUserThresholdUpdate, req, resp)
+func (cli *Client) MiningUserLeastTransferAmountUpdate(ctx context.Context, req *types.MiningUserLeastTransferAmountUpdateReq) (*types.MiningUserLeastTransferAmountUpdateResp, error) {
+	resp := &types.MiningUserLeastTransferAmountUpdateResp{}
+	err := cli.post(types.MiningUserLeastTransferAmountUpdate, req, resp)
 	return resp, err
 }

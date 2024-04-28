@@ -8,7 +8,6 @@ import (
 	"io"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/secure"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -51,9 +50,6 @@ type TokenInfo struct {
 	ID uint32 `protobuf:"varint,10,opt,name=ID,proto3" json:"ID,omitempty" sql:"id"`
 	// @inject_tag: sql:"ent_id"
 	EntID string `protobuf:"bytes,20,opt,name=EntID,proto3" json:"EntID,omitempty" sql:"ent_id"`
-	// @inject_tag: sql:"miningpool_type"
-	MiningpoolTypeStr string            `protobuf:"bytes,40,opt,name=MiningpoolTypeStr,proto3" json:"MiningpoolTypeStr,omitempty" sql:"miningpool_type"`
-	MiningpoolType    v1.MiningpoolType `protobuf:"varint,41,opt,name=MiningpoolType,proto3,enum=basetypes.miningpool.v1.MiningpoolType" json:"MiningpoolType,omitempty"`
 	// @inject_tag: sql:"auth_token"
 	AuthToken      string `protobuf:"bytes,60,opt,name=AuthToken,proto3" json:"AuthToken,omitempty" sql:"auth_token"`
 	AuthTokenPlain string
@@ -72,7 +68,6 @@ func (h *tokenHandler) selectToken(stm *ent.RootUserQuery) {
 	h.stm = stm.Select(
 		rootuserent.FieldID,
 		rootuserent.FieldEntID,
-		rootuserent.FieldMiningpoolType,
 		rootuserent.FieldAuthToken,
 		rootuserent.FieldAuthTokenSalt,
 	)
@@ -136,9 +131,6 @@ func (h *tokenHandler) decryptToken() error {
 }
 
 func (h *tokenHandler) formate() {
-	for _, v := range h.infos {
-		v.MiningpoolType = v1.MiningpoolType(v1.MiningpoolType_value[v.MiningpoolTypeStr])
-	}
 }
 
 func (h *Handler) GetAuthToken(ctx context.Context) (*TokenInfo, error) {

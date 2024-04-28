@@ -26,6 +26,8 @@ const (
 	FieldName = "name"
 	// FieldSite holds the string denoting the site field in the database.
 	FieldSite = "site"
+	// FieldLogo holds the string denoting the logo field in the database.
+	FieldLogo = "logo"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
 	// Table holds the table name of the pool in the database.
@@ -42,6 +44,7 @@ var Columns = []string{
 	FieldMiningpoolType,
 	FieldName,
 	FieldSite,
+	FieldLogo,
 	FieldDescription,
 }
 
@@ -79,6 +82,8 @@ var (
 	DefaultName string
 	// DefaultSite holds the default value on creation for the "site" field.
 	DefaultSite string
+	// DefaultLogo holds the default value on creation for the "logo" field.
+	DefaultLogo string
 	// DefaultDescription holds the default value on creation for the "description" field.
 	DefaultDescription string
 )

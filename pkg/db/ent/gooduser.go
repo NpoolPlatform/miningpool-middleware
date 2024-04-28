@@ -28,16 +28,14 @@ type GoodUser struct {
 	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
-	// CoinType holds the value of the "coin_type" field.
-	CoinType string `json:"coin_type,omitempty"`
+	// CoinID holds the value of the "coin_id" field.
+	CoinID uuid.UUID `json:"coin_id,omitempty"`
+	// RevenueID holds the value of the "revenue_id" field.
+	RevenueID uuid.UUID `json:"revenue_id,omitempty"`
 	// HashRate holds the value of the "hash_rate" field.
 	HashRate float32 `json:"hash_rate,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
-	// RevenueType holds the value of the "revenue_type" field.
-	RevenueType string `json:"revenue_type,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -49,9 +47,9 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullFloat64)
 		case gooduser.FieldID, gooduser.FieldCreatedAt, gooduser.FieldUpdatedAt, gooduser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case gooduser.FieldName, gooduser.FieldMiningpoolType, gooduser.FieldCoinType, gooduser.FieldReadPageLink, gooduser.FieldRevenueType:
+		case gooduser.FieldName, gooduser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldRootUserID:
+		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldCoinID, gooduser.FieldRevenueID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -110,17 +108,17 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				gu.Name = value.String
 			}
-		case gooduser.FieldMiningpoolType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
-			} else if value.Valid {
-				gu.MiningpoolType = value.String
+		case gooduser.FieldCoinID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field coin_id", values[i])
+			} else if value != nil {
+				gu.CoinID = *value
 			}
-		case gooduser.FieldCoinType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
-			} else if value.Valid {
-				gu.CoinType = value.String
+		case gooduser.FieldRevenueID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field revenue_id", values[i])
+			} else if value != nil {
+				gu.RevenueID = *value
 			}
 		case gooduser.FieldHashRate:
 			if value, ok := values[i].(*sql.NullFloat64); !ok {
@@ -133,12 +131,6 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field read_page_link", values[i])
 			} else if value.Valid {
 				gu.ReadPageLink = value.String
-			}
-		case gooduser.FieldRevenueType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_type", values[i])
-			} else if value.Valid {
-				gu.RevenueType = value.String
 			}
 		}
 	}
@@ -186,20 +178,17 @@ func (gu *GoodUser) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(gu.Name)
 	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(gu.MiningpoolType)
+	builder.WriteString("coin_id=")
+	builder.WriteString(fmt.Sprintf("%v", gu.CoinID))
 	builder.WriteString(", ")
-	builder.WriteString("coin_type=")
-	builder.WriteString(gu.CoinType)
+	builder.WriteString("revenue_id=")
+	builder.WriteString(fmt.Sprintf("%v", gu.RevenueID))
 	builder.WriteString(", ")
 	builder.WriteString("hash_rate=")
 	builder.WriteString(fmt.Sprintf("%v", gu.HashRate))
 	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(gu.ReadPageLink)
-	builder.WriteString(", ")
-	builder.WriteString("revenue_type=")
-	builder.WriteString(gu.RevenueType)
 	builder.WriteByte(')')
 	return builder.String()
 }

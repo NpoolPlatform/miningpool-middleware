@@ -6,18 +6,18 @@ import (
 	"strings"
 	"time"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
+	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
-	BondName           *string
-	BondEmail          *string
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondPoolID *uuid.UUID
+	BondName   *string
+	BondEmail  *string
+	bondVals   map[string]string
+	baseVals   map[string]string
+	idVals     map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -45,13 +45,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[rootuser.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.PoolID != nil {
+		strBytes, err := json.Marshal(h.PoolID.String())
 		if err != nil {
 			return err
 		}
-		h.baseVals[rootuser.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
+		h.baseVals[rootuser.FieldPoolID] = string(strBytes)
+		h.BondPoolID = h.PoolID
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
@@ -98,14 +98,14 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[rootuser.FieldRemark] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
+	if h.BondPoolID == nil {
 		return fmt.Errorf("please give miningpooltype")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondPoolID.String())
 	if err != nil {
 		return err
 	}
-	h.bondVals[rootuser.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[rootuser.FieldPoolID] = string(strBytes)
 
 	if h.BondName == nil {
 		return fmt.Errorf("please give name")

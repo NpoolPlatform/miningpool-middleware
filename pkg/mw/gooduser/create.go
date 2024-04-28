@@ -7,7 +7,6 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"github.com/google/uuid"
 )
@@ -65,23 +64,23 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
-	if h.MiningpoolType == nil {
-		h.MiningpoolType = &rootUser.MiningpoolType
-	}
+	// if h.MiningpoolType == nil {
+	// 	h.MiningpoolType = &rootUser.MiningpoolType
+	// }
 
-	if h.MiningpoolType.String() != rootUser.MiningpoolType.String() {
-		return fmt.Errorf("the miningpool type is different from type of rootuser")
-	}
+	// if h.MiningpoolType.String() != rootUser.MiningpoolType.String() {
+	// 	return fmt.Errorf("the miningpool type is different from type of rootuser")
+	// }
 
-	mgr, err := pools.NewPoolManager(*h.MiningpoolType, *h.CoinType, rootUser.AuthTokenPlain)
-	if err != nil {
-		return err
-	}
-	name, pageLink, err := mgr.AddMiningUser(ctx)
-	if err != nil {
-		return err
-	}
-	h.Name = &name
-	h.ReadPageLink = &pageLink
+	// mgr, err := pools.NewPoolManager(*h.MiningpoolType, *h.CoinID, rootUser.AuthTokenPlain)
+	// if err != nil {
+	// 	return err
+	// }
+	// name, pageLink, err := mgr.AddMiningUser(ctx)
+	// if err != nil {
+	// 	return err
+	// }
+	// h.Name = &name
+	// h.ReadPageLink = &pageLink
 	return nil
 }

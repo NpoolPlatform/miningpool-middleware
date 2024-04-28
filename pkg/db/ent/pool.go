@@ -30,6 +30,8 @@ type Pool struct {
 	Name string `json:"name,omitempty"`
 	// Site holds the value of the "site" field.
 	Site string `json:"site,omitempty"`
+	// Logo holds the value of the "logo" field.
+	Logo string `json:"logo,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 }
@@ -41,7 +43,7 @@ func (*Pool) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case pool.FieldID, pool.FieldCreatedAt, pool.FieldUpdatedAt, pool.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case pool.FieldMiningpoolType, pool.FieldName, pool.FieldSite, pool.FieldDescription:
+		case pool.FieldMiningpoolType, pool.FieldName, pool.FieldSite, pool.FieldLogo, pool.FieldDescription:
 			values[i] = new(sql.NullString)
 		case pool.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -108,6 +110,12 @@ func (po *Pool) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				po.Site = value.String
 			}
+		case pool.FieldLogo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field logo", values[i])
+			} else if value.Valid {
+				po.Logo = value.String
+			}
 		case pool.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
@@ -162,6 +170,9 @@ func (po *Pool) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("site=")
 	builder.WriteString(po.Site)
+	builder.WriteString(", ")
+	builder.WriteString("logo=")
+	builder.WriteString(po.Logo)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(po.Description)

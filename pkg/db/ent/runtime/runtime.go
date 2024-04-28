@@ -101,34 +101,38 @@ func init() {
 	coinDescEntID := coinMixinFields1[1].Descriptor()
 	// coin.DefaultEntID holds the default value on creation for the ent_id field.
 	coin.DefaultEntID = coinDescEntID.Default.(func() uuid.UUID)
-	// coinDescMiningpoolType is the schema descriptor for miningpool_type field.
-	coinDescMiningpoolType := coinFields[0].Descriptor()
-	// coin.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	coin.DefaultMiningpoolType = coinDescMiningpoolType.Default.(string)
+	// coinDescPoolID is the schema descriptor for pool_id field.
+	coinDescPoolID := coinFields[0].Descriptor()
+	// coin.DefaultPoolID holds the default value on creation for the pool_id field.
+	coin.DefaultPoolID = coinDescPoolID.Default.(func() uuid.UUID)
 	// coinDescCoinType is the schema descriptor for coin_type field.
 	coinDescCoinType := coinFields[1].Descriptor()
 	// coin.DefaultCoinType holds the default value on creation for the coin_type field.
 	coin.DefaultCoinType = coinDescCoinType.Default.(string)
-	// coinDescRevenueTypes is the schema descriptor for revenue_types field.
-	coinDescRevenueTypes := coinFields[2].Descriptor()
-	// coin.DefaultRevenueTypes holds the default value on creation for the revenue_types field.
-	coin.DefaultRevenueTypes = coinDescRevenueTypes.Default.([]string)
-	// coinDescFeeRate is the schema descriptor for fee_rate field.
-	coinDescFeeRate := coinFields[3].Descriptor()
-	// coin.DefaultFeeRate holds the default value on creation for the fee_rate field.
-	coin.DefaultFeeRate = coinDescFeeRate.Default.(decimal.Decimal)
+	// coinDescRevenueType is the schema descriptor for revenue_type field.
+	coinDescRevenueType := coinFields[2].Descriptor()
+	// coin.DefaultRevenueType holds the default value on creation for the revenue_type field.
+	coin.DefaultRevenueType = coinDescRevenueType.Default.(string)
+	// coinDescFeeRatio is the schema descriptor for fee_ratio field.
+	coinDescFeeRatio := coinFields[3].Descriptor()
+	// coin.DefaultFeeRatio holds the default value on creation for the fee_ratio field.
+	coin.DefaultFeeRatio = coinDescFeeRatio.Default.(decimal.Decimal)
 	// coinDescFixedRevenueAble is the schema descriptor for fixed_revenue_able field.
 	coinDescFixedRevenueAble := coinFields[4].Descriptor()
 	// coin.DefaultFixedRevenueAble holds the default value on creation for the fixed_revenue_able field.
 	coin.DefaultFixedRevenueAble = coinDescFixedRevenueAble.Default.(bool)
+	// coinDescLeastTransferAmount is the schema descriptor for least_transfer_amount field.
+	coinDescLeastTransferAmount := coinFields[5].Descriptor()
+	// coin.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
+	coin.DefaultLeastTransferAmount = coinDescLeastTransferAmount.Default.(decimal.Decimal)
+	// coinDescBenefitIntervalSeconds is the schema descriptor for benefit_interval_seconds field.
+	coinDescBenefitIntervalSeconds := coinFields[6].Descriptor()
+	// coin.DefaultBenefitIntervalSeconds holds the default value on creation for the benefit_interval_seconds field.
+	coin.DefaultBenefitIntervalSeconds = coinDescBenefitIntervalSeconds.Default.(uint32)
 	// coinDescRemark is the schema descriptor for remark field.
-	coinDescRemark := coinFields[5].Descriptor()
+	coinDescRemark := coinFields[7].Descriptor()
 	// coin.DefaultRemark holds the default value on creation for the remark field.
 	coin.DefaultRemark = coinDescRemark.Default.(string)
-	// coinDescThreshold is the schema descriptor for threshold field.
-	coinDescThreshold := coinFields[6].Descriptor()
-	// coin.DefaultThreshold holds the default value on creation for the threshold field.
-	coin.DefaultThreshold = coinDescThreshold.Default.(decimal.Decimal)
 	fractionMixin := schema.Fraction{}.Mixin()
 	fraction.Policy = privacy.NewPolicies(fractionMixin[0], schema.Fraction{})
 	fraction.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -225,26 +229,22 @@ func init() {
 	fractionruleDescEntID := fractionruleMixinFields1[1].Descriptor()
 	// fractionrule.DefaultEntID holds the default value on creation for the ent_id field.
 	fractionrule.DefaultEntID = fractionruleDescEntID.Default.(func() uuid.UUID)
-	// fractionruleDescMiningpoolType is the schema descriptor for miningpool_type field.
-	fractionruleDescMiningpoolType := fractionruleFields[0].Descriptor()
-	// fractionrule.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	fractionrule.DefaultMiningpoolType = fractionruleDescMiningpoolType.Default.(string)
-	// fractionruleDescCoinType is the schema descriptor for coin_type field.
-	fractionruleDescCoinType := fractionruleFields[1].Descriptor()
-	// fractionrule.DefaultCoinType holds the default value on creation for the coin_type field.
-	fractionrule.DefaultCoinType = fractionruleDescCoinType.Default.(string)
+	// fractionruleDescCoinID is the schema descriptor for coin_id field.
+	fractionruleDescCoinID := fractionruleFields[0].Descriptor()
+	// fractionrule.DefaultCoinID holds the default value on creation for the coin_id field.
+	fractionrule.DefaultCoinID = fractionruleDescCoinID.Default.(func() uuid.UUID)
 	// fractionruleDescWithdrawInterval is the schema descriptor for withdraw_interval field.
-	fractionruleDescWithdrawInterval := fractionruleFields[2].Descriptor()
+	fractionruleDescWithdrawInterval := fractionruleFields[1].Descriptor()
 	// fractionrule.DefaultWithdrawInterval holds the default value on creation for the withdraw_interval field.
 	fractionrule.DefaultWithdrawInterval = fractionruleDescWithdrawInterval.Default.(uint32)
 	// fractionruleDescMinAmount is the schema descriptor for min_amount field.
-	fractionruleDescMinAmount := fractionruleFields[3].Descriptor()
+	fractionruleDescMinAmount := fractionruleFields[2].Descriptor()
 	// fractionrule.DefaultMinAmount holds the default value on creation for the min_amount field.
-	fractionrule.DefaultMinAmount = fractionruleDescMinAmount.Default.(float32)
+	fractionrule.DefaultMinAmount = fractionruleDescMinAmount.Default.(decimal.Decimal)
 	// fractionruleDescWithdrawRate is the schema descriptor for withdraw_rate field.
-	fractionruleDescWithdrawRate := fractionruleFields[4].Descriptor()
+	fractionruleDescWithdrawRate := fractionruleFields[3].Descriptor()
 	// fractionrule.DefaultWithdrawRate holds the default value on creation for the withdraw_rate field.
-	fractionrule.DefaultWithdrawRate = fractionruleDescWithdrawRate.Default.(float32)
+	fractionrule.DefaultWithdrawRate = fractionruleDescWithdrawRate.Default.(decimal.Decimal)
 	gooduserMixin := schema.GoodUser{}.Mixin()
 	gooduser.Policy = privacy.NewPolicies(gooduserMixin[0], schema.GoodUser{})
 	gooduser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -287,14 +287,14 @@ func init() {
 	gooduserDescName := gooduserFields[1].Descriptor()
 	// gooduser.DefaultName holds the default value on creation for the name field.
 	gooduser.DefaultName = gooduserDescName.Default.(string)
-	// gooduserDescMiningpoolType is the schema descriptor for miningpool_type field.
-	gooduserDescMiningpoolType := gooduserFields[2].Descriptor()
-	// gooduser.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	gooduser.DefaultMiningpoolType = gooduserDescMiningpoolType.Default.(string)
-	// gooduserDescCoinType is the schema descriptor for coin_type field.
-	gooduserDescCoinType := gooduserFields[3].Descriptor()
-	// gooduser.DefaultCoinType holds the default value on creation for the coin_type field.
-	gooduser.DefaultCoinType = gooduserDescCoinType.Default.(string)
+	// gooduserDescCoinID is the schema descriptor for coin_id field.
+	gooduserDescCoinID := gooduserFields[2].Descriptor()
+	// gooduser.DefaultCoinID holds the default value on creation for the coin_id field.
+	gooduser.DefaultCoinID = gooduserDescCoinID.Default.(func() uuid.UUID)
+	// gooduserDescRevenueID is the schema descriptor for revenue_id field.
+	gooduserDescRevenueID := gooduserFields[3].Descriptor()
+	// gooduser.DefaultRevenueID holds the default value on creation for the revenue_id field.
+	gooduser.DefaultRevenueID = gooduserDescRevenueID.Default.(func() uuid.UUID)
 	// gooduserDescHashRate is the schema descriptor for hash_rate field.
 	gooduserDescHashRate := gooduserFields[4].Descriptor()
 	// gooduser.DefaultHashRate holds the default value on creation for the hash_rate field.
@@ -303,10 +303,6 @@ func init() {
 	gooduserDescReadPageLink := gooduserFields[5].Descriptor()
 	// gooduser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	gooduser.DefaultReadPageLink = gooduserDescReadPageLink.Default.(string)
-	// gooduserDescRevenueType is the schema descriptor for revenue_type field.
-	gooduserDescRevenueType := gooduserFields[6].Descriptor()
-	// gooduser.DefaultRevenueType holds the default value on creation for the revenue_type field.
-	gooduser.DefaultRevenueType = gooduserDescRevenueType.Default.(string)
 	orderuserMixin := schema.OrderUser{}.Mixin()
 	orderuser.Policy = privacy.NewPolicies(orderuserMixin[0], schema.OrderUser{})
 	orderuser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
@@ -341,48 +337,36 @@ func init() {
 	orderuserDescEntID := orderuserMixinFields1[1].Descriptor()
 	// orderuser.DefaultEntID holds the default value on creation for the ent_id field.
 	orderuser.DefaultEntID = orderuserDescEntID.Default.(func() uuid.UUID)
-	// orderuserDescRootUserID is the schema descriptor for root_user_id field.
-	orderuserDescRootUserID := orderuserFields[0].Descriptor()
-	// orderuser.DefaultRootUserID holds the default value on creation for the root_user_id field.
-	orderuser.DefaultRootUserID = orderuserDescRootUserID.Default.(func() uuid.UUID)
 	// orderuserDescGoodUserID is the schema descriptor for good_user_id field.
-	orderuserDescGoodUserID := orderuserFields[1].Descriptor()
+	orderuserDescGoodUserID := orderuserFields[0].Descriptor()
 	// orderuser.DefaultGoodUserID holds the default value on creation for the good_user_id field.
 	orderuser.DefaultGoodUserID = orderuserDescGoodUserID.Default.(func() uuid.UUID)
 	// orderuserDescUserID is the schema descriptor for user_id field.
-	orderuserDescUserID := orderuserFields[2].Descriptor()
+	orderuserDescUserID := orderuserFields[1].Descriptor()
 	// orderuser.DefaultUserID holds the default value on creation for the user_id field.
 	orderuser.DefaultUserID = orderuserDescUserID.Default.(func() uuid.UUID)
 	// orderuserDescAppID is the schema descriptor for app_id field.
-	orderuserDescAppID := orderuserFields[3].Descriptor()
+	orderuserDescAppID := orderuserFields[2].Descriptor()
 	// orderuser.DefaultAppID holds the default value on creation for the app_id field.
 	orderuser.DefaultAppID = orderuserDescAppID.Default.(func() uuid.UUID)
 	// orderuserDescName is the schema descriptor for name field.
-	orderuserDescName := orderuserFields[4].Descriptor()
+	orderuserDescName := orderuserFields[3].Descriptor()
 	// orderuser.DefaultName holds the default value on creation for the name field.
 	orderuser.DefaultName = orderuserDescName.Default.(string)
-	// orderuserDescMiningpoolType is the schema descriptor for miningpool_type field.
-	orderuserDescMiningpoolType := orderuserFields[5].Descriptor()
-	// orderuser.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	orderuser.DefaultMiningpoolType = orderuserDescMiningpoolType.Default.(string)
-	// orderuserDescCoinType is the schema descriptor for coin_type field.
-	orderuserDescCoinType := orderuserFields[6].Descriptor()
-	// orderuser.DefaultCoinType holds the default value on creation for the coin_type field.
-	orderuser.DefaultCoinType = orderuserDescCoinType.Default.(string)
 	// orderuserDescProportion is the schema descriptor for proportion field.
-	orderuserDescProportion := orderuserFields[7].Descriptor()
+	orderuserDescProportion := orderuserFields[4].Descriptor()
 	// orderuser.DefaultProportion holds the default value on creation for the proportion field.
 	orderuser.DefaultProportion = orderuserDescProportion.Default.(decimal.Decimal)
 	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
-	orderuserDescRevenueAddress := orderuserFields[8].Descriptor()
+	orderuserDescRevenueAddress := orderuserFields[5].Descriptor()
 	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.
 	orderuser.DefaultRevenueAddress = orderuserDescRevenueAddress.Default.(string)
 	// orderuserDescReadPageLink is the schema descriptor for read_page_link field.
-	orderuserDescReadPageLink := orderuserFields[9].Descriptor()
+	orderuserDescReadPageLink := orderuserFields[6].Descriptor()
 	// orderuser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	orderuser.DefaultReadPageLink = orderuserDescReadPageLink.Default.(string)
 	// orderuserDescAutoPay is the schema descriptor for auto_pay field.
-	orderuserDescAutoPay := orderuserFields[10].Descriptor()
+	orderuserDescAutoPay := orderuserFields[7].Descriptor()
 	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
 	orderuser.DefaultAutoPay = orderuserDescAutoPay.Default.(bool)
 	poolMixin := schema.Pool{}.Mixin()
@@ -431,8 +415,12 @@ func init() {
 	poolDescSite := poolFields[2].Descriptor()
 	// pool.DefaultSite holds the default value on creation for the site field.
 	pool.DefaultSite = poolDescSite.Default.(string)
+	// poolDescLogo is the schema descriptor for logo field.
+	poolDescLogo := poolFields[3].Descriptor()
+	// pool.DefaultLogo holds the default value on creation for the logo field.
+	pool.DefaultLogo = poolDescLogo.Default.(string)
 	// poolDescDescription is the schema descriptor for description field.
-	poolDescDescription := poolFields[3].Descriptor()
+	poolDescDescription := poolFields[4].Descriptor()
 	// pool.DefaultDescription holds the default value on creation for the description field.
 	pool.DefaultDescription = poolDescDescription.Default.(string)
 	rootuserMixin := schema.RootUser{}.Mixin()
@@ -473,10 +461,10 @@ func init() {
 	rootuserDescName := rootuserFields[0].Descriptor()
 	// rootuser.DefaultName holds the default value on creation for the name field.
 	rootuser.DefaultName = rootuserDescName.Default.(string)
-	// rootuserDescMiningpoolType is the schema descriptor for miningpool_type field.
-	rootuserDescMiningpoolType := rootuserFields[1].Descriptor()
-	// rootuser.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	rootuser.DefaultMiningpoolType = rootuserDescMiningpoolType.Default.(string)
+	// rootuserDescPoolID is the schema descriptor for pool_id field.
+	rootuserDescPoolID := rootuserFields[1].Descriptor()
+	// rootuser.DefaultPoolID holds the default value on creation for the pool_id field.
+	rootuser.DefaultPoolID = rootuserDescPoolID.Default.(func() uuid.UUID)
 	// rootuserDescEmail is the schema descriptor for email field.
 	rootuserDescEmail := rootuserFields[2].Descriptor()
 	// rootuser.DefaultEmail holds the default value on creation for the email field.

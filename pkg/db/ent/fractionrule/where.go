@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // ID filters vertices based on their ID field.
@@ -107,17 +108,10 @@ func EntID(v uuid.UUID) predicate.FractionRule {
 	})
 }
 
-// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
-func MiningpoolType(v string) predicate.FractionRule {
+// CoinID applies equality check predicate on the "coin_id" field. It's identical to CoinIDEQ.
+func CoinID(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// CoinType applies equality check predicate on the "coin_type" field. It's identical to CoinTypeEQ.
-func CoinType(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinType), v))
+		s.Where(sql.EQ(s.C(FieldCoinID), v))
 	})
 }
 
@@ -129,14 +123,14 @@ func WithdrawInterval(v uint32) predicate.FractionRule {
 }
 
 // MinAmount applies equality check predicate on the "min_amount" field. It's identical to MinAmountEQ.
-func MinAmount(v float32) predicate.FractionRule {
+func MinAmount(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldMinAmount), v))
 	})
 }
 
 // WithdrawRate applies equality check predicate on the "withdraw_rate" field. It's identical to WithdrawRateEQ.
-func WithdrawRate(v float32) predicate.FractionRule {
+func WithdrawRate(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldWithdrawRate), v))
 	})
@@ -398,229 +392,81 @@ func EntIDLTE(v uuid.UUID) predicate.FractionRule {
 	})
 }
 
-// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
-func MiningpoolTypeEQ(v string) predicate.FractionRule {
+// CoinIDEQ applies the EQ predicate on the "coin_id" field.
+func CoinIDEQ(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
-func MiningpoolTypeNEQ(v string) predicate.FractionRule {
+// CoinIDNEQ applies the NEQ predicate on the "coin_id" field.
+func CoinIDNEQ(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NEQ(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
-func MiningpoolTypeIn(vs ...string) predicate.FractionRule {
+// CoinIDIn applies the In predicate on the "coin_id" field.
+func CoinIDIn(vs ...uuid.UUID) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.In(s.C(FieldCoinID), v...))
 	})
 }
 
-// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
-func MiningpoolTypeNotIn(vs ...string) predicate.FractionRule {
+// CoinIDNotIn applies the NotIn predicate on the "coin_id" field.
+func CoinIDNotIn(vs ...uuid.UUID) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.NotIn(s.C(FieldCoinID), v...))
 	})
 }
 
-// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
-func MiningpoolTypeGT(v string) predicate.FractionRule {
+// CoinIDGT applies the GT predicate on the "coin_id" field.
+func CoinIDGT(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GT(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
-func MiningpoolTypeGTE(v string) predicate.FractionRule {
+// CoinIDGTE applies the GTE predicate on the "coin_id" field.
+func CoinIDGTE(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GTE(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
-func MiningpoolTypeLT(v string) predicate.FractionRule {
+// CoinIDLT applies the LT predicate on the "coin_id" field.
+func CoinIDLT(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LT(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
-func MiningpoolTypeLTE(v string) predicate.FractionRule {
+// CoinIDLTE applies the LTE predicate on the "coin_id" field.
+func CoinIDLTE(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LTE(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
-func MiningpoolTypeContains(v string) predicate.FractionRule {
+// CoinIDIsNil applies the IsNil predicate on the "coin_id" field.
+func CoinIDIsNil() predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+		s.Where(sql.IsNull(s.C(FieldCoinID)))
 	})
 }
 
-// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasPrefix(v string) predicate.FractionRule {
+// CoinIDNotNil applies the NotNil predicate on the "coin_id" field.
+func CoinIDNotNil() predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasSuffix(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
-func MiningpoolTypeIsNil() predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
-func MiningpoolTypeNotNil() predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
-func MiningpoolTypeEqualFold(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
-func MiningpoolTypeContainsFold(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// CoinTypeEQ applies the EQ predicate on the "coin_type" field.
-func CoinTypeEQ(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeNEQ applies the NEQ predicate on the "coin_type" field.
-func CoinTypeNEQ(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeIn applies the In predicate on the "coin_type" field.
-func CoinTypeIn(vs ...string) predicate.FractionRule {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCoinType), v...))
-	})
-}
-
-// CoinTypeNotIn applies the NotIn predicate on the "coin_type" field.
-func CoinTypeNotIn(vs ...string) predicate.FractionRule {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCoinType), v...))
-	})
-}
-
-// CoinTypeGT applies the GT predicate on the "coin_type" field.
-func CoinTypeGT(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeGTE applies the GTE predicate on the "coin_type" field.
-func CoinTypeGTE(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeLT applies the LT predicate on the "coin_type" field.
-func CoinTypeLT(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeLTE applies the LTE predicate on the "coin_type" field.
-func CoinTypeLTE(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeContains applies the Contains predicate on the "coin_type" field.
-func CoinTypeContains(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeHasPrefix applies the HasPrefix predicate on the "coin_type" field.
-func CoinTypeHasPrefix(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeHasSuffix applies the HasSuffix predicate on the "coin_type" field.
-func CoinTypeHasSuffix(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
-func CoinTypeIsNil() predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCoinType)))
-	})
-}
-
-// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
-func CoinTypeNotNil() predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCoinType)))
-	})
-}
-
-// CoinTypeEqualFold applies the EqualFold predicate on the "coin_type" field.
-func CoinTypeEqualFold(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeContainsFold applies the ContainsFold predicate on the "coin_type" field.
-func CoinTypeContainsFold(v string) predicate.FractionRule {
-	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
+		s.Where(sql.NotNull(s.C(FieldCoinID)))
 	})
 }
 
@@ -703,21 +549,21 @@ func WithdrawIntervalNotNil() predicate.FractionRule {
 }
 
 // MinAmountEQ applies the EQ predicate on the "min_amount" field.
-func MinAmountEQ(v float32) predicate.FractionRule {
+func MinAmountEQ(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldMinAmount), v))
 	})
 }
 
 // MinAmountNEQ applies the NEQ predicate on the "min_amount" field.
-func MinAmountNEQ(v float32) predicate.FractionRule {
+func MinAmountNEQ(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldMinAmount), v))
 	})
 }
 
 // MinAmountIn applies the In predicate on the "min_amount" field.
-func MinAmountIn(vs ...float32) predicate.FractionRule {
+func MinAmountIn(vs ...decimal.Decimal) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -728,7 +574,7 @@ func MinAmountIn(vs ...float32) predicate.FractionRule {
 }
 
 // MinAmountNotIn applies the NotIn predicate on the "min_amount" field.
-func MinAmountNotIn(vs ...float32) predicate.FractionRule {
+func MinAmountNotIn(vs ...decimal.Decimal) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -739,28 +585,28 @@ func MinAmountNotIn(vs ...float32) predicate.FractionRule {
 }
 
 // MinAmountGT applies the GT predicate on the "min_amount" field.
-func MinAmountGT(v float32) predicate.FractionRule {
+func MinAmountGT(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldMinAmount), v))
 	})
 }
 
 // MinAmountGTE applies the GTE predicate on the "min_amount" field.
-func MinAmountGTE(v float32) predicate.FractionRule {
+func MinAmountGTE(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldMinAmount), v))
 	})
 }
 
 // MinAmountLT applies the LT predicate on the "min_amount" field.
-func MinAmountLT(v float32) predicate.FractionRule {
+func MinAmountLT(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldMinAmount), v))
 	})
 }
 
 // MinAmountLTE applies the LTE predicate on the "min_amount" field.
-func MinAmountLTE(v float32) predicate.FractionRule {
+func MinAmountLTE(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldMinAmount), v))
 	})
@@ -781,21 +627,21 @@ func MinAmountNotNil() predicate.FractionRule {
 }
 
 // WithdrawRateEQ applies the EQ predicate on the "withdraw_rate" field.
-func WithdrawRateEQ(v float32) predicate.FractionRule {
+func WithdrawRateEQ(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldWithdrawRate), v))
 	})
 }
 
 // WithdrawRateNEQ applies the NEQ predicate on the "withdraw_rate" field.
-func WithdrawRateNEQ(v float32) predicate.FractionRule {
+func WithdrawRateNEQ(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldWithdrawRate), v))
 	})
 }
 
 // WithdrawRateIn applies the In predicate on the "withdraw_rate" field.
-func WithdrawRateIn(vs ...float32) predicate.FractionRule {
+func WithdrawRateIn(vs ...decimal.Decimal) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -806,7 +652,7 @@ func WithdrawRateIn(vs ...float32) predicate.FractionRule {
 }
 
 // WithdrawRateNotIn applies the NotIn predicate on the "withdraw_rate" field.
-func WithdrawRateNotIn(vs ...float32) predicate.FractionRule {
+func WithdrawRateNotIn(vs ...decimal.Decimal) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -817,28 +663,28 @@ func WithdrawRateNotIn(vs ...float32) predicate.FractionRule {
 }
 
 // WithdrawRateGT applies the GT predicate on the "withdraw_rate" field.
-func WithdrawRateGT(v float32) predicate.FractionRule {
+func WithdrawRateGT(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldWithdrawRate), v))
 	})
 }
 
 // WithdrawRateGTE applies the GTE predicate on the "withdraw_rate" field.
-func WithdrawRateGTE(v float32) predicate.FractionRule {
+func WithdrawRateGTE(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldWithdrawRate), v))
 	})
 }
 
 // WithdrawRateLT applies the LT predicate on the "withdraw_rate" field.
-func WithdrawRateLT(v float32) predicate.FractionRule {
+func WithdrawRateLT(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldWithdrawRate), v))
 	})
 }
 
 // WithdrawRateLTE applies the LTE predicate on the "withdraw_rate" field.
-func WithdrawRateLTE(v float32) predicate.FractionRule {
+func WithdrawRateLTE(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldWithdrawRate), v))
 	})

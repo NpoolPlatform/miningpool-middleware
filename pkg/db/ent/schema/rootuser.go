@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/schema/field"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
+	"github.com/google/uuid"
 )
 
 // RootUser holds the schema definition for the RootUser entity.
@@ -25,7 +26,11 @@ func (RootUser) Fields() []ent.Field {
 		field.
 			String("name").Optional().Default(""),
 		field.
-			String("miningpool_type").Optional().Default(""),
+			UUID("pool_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
 			String("email").Optional().Default(""),
 		field.

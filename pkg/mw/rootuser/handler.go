@@ -6,7 +6,6 @@ import (
 	"net/mail"
 	"regexp"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
@@ -19,8 +18,8 @@ import (
 type Handler struct {
 	ID             *uint32
 	EntID          *uuid.UUID
+	PoolID         *uuid.UUID
 	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
 	Email          *string
 	AuthToken      *string
 	AuthTokenPlain *string
@@ -73,6 +72,23 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
+func WithPoolID(id *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if id == nil {
+			if must {
+				return fmt.Errorf("invalid poolid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*id)
+		if err != nil {
+			return err
+		}
+		h.PoolID = &_id
+		return nil
+	}
+}
+
 func WithName(name *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if name == nil {
@@ -86,22 +102,6 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 			return fmt.Errorf("invalid username")
 		}
 		h.Name = name
-		return nil
-	}
-}
-
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if miningpooltype == nil {
-			if must {
-				return fmt.Errorf("invalid miningpooltype")
-			}
-			return nil
-		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
-			return fmt.Errorf("invalid miningpooltype,not allow be default type")
-		}
-		h.MiningpoolType = miningpooltype
 		return nil
 	}
 }
@@ -187,6 +187,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
+		if conds.PoolID != nil {
+			id, err := uuid.Parse(conds.GetPoolID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.PoolID = &cruder.Cond{
+				Op:  conds.GetPoolID().GetOp(),
+				Val: id,
+			}
+		}
 		if conds.EntIDs != nil {
 			ids := []uuid.UUID{}
 			for _, id := range conds.GetEntIDs().GetValue() {
@@ -205,12 +215,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.Name = &cruder.Cond{
 				Op:  conds.GetName().GetOp(),
 				Val: conds.GetName().GetValue(),
-			}
-		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
 			}
 		}
 		if conds.Email != nil {

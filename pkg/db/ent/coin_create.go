@@ -79,16 +79,16 @@ func (cc *CoinCreate) SetNillableEntID(u *uuid.UUID) *CoinCreate {
 	return cc
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (cc *CoinCreate) SetMiningpoolType(s string) *CoinCreate {
-	cc.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (cc *CoinCreate) SetPoolID(u uuid.UUID) *CoinCreate {
+	cc.mutation.SetPoolID(u)
 	return cc
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableMiningpoolType(s *string) *CoinCreate {
-	if s != nil {
-		cc.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (cc *CoinCreate) SetNillablePoolID(u *uuid.UUID) *CoinCreate {
+	if u != nil {
+		cc.SetPoolID(*u)
 	}
 	return cc
 }
@@ -107,22 +107,30 @@ func (cc *CoinCreate) SetNillableCoinType(s *string) *CoinCreate {
 	return cc
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (cc *CoinCreate) SetRevenueTypes(s []string) *CoinCreate {
-	cc.mutation.SetRevenueTypes(s)
+// SetRevenueType sets the "revenue_type" field.
+func (cc *CoinCreate) SetRevenueType(s string) *CoinCreate {
+	cc.mutation.SetRevenueType(s)
 	return cc
 }
 
-// SetFeeRate sets the "fee_rate" field.
-func (cc *CoinCreate) SetFeeRate(d decimal.Decimal) *CoinCreate {
-	cc.mutation.SetFeeRate(d)
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableRevenueType(s *string) *CoinCreate {
+	if s != nil {
+		cc.SetRevenueType(*s)
+	}
 	return cc
 }
 
-// SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableFeeRate(d *decimal.Decimal) *CoinCreate {
+// SetFeeRatio sets the "fee_ratio" field.
+func (cc *CoinCreate) SetFeeRatio(d decimal.Decimal) *CoinCreate {
+	cc.mutation.SetFeeRatio(d)
+	return cc
+}
+
+// SetNillableFeeRatio sets the "fee_ratio" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableFeeRatio(d *decimal.Decimal) *CoinCreate {
 	if d != nil {
-		cc.SetFeeRate(*d)
+		cc.SetFeeRatio(*d)
 	}
 	return cc
 }
@@ -141,6 +149,34 @@ func (cc *CoinCreate) SetNillableFixedRevenueAble(b *bool) *CoinCreate {
 	return cc
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (cc *CoinCreate) SetLeastTransferAmount(d decimal.Decimal) *CoinCreate {
+	cc.mutation.SetLeastTransferAmount(d)
+	return cc
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableLeastTransferAmount(d *decimal.Decimal) *CoinCreate {
+	if d != nil {
+		cc.SetLeastTransferAmount(*d)
+	}
+	return cc
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (cc *CoinCreate) SetBenefitIntervalSeconds(u uint32) *CoinCreate {
+	cc.mutation.SetBenefitIntervalSeconds(u)
+	return cc
+}
+
+// SetNillableBenefitIntervalSeconds sets the "benefit_interval_seconds" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableBenefitIntervalSeconds(u *uint32) *CoinCreate {
+	if u != nil {
+		cc.SetBenefitIntervalSeconds(*u)
+	}
+	return cc
+}
+
 // SetRemark sets the "remark" field.
 func (cc *CoinCreate) SetRemark(s string) *CoinCreate {
 	cc.mutation.SetRemark(s)
@@ -151,20 +187,6 @@ func (cc *CoinCreate) SetRemark(s string) *CoinCreate {
 func (cc *CoinCreate) SetNillableRemark(s *string) *CoinCreate {
 	if s != nil {
 		cc.SetRemark(*s)
-	}
-	return cc
-}
-
-// SetThreshold sets the "threshold" field.
-func (cc *CoinCreate) SetThreshold(d decimal.Decimal) *CoinCreate {
-	cc.mutation.SetThreshold(d)
-	return cc
-}
-
-// SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableThreshold(d *decimal.Decimal) *CoinCreate {
-	if d != nil {
-		cc.SetThreshold(*d)
 	}
 	return cc
 }
@@ -282,33 +304,40 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultEntID()
 		cc.mutation.SetEntID(v)
 	}
-	if _, ok := cc.mutation.MiningpoolType(); !ok {
-		v := coin.DefaultMiningpoolType
-		cc.mutation.SetMiningpoolType(v)
+	if _, ok := cc.mutation.PoolID(); !ok {
+		if coin.DefaultPoolID == nil {
+			return fmt.Errorf("ent: uninitialized coin.DefaultPoolID (forgotten import ent/runtime?)")
+		}
+		v := coin.DefaultPoolID()
+		cc.mutation.SetPoolID(v)
 	}
 	if _, ok := cc.mutation.CoinType(); !ok {
 		v := coin.DefaultCoinType
 		cc.mutation.SetCoinType(v)
 	}
-	if _, ok := cc.mutation.RevenueTypes(); !ok {
-		v := coin.DefaultRevenueTypes
-		cc.mutation.SetRevenueTypes(v)
+	if _, ok := cc.mutation.RevenueType(); !ok {
+		v := coin.DefaultRevenueType
+		cc.mutation.SetRevenueType(v)
 	}
-	if _, ok := cc.mutation.FeeRate(); !ok {
-		v := coin.DefaultFeeRate
-		cc.mutation.SetFeeRate(v)
+	if _, ok := cc.mutation.FeeRatio(); !ok {
+		v := coin.DefaultFeeRatio
+		cc.mutation.SetFeeRatio(v)
 	}
 	if _, ok := cc.mutation.FixedRevenueAble(); !ok {
 		v := coin.DefaultFixedRevenueAble
 		cc.mutation.SetFixedRevenueAble(v)
 	}
+	if _, ok := cc.mutation.LeastTransferAmount(); !ok {
+		v := coin.DefaultLeastTransferAmount
+		cc.mutation.SetLeastTransferAmount(v)
+	}
+	if _, ok := cc.mutation.BenefitIntervalSeconds(); !ok {
+		v := coin.DefaultBenefitIntervalSeconds
+		cc.mutation.SetBenefitIntervalSeconds(v)
+	}
 	if _, ok := cc.mutation.Remark(); !ok {
 		v := coin.DefaultRemark
 		cc.mutation.SetRemark(v)
-	}
-	if _, ok := cc.mutation.Threshold(); !ok {
-		v := coin.DefaultThreshold
-		cc.mutation.SetThreshold(v)
 	}
 	return nil
 }
@@ -393,13 +422,13 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
-	if value, ok := cc.mutation.MiningpoolType(); ok {
+	if value, ok := cc.mutation.PoolID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: coin.FieldMiningpoolType,
+			Column: coin.FieldPoolID,
 		})
-		_node.MiningpoolType = value
+		_node.PoolID = value
 	}
 	if value, ok := cc.mutation.CoinType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -409,21 +438,21 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.CoinType = value
 	}
-	if value, ok := cc.mutation.RevenueTypes(); ok {
+	if value, ok := cc.mutation.RevenueType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: coin.FieldRevenueTypes,
+			Column: coin.FieldRevenueType,
 		})
-		_node.RevenueTypes = value
+		_node.RevenueType = value
 	}
-	if value, ok := cc.mutation.FeeRate(); ok {
+	if value, ok := cc.mutation.FeeRatio(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: coin.FieldFeeRate,
+			Column: coin.FieldFeeRatio,
 		})
-		_node.FeeRate = value
+		_node.FeeRatio = value
 	}
 	if value, ok := cc.mutation.FixedRevenueAble(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -433,6 +462,22 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.FixedRevenueAble = value
 	}
+	if value, ok := cc.mutation.LeastTransferAmount(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: coin.FieldLeastTransferAmount,
+		})
+		_node.LeastTransferAmount = value
+	}
+	if value, ok := cc.mutation.BenefitIntervalSeconds(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+		_node.BenefitIntervalSeconds = value
+	}
 	if value, ok := cc.mutation.Remark(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -440,14 +485,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 			Column: coin.FieldRemark,
 		})
 		_node.Remark = value
-	}
-	if value, ok := cc.mutation.Threshold(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: coin.FieldThreshold,
-		})
-		_node.Threshold = value
 	}
 	return _node, _spec
 }
@@ -567,21 +604,21 @@ func (u *CoinUpsert) UpdateEntID() *CoinUpsert {
 	return u
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *CoinUpsert) SetMiningpoolType(v string) *CoinUpsert {
-	u.Set(coin.FieldMiningpoolType, v)
+// SetPoolID sets the "pool_id" field.
+func (u *CoinUpsert) SetPoolID(v uuid.UUID) *CoinUpsert {
+	u.Set(coin.FieldPoolID, v)
 	return u
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateMiningpoolType() *CoinUpsert {
-	u.SetExcluded(coin.FieldMiningpoolType)
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *CoinUpsert) UpdatePoolID() *CoinUpsert {
+	u.SetExcluded(coin.FieldPoolID)
 	return u
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *CoinUpsert) ClearMiningpoolType() *CoinUpsert {
-	u.SetNull(coin.FieldMiningpoolType)
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *CoinUpsert) ClearPoolID() *CoinUpsert {
+	u.SetNull(coin.FieldPoolID)
 	return u
 }
 
@@ -603,39 +640,39 @@ func (u *CoinUpsert) ClearCoinType() *CoinUpsert {
 	return u
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (u *CoinUpsert) SetRevenueTypes(v []string) *CoinUpsert {
-	u.Set(coin.FieldRevenueTypes, v)
+// SetRevenueType sets the "revenue_type" field.
+func (u *CoinUpsert) SetRevenueType(v string) *CoinUpsert {
+	u.Set(coin.FieldRevenueType, v)
 	return u
 }
 
-// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateRevenueTypes() *CoinUpsert {
-	u.SetExcluded(coin.FieldRevenueTypes)
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateRevenueType() *CoinUpsert {
+	u.SetExcluded(coin.FieldRevenueType)
 	return u
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (u *CoinUpsert) ClearRevenueTypes() *CoinUpsert {
-	u.SetNull(coin.FieldRevenueTypes)
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *CoinUpsert) ClearRevenueType() *CoinUpsert {
+	u.SetNull(coin.FieldRevenueType)
 	return u
 }
 
-// SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsert) SetFeeRate(v decimal.Decimal) *CoinUpsert {
-	u.Set(coin.FieldFeeRate, v)
+// SetFeeRatio sets the "fee_ratio" field.
+func (u *CoinUpsert) SetFeeRatio(v decimal.Decimal) *CoinUpsert {
+	u.Set(coin.FieldFeeRatio, v)
 	return u
 }
 
-// UpdateFeeRate sets the "fee_rate" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateFeeRate() *CoinUpsert {
-	u.SetExcluded(coin.FieldFeeRate)
+// UpdateFeeRatio sets the "fee_ratio" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateFeeRatio() *CoinUpsert {
+	u.SetExcluded(coin.FieldFeeRatio)
 	return u
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (u *CoinUpsert) ClearFeeRate() *CoinUpsert {
-	u.SetNull(coin.FieldFeeRate)
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (u *CoinUpsert) ClearFeeRatio() *CoinUpsert {
+	u.SetNull(coin.FieldFeeRatio)
 	return u
 }
 
@@ -657,6 +694,48 @@ func (u *CoinUpsert) ClearFixedRevenueAble() *CoinUpsert {
 	return u
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *CoinUpsert) SetLeastTransferAmount(v decimal.Decimal) *CoinUpsert {
+	u.Set(coin.FieldLeastTransferAmount, v)
+	return u
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateLeastTransferAmount() *CoinUpsert {
+	u.SetExcluded(coin.FieldLeastTransferAmount)
+	return u
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *CoinUpsert) ClearLeastTransferAmount() *CoinUpsert {
+	u.SetNull(coin.FieldLeastTransferAmount)
+	return u
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (u *CoinUpsert) SetBenefitIntervalSeconds(v uint32) *CoinUpsert {
+	u.Set(coin.FieldBenefitIntervalSeconds, v)
+	return u
+}
+
+// UpdateBenefitIntervalSeconds sets the "benefit_interval_seconds" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateBenefitIntervalSeconds() *CoinUpsert {
+	u.SetExcluded(coin.FieldBenefitIntervalSeconds)
+	return u
+}
+
+// AddBenefitIntervalSeconds adds v to the "benefit_interval_seconds" field.
+func (u *CoinUpsert) AddBenefitIntervalSeconds(v uint32) *CoinUpsert {
+	u.Add(coin.FieldBenefitIntervalSeconds, v)
+	return u
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (u *CoinUpsert) ClearBenefitIntervalSeconds() *CoinUpsert {
+	u.SetNull(coin.FieldBenefitIntervalSeconds)
+	return u
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsert) SetRemark(v string) *CoinUpsert {
 	u.Set(coin.FieldRemark, v)
@@ -672,24 +751,6 @@ func (u *CoinUpsert) UpdateRemark() *CoinUpsert {
 // ClearRemark clears the value of the "remark" field.
 func (u *CoinUpsert) ClearRemark() *CoinUpsert {
 	u.SetNull(coin.FieldRemark)
-	return u
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *CoinUpsert) SetThreshold(v decimal.Decimal) *CoinUpsert {
-	u.Set(coin.FieldThreshold, v)
-	return u
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateThreshold() *CoinUpsert {
-	u.SetExcluded(coin.FieldThreshold)
-	return u
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (u *CoinUpsert) ClearThreshold() *CoinUpsert {
-	u.SetNull(coin.FieldThreshold)
 	return u
 }
 
@@ -818,24 +879,24 @@ func (u *CoinUpsertOne) UpdateEntID() *CoinUpsertOne {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *CoinUpsertOne) SetMiningpoolType(v string) *CoinUpsertOne {
+// SetPoolID sets the "pool_id" field.
+func (u *CoinUpsertOne) SetPoolID(v uuid.UUID) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetPoolID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateMiningpoolType() *CoinUpsertOne {
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdatePoolID() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdatePoolID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *CoinUpsertOne) ClearMiningpoolType() *CoinUpsertOne {
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *CoinUpsertOne) ClearPoolID() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearPoolID()
 	})
 }
 
@@ -860,45 +921,45 @@ func (u *CoinUpsertOne) ClearCoinType() *CoinUpsertOne {
 	})
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (u *CoinUpsertOne) SetRevenueTypes(v []string) *CoinUpsertOne {
+// SetRevenueType sets the "revenue_type" field.
+func (u *CoinUpsertOne) SetRevenueType(v string) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueTypes(v)
+		s.SetRevenueType(v)
 	})
 }
 
-// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateRevenueTypes() *CoinUpsertOne {
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateRevenueType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueTypes()
+		s.UpdateRevenueType()
 	})
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (u *CoinUpsertOne) ClearRevenueTypes() *CoinUpsertOne {
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *CoinUpsertOne) ClearRevenueType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueTypes()
+		s.ClearRevenueType()
 	})
 }
 
-// SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsertOne) SetFeeRate(v decimal.Decimal) *CoinUpsertOne {
+// SetFeeRatio sets the "fee_ratio" field.
+func (u *CoinUpsertOne) SetFeeRatio(v decimal.Decimal) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetFeeRate(v)
+		s.SetFeeRatio(v)
 	})
 }
 
-// UpdateFeeRate sets the "fee_rate" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateFeeRate() *CoinUpsertOne {
+// UpdateFeeRatio sets the "fee_ratio" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateFeeRatio() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateFeeRate()
+		s.UpdateFeeRatio()
 	})
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (u *CoinUpsertOne) ClearFeeRate() *CoinUpsertOne {
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (u *CoinUpsertOne) ClearFeeRatio() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearFeeRate()
+		s.ClearFeeRatio()
 	})
 }
 
@@ -923,6 +984,55 @@ func (u *CoinUpsertOne) ClearFixedRevenueAble() *CoinUpsertOne {
 	})
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *CoinUpsertOne) SetLeastTransferAmount(v decimal.Decimal) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetLeastTransferAmount(v)
+	})
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateLeastTransferAmount() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateLeastTransferAmount()
+	})
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *CoinUpsertOne) ClearLeastTransferAmount() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearLeastTransferAmount()
+	})
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (u *CoinUpsertOne) SetBenefitIntervalSeconds(v uint32) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetBenefitIntervalSeconds(v)
+	})
+}
+
+// AddBenefitIntervalSeconds adds v to the "benefit_interval_seconds" field.
+func (u *CoinUpsertOne) AddBenefitIntervalSeconds(v uint32) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.AddBenefitIntervalSeconds(v)
+	})
+}
+
+// UpdateBenefitIntervalSeconds sets the "benefit_interval_seconds" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateBenefitIntervalSeconds() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateBenefitIntervalSeconds()
+	})
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (u *CoinUpsertOne) ClearBenefitIntervalSeconds() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearBenefitIntervalSeconds()
+	})
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsertOne) SetRemark(v string) *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
@@ -941,27 +1051,6 @@ func (u *CoinUpsertOne) UpdateRemark() *CoinUpsertOne {
 func (u *CoinUpsertOne) ClearRemark() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearRemark()
-	})
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *CoinUpsertOne) SetThreshold(v decimal.Decimal) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetThreshold(v)
-	})
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateThreshold() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateThreshold()
-	})
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (u *CoinUpsertOne) ClearThreshold() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearThreshold()
 	})
 }
 
@@ -1253,24 +1342,24 @@ func (u *CoinUpsertBulk) UpdateEntID() *CoinUpsertBulk {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *CoinUpsertBulk) SetMiningpoolType(v string) *CoinUpsertBulk {
+// SetPoolID sets the "pool_id" field.
+func (u *CoinUpsertBulk) SetPoolID(v uuid.UUID) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetPoolID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateMiningpoolType() *CoinUpsertBulk {
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdatePoolID() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdatePoolID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *CoinUpsertBulk) ClearMiningpoolType() *CoinUpsertBulk {
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *CoinUpsertBulk) ClearPoolID() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearPoolID()
 	})
 }
 
@@ -1295,45 +1384,45 @@ func (u *CoinUpsertBulk) ClearCoinType() *CoinUpsertBulk {
 	})
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (u *CoinUpsertBulk) SetRevenueTypes(v []string) *CoinUpsertBulk {
+// SetRevenueType sets the "revenue_type" field.
+func (u *CoinUpsertBulk) SetRevenueType(v string) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueTypes(v)
+		s.SetRevenueType(v)
 	})
 }
 
-// UpdateRevenueTypes sets the "revenue_types" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateRevenueTypes() *CoinUpsertBulk {
+// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateRevenueType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueTypes()
+		s.UpdateRevenueType()
 	})
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (u *CoinUpsertBulk) ClearRevenueTypes() *CoinUpsertBulk {
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (u *CoinUpsertBulk) ClearRevenueType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueTypes()
+		s.ClearRevenueType()
 	})
 }
 
-// SetFeeRate sets the "fee_rate" field.
-func (u *CoinUpsertBulk) SetFeeRate(v decimal.Decimal) *CoinUpsertBulk {
+// SetFeeRatio sets the "fee_ratio" field.
+func (u *CoinUpsertBulk) SetFeeRatio(v decimal.Decimal) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.SetFeeRate(v)
+		s.SetFeeRatio(v)
 	})
 }
 
-// UpdateFeeRate sets the "fee_rate" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateFeeRate() *CoinUpsertBulk {
+// UpdateFeeRatio sets the "fee_ratio" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateFeeRatio() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.UpdateFeeRate()
+		s.UpdateFeeRatio()
 	})
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (u *CoinUpsertBulk) ClearFeeRate() *CoinUpsertBulk {
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (u *CoinUpsertBulk) ClearFeeRatio() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
-		s.ClearFeeRate()
+		s.ClearFeeRatio()
 	})
 }
 
@@ -1358,6 +1447,55 @@ func (u *CoinUpsertBulk) ClearFixedRevenueAble() *CoinUpsertBulk {
 	})
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (u *CoinUpsertBulk) SetLeastTransferAmount(v decimal.Decimal) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetLeastTransferAmount(v)
+	})
+}
+
+// UpdateLeastTransferAmount sets the "least_transfer_amount" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateLeastTransferAmount() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateLeastTransferAmount()
+	})
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (u *CoinUpsertBulk) ClearLeastTransferAmount() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearLeastTransferAmount()
+	})
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (u *CoinUpsertBulk) SetBenefitIntervalSeconds(v uint32) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetBenefitIntervalSeconds(v)
+	})
+}
+
+// AddBenefitIntervalSeconds adds v to the "benefit_interval_seconds" field.
+func (u *CoinUpsertBulk) AddBenefitIntervalSeconds(v uint32) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.AddBenefitIntervalSeconds(v)
+	})
+}
+
+// UpdateBenefitIntervalSeconds sets the "benefit_interval_seconds" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateBenefitIntervalSeconds() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateBenefitIntervalSeconds()
+	})
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (u *CoinUpsertBulk) ClearBenefitIntervalSeconds() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearBenefitIntervalSeconds()
+	})
+}
+
 // SetRemark sets the "remark" field.
 func (u *CoinUpsertBulk) SetRemark(v string) *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
@@ -1376,27 +1514,6 @@ func (u *CoinUpsertBulk) UpdateRemark() *CoinUpsertBulk {
 func (u *CoinUpsertBulk) ClearRemark() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearRemark()
-	})
-}
-
-// SetThreshold sets the "threshold" field.
-func (u *CoinUpsertBulk) SetThreshold(v decimal.Decimal) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetThreshold(v)
-	})
-}
-
-// UpdateThreshold sets the "threshold" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateThreshold() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateThreshold()
-	})
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (u *CoinUpsertBulk) ClearThreshold() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearThreshold()
 	})
 }
 

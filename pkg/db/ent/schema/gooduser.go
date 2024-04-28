@@ -33,15 +33,21 @@ func (GoodUser) Fields() []ent.Field {
 		field.
 			String("name").Optional().Default(""),
 		field.
-			String("miningpool_type").Optional().Default(""),
+			UUID("coin_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
-			String("coin_type").Optional().Default(""),
+			UUID("revenue_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
 			Float32("hash_rate").Optional().Default(0),
 		field.
 			Text("read_page_link").Optional().Default(""),
-		field.
-			String("revenue_type").Optional().Default(""),
 	}
 }
 
@@ -53,6 +59,6 @@ func (GoodUser) Edges() []ent.Edge {
 func (GoodUser) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("root_user_id"),
-		index.Fields("miningpool_type", "coin_type"),
+		index.Fields("coin_id", "revenue_id"),
 	}
 }

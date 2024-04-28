@@ -25,8 +25,6 @@ type OrderUser struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// RootUserID holds the value of the "root_user_id" field.
-	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// GoodUserID holds the value of the "good_user_id" field.
 	GoodUserID uuid.UUID `json:"good_user_id,omitempty"`
 	// UserID holds the value of the "user_id" field.
@@ -35,10 +33,6 @@ type OrderUser struct {
 	AppID uuid.UUID `json:"app_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
-	// CoinType holds the value of the "coin_type" field.
-	CoinType string `json:"coin_type,omitempty"`
 	// Proportion holds the value of the "proportion" field.
 	Proportion decimal.Decimal `json:"proportion,omitempty"`
 	// RevenueAddress holds the value of the "revenue_address" field.
@@ -60,9 +54,9 @@ func (*OrderUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case orderuser.FieldID, orderuser.FieldCreatedAt, orderuser.FieldUpdatedAt, orderuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case orderuser.FieldName, orderuser.FieldMiningpoolType, orderuser.FieldCoinType, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
+		case orderuser.FieldName, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case orderuser.FieldEntID, orderuser.FieldRootUserID, orderuser.FieldGoodUserID, orderuser.FieldUserID, orderuser.FieldAppID:
+		case orderuser.FieldEntID, orderuser.FieldGoodUserID, orderuser.FieldUserID, orderuser.FieldAppID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type OrderUser", columns[i])
@@ -109,12 +103,6 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			} else if value != nil {
 				ou.EntID = *value
 			}
-		case orderuser.FieldRootUserID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field root_user_id", values[i])
-			} else if value != nil {
-				ou.RootUserID = *value
-			}
 		case orderuser.FieldGoodUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field good_user_id", values[i])
@@ -138,18 +126,6 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				ou.Name = value.String
-			}
-		case orderuser.FieldMiningpoolType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
-			} else if value.Valid {
-				ou.MiningpoolType = value.String
-			}
-		case orderuser.FieldCoinType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
-			} else if value.Valid {
-				ou.CoinType = value.String
 			}
 		case orderuser.FieldProportion:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
@@ -215,9 +191,6 @@ func (ou *OrderUser) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", ou.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("root_user_id=")
-	builder.WriteString(fmt.Sprintf("%v", ou.RootUserID))
-	builder.WriteString(", ")
 	builder.WriteString("good_user_id=")
 	builder.WriteString(fmt.Sprintf("%v", ou.GoodUserID))
 	builder.WriteString(", ")
@@ -229,12 +202,6 @@ func (ou *OrderUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ou.Name)
-	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(ou.MiningpoolType)
-	builder.WriteString(", ")
-	builder.WriteString("coin_type=")
-	builder.WriteString(ou.CoinType)
 	builder.WriteString(", ")
 	builder.WriteString("proportion=")
 	builder.WriteString(fmt.Sprintf("%v", ou.Proportion))

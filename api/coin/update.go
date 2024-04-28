@@ -29,10 +29,8 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 		ctx,
 		coin.WithID(req.ID, false),
 		coin.WithEntID(req.EntID, false),
-		coin.WithRevenueTypes(&req.RevenueTypes, false),
-		coin.WithFeeRate(req.FeeRate, false),
 		coin.WithFixedRevenueAble(req.FixedRevenueAble, false),
-		coin.WithThreshold(req.Threshold, false),
+		coin.WithLeastTransferAmount(req.LeastTransferAmount, false),
 		coin.WithRemark(req.Remark, false),
 	)
 	if err != nil {

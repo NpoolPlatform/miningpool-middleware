@@ -29,6 +29,8 @@ func (Pool) Fields() []ent.Field {
 		field.
 			String("site").Optional().Default(""),
 		field.
+			String("logo").Optional().Default(""),
+		field.
 			String("description").Optional().Default(""),
 	}
 }

@@ -24,14 +24,13 @@ type queryHandler struct {
 func (h *queryHandler) selectFractionRule(stm *ent.FractionRuleQuery) {
 	h.stm = stm.Select(
 		fractionruleent.FieldID,
+		fractionruleent.FieldCreatedAt,
+		fractionruleent.FieldUpdatedAt,
 		fractionruleent.FieldEntID,
-		fractionruleent.FieldMiningpoolType,
-		fractionruleent.FieldCoinType,
+		fractionruleent.FieldCoinID,
 		fractionruleent.FieldWithdrawInterval,
 		fractionruleent.FieldMinAmount,
 		fractionruleent.FieldWithdrawRate,
-		fractionruleent.FieldCreatedAt,
-		fractionruleent.FieldUpdatedAt,
 	)
 }
 

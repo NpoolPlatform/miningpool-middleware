@@ -27,25 +27,21 @@ func init() {
 }
 
 var ret = &npool.Coin{
-	EntID:            uuid.NewString(),
-	CoinType:         basetypes.CoinType_BitCoin,
-	MiningpoolType:   basetypes.MiningpoolType_AntPool,
-	RevenueTypes:     []basetypes.RevenueType{basetypes.RevenueType_FPPS, basetypes.RevenueType_PPLNS},
-	FeeRate:          decimal.NewFromFloat(5.4).String(),
-	FixedRevenueAble: false,
-	Threshold:        decimal.NewFromFloat(5.4).String(),
-	Remark:           "asdfaf",
+	EntID:               uuid.NewString(),
+	CoinType:            basetypes.CoinType_BitCoin,
+	PoolID:              uuid.NewString(),
+	FixedRevenueAble:    false,
+	LeastTransferAmount: decimal.NewFromFloat(5.4).String(),
+	Remark:              "asdfaf",
 }
 
 var req = &npool.CoinReq{
-	EntID:            &ret.EntID,
-	CoinType:         &ret.CoinType,
-	MiningpoolType:   &ret.MiningpoolType,
-	RevenueTypes:     ret.RevenueTypes,
-	FeeRate:          &ret.FeeRate,
-	FixedRevenueAble: &ret.FixedRevenueAble,
-	Threshold:        &ret.Threshold,
-	Remark:           &ret.Remark,
+	EntID:               &ret.EntID,
+	CoinType:            &ret.CoinType,
+	PoolID:              &ret.PoolID,
+	FixedRevenueAble:    &ret.FixedRevenueAble,
+	LeastTransferAmount: &ret.LeastTransferAmount,
+	Remark:              &ret.Remark,
 }
 
 func create(t *testing.T) {
@@ -59,8 +55,8 @@ func create(t *testing.T) {
 		return
 	}
 
-	ret.MiningpoolType = infos[0].MiningpoolType
-	req.MiningpoolType = &infos[0].MiningpoolType
+	ret.PoolID = infos[0].PoolID
+	req.PoolID = &infos[0].PoolID
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
 
@@ -68,11 +64,9 @@ func create(t *testing.T) {
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithCoinType(req.CoinType, true),
-		WithMiningpoolType(req.MiningpoolType, true),
-		WithRevenueTypes(&req.RevenueTypes, true),
-		WithFeeRate(req.FeeRate, true),
+		WithPoolID(req.PoolID, true),
 		WithFixedRevenueAble(req.FixedRevenueAble, true),
-		WithThreshold(req.Threshold, true),
+		WithLeastTransferAmount(req.LeastTransferAmount, true),
 		WithRemark(req.Remark, true),
 	)
 	assert.Nil(t, err)

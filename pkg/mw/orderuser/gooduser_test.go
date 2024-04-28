@@ -23,12 +23,9 @@ var gooduserRet = &npool.GoodUser{
 }
 
 var gooduserReq = &npool.GoodUserReq{
-	EntID:          &gooduserRet.EntID,
-	RootUserID:     &gooduserRet.RootUserID,
-	MiningpoolType: &gooduserRet.MiningpoolType,
-	CoinType:       &gooduserRet.CoinType,
-	HashRate:       &gooduserRet.HashRate,
-	RevenueType:    &gooduserRet.RevenueType,
+	EntID:      &gooduserRet.EntID,
+	RootUserID: &gooduserRet.RootUserID,
+	HashRate:   &gooduserRet.HashRate,
 }
 
 func createGoodUser(t *testing.T) {
@@ -36,10 +33,7 @@ func createGoodUser(t *testing.T) {
 		context.Background(),
 		gooduser.WithEntID(gooduserReq.EntID, true),
 		gooduser.WithRootUserID(gooduserReq.RootUserID, true),
-		gooduser.WithMiningpoolType(gooduserReq.MiningpoolType, true),
-		gooduser.WithCoinType(gooduserReq.CoinType, true),
 		gooduser.WithHashRate(gooduserReq.HashRate, true),
-		gooduser.WithRevenueType(gooduserReq.RevenueType, true),
 	)
 	if !assert.Nil(t, err) {
 		return

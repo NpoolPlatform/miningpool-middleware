@@ -6,6 +6,7 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/google/uuid"
 )
 
 func (h *Handler) UpdateFractionRule(ctx context.Context) error {
@@ -18,9 +19,13 @@ func (h *Handler) UpdateFractionRule(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
+	coinID, err := uuid.Parse(info.CoinID)
+	if err != nil {
+		return err
+	}
+
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
-	sqlH.BondCoinType = &info.CoinType
+	sqlH.BondCoinID = &coinID
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()

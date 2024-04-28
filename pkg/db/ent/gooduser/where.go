@@ -121,17 +121,17 @@ func Name(v string) predicate.GoodUser {
 	})
 }
 
-// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
-func MiningpoolType(v string) predicate.GoodUser {
+// CoinID applies equality check predicate on the "coin_id" field. It's identical to CoinIDEQ.
+func CoinID(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldCoinID), v))
 	})
 }
 
-// CoinType applies equality check predicate on the "coin_type" field. It's identical to CoinTypeEQ.
-func CoinType(v string) predicate.GoodUser {
+// RevenueID applies equality check predicate on the "revenue_id" field. It's identical to RevenueIDEQ.
+func RevenueID(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinType), v))
+		s.Where(sql.EQ(s.C(FieldRevenueID), v))
 	})
 }
 
@@ -146,13 +146,6 @@ func HashRate(v float32) predicate.GoodUser {
 func ReadPageLink(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldReadPageLink), v))
-	})
-}
-
-// RevenueType applies equality check predicate on the "revenue_type" field. It's identical to RevenueTypeEQ.
-func RevenueType(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
 	})
 }
 
@@ -603,229 +596,159 @@ func NameContainsFold(v string) predicate.GoodUser {
 	})
 }
 
-// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
-func MiningpoolTypeEQ(v string) predicate.GoodUser {
+// CoinIDEQ applies the EQ predicate on the "coin_id" field.
+func CoinIDEQ(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
-func MiningpoolTypeNEQ(v string) predicate.GoodUser {
+// CoinIDNEQ applies the NEQ predicate on the "coin_id" field.
+func CoinIDNEQ(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NEQ(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
-func MiningpoolTypeIn(vs ...string) predicate.GoodUser {
+// CoinIDIn applies the In predicate on the "coin_id" field.
+func CoinIDIn(vs ...uuid.UUID) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.In(s.C(FieldCoinID), v...))
 	})
 }
 
-// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
-func MiningpoolTypeNotIn(vs ...string) predicate.GoodUser {
+// CoinIDNotIn applies the NotIn predicate on the "coin_id" field.
+func CoinIDNotIn(vs ...uuid.UUID) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.NotIn(s.C(FieldCoinID), v...))
 	})
 }
 
-// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
-func MiningpoolTypeGT(v string) predicate.GoodUser {
+// CoinIDGT applies the GT predicate on the "coin_id" field.
+func CoinIDGT(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GT(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
-func MiningpoolTypeGTE(v string) predicate.GoodUser {
+// CoinIDGTE applies the GTE predicate on the "coin_id" field.
+func CoinIDGTE(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GTE(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
-func MiningpoolTypeLT(v string) predicate.GoodUser {
+// CoinIDLT applies the LT predicate on the "coin_id" field.
+func CoinIDLT(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LT(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
-func MiningpoolTypeLTE(v string) predicate.GoodUser {
+// CoinIDLTE applies the LTE predicate on the "coin_id" field.
+func CoinIDLTE(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LTE(s.C(FieldCoinID), v))
 	})
 }
 
-// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
-func MiningpoolTypeContains(v string) predicate.GoodUser {
+// CoinIDIsNil applies the IsNil predicate on the "coin_id" field.
+func CoinIDIsNil() predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+		s.Where(sql.IsNull(s.C(FieldCoinID)))
 	})
 }
 
-// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasPrefix(v string) predicate.GoodUser {
+// CoinIDNotNil applies the NotNil predicate on the "coin_id" field.
+func CoinIDNotNil() predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NotNull(s.C(FieldCoinID)))
 	})
 }
 
-// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasSuffix(v string) predicate.GoodUser {
+// RevenueIDEQ applies the EQ predicate on the "revenue_id" field.
+func RevenueIDEQ(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldRevenueID), v))
 	})
 }
 
-// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
-func MiningpoolTypeIsNil() predicate.GoodUser {
+// RevenueIDNEQ applies the NEQ predicate on the "revenue_id" field.
+func RevenueIDNEQ(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+		s.Where(sql.NEQ(s.C(FieldRevenueID), v))
 	})
 }
 
-// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
-func MiningpoolTypeNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
-func MiningpoolTypeEqualFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
-func MiningpoolTypeContainsFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// CoinTypeEQ applies the EQ predicate on the "coin_type" field.
-func CoinTypeEQ(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeNEQ applies the NEQ predicate on the "coin_type" field.
-func CoinTypeNEQ(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeIn applies the In predicate on the "coin_type" field.
-func CoinTypeIn(vs ...string) predicate.GoodUser {
+// RevenueIDIn applies the In predicate on the "revenue_id" field.
+func RevenueIDIn(vs ...uuid.UUID) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCoinType), v...))
+		s.Where(sql.In(s.C(FieldRevenueID), v...))
 	})
 }
 
-// CoinTypeNotIn applies the NotIn predicate on the "coin_type" field.
-func CoinTypeNotIn(vs ...string) predicate.GoodUser {
+// RevenueIDNotIn applies the NotIn predicate on the "revenue_id" field.
+func RevenueIDNotIn(vs ...uuid.UUID) predicate.GoodUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCoinType), v...))
+		s.Where(sql.NotIn(s.C(FieldRevenueID), v...))
 	})
 }
 
-// CoinTypeGT applies the GT predicate on the "coin_type" field.
-func CoinTypeGT(v string) predicate.GoodUser {
+// RevenueIDGT applies the GT predicate on the "revenue_id" field.
+func RevenueIDGT(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCoinType), v))
+		s.Where(sql.GT(s.C(FieldRevenueID), v))
 	})
 }
 
-// CoinTypeGTE applies the GTE predicate on the "coin_type" field.
-func CoinTypeGTE(v string) predicate.GoodUser {
+// RevenueIDGTE applies the GTE predicate on the "revenue_id" field.
+func RevenueIDGTE(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCoinType), v))
+		s.Where(sql.GTE(s.C(FieldRevenueID), v))
 	})
 }
 
-// CoinTypeLT applies the LT predicate on the "coin_type" field.
-func CoinTypeLT(v string) predicate.GoodUser {
+// RevenueIDLT applies the LT predicate on the "revenue_id" field.
+func RevenueIDLT(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCoinType), v))
+		s.Where(sql.LT(s.C(FieldRevenueID), v))
 	})
 }
 
-// CoinTypeLTE applies the LTE predicate on the "coin_type" field.
-func CoinTypeLTE(v string) predicate.GoodUser {
+// RevenueIDLTE applies the LTE predicate on the "revenue_id" field.
+func RevenueIDLTE(v uuid.UUID) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCoinType), v))
+		s.Where(sql.LTE(s.C(FieldRevenueID), v))
 	})
 }
 
-// CoinTypeContains applies the Contains predicate on the "coin_type" field.
-func CoinTypeContains(v string) predicate.GoodUser {
+// RevenueIDIsNil applies the IsNil predicate on the "revenue_id" field.
+func RevenueIDIsNil() predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldCoinType), v))
+		s.Where(sql.IsNull(s.C(FieldRevenueID)))
 	})
 }
 
-// CoinTypeHasPrefix applies the HasPrefix predicate on the "coin_type" field.
-func CoinTypeHasPrefix(v string) predicate.GoodUser {
+// RevenueIDNotNil applies the NotNil predicate on the "revenue_id" field.
+func RevenueIDNotNil() predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeHasSuffix applies the HasSuffix predicate on the "coin_type" field.
-func CoinTypeHasSuffix(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeIsNil applies the IsNil predicate on the "coin_type" field.
-func CoinTypeIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCoinType)))
-	})
-}
-
-// CoinTypeNotNil applies the NotNil predicate on the "coin_type" field.
-func CoinTypeNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCoinType)))
-	})
-}
-
-// CoinTypeEqualFold applies the EqualFold predicate on the "coin_type" field.
-func CoinTypeEqualFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldCoinType), v))
-	})
-}
-
-// CoinTypeContainsFold applies the ContainsFold predicate on the "coin_type" field.
-func CoinTypeContainsFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
+		s.Where(sql.NotNull(s.C(FieldRevenueID)))
 	})
 }
 
@@ -1017,119 +940,6 @@ func ReadPageLinkEqualFold(v string) predicate.GoodUser {
 func ReadPageLinkContainsFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldReadPageLink), v))
-	})
-}
-
-// RevenueTypeEQ applies the EQ predicate on the "revenue_type" field.
-func RevenueTypeEQ(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeNEQ applies the NEQ predicate on the "revenue_type" field.
-func RevenueTypeNEQ(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeIn applies the In predicate on the "revenue_type" field.
-func RevenueTypeIn(vs ...string) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeNotIn applies the NotIn predicate on the "revenue_type" field.
-func RevenueTypeNotIn(vs ...string) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeGT applies the GT predicate on the "revenue_type" field.
-func RevenueTypeGT(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeGTE applies the GTE predicate on the "revenue_type" field.
-func RevenueTypeGTE(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLT applies the LT predicate on the "revenue_type" field.
-func RevenueTypeLT(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLTE applies the LTE predicate on the "revenue_type" field.
-func RevenueTypeLTE(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContains applies the Contains predicate on the "revenue_type" field.
-func RevenueTypeContains(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasPrefix applies the HasPrefix predicate on the "revenue_type" field.
-func RevenueTypeHasPrefix(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasSuffix applies the HasSuffix predicate on the "revenue_type" field.
-func RevenueTypeHasSuffix(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeIsNil applies the IsNil predicate on the "revenue_type" field.
-func RevenueTypeIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueType)))
-	})
-}
-
-// RevenueTypeNotNil applies the NotNil predicate on the "revenue_type" field.
-func RevenueTypeNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueType)))
-	})
-}
-
-// RevenueTypeEqualFold applies the EqualFold predicate on the "revenue_type" field.
-func RevenueTypeEqualFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContainsFold applies the ContainsFold predicate on the "revenue_type" field.
-func RevenueTypeContainsFold(v string) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldRevenueType), v))
 	})
 }
 

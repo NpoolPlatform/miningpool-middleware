@@ -15,16 +15,10 @@ import (
 )
 
 type Handler struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	MiningpoolType *basetypes.MiningpoolType
-	Name           *string
-	Site           *string
-	Description    *string
-	Reqs           []*poolcrud.Req
-	Conds          *poolcrud.Conds
-	Offset         int32
-	Limit          int32
+	poolcrud.Req
+	Conds  *poolcrud.Conds
+	Offset int32
+	Limit  int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {
@@ -110,6 +104,19 @@ func WithSite(site *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
+func WithLogo(logo *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if logo == nil {
+			if must {
+				return fmt.Errorf("invalid logo")
+			}
+			return nil
+		}
+		h.Logo = logo
+		return nil
+	}
+}
+
 func WithDescription(description *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if description == nil {
@@ -170,18 +177,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.Name = &cruder.Cond{
 				Op:  conds.GetName().GetOp(),
 				Val: conds.GetName().GetValue(),
-			}
-		}
-		if conds.Site != nil {
-			h.Conds.Site = &cruder.Cond{
-				Op:  conds.GetSite().GetOp(),
-				Val: conds.GetSite().GetValue(),
-			}
-		}
-		if conds.Description != nil {
-			h.Conds.Description = &cruder.Cond{
-				Op:  conds.GetDescription().GetOp(),
-				Val: conds.GetDescription().GetValue(),
 			}
 		}
 		return nil

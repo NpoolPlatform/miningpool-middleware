@@ -24,13 +24,14 @@ type queryHandler struct {
 func (h *queryHandler) selectPool(stm *ent.PoolQuery) {
 	h.stm = stm.Select(
 		poolent.FieldID,
+		poolent.FieldCreatedAt,
+		poolent.FieldUpdatedAt,
 		poolent.FieldEntID,
 		poolent.FieldMiningpoolType,
 		poolent.FieldName,
 		poolent.FieldSite,
+		poolent.FieldLogo,
 		poolent.FieldDescription,
-		poolent.FieldCreatedAt,
-		poolent.FieldUpdatedAt,
 	)
 }
 

@@ -108,10 +108,10 @@ func EntID(v uuid.UUID) predicate.Coin {
 	})
 }
 
-// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
-func MiningpoolType(v string) predicate.Coin {
+// PoolID applies equality check predicate on the "pool_id" field. It's identical to PoolIDEQ.
+func PoolID(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldPoolID), v))
 	})
 }
 
@@ -122,10 +122,17 @@ func CoinType(v string) predicate.Coin {
 	})
 }
 
-// FeeRate applies equality check predicate on the "fee_rate" field. It's identical to FeeRateEQ.
-func FeeRate(v decimal.Decimal) predicate.Coin {
+// RevenueType applies equality check predicate on the "revenue_type" field. It's identical to RevenueTypeEQ.
+func RevenueType(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldFeeRate), v))
+		s.Where(sql.EQ(s.C(FieldRevenueType), v))
+	})
+}
+
+// FeeRatio applies equality check predicate on the "fee_ratio" field. It's identical to FeeRatioEQ.
+func FeeRatio(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldFeeRatio), v))
 	})
 }
 
@@ -136,17 +143,24 @@ func FixedRevenueAble(v bool) predicate.Coin {
 	})
 }
 
+// LeastTransferAmount applies equality check predicate on the "least_transfer_amount" field. It's identical to LeastTransferAmountEQ.
+func LeastTransferAmount(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// BenefitIntervalSeconds applies equality check predicate on the "benefit_interval_seconds" field. It's identical to BenefitIntervalSecondsEQ.
+func BenefitIntervalSeconds(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
 // Remark applies equality check predicate on the "remark" field. It's identical to RemarkEQ.
 func Remark(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRemark), v))
-	})
-}
-
-// Threshold applies equality check predicate on the "threshold" field. It's identical to ThresholdEQ.
-func Threshold(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldThreshold), v))
 	})
 }
 
@@ -406,116 +420,81 @@ func EntIDLTE(v uuid.UUID) predicate.Coin {
 	})
 }
 
-// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
-func MiningpoolTypeEQ(v string) predicate.Coin {
+// PoolIDEQ applies the EQ predicate on the "pool_id" field.
+func PoolIDEQ(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
-func MiningpoolTypeNEQ(v string) predicate.Coin {
+// PoolIDNEQ applies the NEQ predicate on the "pool_id" field.
+func PoolIDNEQ(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NEQ(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
-func MiningpoolTypeIn(vs ...string) predicate.Coin {
+// PoolIDIn applies the In predicate on the "pool_id" field.
+func PoolIDIn(vs ...uuid.UUID) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.In(s.C(FieldPoolID), v...))
 	})
 }
 
-// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
-func MiningpoolTypeNotIn(vs ...string) predicate.Coin {
+// PoolIDNotIn applies the NotIn predicate on the "pool_id" field.
+func PoolIDNotIn(vs ...uuid.UUID) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.NotIn(s.C(FieldPoolID), v...))
 	})
 }
 
-// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
-func MiningpoolTypeGT(v string) predicate.Coin {
+// PoolIDGT applies the GT predicate on the "pool_id" field.
+func PoolIDGT(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GT(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
-func MiningpoolTypeGTE(v string) predicate.Coin {
+// PoolIDGTE applies the GTE predicate on the "pool_id" field.
+func PoolIDGTE(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GTE(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
-func MiningpoolTypeLT(v string) predicate.Coin {
+// PoolIDLT applies the LT predicate on the "pool_id" field.
+func PoolIDLT(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LT(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
-func MiningpoolTypeLTE(v string) predicate.Coin {
+// PoolIDLTE applies the LTE predicate on the "pool_id" field.
+func PoolIDLTE(v uuid.UUID) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LTE(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
-func MiningpoolTypeContains(v string) predicate.Coin {
+// PoolIDIsNil applies the IsNil predicate on the "pool_id" field.
+func PoolIDIsNil() predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+		s.Where(sql.IsNull(s.C(FieldPoolID)))
 	})
 }
 
-// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasPrefix(v string) predicate.Coin {
+// PoolIDNotNil applies the NotNil predicate on the "pool_id" field.
+func PoolIDNotNil() predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasSuffix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
-func MiningpoolTypeIsNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
-func MiningpoolTypeNotNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
-func MiningpoolTypeEqualFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
-func MiningpoolTypeContainsFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NotNull(s.C(FieldPoolID)))
 	})
 }
 
@@ -632,95 +611,194 @@ func CoinTypeContainsFold(v string) predicate.Coin {
 	})
 }
 
-// RevenueTypesIsNil applies the IsNil predicate on the "revenue_types" field.
-func RevenueTypesIsNil() predicate.Coin {
+// RevenueTypeEQ applies the EQ predicate on the "revenue_type" field.
+func RevenueTypeEQ(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueTypes)))
+		s.Where(sql.EQ(s.C(FieldRevenueType), v))
 	})
 }
 
-// RevenueTypesNotNil applies the NotNil predicate on the "revenue_types" field.
-func RevenueTypesNotNil() predicate.Coin {
+// RevenueTypeNEQ applies the NEQ predicate on the "revenue_type" field.
+func RevenueTypeNEQ(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueTypes)))
+		s.Where(sql.NEQ(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateEQ applies the EQ predicate on the "fee_rate" field.
-func FeeRateEQ(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldFeeRate), v))
-	})
-}
-
-// FeeRateNEQ applies the NEQ predicate on the "fee_rate" field.
-func FeeRateNEQ(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldFeeRate), v))
-	})
-}
-
-// FeeRateIn applies the In predicate on the "fee_rate" field.
-func FeeRateIn(vs ...decimal.Decimal) predicate.Coin {
+// RevenueTypeIn applies the In predicate on the "revenue_type" field.
+func RevenueTypeIn(vs ...string) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldFeeRate), v...))
+		s.Where(sql.In(s.C(FieldRevenueType), v...))
 	})
 }
 
-// FeeRateNotIn applies the NotIn predicate on the "fee_rate" field.
-func FeeRateNotIn(vs ...decimal.Decimal) predicate.Coin {
+// RevenueTypeNotIn applies the NotIn predicate on the "revenue_type" field.
+func RevenueTypeNotIn(vs ...string) predicate.Coin {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldFeeRate), v...))
+		s.Where(sql.NotIn(s.C(FieldRevenueType), v...))
 	})
 }
 
-// FeeRateGT applies the GT predicate on the "fee_rate" field.
-func FeeRateGT(v decimal.Decimal) predicate.Coin {
+// RevenueTypeGT applies the GT predicate on the "revenue_type" field.
+func RevenueTypeGT(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldFeeRate), v))
+		s.Where(sql.GT(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateGTE applies the GTE predicate on the "fee_rate" field.
-func FeeRateGTE(v decimal.Decimal) predicate.Coin {
+// RevenueTypeGTE applies the GTE predicate on the "revenue_type" field.
+func RevenueTypeGTE(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldFeeRate), v))
+		s.Where(sql.GTE(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateLT applies the LT predicate on the "fee_rate" field.
-func FeeRateLT(v decimal.Decimal) predicate.Coin {
+// RevenueTypeLT applies the LT predicate on the "revenue_type" field.
+func RevenueTypeLT(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldFeeRate), v))
+		s.Where(sql.LT(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateLTE applies the LTE predicate on the "fee_rate" field.
-func FeeRateLTE(v decimal.Decimal) predicate.Coin {
+// RevenueTypeLTE applies the LTE predicate on the "revenue_type" field.
+func RevenueTypeLTE(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldFeeRate), v))
+		s.Where(sql.LTE(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateIsNil applies the IsNil predicate on the "fee_rate" field.
-func FeeRateIsNil() predicate.Coin {
+// RevenueTypeContains applies the Contains predicate on the "revenue_type" field.
+func RevenueTypeContains(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldFeeRate)))
+		s.Where(sql.Contains(s.C(FieldRevenueType), v))
 	})
 }
 
-// FeeRateNotNil applies the NotNil predicate on the "fee_rate" field.
-func FeeRateNotNil() predicate.Coin {
+// RevenueTypeHasPrefix applies the HasPrefix predicate on the "revenue_type" field.
+func RevenueTypeHasPrefix(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldFeeRate)))
+		s.Where(sql.HasPrefix(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeHasSuffix applies the HasSuffix predicate on the "revenue_type" field.
+func RevenueTypeHasSuffix(v string) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeIsNil applies the IsNil predicate on the "revenue_type" field.
+func RevenueTypeIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRevenueType)))
+	})
+}
+
+// RevenueTypeNotNil applies the NotNil predicate on the "revenue_type" field.
+func RevenueTypeNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRevenueType)))
+	})
+}
+
+// RevenueTypeEqualFold applies the EqualFold predicate on the "revenue_type" field.
+func RevenueTypeEqualFold(v string) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldRevenueType), v))
+	})
+}
+
+// RevenueTypeContainsFold applies the ContainsFold predicate on the "revenue_type" field.
+func RevenueTypeContainsFold(v string) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldRevenueType), v))
+	})
+}
+
+// FeeRatioEQ applies the EQ predicate on the "fee_ratio" field.
+func FeeRatioEQ(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioNEQ applies the NEQ predicate on the "fee_ratio" field.
+func FeeRatioNEQ(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioIn applies the In predicate on the "fee_ratio" field.
+func FeeRatioIn(vs ...decimal.Decimal) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldFeeRatio), v...))
+	})
+}
+
+// FeeRatioNotIn applies the NotIn predicate on the "fee_ratio" field.
+func FeeRatioNotIn(vs ...decimal.Decimal) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldFeeRatio), v...))
+	})
+}
+
+// FeeRatioGT applies the GT predicate on the "fee_ratio" field.
+func FeeRatioGT(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioGTE applies the GTE predicate on the "fee_ratio" field.
+func FeeRatioGTE(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioLT applies the LT predicate on the "fee_ratio" field.
+func FeeRatioLT(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioLTE applies the LTE predicate on the "fee_ratio" field.
+func FeeRatioLTE(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldFeeRatio), v))
+	})
+}
+
+// FeeRatioIsNil applies the IsNil predicate on the "fee_ratio" field.
+func FeeRatioIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldFeeRatio)))
+	})
+}
+
+// FeeRatioNotNil applies the NotNil predicate on the "fee_ratio" field.
+func FeeRatioNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldFeeRatio)))
 	})
 }
 
@@ -749,6 +827,162 @@ func FixedRevenueAbleIsNil() predicate.Coin {
 func FixedRevenueAbleNotNil() predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldFixedRevenueAble)))
+	})
+}
+
+// LeastTransferAmountEQ applies the EQ predicate on the "least_transfer_amount" field.
+func LeastTransferAmountEQ(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountNEQ applies the NEQ predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNEQ(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountIn applies the In predicate on the "least_transfer_amount" field.
+func LeastTransferAmountIn(vs ...decimal.Decimal) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldLeastTransferAmount), v...))
+	})
+}
+
+// LeastTransferAmountNotIn applies the NotIn predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNotIn(vs ...decimal.Decimal) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldLeastTransferAmount), v...))
+	})
+}
+
+// LeastTransferAmountGT applies the GT predicate on the "least_transfer_amount" field.
+func LeastTransferAmountGT(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountGTE applies the GTE predicate on the "least_transfer_amount" field.
+func LeastTransferAmountGTE(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountLT applies the LT predicate on the "least_transfer_amount" field.
+func LeastTransferAmountLT(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountLTE applies the LTE predicate on the "least_transfer_amount" field.
+func LeastTransferAmountLTE(v decimal.Decimal) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLeastTransferAmount), v))
+	})
+}
+
+// LeastTransferAmountIsNil applies the IsNil predicate on the "least_transfer_amount" field.
+func LeastTransferAmountIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldLeastTransferAmount)))
+	})
+}
+
+// LeastTransferAmountNotNil applies the NotNil predicate on the "least_transfer_amount" field.
+func LeastTransferAmountNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldLeastTransferAmount)))
+	})
+}
+
+// BenefitIntervalSecondsEQ applies the EQ predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsEQ(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsNEQ applies the NEQ predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsNEQ(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsIn applies the In predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsIn(vs ...uint32) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldBenefitIntervalSeconds), v...))
+	})
+}
+
+// BenefitIntervalSecondsNotIn applies the NotIn predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsNotIn(vs ...uint32) predicate.Coin {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldBenefitIntervalSeconds), v...))
+	})
+}
+
+// BenefitIntervalSecondsGT applies the GT predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsGT(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsGTE applies the GTE predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsGTE(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsLT applies the LT predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsLT(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsLTE applies the LTE predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsLTE(v uint32) predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldBenefitIntervalSeconds), v))
+	})
+}
+
+// BenefitIntervalSecondsIsNil applies the IsNil predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsIsNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldBenefitIntervalSeconds)))
+	})
+}
+
+// BenefitIntervalSecondsNotNil applies the NotNil predicate on the "benefit_interval_seconds" field.
+func BenefitIntervalSecondsNotNil() predicate.Coin {
+	return predicate.Coin(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldBenefitIntervalSeconds)))
 	})
 }
 
@@ -862,84 +1096,6 @@ func RemarkEqualFold(v string) predicate.Coin {
 func RemarkContainsFold(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldRemark), v))
-	})
-}
-
-// ThresholdEQ applies the EQ predicate on the "threshold" field.
-func ThresholdEQ(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdNEQ applies the NEQ predicate on the "threshold" field.
-func ThresholdNEQ(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdIn applies the In predicate on the "threshold" field.
-func ThresholdIn(vs ...decimal.Decimal) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldThreshold), v...))
-	})
-}
-
-// ThresholdNotIn applies the NotIn predicate on the "threshold" field.
-func ThresholdNotIn(vs ...decimal.Decimal) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldThreshold), v...))
-	})
-}
-
-// ThresholdGT applies the GT predicate on the "threshold" field.
-func ThresholdGT(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdGTE applies the GTE predicate on the "threshold" field.
-func ThresholdGTE(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdLT applies the LT predicate on the "threshold" field.
-func ThresholdLT(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdLTE applies the LTE predicate on the "threshold" field.
-func ThresholdLTE(v decimal.Decimal) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldThreshold), v))
-	})
-}
-
-// ThresholdIsNil applies the IsNil predicate on the "threshold" field.
-func ThresholdIsNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldThreshold)))
-	})
-}
-
-// ThresholdNotNil applies the NotNil predicate on the "threshold" field.
-func ThresholdNotNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldThreshold)))
 	})
 }
 

@@ -92,16 +92,16 @@ func (ruc *RootUserCreate) SetNillableName(s *string) *RootUserCreate {
 	return ruc
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ruc *RootUserCreate) SetMiningpoolType(s string) *RootUserCreate {
-	ruc.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (ruc *RootUserCreate) SetPoolID(u uuid.UUID) *RootUserCreate {
+	ruc.mutation.SetPoolID(u)
 	return ruc
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ruc *RootUserCreate) SetNillableMiningpoolType(s *string) *RootUserCreate {
-	if s != nil {
-		ruc.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (ruc *RootUserCreate) SetNillablePoolID(u *uuid.UUID) *RootUserCreate {
+	if u != nil {
+		ruc.SetPoolID(*u)
 	}
 	return ruc
 }
@@ -293,9 +293,12 @@ func (ruc *RootUserCreate) defaults() error {
 		v := rootuser.DefaultName
 		ruc.mutation.SetName(v)
 	}
-	if _, ok := ruc.mutation.MiningpoolType(); !ok {
-		v := rootuser.DefaultMiningpoolType
-		ruc.mutation.SetMiningpoolType(v)
+	if _, ok := ruc.mutation.PoolID(); !ok {
+		if rootuser.DefaultPoolID == nil {
+			return fmt.Errorf("ent: uninitialized rootuser.DefaultPoolID (forgotten import ent/runtime?)")
+		}
+		v := rootuser.DefaultPoolID()
+		ruc.mutation.SetPoolID(v)
 	}
 	if _, ok := ruc.mutation.Email(); !ok {
 		v := rootuser.DefaultEmail
@@ -408,13 +411,13 @@ func (ruc *RootUserCreate) createSpec() (*RootUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := ruc.mutation.MiningpoolType(); ok {
+	if value, ok := ruc.mutation.PoolID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: rootuser.FieldMiningpoolType,
+			Column: rootuser.FieldPoolID,
 		})
-		_node.MiningpoolType = value
+		_node.PoolID = value
 	}
 	if value, ok := ruc.mutation.Email(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -592,21 +595,21 @@ func (u *RootUserUpsert) ClearName() *RootUserUpsert {
 	return u
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *RootUserUpsert) SetMiningpoolType(v string) *RootUserUpsert {
-	u.Set(rootuser.FieldMiningpoolType, v)
+// SetPoolID sets the "pool_id" field.
+func (u *RootUserUpsert) SetPoolID(v uuid.UUID) *RootUserUpsert {
+	u.Set(rootuser.FieldPoolID, v)
 	return u
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *RootUserUpsert) UpdateMiningpoolType() *RootUserUpsert {
-	u.SetExcluded(rootuser.FieldMiningpoolType)
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *RootUserUpsert) UpdatePoolID() *RootUserUpsert {
+	u.SetExcluded(rootuser.FieldPoolID)
 	return u
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *RootUserUpsert) ClearMiningpoolType() *RootUserUpsert {
-	u.SetNull(rootuser.FieldMiningpoolType)
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *RootUserUpsert) ClearPoolID() *RootUserUpsert {
+	u.SetNull(rootuser.FieldPoolID)
 	return u
 }
 
@@ -846,24 +849,24 @@ func (u *RootUserUpsertOne) ClearName() *RootUserUpsertOne {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *RootUserUpsertOne) SetMiningpoolType(v string) *RootUserUpsertOne {
+// SetPoolID sets the "pool_id" field.
+func (u *RootUserUpsertOne) SetPoolID(v uuid.UUID) *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetPoolID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *RootUserUpsertOne) UpdateMiningpoolType() *RootUserUpsertOne {
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *RootUserUpsertOne) UpdatePoolID() *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdatePoolID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *RootUserUpsertOne) ClearMiningpoolType() *RootUserUpsertOne {
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *RootUserUpsertOne) ClearPoolID() *RootUserUpsertOne {
 	return u.Update(func(s *RootUserUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearPoolID()
 	})
 }
 
@@ -1281,24 +1284,24 @@ func (u *RootUserUpsertBulk) ClearName() *RootUserUpsertBulk {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *RootUserUpsertBulk) SetMiningpoolType(v string) *RootUserUpsertBulk {
+// SetPoolID sets the "pool_id" field.
+func (u *RootUserUpsertBulk) SetPoolID(v uuid.UUID) *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetPoolID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *RootUserUpsertBulk) UpdateMiningpoolType() *RootUserUpsertBulk {
+// UpdatePoolID sets the "pool_id" field to the value that was provided on create.
+func (u *RootUserUpsertBulk) UpdatePoolID() *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdatePoolID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *RootUserUpsertBulk) ClearMiningpoolType() *RootUserUpsertBulk {
+// ClearPoolID clears the value of the "pool_id" field.
+func (u *RootUserUpsertBulk) ClearPoolID() *RootUserUpsertBulk {
 	return u.Update(func(s *RootUserUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearPoolID()
 	})
 }
 

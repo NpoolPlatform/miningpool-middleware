@@ -118,23 +118,23 @@ func (ruu *RootUserUpdate) ClearName() *RootUserUpdate {
 	return ruu
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ruu *RootUserUpdate) SetMiningpoolType(s string) *RootUserUpdate {
-	ruu.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (ruu *RootUserUpdate) SetPoolID(u uuid.UUID) *RootUserUpdate {
+	ruu.mutation.SetPoolID(u)
 	return ruu
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ruu *RootUserUpdate) SetNillableMiningpoolType(s *string) *RootUserUpdate {
-	if s != nil {
-		ruu.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (ruu *RootUserUpdate) SetNillablePoolID(u *uuid.UUID) *RootUserUpdate {
+	if u != nil {
+		ruu.SetPoolID(*u)
 	}
 	return ruu
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (ruu *RootUserUpdate) ClearMiningpoolType() *RootUserUpdate {
-	ruu.mutation.ClearMiningpoolType()
+// ClearPoolID clears the value of the "pool_id" field.
+func (ruu *RootUserUpdate) ClearPoolID() *RootUserUpdate {
+	ruu.mutation.ClearPoolID()
 	return ruu
 }
 
@@ -398,17 +398,17 @@ func (ruu *RootUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: rootuser.FieldName,
 		})
 	}
-	if value, ok := ruu.mutation.MiningpoolType(); ok {
+	if value, ok := ruu.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: rootuser.FieldMiningpoolType,
+			Column: rootuser.FieldPoolID,
 		})
 	}
-	if ruu.mutation.MiningpoolTypeCleared() {
+	if ruu.mutation.PoolIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: rootuser.FieldMiningpoolType,
+			Type:   field.TypeUUID,
+			Column: rootuser.FieldPoolID,
 		})
 	}
 	if value, ok := ruu.mutation.Email(); ok {
@@ -586,23 +586,23 @@ func (ruuo *RootUserUpdateOne) ClearName() *RootUserUpdateOne {
 	return ruuo
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ruuo *RootUserUpdateOne) SetMiningpoolType(s string) *RootUserUpdateOne {
-	ruuo.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (ruuo *RootUserUpdateOne) SetPoolID(u uuid.UUID) *RootUserUpdateOne {
+	ruuo.mutation.SetPoolID(u)
 	return ruuo
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ruuo *RootUserUpdateOne) SetNillableMiningpoolType(s *string) *RootUserUpdateOne {
-	if s != nil {
-		ruuo.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (ruuo *RootUserUpdateOne) SetNillablePoolID(u *uuid.UUID) *RootUserUpdateOne {
+	if u != nil {
+		ruuo.SetPoolID(*u)
 	}
 	return ruuo
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (ruuo *RootUserUpdateOne) ClearMiningpoolType() *RootUserUpdateOne {
-	ruuo.mutation.ClearMiningpoolType()
+// ClearPoolID clears the value of the "pool_id" field.
+func (ruuo *RootUserUpdateOne) ClearPoolID() *RootUserUpdateOne {
+	ruuo.mutation.ClearPoolID()
 	return ruuo
 }
 
@@ -896,17 +896,17 @@ func (ruuo *RootUserUpdateOne) sqlSave(ctx context.Context) (_node *RootUser, er
 			Column: rootuser.FieldName,
 		})
 	}
-	if value, ok := ruuo.mutation.MiningpoolType(); ok {
+	if value, ok := ruuo.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: rootuser.FieldMiningpoolType,
+			Column: rootuser.FieldPoolID,
 		})
 	}
-	if ruuo.mutation.MiningpoolTypeCleared() {
+	if ruuo.mutation.PoolIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: rootuser.FieldMiningpoolType,
+			Type:   field.TypeUUID,
+			Column: rootuser.FieldPoolID,
 		})
 	}
 	if value, ok := ruuo.mutation.Email(); ok {

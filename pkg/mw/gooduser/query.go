@@ -24,16 +24,15 @@ type queryHandler struct {
 func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 	h.stm = stm.Select(
 		gooduserent.FieldID,
-		gooduserent.FieldEntID,
-		gooduserent.FieldName,
-		gooduserent.FieldRootUserID,
-		gooduserent.FieldMiningpoolType,
-		gooduserent.FieldCoinType,
-		gooduserent.FieldHashRate,
-		gooduserent.FieldReadPageLink,
-		gooduserent.FieldRevenueType,
 		gooduserent.FieldCreatedAt,
 		gooduserent.FieldUpdatedAt,
+		gooduserent.FieldEntID,
+		gooduserent.FieldRootUserID,
+		gooduserent.FieldName,
+		gooduserent.FieldCoinID,
+		gooduserent.FieldRevenueID,
+		gooduserent.FieldHashRate,
+		gooduserent.FieldReadPageLink,
 	)
 }
 

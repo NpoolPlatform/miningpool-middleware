@@ -6,17 +6,16 @@ import (
 	"strings"
 	"time"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
-	BondCoinType       *basetypes.CoinType
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondCoinID *uuid.UUID
+	bondVals   map[string]string
+	baseVals   map[string]string
+	idVals     map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -44,21 +43,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[fractionrule.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.CoinID != nil {
+		strBytes, err := json.Marshal(h.CoinID.String())
 		if err != nil {
 			return err
 		}
-		h.baseVals[fractionrule.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
-	}
-	if h.CoinType != nil {
-		strBytes, err := json.Marshal(h.CoinType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[fractionrule.FieldCoinType] = string(strBytes)
-		h.BondCoinType = h.CoinType
+		h.baseVals[fractionrule.FieldCoinID] = string(strBytes)
+		h.BondCoinID = h.CoinID
 	}
 	if h.WithdrawInterval != nil {
 		strBytes, err := json.Marshal(*h.WithdrawInterval)
@@ -82,23 +73,15 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[fractionrule.FieldWithdrawRate] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
+	if h.BondCoinID == nil {
+		return fmt.Errorf("please give coinid")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondCoinID.String())
 	if err != nil {
 		return err
 	}
-	h.bondVals[fractionrule.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[fractionrule.FieldCoinID] = string(strBytes)
 
-	if h.BondCoinType == nil {
-		return fmt.Errorf("please give cointype")
-	}
-	strBytes, err = json.Marshal(h.BondCoinType.String())
-	if err != nil {
-		return err
-	}
-	h.bondVals[fractionrule.FieldCoinType] = string(strBytes)
 	return nil
 }
 

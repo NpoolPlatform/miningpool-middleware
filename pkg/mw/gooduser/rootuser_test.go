@@ -24,12 +24,11 @@ var rootuserRet = &npool.RootUser{
 }
 
 var rootuserReq = &npool.RootUserReq{
-	EntID:          &rootuserRet.EntID,
-	MiningpoolType: &rootuserRet.MiningpoolType,
-	Email:          &rootuserRet.Email,
-	AuthToken:      &rootuserRet.AuthToken,
-	Authed:         &rootuserRet.Authed,
-	Remark:         &rootuserRet.Remark,
+	EntID:     &rootuserRet.EntID,
+	Email:     &rootuserRet.Email,
+	AuthToken: &rootuserRet.AuthToken,
+	Authed:    &rootuserRet.Authed,
+	Remark:    &rootuserRet.Remark,
 }
 
 func createRootUser(t *testing.T) {
@@ -43,7 +42,6 @@ func createRootUser(t *testing.T) {
 		context.Background(),
 		rootuser.WithEntID(rootuserReq.EntID, true),
 		rootuser.WithName(rootuserReq.Name, true),
-		rootuser.WithMiningpoolType(rootuserReq.MiningpoolType, true),
 		rootuser.WithEmail(rootuserReq.Email, true),
 		rootuser.WithAuthToken(rootuserReq.AuthToken, true),
 		rootuser.WithAuthed(rootuserReq.Authed, true),

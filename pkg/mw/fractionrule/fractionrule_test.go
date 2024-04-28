@@ -11,8 +11,6 @@ import (
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,17 +25,15 @@ func init() {
 
 var ret = &npool.FractionRule{
 	EntID:            uuid.NewString(),
-	MiningpoolType:   basetypes.MiningpoolType_AntPool,
-	CoinType:         basetypes.CoinType_BitCoin,
+	CoinID:           uuid.NewString(),
 	WithdrawInterval: 1000,
-	MinAmount:        2.0,
-	WithdrawRate:     3.0,
+	MinAmount:        "2.0",
+	WithdrawRate:     "3.0",
 }
 
 var req = &npool.FractionRuleReq{
 	EntID:            &ret.EntID,
-	MiningpoolType:   &ret.MiningpoolType,
-	CoinType:         &ret.CoinType,
+	CoinID:           &ret.CoinID,
 	WithdrawInterval: &ret.WithdrawInterval,
 	MinAmount:        &ret.MinAmount,
 	WithdrawRate:     &ret.WithdrawRate,
@@ -53,18 +49,16 @@ func create(t *testing.T) {
 		return
 	}
 
-	ret.MiningpoolType = infos[0].MiningpoolType
-	req.MiningpoolType = &infos[0].MiningpoolType
+	ret.CoinID = infos[0].CoinID
+	req.CoinID = &infos[0].CoinID
 	ret.CoinType = infos[0].CoinType
-	req.CoinType = &infos[0].CoinType
 	ret.EntID = infos[0].EntID
 	req.EntID = &infos[0].EntID
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
-		WithMiningpoolType(req.MiningpoolType, true),
-		WithCoinType(req.CoinType, true),
+		WithCoinID(req.CoinID, true),
 		WithWithdrawInterval(req.WithdrawInterval, true),
 		WithMinAmount(req.MinAmount, true),
 		WithWithdrawRate(req.WithdrawRate, true),

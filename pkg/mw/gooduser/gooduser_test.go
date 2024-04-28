@@ -28,21 +28,18 @@ func init() {
 }
 
 var ret = &npool.GoodUser{
-	EntID:          uuid.NewString(),
-	RootUserID:     rootuserRet.EntID,
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
-	HashRate:       5.0,
-	RevenueType:    basetypes.RevenueType_FPPS,
+	EntID:       uuid.NewString(),
+	RootUserID:  rootuserRet.EntID,
+	CoinID:      uuid.NewString(),
+	HashRate:    5.0,
+	RevenueType: basetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{
-	EntID:          &ret.EntID,
-	RootUserID:     &ret.RootUserID,
-	MiningpoolType: &ret.MiningpoolType,
-	CoinType:       &ret.CoinType,
-	HashRate:       &ret.HashRate,
-	RevenueType:    &ret.RevenueType,
+	EntID:      &ret.EntID,
+	RootUserID: &ret.RootUserID,
+	CoinID:     &ret.CoinID,
+	HashRate:   &ret.HashRate,
 }
 
 func create(t *testing.T) {
@@ -50,10 +47,8 @@ func create(t *testing.T) {
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithRootUserID(req.RootUserID, true),
-		WithMiningpoolType(req.MiningpoolType, true),
-		WithCoinType(req.CoinType, true),
+		WithCoinID(req.CoinID, true),
 		WithHashRate(req.HashRate, true),
-		WithRevenueType(req.RevenueType, true),
 	)
 	if !assert.Nil(t, err) {
 		return
@@ -69,7 +64,6 @@ func create(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RevenueTypeStr = info.RevenueTypeStr
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -81,15 +75,12 @@ func create(t *testing.T) {
 
 func update(t *testing.T) {
 	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
-	ret.CoinType = basetypes.CoinType_BitCoin
 	ret.RevenueType = basetypes.RevenueType_PPLNS
 	ret.HashRate = 666
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithRevenueType(&ret.RevenueType, false),
-		WithMiningpoolType(&ret.MiningpoolType, false),
 		WithHashRate(&ret.HashRate, false),
 	)
 	assert.Nil(t, err)
@@ -100,7 +91,6 @@ func update(t *testing.T) {
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RevenueTypeStr = info.RevenueTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
@@ -140,7 +130,6 @@ func deleteRow(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
 		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		ret.CoinTypeStr = infos[0].CoinTypeStr
 		ret.RevenueTypeStr = infos[0].RevenueTypeStr
 		ret.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], ret)

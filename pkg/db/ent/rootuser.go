@@ -26,8 +26,8 @@ type RootUser struct {
 	EntID uuid.UUID `json:"ent_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
+	// PoolID holds the value of the "pool_id" field.
+	PoolID uuid.UUID `json:"pool_id,omitempty"`
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
 	// AuthToken holds the value of the "auth_token" field.
@@ -49,9 +49,9 @@ func (*RootUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case rootuser.FieldID, rootuser.FieldCreatedAt, rootuser.FieldUpdatedAt, rootuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case rootuser.FieldName, rootuser.FieldMiningpoolType, rootuser.FieldEmail, rootuser.FieldAuthToken, rootuser.FieldAuthTokenSalt, rootuser.FieldRemark:
+		case rootuser.FieldName, rootuser.FieldEmail, rootuser.FieldAuthToken, rootuser.FieldAuthTokenSalt, rootuser.FieldRemark:
 			values[i] = new(sql.NullString)
-		case rootuser.FieldEntID:
+		case rootuser.FieldEntID, rootuser.FieldPoolID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type RootUser", columns[i])
@@ -104,11 +104,11 @@ func (ru *RootUser) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				ru.Name = value.String
 			}
-		case rootuser.FieldMiningpoolType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
-			} else if value.Valid {
-				ru.MiningpoolType = value.String
+		case rootuser.FieldPoolID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field pool_id", values[i])
+			} else if value != nil {
+				ru.PoolID = *value
 			}
 		case rootuser.FieldEmail:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -183,8 +183,8 @@ func (ru *RootUser) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(ru.Name)
 	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(ru.MiningpoolType)
+	builder.WriteString("pool_id=")
+	builder.WriteString(fmt.Sprintf("%v", ru.PoolID))
 	builder.WriteString(", ")
 	builder.WriteString("email=")
 	builder.WriteString(ru.Email)

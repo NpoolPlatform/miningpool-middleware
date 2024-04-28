@@ -11,6 +11,7 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	basetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/const/time"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/mr-tron/base58"
@@ -18,10 +19,10 @@ import (
 )
 
 type Manager struct {
-	currency  string
-	authToken string
-	cli       *client.Client
-	threshold float64
+	currency              string
+	authToken             string
+	cli                   *client.Client
+	least_transfer_amount float64
 }
 
 var (
@@ -29,11 +30,14 @@ var (
 	CoinType2Currency map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "bitcoin",
 	}
-	CoinType2Threshold map[basetype.CoinType]string = map[basetype.CoinType]string{
+	CoinType2LeastTransferAmount map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "0.005",
 	}
-	CoinType2FeeRate map[basetype.CoinType]string = map[basetype.CoinType]string{
+	CoinType2FeeRatio map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_BitCoin: "0.04",
+	}
+	CoinType2BenefitIntervalSeconds map[basetype.CoinType]uint32 = map[basetype.CoinType]uint32{
+		basetype.CoinType_BitCoin: time.SecondsPerDay,
 	}
 	MaxRetries    = 10
 	MaxProportion = decimal.NewFromFloat(100)
@@ -265,9 +269,9 @@ func (mgr *Manager) SetRevenueAddress(ctx context.Context, name, address string)
 				MiningUserName: name,
 				Wallets: []types.Wallet{
 					{
-						Currency:  mgr.currency,
-						Address:   address,
-						Threshold: mgr.threshold,
+						Currency:            mgr.currency,
+						Address:             address,
+						LeastTransferAmount: mgr.least_transfer_amount,
 					},
 				},
 			},

@@ -2,16 +2,16 @@ package coin
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
-	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	"entgo.io/ent/dialect/sql"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	coinent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 
 	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
 )
@@ -26,16 +26,17 @@ type queryHandler struct {
 func (h *queryHandler) selectCoin(stm *ent.CoinQuery) {
 	h.stm = stm.Select(
 		coinent.FieldID,
-		coinent.FieldEntID,
-		coinent.FieldCoinType,
-		coinent.FieldMiningpoolType,
-		coinent.FieldRevenueTypes,
-		coinent.FieldFeeRate,
-		coinent.FieldFixedRevenueAble,
-		coinent.FieldThreshold,
-		coinent.FieldRemark,
 		coinent.FieldCreatedAt,
 		coinent.FieldUpdatedAt,
+		coinent.FieldEntID,
+		coinent.FieldPoolID,
+		coinent.FieldCoinType,
+		coinent.FieldRevenueType,
+		coinent.FieldFeeRatio,
+		coinent.FieldFixedRevenueAble,
+		coinent.FieldLeastTransferAmount,
+		coinent.FieldBenefitIntervalSeconds,
+		coinent.FieldRemark,
 	)
 }
 
@@ -70,22 +71,30 @@ func (h *queryHandler) queryCoins(ctx context.Context, cli *ent.Client) error {
 	return nil
 }
 
+func (h *queryHandler) queryJoin() {
+	h.stm.Modify(
+		h.queryJoinPool,
+	)
+}
+
+func (h *queryHandler) queryJoinPool(s *sql.Selector) {
+	poolT := sql.Table(pool.Table)
+	s.LeftJoin(poolT).On(
+		s.C(coinent.FieldPoolID),
+		poolT.C(pool.FieldEntID),
+	).AppendSelect(
+		poolT.C(pool.FieldMiningpoolType),
+	)
+}
+
 func (h *queryHandler) scan(ctx context.Context) error {
 	return h.stm.Scan(ctx, &h.infos)
 }
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		revenueTypes := []string{}
-		err := json.Unmarshal([]byte(info.RevenueTypesStr), &revenueTypes)
-		if err != nil {
-			logger.Sugar().Warn(err)
-		}
-		for _, v := range revenueTypes {
-			info.RevenueTypes = append(info.RevenueTypes, basetypes.RevenueType(basetypes.RevenueType_value[v]))
-		}
+		info.MiningpoolType = v1.MiningpoolType(v1.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.CoinType = v1.CoinType(v1.CoinType_value[info.CoinTypeStr])
 	}
 }
 
@@ -98,6 +107,7 @@ func (h *Handler) GetCoin(ctx context.Context) (*npool.Coin, error) {
 		if err := handler.queryCoin(cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -125,6 +135,7 @@ func (h *Handler) GetCoins(ctx context.Context) ([]*npool.Coin, uint32, error) {
 		if err := handler.queryCoins(ctx, cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

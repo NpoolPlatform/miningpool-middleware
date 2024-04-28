@@ -5,9 +5,13 @@ import (
 	"fmt"
 
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/google/uuid"
 )
 
 func (h *Handler) UpdateRootUser(ctx context.Context) error {
@@ -16,17 +20,22 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 		return err
 	}
 
+	poolID, err := uuid.Parse(info.PoolID)
+	if err != nil {
+		return err
+	}
+
 	if info == nil {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	err = h.checkUpdateAuthed(ctx)
+	err = h.checkUpdateAuthed(info, ctx)
 	if err != nil {
 		return err
 	}
 
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondPoolID = &poolID
 	sqlH.BondEmail = &info.Email
 	sqlH.BondName = &info.Name
 
@@ -48,18 +57,35 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 	})
 }
 
-func (h *Handler) checkUpdateAuthed(ctx context.Context) error {
-	if h.AuthToken == nil && h.MiningpoolType == nil {
+func (h *Handler) checkUpdateAuthed(oldInfo *npool.RootUser, ctx context.Context) error {
+	if h.AuthToken == nil && h.PoolID == nil {
 		return nil
 	}
 
+	poolID := oldInfo.PoolID
+	if h.PoolID != nil {
+		poolID = h.PoolID.String()
+	}
+
+	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
+	if err != nil {
+		return err
+	}
+	info, err := poolH.GetPool(ctx)
+	if err != nil {
+		return err
+	}
+	if info == nil {
+		return fmt.Errorf("invalid poolid")
+	}
+
 	defaultCoinType := v1.CoinType_BitCoin
-	miningtype := h.MiningpoolType
+	miningtype := info.MiningpoolType
 	authtoken := h.AuthTokenPlain
 	authed := false
 	h.Authed = &authed
 
-	if h.AuthTokenPlain == nil || h.MiningpoolType == nil {
+	if h.AuthTokenPlain == nil || h.PoolID == nil {
 		info, err := h.GetAuthToken(ctx)
 		if err != nil {
 			return err
@@ -67,12 +93,9 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context) error {
 		if h.AuthToken == nil {
 			authtoken = &info.AuthTokenPlain
 		}
-		if h.MiningpoolType == nil {
-			miningtype = &info.MiningpoolType
-		}
 	}
 
-	mgr, err := pools.NewPoolManager(*miningtype, defaultCoinType, *authtoken)
+	mgr, err := pools.NewPoolManager(miningtype, defaultCoinType, *authtoken)
 	if err != nil {
 		return err
 	}

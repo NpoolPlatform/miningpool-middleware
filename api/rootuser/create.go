@@ -29,7 +29,6 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 		ctx,
 		rootuser.WithEntID(req.EntID, false),
 		rootuser.WithName(req.Name, true),
-		rootuser.WithMiningpoolType(req.MiningpoolType, true),
 		rootuser.WithEmail(req.Email, true),
 		rootuser.WithAuthToken(req.AuthToken, true),
 		rootuser.WithRemark(req.Remark, false),

@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	gooduserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 
@@ -12,20 +11,25 @@ import (
 )
 
 type Req struct {
-	EntID          *uuid.UUID
-	RootUserID     *uuid.UUID
-	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
-	CoinType       *basetypes.CoinType
-	HashRate       *float32
-	ReadPageLink   *string
-	RevenueType    *basetypes.RevenueType
-	DeletedAt      *uint32
+	EntID        *uuid.UUID
+	CoinID       *uuid.UUID
+	RevenueID    *uuid.UUID
+	RootUserID   *uuid.UUID
+	Name         *string
+	HashRate     *float32
+	ReadPageLink *string
+	DeletedAt    *uint32
 }
 
 func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
+	}
+	if req.CoinID != nil {
+		c.SetCoinID(*req.CoinID)
+	}
+	if req.RevenueID != nil {
+		c.SetRevenueID(*req.RevenueID)
 	}
 	if req.RootUserID != nil {
 		c.SetRootUserID(*req.RootUserID)
@@ -33,45 +37,33 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.Name != nil {
 		c.SetName(*req.Name)
 	}
-	if req.MiningpoolType != nil {
-		c.SetMiningpoolType(req.MiningpoolType.String())
-	}
-	if req.CoinType != nil {
-		c.SetCoinType(req.CoinType.String())
-	}
 	if req.HashRate != nil {
 		c.SetHashRate(*req.HashRate)
 	}
 	if req.ReadPageLink != nil {
 		c.SetReadPageLink(*req.ReadPageLink)
 	}
-	if req.RevenueType != nil {
-		c.SetRevenueType(req.RevenueType.String())
-	}
 	return c
 }
 
 func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, error) {
+	if req.CoinID != nil {
+		u = u.SetCoinID(*req.CoinID)
+	}
+	if req.RevenueID != nil {
+		u = u.SetRevenueID(*req.RevenueID)
+	}
 	if req.RootUserID != nil {
 		u = u.SetRootUserID(*req.RootUserID)
 	}
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
 	}
-	if req.MiningpoolType != nil {
-		u = u.SetMiningpoolType(req.MiningpoolType.String())
-	}
-	if req.CoinType != nil {
-		u = u.SetCoinType(req.CoinType.String())
-	}
 	if req.HashRate != nil {
 		u = u.SetHashRate(*req.HashRate)
 	}
 	if req.ReadPageLink != nil {
 		u = u.SetReadPageLink(*req.ReadPageLink)
-	}
-	if req.RevenueType != nil {
-		u = u.SetRevenueType(req.RevenueType.String())
 	}
 	if req.DeletedAt != nil {
 		u = u.SetDeletedAt(*req.DeletedAt)
@@ -80,14 +72,13 @@ func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, erro
 }
 
 type Conds struct {
-	ID             *cruder.Cond
-	EntID          *cruder.Cond
-	Name           *cruder.Cond
-	RootUserID     *cruder.Cond
-	MiningpoolType *cruder.Cond
-	CoinType       *cruder.Cond
-	RevenueType    *cruder.Cond
-	EntIDs         *cruder.Cond
+	ID         *cruder.Cond
+	EntID      *cruder.Cond
+	Name       *cruder.Cond
+	RootUserID *cruder.Cond
+	CoinID     *cruder.Cond
+	RevenueID  *cruder.Cond
+	EntIDs     *cruder.Cond
 }
 
 func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, error) { //nolint
@@ -130,6 +121,30 @@ func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, erro
 			return nil, fmt.Errorf("invalid entids field")
 		}
 	}
+	if conds.CoinID != nil {
+		id, ok := conds.CoinID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid coinid")
+		}
+		switch conds.CoinID.Op {
+		case cruder.EQ:
+			q.Where(gooduserent.CoinID(id))
+		default:
+			return nil, fmt.Errorf("invalid coinid field")
+		}
+	}
+	if conds.RevenueID != nil {
+		id, ok := conds.RevenueID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid revenueid")
+		}
+		switch conds.RevenueID.Op {
+		case cruder.EQ:
+			q.Where(gooduserent.RevenueID(id))
+		default:
+			return nil, fmt.Errorf("invalid revenueid field")
+		}
+	}
 	if conds.RootUserID != nil {
 		id, ok := conds.RootUserID.Val.(uuid.UUID)
 		if !ok {
@@ -152,42 +167,6 @@ func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, erro
 			q.Where(gooduserent.Name(name))
 		default:
 			return nil, fmt.Errorf("invalid name field")
-		}
-	}
-	if conds.MiningpoolType != nil {
-		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
-		if !ok {
-			return nil, fmt.Errorf("invalid miningpooltype")
-		}
-		switch conds.MiningpoolType.Op {
-		case cruder.EQ:
-			q.Where(gooduserent.MiningpoolType(miningpooltype.String()))
-		default:
-			return nil, fmt.Errorf("invalid miningpooltype field")
-		}
-	}
-	if conds.CoinType != nil {
-		cointype, ok := conds.CoinType.Val.(basetypes.CoinType)
-		if !ok {
-			return nil, fmt.Errorf("invalid cointype")
-		}
-		switch conds.CoinType.Op {
-		case cruder.EQ:
-			q.Where(gooduserent.CoinType(cointype.String()))
-		default:
-			return nil, fmt.Errorf("invalid cointype field")
-		}
-	}
-	if conds.RevenueType != nil {
-		revenuetype, ok := conds.RevenueType.Val.(basetypes.RevenueType)
-		if !ok {
-			return nil, fmt.Errorf("invalid revenuetype")
-		}
-		switch conds.RevenueType.Op {
-		case cruder.EQ:
-			q.Where(gooduserent.RevenueType(revenuetype.String()))
-		default:
-			return nil, fmt.Errorf("invalid revenuetype field")
 		}
 	}
 	return q, nil

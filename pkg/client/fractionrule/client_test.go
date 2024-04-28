@@ -31,14 +31,12 @@ var ret = &npool.FractionRule{
 	MiningpoolType:   basetypes.MiningpoolType_F2Pool,
 	CoinType:         basetypes.CoinType_BitCoin,
 	WithdrawInterval: 3,
-	MinAmount:        2.0,
-	WithdrawRate:     2.0,
+	MinAmount:        "2.0",
+	WithdrawRate:     "2.0",
 }
 
 var req = &npool.FractionRuleReq{
 	EntID:            &ret.EntID,
-	MiningpoolType:   &ret.MiningpoolType,
-	CoinType:         &ret.CoinType,
 	WithdrawInterval: &ret.WithdrawInterval,
 	MinAmount:        &ret.MinAmount,
 	WithdrawRate:     &ret.WithdrawRate,
@@ -52,9 +50,7 @@ func createFractionRule(t *testing.T) {
 	}
 
 	ret.MiningpoolType = infos[0].MiningpoolType
-	req.MiningpoolType = &infos[0].MiningpoolType
 	ret.CoinType = infos[0].CoinType
-	req.CoinType = &infos[0].CoinType
 
 	err = CreateFractionRule(context.Background(), req)
 	assert.NotNil(t, err)

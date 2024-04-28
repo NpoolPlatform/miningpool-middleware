@@ -21,8 +21,6 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldRootUserID holds the string denoting the root_user_id field in the database.
-	FieldRootUserID = "root_user_id"
 	// FieldGoodUserID holds the string denoting the good_user_id field in the database.
 	FieldGoodUserID = "good_user_id"
 	// FieldUserID holds the string denoting the user_id field in the database.
@@ -31,10 +29,6 @@ const (
 	FieldAppID = "app_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
-	FieldMiningpoolType = "miningpool_type"
-	// FieldCoinType holds the string denoting the coin_type field in the database.
-	FieldCoinType = "coin_type"
 	// FieldProportion holds the string denoting the proportion field in the database.
 	FieldProportion = "proportion"
 	// FieldRevenueAddress holds the string denoting the revenue_address field in the database.
@@ -54,13 +48,10 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldRootUserID,
 	FieldGoodUserID,
 	FieldUserID,
 	FieldAppID,
 	FieldName,
-	FieldMiningpoolType,
-	FieldCoinType,
 	FieldProportion,
 	FieldRevenueAddress,
 	FieldReadPageLink,
@@ -95,8 +86,6 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultRootUserID holds the default value on creation for the "root_user_id" field.
-	DefaultRootUserID func() uuid.UUID
 	// DefaultGoodUserID holds the default value on creation for the "good_user_id" field.
 	DefaultGoodUserID func() uuid.UUID
 	// DefaultUserID holds the default value on creation for the "user_id" field.
@@ -105,10 +94,6 @@ var (
 	DefaultAppID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
-	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
-	DefaultMiningpoolType string
-	// DefaultCoinType holds the default value on creation for the "coin_type" field.
-	DefaultCoinType string
 	// DefaultProportion holds the default value on creation for the "proportion" field.
 	DefaultProportion decimal.Decimal
 	// DefaultRevenueAddress holds the default value on creation for the "revenue_address" field.

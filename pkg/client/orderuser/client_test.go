@@ -30,7 +30,6 @@ func init() {
 
 var ret = &npool.OrderUser{
 	EntID:          uuid.NewString(),
-	RootUserID:     rootUserRet.EntID,
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
@@ -39,13 +38,10 @@ var ret = &npool.OrderUser{
 }
 
 var req = &npool.OrderUserReq{
-	EntID:          &ret.EntID,
-	RootUserID:     &ret.RootUserID,
-	GoodUserID:     &ret.GoodUserID,
-	AppID:          &ret.AppID,
-	UserID:         &ret.UserID,
-	MiningpoolType: &ret.MiningpoolType,
-	CoinType:       &ret.CoinType,
+	EntID:      &ret.EntID,
+	GoodUserID: &ret.GoodUserID,
+	AppID:      &ret.AppID,
+	UserID:     &ret.UserID,
 }
 
 func createOrderUser(t *testing.T) {

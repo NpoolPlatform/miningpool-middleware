@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/shopspring/decimal"
@@ -14,13 +13,10 @@ import (
 
 type Req struct {
 	EntID          *uuid.UUID
-	RootUserID     *uuid.UUID
 	GoodUserID     *uuid.UUID
 	AppID          *uuid.UUID
 	UserID         *uuid.UUID
 	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
-	CoinType       *basetypes.CoinType
 	Proportion     *decimal.Decimal
 	RevenueAddress *string
 	ReadPageLink   *string
@@ -35,9 +31,6 @@ func CreateSet(c *ent.OrderUserCreate, req *Req) *ent.OrderUserCreate {
 	if req.Name != nil {
 		c.SetName(*req.Name)
 	}
-	if req.RootUserID != nil {
-		c.SetRootUserID(*req.RootUserID)
-	}
 	if req.GoodUserID != nil {
 		c.SetGoodUserID(*req.GoodUserID)
 	}
@@ -46,12 +39,6 @@ func CreateSet(c *ent.OrderUserCreate, req *Req) *ent.OrderUserCreate {
 	}
 	if req.UserID != nil {
 		c.SetUserID(*req.UserID)
-	}
-	if req.MiningpoolType != nil {
-		c.SetMiningpoolType(req.MiningpoolType.String())
-	}
-	if req.CoinType != nil {
-		c.SetCoinType(req.CoinType.String())
 	}
 	if req.Proportion != nil {
 		c.SetProportion(*req.Proportion)
@@ -72,9 +59,6 @@ func UpdateSet(u *ent.OrderUserUpdateOne, req *Req) (*ent.OrderUserUpdateOne, er
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
 	}
-	if req.RootUserID != nil {
-		u = u.SetRootUserID(*req.RootUserID)
-	}
 	if req.GoodUserID != nil {
 		u = u.SetGoodUserID(*req.GoodUserID)
 	}
@@ -83,12 +67,6 @@ func UpdateSet(u *ent.OrderUserUpdateOne, req *Req) (*ent.OrderUserUpdateOne, er
 	}
 	if req.UserID != nil {
 		u = u.SetUserID(*req.UserID)
-	}
-	if req.MiningpoolType != nil {
-		u = u.SetMiningpoolType(req.MiningpoolType.String())
-	}
-	if req.CoinType != nil {
-		u = u.SetCoinType(req.CoinType.String())
 	}
 	if req.Proportion != nil {
 		u = u.SetProportion(*req.Proportion)
@@ -112,12 +90,9 @@ type Conds struct {
 	ID             *cruder.Cond
 	EntID          *cruder.Cond
 	Name           *cruder.Cond
-	RootUserID     *cruder.Cond
 	GoodUserID     *cruder.Cond
 	AppID          *cruder.Cond
 	UserID         *cruder.Cond
-	MiningpoolType *cruder.Cond
-	CoinType       *cruder.Cond
 	RevenueAddress *cruder.Cond
 	AutoPay        *cruder.Cond
 	EntIDs         *cruder.Cond
@@ -175,18 +150,6 @@ func SetQueryConds(q *ent.OrderUserQuery, conds *Conds) (*ent.OrderUserQuery, er
 			return nil, fmt.Errorf("invalid name field")
 		}
 	}
-	if conds.RootUserID != nil {
-		id, ok := conds.RootUserID.Val.(uuid.UUID)
-		if !ok {
-			return nil, fmt.Errorf("invalid rootuserid")
-		}
-		switch conds.RootUserID.Op {
-		case cruder.EQ:
-			q.Where(orderuserent.RootUserID(id))
-		default:
-			return nil, fmt.Errorf("invalid rootuserid field")
-		}
-	}
 	if conds.GoodUserID != nil {
 		id, ok := conds.GoodUserID.Val.(uuid.UUID)
 		if !ok {
@@ -221,30 +184,6 @@ func SetQueryConds(q *ent.OrderUserQuery, conds *Conds) (*ent.OrderUserQuery, er
 			q.Where(orderuserent.UserID(id))
 		default:
 			return nil, fmt.Errorf("invalid userid field")
-		}
-	}
-	if conds.MiningpoolType != nil {
-		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
-		if !ok {
-			return nil, fmt.Errorf("invalid miningpooltype")
-		}
-		switch conds.MiningpoolType.Op {
-		case cruder.EQ:
-			q.Where(orderuserent.MiningpoolType(miningpooltype.String()))
-		default:
-			return nil, fmt.Errorf("invalid miningpooltype field")
-		}
-	}
-	if conds.CoinType != nil {
-		cointype, ok := conds.CoinType.Val.(basetypes.CoinType)
-		if !ok {
-			return nil, fmt.Errorf("invalid cointype")
-		}
-		switch conds.CoinType.Op {
-		case cruder.EQ:
-			q.Where(orderuserent.CoinType(cointype.String()))
-		default:
-			return nil, fmt.Errorf("invalid cointype field")
 		}
 	}
 	if conds.RevenueAddress != nil {

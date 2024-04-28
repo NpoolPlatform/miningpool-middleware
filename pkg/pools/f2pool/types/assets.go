@@ -17,13 +17,13 @@ type BalanceInfo struct {
 }
 
 type MiningExtra struct {
-	MiningDate int64   `json:"mining_date"`
-	SettleDate int64   `json:"settle_date"`
-	Pps        float64 `json:"pps"`
-	PpsFeeRate float32 `json:"pps_fee_rate"`
-	TxFee      float64 `json:"tx_fee"`
-	TxFeeRate  float32 `json:"tx_fee_rate"`
-	HashRate   float64 `json:"hash_rate"`
+	MiningDate  int64   `json:"mining_date"`
+	SettleDate  int64   `json:"settle_date"`
+	Pps         float64 `json:"pps"`
+	PpsFeeRatio float32 `json:"pps_fee_rate"`
+	TxFee       float64 `json:"tx_fee"`
+	TxFeeRatio  float32 `json:"tx_fee_rate"`
+	HashRate    float64 `json:"hash_rate"`
 }
 
 type PayoutExtra struct {

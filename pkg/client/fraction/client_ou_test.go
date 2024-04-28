@@ -17,7 +17,6 @@ import (
 
 var orderserRet = &npool.OrderUser{
 	EntID:          uuid.NewString(),
-	RootUserID:     rootUserRet.EntID,
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
@@ -26,13 +25,10 @@ var orderserRet = &npool.OrderUser{
 }
 
 var orderuserReq = &npool.OrderUserReq{
-	EntID:          &orderserRet.EntID,
-	RootUserID:     &orderserRet.RootUserID,
-	GoodUserID:     &orderserRet.GoodUserID,
-	AppID:          &orderserRet.AppID,
-	UserID:         &orderserRet.UserID,
-	MiningpoolType: &orderserRet.MiningpoolType,
-	CoinType:       &orderserRet.CoinType,
+	EntID:      &orderserRet.EntID,
+	GoodUserID: &orderserRet.GoodUserID,
+	AppID:      &orderserRet.AppID,
+	UserID:     &orderserRet.UserID,
 }
 
 func createOrderUser(t *testing.T) {

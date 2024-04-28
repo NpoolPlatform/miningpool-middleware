@@ -28,12 +28,9 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 	handler, err := coin.NewHandler(
 		ctx,
 		coin.WithEntID(req.EntID, false),
-		coin.WithMiningpoolType(req.MiningpoolType, true),
 		coin.WithCoinType(req.CoinType, true),
-		coin.WithRevenueTypes(&req.RevenueTypes, true),
-		coin.WithFeeRate(req.FeeRate, true),
 		coin.WithFixedRevenueAble(req.FixedRevenueAble, true),
-		coin.WithThreshold(req.Threshold, true),
+		coin.WithLeastTransferAmount(req.LeastTransferAmount, true),
 		coin.WithRemark(req.Remark, false),
 	)
 	if err != nil {

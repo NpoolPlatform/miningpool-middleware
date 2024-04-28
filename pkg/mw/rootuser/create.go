@@ -7,6 +7,7 @@ import (
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"github.com/google/uuid"
@@ -38,15 +39,27 @@ func (h *Handler) CreateRootUser(ctx context.Context) error {
 }
 
 func (h *Handler) checkCreateAuthed(ctx context.Context) error {
+	poolID := h.PoolID.String()
+	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
+	if err != nil {
+		return err
+	}
+	info, err := poolH.GetPool(ctx)
+	if err != nil {
+		return err
+	}
+	if info == nil {
+		return fmt.Errorf("invalid poolid")
+	}
 	defaultCoinType := v1.CoinType_BitCoin
-	mgr, err := pools.NewPoolManager(*h.MiningpoolType, defaultCoinType, *h.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(info.MiningpoolType, defaultCoinType, *h.AuthTokenPlain)
 	if err != nil {
 		return err
 	}
 
 	err = mgr.CheckAuth(ctx)
 	if err != nil {
-		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v , err: %v", h.MiningpoolType, *h.Name, err)
+		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v , err: %v", h.PoolID, *h.Name, err)
 		return err
 	}
 	authed := true

@@ -31,7 +31,6 @@ func init() {
 
 var ret = &npool.OrderUser{
 	EntID:          uuid.NewString(),
-	RootUserID:     rootuserRet.EntID,
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
@@ -43,12 +42,9 @@ var ret = &npool.OrderUser{
 
 var req = &npool.OrderUserReq{
 	EntID:          &ret.EntID,
-	RootUserID:     &ret.RootUserID,
 	GoodUserID:     &ret.GoodUserID,
 	AppID:          &ret.AppID,
 	UserID:         &ret.UserID,
-	MiningpoolType: &ret.MiningpoolType,
-	CoinType:       &ret.CoinType,
 	RevenueAddress: &ret.RevenueAddress,
 	AutoPay:        &ret.AutoPay,
 }
@@ -65,12 +61,9 @@ func create(t *testing.T) {
 		context.Background(),
 		WithName(req.Name, true),
 		WithEntID(req.EntID, true),
-		WithRootUserID(req.RootUserID, true),
 		WithGoodUserID(req.GoodUserID, true),
 		WithAppID(req.AppID, true),
 		WithUserID(req.UserID, true),
-		WithMiningpoolType(req.MiningpoolType, true),
-		WithCoinType(req.CoinType, true),
 		WithRevenueAddress(req.RevenueAddress, true),
 		WithAutoPay(req.AutoPay, true),
 	)
@@ -102,8 +95,6 @@ func update(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithMiningpoolType(&ret.MiningpoolType, false),
-		WithCoinType(&ret.CoinType, false),
 		WithProportion(&ret.Proportion, false),
 		WithRevenueAddress(nil, false),
 	)

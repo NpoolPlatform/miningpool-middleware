@@ -2,16 +2,16 @@ package types
 
 // request url
 const (
-	MiningUserGet                = "/v2/mining_user/get"
-	MiningUserAdd                = "/v2/mining_user/add"
-	MiningUserList               = "/v2/mining_user/list"
-	MiningUserWalletUpdate       = "/v2/mining_user/wallet/update"
-	MiningUserReadOnlyPageAdd    = "/v2/mining_user/read_only_page/add"
-	MiningUserReadOnlyPageDelete = "/v2/mining_user/read_only_page/delete"
-	MiningUserBalanceWithdraw    = "/v2/mining_user/balance/withdraw"
-	MiningUserPaymentPause       = "/v2/mining_user/payment/pause"
-	MiningUserPaymentResume      = "/v2/mining_user/payment/resume"
-	MiningUserThresholdUpdate    = "/v2/mining_user/threshold/update"
+	MiningUserGet                       = "/v2/mining_user/get"
+	MiningUserAdd                       = "/v2/mining_user/add"
+	MiningUserList                      = "/v2/mining_user/list"
+	MiningUserWalletUpdate              = "/v2/mining_user/wallet/update"
+	MiningUserReadOnlyPageAdd           = "/v2/mining_user/read_only_page/add"
+	MiningUserReadOnlyPageDelete        = "/v2/mining_user/read_only_page/delete"
+	MiningUserBalanceWithdraw           = "/v2/mining_user/balance/withdraw"
+	MiningUserPaymentPause              = "/v2/mining_user/payment/pause"
+	MiningUserPaymentResume             = "/v2/mining_user/payment/resume"
+	MiningUserLeastTransferAmountUpdate = "/v2/mining_user/least_transfer_amount/update"
 )
 
 // error response
@@ -36,9 +36,9 @@ const (
 )
 
 type Wallet struct {
-	Currency  string  `json:"currency"`
-	Address   string  `json:"address"`
-	Threshold float64 `json:"threshold,string"`
+	Currency            string  `json:"currency"`
+	Address             string  `json:"address"`
+	LeastTransferAmount float64 `json:"least_transfer_amount,string"`
 }
 
 type ExtraEntry struct {
@@ -157,11 +157,11 @@ type MiningUserPaymentResumeResp struct {
 	Results map[string]string `json:"results"`
 }
 
-type MiningUserThresholdUpdateReq struct {
-	MiningUserName string  `json:"mining_user_name"`
-	Currency       string  `json:"currency"`
-	Threshold      float64 `json:"threshold"`
+type MiningUserLeastTransferAmountUpdateReq struct {
+	MiningUserName      string  `json:"mining_user_name"`
+	Currency            string  `json:"currency"`
+	LeastTransferAmount float64 `json:"least_transfer_amount"`
 }
-type MiningUserThresholdUpdateResp struct {
-	Threshold float64 `json:"threshold"`
+type MiningUserLeastTransferAmountUpdateResp struct {
+	LeastTransferAmount float64 `json:"least_transfer_amount"`
 }

@@ -19,7 +19,6 @@ func (h *Handler) UpdateGoodUser(ctx context.Context) error {
 	}
 
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
 	sqlH.BondName = &info.Name
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

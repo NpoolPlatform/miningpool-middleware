@@ -27,14 +27,11 @@ var goodUserRet = &npool.GoodUser{
 }
 
 var goodUserReq = &npool.GoodUserReq{
-	EntID:          &goodUserRet.EntID,
-	Name:           &goodUserRet.Name,
-	RootUserID:     &goodUserRet.RootUserID,
-	MiningpoolType: &goodUserRet.MiningpoolType,
-	CoinType:       &goodUserRet.CoinType,
-	HashRate:       &goodUserRet.HashRate,
-	ReadPageLink:   &goodUserRet.ReadPageLink,
-	RevenueType:    &goodUserRet.RevenueType,
+	EntID:        &goodUserRet.EntID,
+	Name:         &goodUserRet.Name,
+	RootUserID:   &goodUserRet.RootUserID,
+	HashRate:     &goodUserRet.HashRate,
+	ReadPageLink: &goodUserRet.ReadPageLink,
 }
 
 func createGoodUser(t *testing.T) {

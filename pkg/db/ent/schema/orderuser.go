@@ -27,12 +27,6 @@ func (OrderUser) Mixin() []ent.Mixin {
 func (OrderUser) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("root_user_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.Nil
-			}),
-		field.
 			UUID("good_user_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {
@@ -52,10 +46,6 @@ func (OrderUser) Fields() []ent.Field {
 			}),
 		field.
 			String("name").Optional().Default(""),
-		field.
-			String("miningpool_type").Optional().Default(""),
-		field.
-			String("coin_type").Optional().Default(""),
 		field.
 			Other("proportion", decimal.Decimal{}).
 			SchemaType(map[string]string{
@@ -81,6 +71,5 @@ func (OrderUser) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("app_id"),
 		index.Fields("good_user_id"),
-		index.Fields("miningpool_type", "coin_type"),
 	}
 }

@@ -775,27 +775,29 @@ func (m *AppPoolMutation) ResetEdge(name string) error {
 // CoinMutation represents an operation that mutates the Coin nodes in the graph.
 type CoinMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *uint32
-	created_at         *uint32
-	addcreated_at      *int32
-	updated_at         *uint32
-	addupdated_at      *int32
-	deleted_at         *uint32
-	adddeleted_at      *int32
-	ent_id             *uuid.UUID
-	miningpool_type    *string
-	coin_type          *string
-	revenue_types      *[]string
-	fee_rate           *decimal.Decimal
-	fixed_revenue_able *bool
-	remark             *string
-	threshold          *decimal.Decimal
-	clearedFields      map[string]struct{}
-	done               bool
-	oldValue           func(context.Context) (*Coin, error)
-	predicates         []predicate.Coin
+	op                          Op
+	typ                         string
+	id                          *uint32
+	created_at                  *uint32
+	addcreated_at               *int32
+	updated_at                  *uint32
+	addupdated_at               *int32
+	deleted_at                  *uint32
+	adddeleted_at               *int32
+	ent_id                      *uuid.UUID
+	pool_id                     *uuid.UUID
+	coin_type                   *string
+	revenue_type                *string
+	fee_ratio                   *decimal.Decimal
+	fixed_revenue_able          *bool
+	least_transfer_amount       *decimal.Decimal
+	benefit_interval_seconds    *uint32
+	addbenefit_interval_seconds *int32
+	remark                      *string
+	clearedFields               map[string]struct{}
+	done                        bool
+	oldValue                    func(context.Context) (*Coin, error)
+	predicates                  []predicate.Coin
 }
 
 var _ ent.Mutation = (*CoinMutation)(nil)
@@ -1106,53 +1108,53 @@ func (m *CoinMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *CoinMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetPoolID sets the "pool_id" field.
+func (m *CoinMutation) SetPoolID(u uuid.UUID) {
+	m.pool_id = &u
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *CoinMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// PoolID returns the value of the "pool_id" field in the mutation.
+func (m *CoinMutation) PoolID() (r uuid.UUID, exists bool) {
+	v := m.pool_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the Coin entity.
+// OldPoolID returns the old "pool_id" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *CoinMutation) OldPoolID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldPoolID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldPoolID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldPoolID: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.PoolID, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *CoinMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[coin.FieldMiningpoolType] = struct{}{}
+// ClearPoolID clears the value of the "pool_id" field.
+func (m *CoinMutation) ClearPoolID() {
+	m.pool_id = nil
+	m.clearedFields[coin.FieldPoolID] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *CoinMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[coin.FieldMiningpoolType]
+// PoolIDCleared returns if the "pool_id" field was cleared in this mutation.
+func (m *CoinMutation) PoolIDCleared() bool {
+	_, ok := m.clearedFields[coin.FieldPoolID]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *CoinMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, coin.FieldMiningpoolType)
+// ResetPoolID resets all changes to the "pool_id" field.
+func (m *CoinMutation) ResetPoolID() {
+	m.pool_id = nil
+	delete(m.clearedFields, coin.FieldPoolID)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -1204,102 +1206,102 @@ func (m *CoinMutation) ResetCoinType() {
 	delete(m.clearedFields, coin.FieldCoinType)
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (m *CoinMutation) SetRevenueTypes(s []string) {
-	m.revenue_types = &s
+// SetRevenueType sets the "revenue_type" field.
+func (m *CoinMutation) SetRevenueType(s string) {
+	m.revenue_type = &s
 }
 
-// RevenueTypes returns the value of the "revenue_types" field in the mutation.
-func (m *CoinMutation) RevenueTypes() (r []string, exists bool) {
-	v := m.revenue_types
+// RevenueType returns the value of the "revenue_type" field in the mutation.
+func (m *CoinMutation) RevenueType() (r string, exists bool) {
+	v := m.revenue_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRevenueTypes returns the old "revenue_types" field's value of the Coin entity.
+// OldRevenueType returns the old "revenue_type" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldRevenueTypes(ctx context.Context) (v []string, err error) {
+func (m *CoinMutation) OldRevenueType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueTypes is only allowed on UpdateOne operations")
+		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueTypes requires an ID field in the mutation")
+		return v, errors.New("OldRevenueType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueTypes: %w", err)
+		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
 	}
-	return oldValue.RevenueTypes, nil
+	return oldValue.RevenueType, nil
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (m *CoinMutation) ClearRevenueTypes() {
-	m.revenue_types = nil
-	m.clearedFields[coin.FieldRevenueTypes] = struct{}{}
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (m *CoinMutation) ClearRevenueType() {
+	m.revenue_type = nil
+	m.clearedFields[coin.FieldRevenueType] = struct{}{}
 }
 
-// RevenueTypesCleared returns if the "revenue_types" field was cleared in this mutation.
-func (m *CoinMutation) RevenueTypesCleared() bool {
-	_, ok := m.clearedFields[coin.FieldRevenueTypes]
+// RevenueTypeCleared returns if the "revenue_type" field was cleared in this mutation.
+func (m *CoinMutation) RevenueTypeCleared() bool {
+	_, ok := m.clearedFields[coin.FieldRevenueType]
 	return ok
 }
 
-// ResetRevenueTypes resets all changes to the "revenue_types" field.
-func (m *CoinMutation) ResetRevenueTypes() {
-	m.revenue_types = nil
-	delete(m.clearedFields, coin.FieldRevenueTypes)
+// ResetRevenueType resets all changes to the "revenue_type" field.
+func (m *CoinMutation) ResetRevenueType() {
+	m.revenue_type = nil
+	delete(m.clearedFields, coin.FieldRevenueType)
 }
 
-// SetFeeRate sets the "fee_rate" field.
-func (m *CoinMutation) SetFeeRate(d decimal.Decimal) {
-	m.fee_rate = &d
+// SetFeeRatio sets the "fee_ratio" field.
+func (m *CoinMutation) SetFeeRatio(d decimal.Decimal) {
+	m.fee_ratio = &d
 }
 
-// FeeRate returns the value of the "fee_rate" field in the mutation.
-func (m *CoinMutation) FeeRate() (r decimal.Decimal, exists bool) {
-	v := m.fee_rate
+// FeeRatio returns the value of the "fee_ratio" field in the mutation.
+func (m *CoinMutation) FeeRatio() (r decimal.Decimal, exists bool) {
+	v := m.fee_ratio
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldFeeRate returns the old "fee_rate" field's value of the Coin entity.
+// OldFeeRatio returns the old "fee_ratio" field's value of the Coin entity.
 // If the Coin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldFeeRate(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *CoinMutation) OldFeeRatio(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFeeRate is only allowed on UpdateOne operations")
+		return v, errors.New("OldFeeRatio is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFeeRate requires an ID field in the mutation")
+		return v, errors.New("OldFeeRatio requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFeeRate: %w", err)
+		return v, fmt.Errorf("querying old value for OldFeeRatio: %w", err)
 	}
-	return oldValue.FeeRate, nil
+	return oldValue.FeeRatio, nil
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (m *CoinMutation) ClearFeeRate() {
-	m.fee_rate = nil
-	m.clearedFields[coin.FieldFeeRate] = struct{}{}
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (m *CoinMutation) ClearFeeRatio() {
+	m.fee_ratio = nil
+	m.clearedFields[coin.FieldFeeRatio] = struct{}{}
 }
 
-// FeeRateCleared returns if the "fee_rate" field was cleared in this mutation.
-func (m *CoinMutation) FeeRateCleared() bool {
-	_, ok := m.clearedFields[coin.FieldFeeRate]
+// FeeRatioCleared returns if the "fee_ratio" field was cleared in this mutation.
+func (m *CoinMutation) FeeRatioCleared() bool {
+	_, ok := m.clearedFields[coin.FieldFeeRatio]
 	return ok
 }
 
-// ResetFeeRate resets all changes to the "fee_rate" field.
-func (m *CoinMutation) ResetFeeRate() {
-	m.fee_rate = nil
-	delete(m.clearedFields, coin.FieldFeeRate)
+// ResetFeeRatio resets all changes to the "fee_ratio" field.
+func (m *CoinMutation) ResetFeeRatio() {
+	m.fee_ratio = nil
+	delete(m.clearedFields, coin.FieldFeeRatio)
 }
 
 // SetFixedRevenueAble sets the "fixed_revenue_able" field.
@@ -1351,6 +1353,125 @@ func (m *CoinMutation) ResetFixedRevenueAble() {
 	delete(m.clearedFields, coin.FieldFixedRevenueAble)
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (m *CoinMutation) SetLeastTransferAmount(d decimal.Decimal) {
+	m.least_transfer_amount = &d
+}
+
+// LeastTransferAmount returns the value of the "least_transfer_amount" field in the mutation.
+func (m *CoinMutation) LeastTransferAmount() (r decimal.Decimal, exists bool) {
+	v := m.least_transfer_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLeastTransferAmount returns the old "least_transfer_amount" field's value of the Coin entity.
+// If the Coin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinMutation) OldLeastTransferAmount(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLeastTransferAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLeastTransferAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLeastTransferAmount: %w", err)
+	}
+	return oldValue.LeastTransferAmount, nil
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (m *CoinMutation) ClearLeastTransferAmount() {
+	m.least_transfer_amount = nil
+	m.clearedFields[coin.FieldLeastTransferAmount] = struct{}{}
+}
+
+// LeastTransferAmountCleared returns if the "least_transfer_amount" field was cleared in this mutation.
+func (m *CoinMutation) LeastTransferAmountCleared() bool {
+	_, ok := m.clearedFields[coin.FieldLeastTransferAmount]
+	return ok
+}
+
+// ResetLeastTransferAmount resets all changes to the "least_transfer_amount" field.
+func (m *CoinMutation) ResetLeastTransferAmount() {
+	m.least_transfer_amount = nil
+	delete(m.clearedFields, coin.FieldLeastTransferAmount)
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (m *CoinMutation) SetBenefitIntervalSeconds(u uint32) {
+	m.benefit_interval_seconds = &u
+	m.addbenefit_interval_seconds = nil
+}
+
+// BenefitIntervalSeconds returns the value of the "benefit_interval_seconds" field in the mutation.
+func (m *CoinMutation) BenefitIntervalSeconds() (r uint32, exists bool) {
+	v := m.benefit_interval_seconds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBenefitIntervalSeconds returns the old "benefit_interval_seconds" field's value of the Coin entity.
+// If the Coin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinMutation) OldBenefitIntervalSeconds(ctx context.Context) (v uint32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBenefitIntervalSeconds is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBenefitIntervalSeconds requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBenefitIntervalSeconds: %w", err)
+	}
+	return oldValue.BenefitIntervalSeconds, nil
+}
+
+// AddBenefitIntervalSeconds adds u to the "benefit_interval_seconds" field.
+func (m *CoinMutation) AddBenefitIntervalSeconds(u int32) {
+	if m.addbenefit_interval_seconds != nil {
+		*m.addbenefit_interval_seconds += u
+	} else {
+		m.addbenefit_interval_seconds = &u
+	}
+}
+
+// AddedBenefitIntervalSeconds returns the value that was added to the "benefit_interval_seconds" field in this mutation.
+func (m *CoinMutation) AddedBenefitIntervalSeconds() (r int32, exists bool) {
+	v := m.addbenefit_interval_seconds
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (m *CoinMutation) ClearBenefitIntervalSeconds() {
+	m.benefit_interval_seconds = nil
+	m.addbenefit_interval_seconds = nil
+	m.clearedFields[coin.FieldBenefitIntervalSeconds] = struct{}{}
+}
+
+// BenefitIntervalSecondsCleared returns if the "benefit_interval_seconds" field was cleared in this mutation.
+func (m *CoinMutation) BenefitIntervalSecondsCleared() bool {
+	_, ok := m.clearedFields[coin.FieldBenefitIntervalSeconds]
+	return ok
+}
+
+// ResetBenefitIntervalSeconds resets all changes to the "benefit_interval_seconds" field.
+func (m *CoinMutation) ResetBenefitIntervalSeconds() {
+	m.benefit_interval_seconds = nil
+	m.addbenefit_interval_seconds = nil
+	delete(m.clearedFields, coin.FieldBenefitIntervalSeconds)
+}
+
 // SetRemark sets the "remark" field.
 func (m *CoinMutation) SetRemark(s string) {
 	m.remark = &s
@@ -1400,55 +1521,6 @@ func (m *CoinMutation) ResetRemark() {
 	delete(m.clearedFields, coin.FieldRemark)
 }
 
-// SetThreshold sets the "threshold" field.
-func (m *CoinMutation) SetThreshold(d decimal.Decimal) {
-	m.threshold = &d
-}
-
-// Threshold returns the value of the "threshold" field in the mutation.
-func (m *CoinMutation) Threshold() (r decimal.Decimal, exists bool) {
-	v := m.threshold
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldThreshold returns the old "threshold" field's value of the Coin entity.
-// If the Coin object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldThreshold(ctx context.Context) (v decimal.Decimal, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldThreshold is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldThreshold requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldThreshold: %w", err)
-	}
-	return oldValue.Threshold, nil
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (m *CoinMutation) ClearThreshold() {
-	m.threshold = nil
-	m.clearedFields[coin.FieldThreshold] = struct{}{}
-}
-
-// ThresholdCleared returns if the "threshold" field was cleared in this mutation.
-func (m *CoinMutation) ThresholdCleared() bool {
-	_, ok := m.clearedFields[coin.FieldThreshold]
-	return ok
-}
-
-// ResetThreshold resets all changes to the "threshold" field.
-func (m *CoinMutation) ResetThreshold() {
-	m.threshold = nil
-	delete(m.clearedFields, coin.FieldThreshold)
-}
-
 // Where appends a list predicates to the CoinMutation builder.
 func (m *CoinMutation) Where(ps ...predicate.Coin) {
 	m.predicates = append(m.predicates, ps...)
@@ -1468,7 +1540,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -1481,26 +1553,29 @@ func (m *CoinMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, coin.FieldEntID)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, coin.FieldMiningpoolType)
+	if m.pool_id != nil {
+		fields = append(fields, coin.FieldPoolID)
 	}
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
 	}
-	if m.revenue_types != nil {
-		fields = append(fields, coin.FieldRevenueTypes)
+	if m.revenue_type != nil {
+		fields = append(fields, coin.FieldRevenueType)
 	}
-	if m.fee_rate != nil {
-		fields = append(fields, coin.FieldFeeRate)
+	if m.fee_ratio != nil {
+		fields = append(fields, coin.FieldFeeRatio)
 	}
 	if m.fixed_revenue_able != nil {
 		fields = append(fields, coin.FieldFixedRevenueAble)
 	}
+	if m.least_transfer_amount != nil {
+		fields = append(fields, coin.FieldLeastTransferAmount)
+	}
+	if m.benefit_interval_seconds != nil {
+		fields = append(fields, coin.FieldBenefitIntervalSeconds)
+	}
 	if m.remark != nil {
 		fields = append(fields, coin.FieldRemark)
-	}
-	if m.threshold != nil {
-		fields = append(fields, coin.FieldThreshold)
 	}
 	return fields
 }
@@ -1518,20 +1593,22 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case coin.FieldEntID:
 		return m.EntID()
-	case coin.FieldMiningpoolType:
-		return m.MiningpoolType()
+	case coin.FieldPoolID:
+		return m.PoolID()
 	case coin.FieldCoinType:
 		return m.CoinType()
-	case coin.FieldRevenueTypes:
-		return m.RevenueTypes()
-	case coin.FieldFeeRate:
-		return m.FeeRate()
+	case coin.FieldRevenueType:
+		return m.RevenueType()
+	case coin.FieldFeeRatio:
+		return m.FeeRatio()
 	case coin.FieldFixedRevenueAble:
 		return m.FixedRevenueAble()
+	case coin.FieldLeastTransferAmount:
+		return m.LeastTransferAmount()
+	case coin.FieldBenefitIntervalSeconds:
+		return m.BenefitIntervalSeconds()
 	case coin.FieldRemark:
 		return m.Remark()
-	case coin.FieldThreshold:
-		return m.Threshold()
 	}
 	return nil, false
 }
@@ -1549,20 +1626,22 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldDeletedAt(ctx)
 	case coin.FieldEntID:
 		return m.OldEntID(ctx)
-	case coin.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
+	case coin.FieldPoolID:
+		return m.OldPoolID(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
-	case coin.FieldRevenueTypes:
-		return m.OldRevenueTypes(ctx)
-	case coin.FieldFeeRate:
-		return m.OldFeeRate(ctx)
+	case coin.FieldRevenueType:
+		return m.OldRevenueType(ctx)
+	case coin.FieldFeeRatio:
+		return m.OldFeeRatio(ctx)
 	case coin.FieldFixedRevenueAble:
 		return m.OldFixedRevenueAble(ctx)
+	case coin.FieldLeastTransferAmount:
+		return m.OldLeastTransferAmount(ctx)
+	case coin.FieldBenefitIntervalSeconds:
+		return m.OldBenefitIntervalSeconds(ctx)
 	case coin.FieldRemark:
 		return m.OldRemark(ctx)
-	case coin.FieldThreshold:
-		return m.OldThreshold(ctx)
 	}
 	return nil, fmt.Errorf("unknown Coin field %s", name)
 }
@@ -1600,12 +1679,12 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case coin.FieldMiningpoolType:
-		v, ok := value.(string)
+	case coin.FieldPoolID:
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
+		m.SetPoolID(v)
 		return nil
 	case coin.FieldCoinType:
 		v, ok := value.(string)
@@ -1614,19 +1693,19 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCoinType(v)
 		return nil
-	case coin.FieldRevenueTypes:
-		v, ok := value.([]string)
+	case coin.FieldRevenueType:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRevenueTypes(v)
+		m.SetRevenueType(v)
 		return nil
-	case coin.FieldFeeRate:
+	case coin.FieldFeeRatio:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetFeeRate(v)
+		m.SetFeeRatio(v)
 		return nil
 	case coin.FieldFixedRevenueAble:
 		v, ok := value.(bool)
@@ -1635,19 +1714,26 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFixedRevenueAble(v)
 		return nil
+	case coin.FieldLeastTransferAmount:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLeastTransferAmount(v)
+		return nil
+	case coin.FieldBenefitIntervalSeconds:
+		v, ok := value.(uint32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBenefitIntervalSeconds(v)
+		return nil
 	case coin.FieldRemark:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRemark(v)
-		return nil
-	case coin.FieldThreshold:
-		v, ok := value.(decimal.Decimal)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetThreshold(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Coin field %s", name)
@@ -1666,6 +1752,9 @@ func (m *CoinMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, coin.FieldDeletedAt)
 	}
+	if m.addbenefit_interval_seconds != nil {
+		fields = append(fields, coin.FieldBenefitIntervalSeconds)
+	}
 	return fields
 }
 
@@ -1680,6 +1769,8 @@ func (m *CoinMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case coin.FieldDeletedAt:
 		return m.AddedDeletedAt()
+	case coin.FieldBenefitIntervalSeconds:
+		return m.AddedBenefitIntervalSeconds()
 	}
 	return nil, false
 }
@@ -1710,6 +1801,13 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddDeletedAt(v)
 		return nil
+	case coin.FieldBenefitIntervalSeconds:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBenefitIntervalSeconds(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Coin numeric field %s", name)
 }
@@ -1718,26 +1816,29 @@ func (m *CoinMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *CoinMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(coin.FieldMiningpoolType) {
-		fields = append(fields, coin.FieldMiningpoolType)
+	if m.FieldCleared(coin.FieldPoolID) {
+		fields = append(fields, coin.FieldPoolID)
 	}
 	if m.FieldCleared(coin.FieldCoinType) {
 		fields = append(fields, coin.FieldCoinType)
 	}
-	if m.FieldCleared(coin.FieldRevenueTypes) {
-		fields = append(fields, coin.FieldRevenueTypes)
+	if m.FieldCleared(coin.FieldRevenueType) {
+		fields = append(fields, coin.FieldRevenueType)
 	}
-	if m.FieldCleared(coin.FieldFeeRate) {
-		fields = append(fields, coin.FieldFeeRate)
+	if m.FieldCleared(coin.FieldFeeRatio) {
+		fields = append(fields, coin.FieldFeeRatio)
 	}
 	if m.FieldCleared(coin.FieldFixedRevenueAble) {
 		fields = append(fields, coin.FieldFixedRevenueAble)
 	}
+	if m.FieldCleared(coin.FieldLeastTransferAmount) {
+		fields = append(fields, coin.FieldLeastTransferAmount)
+	}
+	if m.FieldCleared(coin.FieldBenefitIntervalSeconds) {
+		fields = append(fields, coin.FieldBenefitIntervalSeconds)
+	}
 	if m.FieldCleared(coin.FieldRemark) {
 		fields = append(fields, coin.FieldRemark)
-	}
-	if m.FieldCleared(coin.FieldThreshold) {
-		fields = append(fields, coin.FieldThreshold)
 	}
 	return fields
 }
@@ -1753,26 +1854,29 @@ func (m *CoinMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *CoinMutation) ClearField(name string) error {
 	switch name {
-	case coin.FieldMiningpoolType:
-		m.ClearMiningpoolType()
+	case coin.FieldPoolID:
+		m.ClearPoolID()
 		return nil
 	case coin.FieldCoinType:
 		m.ClearCoinType()
 		return nil
-	case coin.FieldRevenueTypes:
-		m.ClearRevenueTypes()
+	case coin.FieldRevenueType:
+		m.ClearRevenueType()
 		return nil
-	case coin.FieldFeeRate:
-		m.ClearFeeRate()
+	case coin.FieldFeeRatio:
+		m.ClearFeeRatio()
 		return nil
 	case coin.FieldFixedRevenueAble:
 		m.ClearFixedRevenueAble()
 		return nil
+	case coin.FieldLeastTransferAmount:
+		m.ClearLeastTransferAmount()
+		return nil
+	case coin.FieldBenefitIntervalSeconds:
+		m.ClearBenefitIntervalSeconds()
+		return nil
 	case coin.FieldRemark:
 		m.ClearRemark()
-		return nil
-	case coin.FieldThreshold:
-		m.ClearThreshold()
 		return nil
 	}
 	return fmt.Errorf("unknown Coin nullable field %s", name)
@@ -1794,26 +1898,29 @@ func (m *CoinMutation) ResetField(name string) error {
 	case coin.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case coin.FieldMiningpoolType:
-		m.ResetMiningpoolType()
+	case coin.FieldPoolID:
+		m.ResetPoolID()
 		return nil
 	case coin.FieldCoinType:
 		m.ResetCoinType()
 		return nil
-	case coin.FieldRevenueTypes:
-		m.ResetRevenueTypes()
+	case coin.FieldRevenueType:
+		m.ResetRevenueType()
 		return nil
-	case coin.FieldFeeRate:
-		m.ResetFeeRate()
+	case coin.FieldFeeRatio:
+		m.ResetFeeRatio()
 		return nil
 	case coin.FieldFixedRevenueAble:
 		m.ResetFixedRevenueAble()
 		return nil
+	case coin.FieldLeastTransferAmount:
+		m.ResetLeastTransferAmount()
+		return nil
+	case coin.FieldBenefitIntervalSeconds:
+		m.ResetBenefitIntervalSeconds()
+		return nil
 	case coin.FieldRemark:
 		m.ResetRemark()
-		return nil
-	case coin.FieldThreshold:
-		m.ResetThreshold()
 		return nil
 	}
 	return fmt.Errorf("unknown Coin field %s", name)
@@ -3043,14 +3150,11 @@ type FractionRuleMutation struct {
 	deleted_at           *uint32
 	adddeleted_at        *int32
 	ent_id               *uuid.UUID
-	miningpool_type      *string
-	coin_type            *string
+	coin_id              *uuid.UUID
 	withdraw_interval    *uint32
 	addwithdraw_interval *int32
-	min_amount           *float32
-	addmin_amount        *float32
-	withdraw_rate        *float32
-	addwithdraw_rate     *float32
+	min_amount           *decimal.Decimal
+	withdraw_rate        *decimal.Decimal
 	clearedFields        map[string]struct{}
 	done                 bool
 	oldValue             func(context.Context) (*FractionRule, error)
@@ -3365,102 +3469,53 @@ func (m *FractionRuleMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *FractionRuleMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetCoinID sets the "coin_id" field.
+func (m *FractionRuleMutation) SetCoinID(u uuid.UUID) {
+	m.coin_id = &u
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *FractionRuleMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// CoinID returns the value of the "coin_id" field in the mutation.
+func (m *FractionRuleMutation) CoinID() (r uuid.UUID, exists bool) {
+	v := m.coin_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the FractionRule entity.
+// OldCoinID returns the old "coin_id" field's value of the FractionRule entity.
 // If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *FractionRuleMutation) OldCoinID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldCoinID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldCoinID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldCoinID: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.CoinID, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *FractionRuleMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[fractionrule.FieldMiningpoolType] = struct{}{}
+// ClearCoinID clears the value of the "coin_id" field.
+func (m *FractionRuleMutation) ClearCoinID() {
+	m.coin_id = nil
+	m.clearedFields[fractionrule.FieldCoinID] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *FractionRuleMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldMiningpoolType]
+// CoinIDCleared returns if the "coin_id" field was cleared in this mutation.
+func (m *FractionRuleMutation) CoinIDCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldCoinID]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *FractionRuleMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, fractionrule.FieldMiningpoolType)
-}
-
-// SetCoinType sets the "coin_type" field.
-func (m *FractionRuleMutation) SetCoinType(s string) {
-	m.coin_type = &s
-}
-
-// CoinType returns the value of the "coin_type" field in the mutation.
-func (m *FractionRuleMutation) CoinType() (r string, exists bool) {
-	v := m.coin_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCoinType returns the old "coin_type" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldCoinType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
-	}
-	return oldValue.CoinType, nil
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (m *FractionRuleMutation) ClearCoinType() {
-	m.coin_type = nil
-	m.clearedFields[fractionrule.FieldCoinType] = struct{}{}
-}
-
-// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
-func (m *FractionRuleMutation) CoinTypeCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldCoinType]
-	return ok
-}
-
-// ResetCoinType resets all changes to the "coin_type" field.
-func (m *FractionRuleMutation) ResetCoinType() {
-	m.coin_type = nil
-	delete(m.clearedFields, fractionrule.FieldCoinType)
+// ResetCoinID resets all changes to the "coin_id" field.
+func (m *FractionRuleMutation) ResetCoinID() {
+	m.coin_id = nil
+	delete(m.clearedFields, fractionrule.FieldCoinID)
 }
 
 // SetWithdrawInterval sets the "withdraw_interval" field.
@@ -3534,13 +3589,12 @@ func (m *FractionRuleMutation) ResetWithdrawInterval() {
 }
 
 // SetMinAmount sets the "min_amount" field.
-func (m *FractionRuleMutation) SetMinAmount(f float32) {
-	m.min_amount = &f
-	m.addmin_amount = nil
+func (m *FractionRuleMutation) SetMinAmount(d decimal.Decimal) {
+	m.min_amount = &d
 }
 
 // MinAmount returns the value of the "min_amount" field in the mutation.
-func (m *FractionRuleMutation) MinAmount() (r float32, exists bool) {
+func (m *FractionRuleMutation) MinAmount() (r decimal.Decimal, exists bool) {
 	v := m.min_amount
 	if v == nil {
 		return
@@ -3551,7 +3605,7 @@ func (m *FractionRuleMutation) MinAmount() (r float32, exists bool) {
 // OldMinAmount returns the old "min_amount" field's value of the FractionRule entity.
 // If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldMinAmount(ctx context.Context) (v float32, err error) {
+func (m *FractionRuleMutation) OldMinAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMinAmount is only allowed on UpdateOne operations")
 	}
@@ -3565,28 +3619,9 @@ func (m *FractionRuleMutation) OldMinAmount(ctx context.Context) (v float32, err
 	return oldValue.MinAmount, nil
 }
 
-// AddMinAmount adds f to the "min_amount" field.
-func (m *FractionRuleMutation) AddMinAmount(f float32) {
-	if m.addmin_amount != nil {
-		*m.addmin_amount += f
-	} else {
-		m.addmin_amount = &f
-	}
-}
-
-// AddedMinAmount returns the value that was added to the "min_amount" field in this mutation.
-func (m *FractionRuleMutation) AddedMinAmount() (r float32, exists bool) {
-	v := m.addmin_amount
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearMinAmount clears the value of the "min_amount" field.
 func (m *FractionRuleMutation) ClearMinAmount() {
 	m.min_amount = nil
-	m.addmin_amount = nil
 	m.clearedFields[fractionrule.FieldMinAmount] = struct{}{}
 }
 
@@ -3599,18 +3634,16 @@ func (m *FractionRuleMutation) MinAmountCleared() bool {
 // ResetMinAmount resets all changes to the "min_amount" field.
 func (m *FractionRuleMutation) ResetMinAmount() {
 	m.min_amount = nil
-	m.addmin_amount = nil
 	delete(m.clearedFields, fractionrule.FieldMinAmount)
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
-func (m *FractionRuleMutation) SetWithdrawRate(f float32) {
-	m.withdraw_rate = &f
-	m.addwithdraw_rate = nil
+func (m *FractionRuleMutation) SetWithdrawRate(d decimal.Decimal) {
+	m.withdraw_rate = &d
 }
 
 // WithdrawRate returns the value of the "withdraw_rate" field in the mutation.
-func (m *FractionRuleMutation) WithdrawRate() (r float32, exists bool) {
+func (m *FractionRuleMutation) WithdrawRate() (r decimal.Decimal, exists bool) {
 	v := m.withdraw_rate
 	if v == nil {
 		return
@@ -3621,7 +3654,7 @@ func (m *FractionRuleMutation) WithdrawRate() (r float32, exists bool) {
 // OldWithdrawRate returns the old "withdraw_rate" field's value of the FractionRule entity.
 // If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldWithdrawRate(ctx context.Context) (v float32, err error) {
+func (m *FractionRuleMutation) OldWithdrawRate(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWithdrawRate is only allowed on UpdateOne operations")
 	}
@@ -3635,28 +3668,9 @@ func (m *FractionRuleMutation) OldWithdrawRate(ctx context.Context) (v float32, 
 	return oldValue.WithdrawRate, nil
 }
 
-// AddWithdrawRate adds f to the "withdraw_rate" field.
-func (m *FractionRuleMutation) AddWithdrawRate(f float32) {
-	if m.addwithdraw_rate != nil {
-		*m.addwithdraw_rate += f
-	} else {
-		m.addwithdraw_rate = &f
-	}
-}
-
-// AddedWithdrawRate returns the value that was added to the "withdraw_rate" field in this mutation.
-func (m *FractionRuleMutation) AddedWithdrawRate() (r float32, exists bool) {
-	v := m.addwithdraw_rate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearWithdrawRate clears the value of the "withdraw_rate" field.
 func (m *FractionRuleMutation) ClearWithdrawRate() {
 	m.withdraw_rate = nil
-	m.addwithdraw_rate = nil
 	m.clearedFields[fractionrule.FieldWithdrawRate] = struct{}{}
 }
 
@@ -3669,7 +3683,6 @@ func (m *FractionRuleMutation) WithdrawRateCleared() bool {
 // ResetWithdrawRate resets all changes to the "withdraw_rate" field.
 func (m *FractionRuleMutation) ResetWithdrawRate() {
 	m.withdraw_rate = nil
-	m.addwithdraw_rate = nil
 	delete(m.clearedFields, fractionrule.FieldWithdrawRate)
 }
 
@@ -3692,7 +3705,7 @@ func (m *FractionRuleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FractionRuleMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, fractionrule.FieldCreatedAt)
 	}
@@ -3705,11 +3718,8 @@ func (m *FractionRuleMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, fractionrule.FieldEntID)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, fractionrule.FieldMiningpoolType)
-	}
-	if m.coin_type != nil {
-		fields = append(fields, fractionrule.FieldCoinType)
+	if m.coin_id != nil {
+		fields = append(fields, fractionrule.FieldCoinID)
 	}
 	if m.withdraw_interval != nil {
 		fields = append(fields, fractionrule.FieldWithdrawInterval)
@@ -3736,10 +3746,8 @@ func (m *FractionRuleMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case fractionrule.FieldEntID:
 		return m.EntID()
-	case fractionrule.FieldMiningpoolType:
-		return m.MiningpoolType()
-	case fractionrule.FieldCoinType:
-		return m.CoinType()
+	case fractionrule.FieldCoinID:
+		return m.CoinID()
 	case fractionrule.FieldWithdrawInterval:
 		return m.WithdrawInterval()
 	case fractionrule.FieldMinAmount:
@@ -3763,10 +3771,8 @@ func (m *FractionRuleMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldDeletedAt(ctx)
 	case fractionrule.FieldEntID:
 		return m.OldEntID(ctx)
-	case fractionrule.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
-	case fractionrule.FieldCoinType:
-		return m.OldCoinType(ctx)
+	case fractionrule.FieldCoinID:
+		return m.OldCoinID(ctx)
 	case fractionrule.FieldWithdrawInterval:
 		return m.OldWithdrawInterval(ctx)
 	case fractionrule.FieldMinAmount:
@@ -3810,19 +3816,12 @@ func (m *FractionRuleMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case fractionrule.FieldMiningpoolType:
-		v, ok := value.(string)
+	case fractionrule.FieldCoinID:
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
-		return nil
-	case fractionrule.FieldCoinType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoinType(v)
+		m.SetCoinID(v)
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		v, ok := value.(uint32)
@@ -3832,14 +3831,14 @@ func (m *FractionRuleMutation) SetField(name string, value ent.Value) error {
 		m.SetWithdrawInterval(v)
 		return nil
 	case fractionrule.FieldMinAmount:
-		v, ok := value.(float32)
+		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMinAmount(v)
 		return nil
 	case fractionrule.FieldWithdrawRate:
-		v, ok := value.(float32)
+		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -3865,12 +3864,6 @@ func (m *FractionRuleMutation) AddedFields() []string {
 	if m.addwithdraw_interval != nil {
 		fields = append(fields, fractionrule.FieldWithdrawInterval)
 	}
-	if m.addmin_amount != nil {
-		fields = append(fields, fractionrule.FieldMinAmount)
-	}
-	if m.addwithdraw_rate != nil {
-		fields = append(fields, fractionrule.FieldWithdrawRate)
-	}
 	return fields
 }
 
@@ -3887,10 +3880,6 @@ func (m *FractionRuleMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedDeletedAt()
 	case fractionrule.FieldWithdrawInterval:
 		return m.AddedWithdrawInterval()
-	case fractionrule.FieldMinAmount:
-		return m.AddedMinAmount()
-	case fractionrule.FieldWithdrawRate:
-		return m.AddedWithdrawRate()
 	}
 	return nil, false
 }
@@ -3928,20 +3917,6 @@ func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddWithdrawInterval(v)
 		return nil
-	case fractionrule.FieldMinAmount:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddMinAmount(v)
-		return nil
-	case fractionrule.FieldWithdrawRate:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddWithdrawRate(v)
-		return nil
 	}
 	return fmt.Errorf("unknown FractionRule numeric field %s", name)
 }
@@ -3950,11 +3925,8 @@ func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *FractionRuleMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(fractionrule.FieldMiningpoolType) {
-		fields = append(fields, fractionrule.FieldMiningpoolType)
-	}
-	if m.FieldCleared(fractionrule.FieldCoinType) {
-		fields = append(fields, fractionrule.FieldCoinType)
+	if m.FieldCleared(fractionrule.FieldCoinID) {
+		fields = append(fields, fractionrule.FieldCoinID)
 	}
 	if m.FieldCleared(fractionrule.FieldWithdrawInterval) {
 		fields = append(fields, fractionrule.FieldWithdrawInterval)
@@ -3979,11 +3951,8 @@ func (m *FractionRuleMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *FractionRuleMutation) ClearField(name string) error {
 	switch name {
-	case fractionrule.FieldMiningpoolType:
-		m.ClearMiningpoolType()
-		return nil
-	case fractionrule.FieldCoinType:
-		m.ClearCoinType()
+	case fractionrule.FieldCoinID:
+		m.ClearCoinID()
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		m.ClearWithdrawInterval()
@@ -4014,11 +3983,8 @@ func (m *FractionRuleMutation) ResetField(name string) error {
 	case fractionrule.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case fractionrule.FieldMiningpoolType:
-		m.ResetMiningpoolType()
-		return nil
-	case fractionrule.FieldCoinType:
-		m.ResetCoinType()
+	case fractionrule.FieldCoinID:
+		m.ResetCoinID()
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		m.ResetWithdrawInterval()
@@ -4084,28 +4050,27 @@ func (m *FractionRuleMutation) ResetEdge(name string) error {
 // GoodUserMutation represents an operation that mutates the GoodUser nodes in the graph.
 type GoodUserMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint32
-	created_at      *uint32
-	addcreated_at   *int32
-	updated_at      *uint32
-	addupdated_at   *int32
-	deleted_at      *uint32
-	adddeleted_at   *int32
-	ent_id          *uuid.UUID
-	root_user_id    *uuid.UUID
-	name            *string
-	miningpool_type *string
-	coin_type       *string
-	hash_rate       *float32
-	addhash_rate    *float32
-	read_page_link  *string
-	revenue_type    *string
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*GoodUser, error)
-	predicates      []predicate.GoodUser
+	op             Op
+	typ            string
+	id             *uint32
+	created_at     *uint32
+	addcreated_at  *int32
+	updated_at     *uint32
+	addupdated_at  *int32
+	deleted_at     *uint32
+	adddeleted_at  *int32
+	ent_id         *uuid.UUID
+	root_user_id   *uuid.UUID
+	name           *string
+	coin_id        *uuid.UUID
+	revenue_id     *uuid.UUID
+	hash_rate      *float32
+	addhash_rate   *float32
+	read_page_link *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*GoodUser, error)
+	predicates     []predicate.GoodUser
 }
 
 var _ ent.Mutation = (*GoodUserMutation)(nil)
@@ -4514,102 +4479,102 @@ func (m *GoodUserMutation) ResetName() {
 	delete(m.clearedFields, gooduser.FieldName)
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *GoodUserMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetCoinID sets the "coin_id" field.
+func (m *GoodUserMutation) SetCoinID(u uuid.UUID) {
+	m.coin_id = &u
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *GoodUserMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// CoinID returns the value of the "coin_id" field in the mutation.
+func (m *GoodUserMutation) CoinID() (r uuid.UUID, exists bool) {
+	v := m.coin_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the GoodUser entity.
+// OldCoinID returns the old "coin_id" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *GoodUserMutation) OldCoinID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldCoinID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldCoinID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldCoinID: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.CoinID, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *GoodUserMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[gooduser.FieldMiningpoolType] = struct{}{}
+// ClearCoinID clears the value of the "coin_id" field.
+func (m *GoodUserMutation) ClearCoinID() {
+	m.coin_id = nil
+	m.clearedFields[gooduser.FieldCoinID] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *GoodUserMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldMiningpoolType]
+// CoinIDCleared returns if the "coin_id" field was cleared in this mutation.
+func (m *GoodUserMutation) CoinIDCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldCoinID]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *GoodUserMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, gooduser.FieldMiningpoolType)
+// ResetCoinID resets all changes to the "coin_id" field.
+func (m *GoodUserMutation) ResetCoinID() {
+	m.coin_id = nil
+	delete(m.clearedFields, gooduser.FieldCoinID)
 }
 
-// SetCoinType sets the "coin_type" field.
-func (m *GoodUserMutation) SetCoinType(s string) {
-	m.coin_type = &s
+// SetRevenueID sets the "revenue_id" field.
+func (m *GoodUserMutation) SetRevenueID(u uuid.UUID) {
+	m.revenue_id = &u
 }
 
-// CoinType returns the value of the "coin_type" field in the mutation.
-func (m *GoodUserMutation) CoinType() (r string, exists bool) {
-	v := m.coin_type
+// RevenueID returns the value of the "revenue_id" field in the mutation.
+func (m *GoodUserMutation) RevenueID() (r uuid.UUID, exists bool) {
+	v := m.revenue_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinType returns the old "coin_type" field's value of the GoodUser entity.
+// OldRevenueID returns the old "revenue_id" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldCoinType(ctx context.Context) (v string, err error) {
+func (m *GoodUserMutation) OldRevenueID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
+		return v, errors.New("OldRevenueID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinType requires an ID field in the mutation")
+		return v, errors.New("OldRevenueID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
+		return v, fmt.Errorf("querying old value for OldRevenueID: %w", err)
 	}
-	return oldValue.CoinType, nil
+	return oldValue.RevenueID, nil
 }
 
-// ClearCoinType clears the value of the "coin_type" field.
-func (m *GoodUserMutation) ClearCoinType() {
-	m.coin_type = nil
-	m.clearedFields[gooduser.FieldCoinType] = struct{}{}
+// ClearRevenueID clears the value of the "revenue_id" field.
+func (m *GoodUserMutation) ClearRevenueID() {
+	m.revenue_id = nil
+	m.clearedFields[gooduser.FieldRevenueID] = struct{}{}
 }
 
-// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
-func (m *GoodUserMutation) CoinTypeCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldCoinType]
+// RevenueIDCleared returns if the "revenue_id" field was cleared in this mutation.
+func (m *GoodUserMutation) RevenueIDCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldRevenueID]
 	return ok
 }
 
-// ResetCoinType resets all changes to the "coin_type" field.
-func (m *GoodUserMutation) ResetCoinType() {
-	m.coin_type = nil
-	delete(m.clearedFields, gooduser.FieldCoinType)
+// ResetRevenueID resets all changes to the "revenue_id" field.
+func (m *GoodUserMutation) ResetRevenueID() {
+	m.revenue_id = nil
+	delete(m.clearedFields, gooduser.FieldRevenueID)
 }
 
 // SetHashRate sets the "hash_rate" field.
@@ -4731,55 +4696,6 @@ func (m *GoodUserMutation) ResetReadPageLink() {
 	delete(m.clearedFields, gooduser.FieldReadPageLink)
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (m *GoodUserMutation) SetRevenueType(s string) {
-	m.revenue_type = &s
-}
-
-// RevenueType returns the value of the "revenue_type" field in the mutation.
-func (m *GoodUserMutation) RevenueType() (r string, exists bool) {
-	v := m.revenue_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueType returns the old "revenue_type" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldRevenueType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
-	}
-	return oldValue.RevenueType, nil
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (m *GoodUserMutation) ClearRevenueType() {
-	m.revenue_type = nil
-	m.clearedFields[gooduser.FieldRevenueType] = struct{}{}
-}
-
-// RevenueTypeCleared returns if the "revenue_type" field was cleared in this mutation.
-func (m *GoodUserMutation) RevenueTypeCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldRevenueType]
-	return ok
-}
-
-// ResetRevenueType resets all changes to the "revenue_type" field.
-func (m *GoodUserMutation) ResetRevenueType() {
-	m.revenue_type = nil
-	delete(m.clearedFields, gooduser.FieldRevenueType)
-}
-
 // Where appends a list predicates to the GoodUserMutation builder.
 func (m *GoodUserMutation) Where(ps ...predicate.GoodUser) {
 	m.predicates = append(m.predicates, ps...)
@@ -4799,7 +4715,7 @@ func (m *GoodUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodUserMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, gooduser.FieldCreatedAt)
 	}
@@ -4818,20 +4734,17 @@ func (m *GoodUserMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, gooduser.FieldMiningpoolType)
+	if m.coin_id != nil {
+		fields = append(fields, gooduser.FieldCoinID)
 	}
-	if m.coin_type != nil {
-		fields = append(fields, gooduser.FieldCoinType)
+	if m.revenue_id != nil {
+		fields = append(fields, gooduser.FieldRevenueID)
 	}
 	if m.hash_rate != nil {
 		fields = append(fields, gooduser.FieldHashRate)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, gooduser.FieldReadPageLink)
-	}
-	if m.revenue_type != nil {
-		fields = append(fields, gooduser.FieldRevenueType)
 	}
 	return fields
 }
@@ -4853,16 +4766,14 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.RootUserID()
 	case gooduser.FieldName:
 		return m.Name()
-	case gooduser.FieldMiningpoolType:
-		return m.MiningpoolType()
-	case gooduser.FieldCoinType:
-		return m.CoinType()
+	case gooduser.FieldCoinID:
+		return m.CoinID()
+	case gooduser.FieldRevenueID:
+		return m.RevenueID()
 	case gooduser.FieldHashRate:
 		return m.HashRate()
 	case gooduser.FieldReadPageLink:
 		return m.ReadPageLink()
-	case gooduser.FieldRevenueType:
-		return m.RevenueType()
 	}
 	return nil, false
 }
@@ -4884,16 +4795,14 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRootUserID(ctx)
 	case gooduser.FieldName:
 		return m.OldName(ctx)
-	case gooduser.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
-	case gooduser.FieldCoinType:
-		return m.OldCoinType(ctx)
+	case gooduser.FieldCoinID:
+		return m.OldCoinID(ctx)
+	case gooduser.FieldRevenueID:
+		return m.OldRevenueID(ctx)
 	case gooduser.FieldHashRate:
 		return m.OldHashRate(ctx)
 	case gooduser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
-	case gooduser.FieldRevenueType:
-		return m.OldRevenueType(ctx)
 	}
 	return nil, fmt.Errorf("unknown GoodUser field %s", name)
 }
@@ -4945,19 +4854,19 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case gooduser.FieldMiningpoolType:
-		v, ok := value.(string)
+	case gooduser.FieldCoinID:
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
+		m.SetCoinID(v)
 		return nil
-	case gooduser.FieldCoinType:
-		v, ok := value.(string)
+	case gooduser.FieldRevenueID:
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCoinType(v)
+		m.SetRevenueID(v)
 		return nil
 	case gooduser.FieldHashRate:
 		v, ok := value.(float32)
@@ -4972,13 +4881,6 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReadPageLink(v)
-		return nil
-	case gooduser.FieldRevenueType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueType(v)
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser field %s", name)
@@ -5067,20 +4969,17 @@ func (m *GoodUserMutation) ClearedFields() []string {
 	if m.FieldCleared(gooduser.FieldName) {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.FieldCleared(gooduser.FieldMiningpoolType) {
-		fields = append(fields, gooduser.FieldMiningpoolType)
+	if m.FieldCleared(gooduser.FieldCoinID) {
+		fields = append(fields, gooduser.FieldCoinID)
 	}
-	if m.FieldCleared(gooduser.FieldCoinType) {
-		fields = append(fields, gooduser.FieldCoinType)
+	if m.FieldCleared(gooduser.FieldRevenueID) {
+		fields = append(fields, gooduser.FieldRevenueID)
 	}
 	if m.FieldCleared(gooduser.FieldHashRate) {
 		fields = append(fields, gooduser.FieldHashRate)
 	}
 	if m.FieldCleared(gooduser.FieldReadPageLink) {
 		fields = append(fields, gooduser.FieldReadPageLink)
-	}
-	if m.FieldCleared(gooduser.FieldRevenueType) {
-		fields = append(fields, gooduser.FieldRevenueType)
 	}
 	return fields
 }
@@ -5102,20 +5001,17 @@ func (m *GoodUserMutation) ClearField(name string) error {
 	case gooduser.FieldName:
 		m.ClearName()
 		return nil
-	case gooduser.FieldMiningpoolType:
-		m.ClearMiningpoolType()
+	case gooduser.FieldCoinID:
+		m.ClearCoinID()
 		return nil
-	case gooduser.FieldCoinType:
-		m.ClearCoinType()
+	case gooduser.FieldRevenueID:
+		m.ClearRevenueID()
 		return nil
 	case gooduser.FieldHashRate:
 		m.ClearHashRate()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ClearReadPageLink()
-		return nil
-	case gooduser.FieldRevenueType:
-		m.ClearRevenueType()
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser nullable field %s", name)
@@ -5143,20 +5039,17 @@ func (m *GoodUserMutation) ResetField(name string) error {
 	case gooduser.FieldName:
 		m.ResetName()
 		return nil
-	case gooduser.FieldMiningpoolType:
-		m.ResetMiningpoolType()
+	case gooduser.FieldCoinID:
+		m.ResetCoinID()
 		return nil
-	case gooduser.FieldCoinType:
-		m.ResetCoinType()
+	case gooduser.FieldRevenueID:
+		m.ResetRevenueID()
 		return nil
 	case gooduser.FieldHashRate:
 		m.ResetHashRate()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ResetReadPageLink()
-		return nil
-	case gooduser.FieldRevenueType:
-		m.ResetRevenueType()
 		return nil
 	}
 	return fmt.Errorf("unknown GoodUser field %s", name)
@@ -5223,13 +5116,10 @@ type OrderUserMutation struct {
 	deleted_at      *uint32
 	adddeleted_at   *int32
 	ent_id          *uuid.UUID
-	root_user_id    *uuid.UUID
 	good_user_id    *uuid.UUID
 	user_id         *uuid.UUID
 	app_id          *uuid.UUID
 	name            *string
-	miningpool_type *string
-	coin_type       *string
 	proportion      *decimal.Decimal
 	revenue_address *string
 	read_page_link  *string
@@ -5548,55 +5438,6 @@ func (m *OrderUserMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (m *OrderUserMutation) SetRootUserID(u uuid.UUID) {
-	m.root_user_id = &u
-}
-
-// RootUserID returns the value of the "root_user_id" field in the mutation.
-func (m *OrderUserMutation) RootUserID() (r uuid.UUID, exists bool) {
-	v := m.root_user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRootUserID returns the old "root_user_id" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldRootUserID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRootUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRootUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRootUserID: %w", err)
-	}
-	return oldValue.RootUserID, nil
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (m *OrderUserMutation) ClearRootUserID() {
-	m.root_user_id = nil
-	m.clearedFields[orderuser.FieldRootUserID] = struct{}{}
-}
-
-// RootUserIDCleared returns if the "root_user_id" field was cleared in this mutation.
-func (m *OrderUserMutation) RootUserIDCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldRootUserID]
-	return ok
-}
-
-// ResetRootUserID resets all changes to the "root_user_id" field.
-func (m *OrderUserMutation) ResetRootUserID() {
-	m.root_user_id = nil
-	delete(m.clearedFields, orderuser.FieldRootUserID)
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (m *OrderUserMutation) SetGoodUserID(u uuid.UUID) {
 	m.good_user_id = &u
@@ -5791,104 +5632,6 @@ func (m *OrderUserMutation) NameCleared() bool {
 func (m *OrderUserMutation) ResetName() {
 	m.name = nil
 	delete(m.clearedFields, orderuser.FieldName)
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *OrderUserMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
-}
-
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *OrderUserMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMiningpoolType returns the old "miningpool_type" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
-	}
-	return oldValue.MiningpoolType, nil
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *OrderUserMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[orderuser.FieldMiningpoolType] = struct{}{}
-}
-
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *OrderUserMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldMiningpoolType]
-	return ok
-}
-
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *OrderUserMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, orderuser.FieldMiningpoolType)
-}
-
-// SetCoinType sets the "coin_type" field.
-func (m *OrderUserMutation) SetCoinType(s string) {
-	m.coin_type = &s
-}
-
-// CoinType returns the value of the "coin_type" field in the mutation.
-func (m *OrderUserMutation) CoinType() (r string, exists bool) {
-	v := m.coin_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCoinType returns the old "coin_type" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldCoinType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinType: %w", err)
-	}
-	return oldValue.CoinType, nil
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (m *OrderUserMutation) ClearCoinType() {
-	m.coin_type = nil
-	m.clearedFields[orderuser.FieldCoinType] = struct{}{}
-}
-
-// CoinTypeCleared returns if the "coin_type" field was cleared in this mutation.
-func (m *OrderUserMutation) CoinTypeCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldCoinType]
-	return ok
-}
-
-// ResetCoinType resets all changes to the "coin_type" field.
-func (m *OrderUserMutation) ResetCoinType() {
-	m.coin_type = nil
-	delete(m.clearedFields, orderuser.FieldCoinType)
 }
 
 // SetProportion sets the "proportion" field.
@@ -6106,7 +5849,7 @@ func (m *OrderUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderUserMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, orderuser.FieldCreatedAt)
 	}
@@ -6119,9 +5862,6 @@ func (m *OrderUserMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, orderuser.FieldEntID)
 	}
-	if m.root_user_id != nil {
-		fields = append(fields, orderuser.FieldRootUserID)
-	}
 	if m.good_user_id != nil {
 		fields = append(fields, orderuser.FieldGoodUserID)
 	}
@@ -6133,12 +5873,6 @@ func (m *OrderUserMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, orderuser.FieldName)
-	}
-	if m.miningpool_type != nil {
-		fields = append(fields, orderuser.FieldMiningpoolType)
-	}
-	if m.coin_type != nil {
-		fields = append(fields, orderuser.FieldCoinType)
 	}
 	if m.proportion != nil {
 		fields = append(fields, orderuser.FieldProportion)
@@ -6168,8 +5902,6 @@ func (m *OrderUserMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case orderuser.FieldEntID:
 		return m.EntID()
-	case orderuser.FieldRootUserID:
-		return m.RootUserID()
 	case orderuser.FieldGoodUserID:
 		return m.GoodUserID()
 	case orderuser.FieldUserID:
@@ -6178,10 +5910,6 @@ func (m *OrderUserMutation) Field(name string) (ent.Value, bool) {
 		return m.AppID()
 	case orderuser.FieldName:
 		return m.Name()
-	case orderuser.FieldMiningpoolType:
-		return m.MiningpoolType()
-	case orderuser.FieldCoinType:
-		return m.CoinType()
 	case orderuser.FieldProportion:
 		return m.Proportion()
 	case orderuser.FieldRevenueAddress:
@@ -6207,8 +5935,6 @@ func (m *OrderUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldDeletedAt(ctx)
 	case orderuser.FieldEntID:
 		return m.OldEntID(ctx)
-	case orderuser.FieldRootUserID:
-		return m.OldRootUserID(ctx)
 	case orderuser.FieldGoodUserID:
 		return m.OldGoodUserID(ctx)
 	case orderuser.FieldUserID:
@@ -6217,10 +5943,6 @@ func (m *OrderUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldAppID(ctx)
 	case orderuser.FieldName:
 		return m.OldName(ctx)
-	case orderuser.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
-	case orderuser.FieldCoinType:
-		return m.OldCoinType(ctx)
 	case orderuser.FieldProportion:
 		return m.OldProportion(ctx)
 	case orderuser.FieldRevenueAddress:
@@ -6266,13 +5988,6 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case orderuser.FieldRootUserID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRootUserID(v)
-		return nil
 	case orderuser.FieldGoodUserID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
@@ -6300,20 +6015,6 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case orderuser.FieldMiningpoolType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMiningpoolType(v)
-		return nil
-	case orderuser.FieldCoinType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoinType(v)
 		return nil
 	case orderuser.FieldProportion:
 		v, ok := value.(decimal.Decimal)
@@ -6412,9 +6113,6 @@ func (m *OrderUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *OrderUserMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(orderuser.FieldRootUserID) {
-		fields = append(fields, orderuser.FieldRootUserID)
-	}
 	if m.FieldCleared(orderuser.FieldGoodUserID) {
 		fields = append(fields, orderuser.FieldGoodUserID)
 	}
@@ -6426,12 +6124,6 @@ func (m *OrderUserMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(orderuser.FieldName) {
 		fields = append(fields, orderuser.FieldName)
-	}
-	if m.FieldCleared(orderuser.FieldMiningpoolType) {
-		fields = append(fields, orderuser.FieldMiningpoolType)
-	}
-	if m.FieldCleared(orderuser.FieldCoinType) {
-		fields = append(fields, orderuser.FieldCoinType)
 	}
 	if m.FieldCleared(orderuser.FieldProportion) {
 		fields = append(fields, orderuser.FieldProportion)
@@ -6459,9 +6151,6 @@ func (m *OrderUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *OrderUserMutation) ClearField(name string) error {
 	switch name {
-	case orderuser.FieldRootUserID:
-		m.ClearRootUserID()
-		return nil
 	case orderuser.FieldGoodUserID:
 		m.ClearGoodUserID()
 		return nil
@@ -6473,12 +6162,6 @@ func (m *OrderUserMutation) ClearField(name string) error {
 		return nil
 	case orderuser.FieldName:
 		m.ClearName()
-		return nil
-	case orderuser.FieldMiningpoolType:
-		m.ClearMiningpoolType()
-		return nil
-	case orderuser.FieldCoinType:
-		m.ClearCoinType()
 		return nil
 	case orderuser.FieldProportion:
 		m.ClearProportion()
@@ -6512,9 +6195,6 @@ func (m *OrderUserMutation) ResetField(name string) error {
 	case orderuser.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case orderuser.FieldRootUserID:
-		m.ResetRootUserID()
-		return nil
 	case orderuser.FieldGoodUserID:
 		m.ResetGoodUserID()
 		return nil
@@ -6526,12 +6206,6 @@ func (m *OrderUserMutation) ResetField(name string) error {
 		return nil
 	case orderuser.FieldName:
 		m.ResetName()
-		return nil
-	case orderuser.FieldMiningpoolType:
-		m.ResetMiningpoolType()
-		return nil
-	case orderuser.FieldCoinType:
-		m.ResetCoinType()
 		return nil
 	case orderuser.FieldProportion:
 		m.ResetProportion()
@@ -6613,6 +6287,7 @@ type PoolMutation struct {
 	miningpool_type *string
 	name            *string
 	site            *string
+	logo            *string
 	description     *string
 	clearedFields   map[string]struct{}
 	done            bool
@@ -7075,6 +6750,55 @@ func (m *PoolMutation) ResetSite() {
 	delete(m.clearedFields, pool.FieldSite)
 }
 
+// SetLogo sets the "logo" field.
+func (m *PoolMutation) SetLogo(s string) {
+	m.logo = &s
+}
+
+// Logo returns the value of the "logo" field in the mutation.
+func (m *PoolMutation) Logo() (r string, exists bool) {
+	v := m.logo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogo returns the old "logo" field's value of the Pool entity.
+// If the Pool object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PoolMutation) OldLogo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogo: %w", err)
+	}
+	return oldValue.Logo, nil
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (m *PoolMutation) ClearLogo() {
+	m.logo = nil
+	m.clearedFields[pool.FieldLogo] = struct{}{}
+}
+
+// LogoCleared returns if the "logo" field was cleared in this mutation.
+func (m *PoolMutation) LogoCleared() bool {
+	_, ok := m.clearedFields[pool.FieldLogo]
+	return ok
+}
+
+// ResetLogo resets all changes to the "logo" field.
+func (m *PoolMutation) ResetLogo() {
+	m.logo = nil
+	delete(m.clearedFields, pool.FieldLogo)
+}
+
 // SetDescription sets the "description" field.
 func (m *PoolMutation) SetDescription(s string) {
 	m.description = &s
@@ -7143,7 +6867,7 @@ func (m *PoolMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PoolMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, pool.FieldCreatedAt)
 	}
@@ -7164,6 +6888,9 @@ func (m *PoolMutation) Fields() []string {
 	}
 	if m.site != nil {
 		fields = append(fields, pool.FieldSite)
+	}
+	if m.logo != nil {
+		fields = append(fields, pool.FieldLogo)
 	}
 	if m.description != nil {
 		fields = append(fields, pool.FieldDescription)
@@ -7190,6 +6917,8 @@ func (m *PoolMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case pool.FieldSite:
 		return m.Site()
+	case pool.FieldLogo:
+		return m.Logo()
 	case pool.FieldDescription:
 		return m.Description()
 	}
@@ -7215,6 +6944,8 @@ func (m *PoolMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case pool.FieldSite:
 		return m.OldSite(ctx)
+	case pool.FieldLogo:
+		return m.OldLogo(ctx)
 	case pool.FieldDescription:
 		return m.OldDescription(ctx)
 	}
@@ -7274,6 +7005,13 @@ func (m *PoolMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSite(v)
+		return nil
+	case pool.FieldLogo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogo(v)
 		return nil
 	case pool.FieldDescription:
 		v, ok := value.(string)
@@ -7360,6 +7098,9 @@ func (m *PoolMutation) ClearedFields() []string {
 	if m.FieldCleared(pool.FieldSite) {
 		fields = append(fields, pool.FieldSite)
 	}
+	if m.FieldCleared(pool.FieldLogo) {
+		fields = append(fields, pool.FieldLogo)
+	}
 	if m.FieldCleared(pool.FieldDescription) {
 		fields = append(fields, pool.FieldDescription)
 	}
@@ -7385,6 +7126,9 @@ func (m *PoolMutation) ClearField(name string) error {
 		return nil
 	case pool.FieldSite:
 		m.ClearSite()
+		return nil
+	case pool.FieldLogo:
+		m.ClearLogo()
 		return nil
 	case pool.FieldDescription:
 		m.ClearDescription()
@@ -7417,6 +7161,9 @@ func (m *PoolMutation) ResetField(name string) error {
 		return nil
 	case pool.FieldSite:
 		m.ResetSite()
+		return nil
+	case pool.FieldLogo:
+		m.ResetLogo()
 		return nil
 	case pool.FieldDescription:
 		m.ResetDescription()
@@ -7487,7 +7234,7 @@ type RootUserMutation struct {
 	adddeleted_at   *int32
 	ent_id          *uuid.UUID
 	name            *string
-	miningpool_type *string
+	pool_id         *uuid.UUID
 	email           *string
 	auth_token      *string
 	auth_token_salt *string
@@ -7856,53 +7603,53 @@ func (m *RootUserMutation) ResetName() {
 	delete(m.clearedFields, rootuser.FieldName)
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *RootUserMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetPoolID sets the "pool_id" field.
+func (m *RootUserMutation) SetPoolID(u uuid.UUID) {
+	m.pool_id = &u
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *RootUserMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// PoolID returns the value of the "pool_id" field in the mutation.
+func (m *RootUserMutation) PoolID() (r uuid.UUID, exists bool) {
+	v := m.pool_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the RootUser entity.
+// OldPoolID returns the old "pool_id" field's value of the RootUser entity.
 // If the RootUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RootUserMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *RootUserMutation) OldPoolID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldPoolID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldPoolID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldPoolID: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.PoolID, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *RootUserMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[rootuser.FieldMiningpoolType] = struct{}{}
+// ClearPoolID clears the value of the "pool_id" field.
+func (m *RootUserMutation) ClearPoolID() {
+	m.pool_id = nil
+	m.clearedFields[rootuser.FieldPoolID] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *RootUserMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[rootuser.FieldMiningpoolType]
+// PoolIDCleared returns if the "pool_id" field was cleared in this mutation.
+func (m *RootUserMutation) PoolIDCleared() bool {
+	_, ok := m.clearedFields[rootuser.FieldPoolID]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *RootUserMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, rootuser.FieldMiningpoolType)
+// ResetPoolID resets all changes to the "pool_id" field.
+func (m *RootUserMutation) ResetPoolID() {
+	m.pool_id = nil
+	delete(m.clearedFields, rootuser.FieldPoolID)
 }
 
 // SetEmail sets the "email" field.
@@ -8185,8 +7932,8 @@ func (m *RootUserMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, rootuser.FieldName)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, rootuser.FieldMiningpoolType)
+	if m.pool_id != nil {
+		fields = append(fields, rootuser.FieldPoolID)
 	}
 	if m.email != nil {
 		fields = append(fields, rootuser.FieldEmail)
@@ -8221,8 +7968,8 @@ func (m *RootUserMutation) Field(name string) (ent.Value, bool) {
 		return m.EntID()
 	case rootuser.FieldName:
 		return m.Name()
-	case rootuser.FieldMiningpoolType:
-		return m.MiningpoolType()
+	case rootuser.FieldPoolID:
+		return m.PoolID()
 	case rootuser.FieldEmail:
 		return m.Email()
 	case rootuser.FieldAuthToken:
@@ -8252,8 +7999,8 @@ func (m *RootUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEntID(ctx)
 	case rootuser.FieldName:
 		return m.OldName(ctx)
-	case rootuser.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
+	case rootuser.FieldPoolID:
+		return m.OldPoolID(ctx)
 	case rootuser.FieldEmail:
 		return m.OldEmail(ctx)
 	case rootuser.FieldAuthToken:
@@ -8308,12 +8055,12 @@ func (m *RootUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case rootuser.FieldMiningpoolType:
-		v, ok := value.(string)
+	case rootuser.FieldPoolID:
+		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
+		m.SetPoolID(v)
 		return nil
 	case rootuser.FieldEmail:
 		v, ok := value.(string)
@@ -8422,8 +8169,8 @@ func (m *RootUserMutation) ClearedFields() []string {
 	if m.FieldCleared(rootuser.FieldName) {
 		fields = append(fields, rootuser.FieldName)
 	}
-	if m.FieldCleared(rootuser.FieldMiningpoolType) {
-		fields = append(fields, rootuser.FieldMiningpoolType)
+	if m.FieldCleared(rootuser.FieldPoolID) {
+		fields = append(fields, rootuser.FieldPoolID)
 	}
 	if m.FieldCleared(rootuser.FieldEmail) {
 		fields = append(fields, rootuser.FieldEmail)
@@ -8457,8 +8204,8 @@ func (m *RootUserMutation) ClearField(name string) error {
 	case rootuser.FieldName:
 		m.ClearName()
 		return nil
-	case rootuser.FieldMiningpoolType:
-		m.ClearMiningpoolType()
+	case rootuser.FieldPoolID:
+		m.ClearPoolID()
 		return nil
 	case rootuser.FieldEmail:
 		m.ClearEmail()
@@ -8498,8 +8245,8 @@ func (m *RootUserMutation) ResetField(name string) error {
 	case rootuser.FieldName:
 		m.ResetName()
 		return nil
-	case rootuser.FieldMiningpoolType:
-		m.ResetMiningpoolType()
+	case rootuser.FieldPoolID:
+		m.ResetPoolID()
 		return nil
 	case rootuser.FieldEmail:
 		m.ResetEmail()

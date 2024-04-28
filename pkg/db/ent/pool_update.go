@@ -158,6 +158,26 @@ func (pu *PoolUpdate) ClearSite() *PoolUpdate {
 	return pu
 }
 
+// SetLogo sets the "logo" field.
+func (pu *PoolUpdate) SetLogo(s string) *PoolUpdate {
+	pu.mutation.SetLogo(s)
+	return pu
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (pu *PoolUpdate) SetNillableLogo(s *string) *PoolUpdate {
+	if s != nil {
+		pu.SetLogo(*s)
+	}
+	return pu
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (pu *PoolUpdate) ClearLogo() *PoolUpdate {
+	pu.mutation.ClearLogo()
+	return pu
+}
+
 // SetDescription sets the "description" field.
 func (pu *PoolUpdate) SetDescription(s string) *PoolUpdate {
 	pu.mutation.SetDescription(s)
@@ -364,6 +384,19 @@ func (pu *PoolUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: pool.FieldSite,
 		})
 	}
+	if value, ok := pu.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: pool.FieldLogo,
+		})
+	}
+	if pu.mutation.LogoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: pool.FieldLogo,
+		})
+	}
 	if value, ok := pu.mutation.Description(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -524,6 +557,26 @@ func (puo *PoolUpdateOne) SetNillableSite(s *string) *PoolUpdateOne {
 // ClearSite clears the value of the "site" field.
 func (puo *PoolUpdateOne) ClearSite() *PoolUpdateOne {
 	puo.mutation.ClearSite()
+	return puo
+}
+
+// SetLogo sets the "logo" field.
+func (puo *PoolUpdateOne) SetLogo(s string) *PoolUpdateOne {
+	puo.mutation.SetLogo(s)
+	return puo
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (puo *PoolUpdateOne) SetNillableLogo(s *string) *PoolUpdateOne {
+	if s != nil {
+		puo.SetLogo(*s)
+	}
+	return puo
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (puo *PoolUpdateOne) ClearLogo() *PoolUpdateOne {
+	puo.mutation.ClearLogo()
 	return puo
 }
 
@@ -761,6 +814,19 @@ func (puo *PoolUpdateOne) sqlSave(ctx context.Context) (_node *Pool, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: pool.FieldSite,
+		})
+	}
+	if value, ok := puo.mutation.Logo(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: pool.FieldLogo,
+		})
+	}
+	if puo.mutation.LogoCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: pool.FieldLogo,
 		})
 	}
 	if value, ok := puo.mutation.Description(); ok {

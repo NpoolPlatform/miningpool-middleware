@@ -51,17 +51,18 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "Coin",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			coin.FieldCreatedAt:        {Type: field.TypeUint32, Column: coin.FieldCreatedAt},
-			coin.FieldUpdatedAt:        {Type: field.TypeUint32, Column: coin.FieldUpdatedAt},
-			coin.FieldDeletedAt:        {Type: field.TypeUint32, Column: coin.FieldDeletedAt},
-			coin.FieldEntID:            {Type: field.TypeUUID, Column: coin.FieldEntID},
-			coin.FieldMiningpoolType:   {Type: field.TypeString, Column: coin.FieldMiningpoolType},
-			coin.FieldCoinType:         {Type: field.TypeString, Column: coin.FieldCoinType},
-			coin.FieldRevenueTypes:     {Type: field.TypeJSON, Column: coin.FieldRevenueTypes},
-			coin.FieldFeeRate:          {Type: field.TypeOther, Column: coin.FieldFeeRate},
-			coin.FieldFixedRevenueAble: {Type: field.TypeBool, Column: coin.FieldFixedRevenueAble},
-			coin.FieldRemark:           {Type: field.TypeString, Column: coin.FieldRemark},
-			coin.FieldThreshold:        {Type: field.TypeOther, Column: coin.FieldThreshold},
+			coin.FieldCreatedAt:              {Type: field.TypeUint32, Column: coin.FieldCreatedAt},
+			coin.FieldUpdatedAt:              {Type: field.TypeUint32, Column: coin.FieldUpdatedAt},
+			coin.FieldDeletedAt:              {Type: field.TypeUint32, Column: coin.FieldDeletedAt},
+			coin.FieldEntID:                  {Type: field.TypeUUID, Column: coin.FieldEntID},
+			coin.FieldPoolID:                 {Type: field.TypeUUID, Column: coin.FieldPoolID},
+			coin.FieldCoinType:               {Type: field.TypeString, Column: coin.FieldCoinType},
+			coin.FieldRevenueType:            {Type: field.TypeString, Column: coin.FieldRevenueType},
+			coin.FieldFeeRatio:               {Type: field.TypeOther, Column: coin.FieldFeeRatio},
+			coin.FieldFixedRevenueAble:       {Type: field.TypeBool, Column: coin.FieldFixedRevenueAble},
+			coin.FieldLeastTransferAmount:    {Type: field.TypeOther, Column: coin.FieldLeastTransferAmount},
+			coin.FieldBenefitIntervalSeconds: {Type: field.TypeUint32, Column: coin.FieldBenefitIntervalSeconds},
+			coin.FieldRemark:                 {Type: field.TypeString, Column: coin.FieldRemark},
 		},
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
@@ -103,11 +104,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fractionrule.FieldUpdatedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldUpdatedAt},
 			fractionrule.FieldDeletedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldDeletedAt},
 			fractionrule.FieldEntID:            {Type: field.TypeUUID, Column: fractionrule.FieldEntID},
-			fractionrule.FieldMiningpoolType:   {Type: field.TypeString, Column: fractionrule.FieldMiningpoolType},
-			fractionrule.FieldCoinType:         {Type: field.TypeString, Column: fractionrule.FieldCoinType},
+			fractionrule.FieldCoinID:           {Type: field.TypeUUID, Column: fractionrule.FieldCoinID},
 			fractionrule.FieldWithdrawInterval: {Type: field.TypeUint32, Column: fractionrule.FieldWithdrawInterval},
-			fractionrule.FieldMinAmount:        {Type: field.TypeFloat32, Column: fractionrule.FieldMinAmount},
-			fractionrule.FieldWithdrawRate:     {Type: field.TypeFloat32, Column: fractionrule.FieldWithdrawRate},
+			fractionrule.FieldMinAmount:        {Type: field.TypeOther, Column: fractionrule.FieldMinAmount},
+			fractionrule.FieldWithdrawRate:     {Type: field.TypeOther, Column: fractionrule.FieldWithdrawRate},
 		},
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
@@ -121,17 +121,16 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "GoodUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			gooduser.FieldCreatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
-			gooduser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
-			gooduser.FieldDeletedAt:      {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
-			gooduser.FieldEntID:          {Type: field.TypeUUID, Column: gooduser.FieldEntID},
-			gooduser.FieldRootUserID:     {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
-			gooduser.FieldName:           {Type: field.TypeString, Column: gooduser.FieldName},
-			gooduser.FieldMiningpoolType: {Type: field.TypeString, Column: gooduser.FieldMiningpoolType},
-			gooduser.FieldCoinType:       {Type: field.TypeString, Column: gooduser.FieldCoinType},
-			gooduser.FieldHashRate:       {Type: field.TypeFloat32, Column: gooduser.FieldHashRate},
-			gooduser.FieldReadPageLink:   {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
-			gooduser.FieldRevenueType:    {Type: field.TypeString, Column: gooduser.FieldRevenueType},
+			gooduser.FieldCreatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
+			gooduser.FieldUpdatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
+			gooduser.FieldDeletedAt:    {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
+			gooduser.FieldEntID:        {Type: field.TypeUUID, Column: gooduser.FieldEntID},
+			gooduser.FieldRootUserID:   {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
+			gooduser.FieldName:         {Type: field.TypeString, Column: gooduser.FieldName},
+			gooduser.FieldCoinID:       {Type: field.TypeUUID, Column: gooduser.FieldCoinID},
+			gooduser.FieldRevenueID:    {Type: field.TypeUUID, Column: gooduser.FieldRevenueID},
+			gooduser.FieldHashRate:     {Type: field.TypeFloat32, Column: gooduser.FieldHashRate},
+			gooduser.FieldReadPageLink: {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -149,13 +148,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 			orderuser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: orderuser.FieldUpdatedAt},
 			orderuser.FieldDeletedAt:      {Type: field.TypeUint32, Column: orderuser.FieldDeletedAt},
 			orderuser.FieldEntID:          {Type: field.TypeUUID, Column: orderuser.FieldEntID},
-			orderuser.FieldRootUserID:     {Type: field.TypeUUID, Column: orderuser.FieldRootUserID},
 			orderuser.FieldGoodUserID:     {Type: field.TypeUUID, Column: orderuser.FieldGoodUserID},
 			orderuser.FieldUserID:         {Type: field.TypeUUID, Column: orderuser.FieldUserID},
 			orderuser.FieldAppID:          {Type: field.TypeUUID, Column: orderuser.FieldAppID},
 			orderuser.FieldName:           {Type: field.TypeString, Column: orderuser.FieldName},
-			orderuser.FieldMiningpoolType: {Type: field.TypeString, Column: orderuser.FieldMiningpoolType},
-			orderuser.FieldCoinType:       {Type: field.TypeString, Column: orderuser.FieldCoinType},
 			orderuser.FieldProportion:     {Type: field.TypeOther, Column: orderuser.FieldProportion},
 			orderuser.FieldRevenueAddress: {Type: field.TypeString, Column: orderuser.FieldRevenueAddress},
 			orderuser.FieldReadPageLink:   {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
@@ -180,6 +176,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			pool.FieldMiningpoolType: {Type: field.TypeString, Column: pool.FieldMiningpoolType},
 			pool.FieldName:           {Type: field.TypeString, Column: pool.FieldName},
 			pool.FieldSite:           {Type: field.TypeString, Column: pool.FieldSite},
+			pool.FieldLogo:           {Type: field.TypeString, Column: pool.FieldLogo},
 			pool.FieldDescription:    {Type: field.TypeString, Column: pool.FieldDescription},
 		},
 	}
@@ -194,17 +191,17 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "RootUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			rootuser.FieldCreatedAt:      {Type: field.TypeUint32, Column: rootuser.FieldCreatedAt},
-			rootuser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: rootuser.FieldUpdatedAt},
-			rootuser.FieldDeletedAt:      {Type: field.TypeUint32, Column: rootuser.FieldDeletedAt},
-			rootuser.FieldEntID:          {Type: field.TypeUUID, Column: rootuser.FieldEntID},
-			rootuser.FieldName:           {Type: field.TypeString, Column: rootuser.FieldName},
-			rootuser.FieldMiningpoolType: {Type: field.TypeString, Column: rootuser.FieldMiningpoolType},
-			rootuser.FieldEmail:          {Type: field.TypeString, Column: rootuser.FieldEmail},
-			rootuser.FieldAuthToken:      {Type: field.TypeString, Column: rootuser.FieldAuthToken},
-			rootuser.FieldAuthTokenSalt:  {Type: field.TypeString, Column: rootuser.FieldAuthTokenSalt},
-			rootuser.FieldAuthed:         {Type: field.TypeBool, Column: rootuser.FieldAuthed},
-			rootuser.FieldRemark:         {Type: field.TypeString, Column: rootuser.FieldRemark},
+			rootuser.FieldCreatedAt:     {Type: field.TypeUint32, Column: rootuser.FieldCreatedAt},
+			rootuser.FieldUpdatedAt:     {Type: field.TypeUint32, Column: rootuser.FieldUpdatedAt},
+			rootuser.FieldDeletedAt:     {Type: field.TypeUint32, Column: rootuser.FieldDeletedAt},
+			rootuser.FieldEntID:         {Type: field.TypeUUID, Column: rootuser.FieldEntID},
+			rootuser.FieldName:          {Type: field.TypeString, Column: rootuser.FieldName},
+			rootuser.FieldPoolID:        {Type: field.TypeUUID, Column: rootuser.FieldPoolID},
+			rootuser.FieldEmail:         {Type: field.TypeString, Column: rootuser.FieldEmail},
+			rootuser.FieldAuthToken:     {Type: field.TypeString, Column: rootuser.FieldAuthToken},
+			rootuser.FieldAuthTokenSalt: {Type: field.TypeString, Column: rootuser.FieldAuthTokenSalt},
+			rootuser.FieldAuthed:        {Type: field.TypeBool, Column: rootuser.FieldAuthed},
+			rootuser.FieldRemark:        {Type: field.TypeString, Column: rootuser.FieldRemark},
 		},
 	}
 	return graph
@@ -346,9 +343,9 @@ func (f *CoinFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(coin.FieldEntID))
 }
 
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *CoinFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(coin.FieldMiningpoolType))
+// WherePoolID applies the entql [16]byte predicate on the pool_id field.
+func (f *CoinFilter) WherePoolID(p entql.ValueP) {
+	f.Where(p.Field(coin.FieldPoolID))
 }
 
 // WhereCoinType applies the entql string predicate on the coin_type field.
@@ -356,14 +353,14 @@ func (f *CoinFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(coin.FieldCoinType))
 }
 
-// WhereRevenueTypes applies the entql json.RawMessage predicate on the revenue_types field.
-func (f *CoinFilter) WhereRevenueTypes(p entql.BytesP) {
-	f.Where(p.Field(coin.FieldRevenueTypes))
+// WhereRevenueType applies the entql string predicate on the revenue_type field.
+func (f *CoinFilter) WhereRevenueType(p entql.StringP) {
+	f.Where(p.Field(coin.FieldRevenueType))
 }
 
-// WhereFeeRate applies the entql other predicate on the fee_rate field.
-func (f *CoinFilter) WhereFeeRate(p entql.OtherP) {
-	f.Where(p.Field(coin.FieldFeeRate))
+// WhereFeeRatio applies the entql other predicate on the fee_ratio field.
+func (f *CoinFilter) WhereFeeRatio(p entql.OtherP) {
+	f.Where(p.Field(coin.FieldFeeRatio))
 }
 
 // WhereFixedRevenueAble applies the entql bool predicate on the fixed_revenue_able field.
@@ -371,14 +368,19 @@ func (f *CoinFilter) WhereFixedRevenueAble(p entql.BoolP) {
 	f.Where(p.Field(coin.FieldFixedRevenueAble))
 }
 
+// WhereLeastTransferAmount applies the entql other predicate on the least_transfer_amount field.
+func (f *CoinFilter) WhereLeastTransferAmount(p entql.OtherP) {
+	f.Where(p.Field(coin.FieldLeastTransferAmount))
+}
+
+// WhereBenefitIntervalSeconds applies the entql uint32 predicate on the benefit_interval_seconds field.
+func (f *CoinFilter) WhereBenefitIntervalSeconds(p entql.Uint32P) {
+	f.Where(p.Field(coin.FieldBenefitIntervalSeconds))
+}
+
 // WhereRemark applies the entql string predicate on the remark field.
 func (f *CoinFilter) WhereRemark(p entql.StringP) {
 	f.Where(p.Field(coin.FieldRemark))
-}
-
-// WhereThreshold applies the entql other predicate on the threshold field.
-func (f *CoinFilter) WhereThreshold(p entql.OtherP) {
-	f.Where(p.Field(coin.FieldThreshold))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -536,14 +538,9 @@ func (f *FractionRuleFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(fractionrule.FieldEntID))
 }
 
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *FractionRuleFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(fractionrule.FieldMiningpoolType))
-}
-
-// WhereCoinType applies the entql string predicate on the coin_type field.
-func (f *FractionRuleFilter) WhereCoinType(p entql.StringP) {
-	f.Where(p.Field(fractionrule.FieldCoinType))
+// WhereCoinID applies the entql [16]byte predicate on the coin_id field.
+func (f *FractionRuleFilter) WhereCoinID(p entql.ValueP) {
+	f.Where(p.Field(fractionrule.FieldCoinID))
 }
 
 // WhereWithdrawInterval applies the entql uint32 predicate on the withdraw_interval field.
@@ -551,13 +548,13 @@ func (f *FractionRuleFilter) WhereWithdrawInterval(p entql.Uint32P) {
 	f.Where(p.Field(fractionrule.FieldWithdrawInterval))
 }
 
-// WhereMinAmount applies the entql float32 predicate on the min_amount field.
-func (f *FractionRuleFilter) WhereMinAmount(p entql.Float32P) {
+// WhereMinAmount applies the entql other predicate on the min_amount field.
+func (f *FractionRuleFilter) WhereMinAmount(p entql.OtherP) {
 	f.Where(p.Field(fractionrule.FieldMinAmount))
 }
 
-// WhereWithdrawRate applies the entql float32 predicate on the withdraw_rate field.
-func (f *FractionRuleFilter) WhereWithdrawRate(p entql.Float32P) {
+// WhereWithdrawRate applies the entql other predicate on the withdraw_rate field.
+func (f *FractionRuleFilter) WhereWithdrawRate(p entql.OtherP) {
 	f.Where(p.Field(fractionrule.FieldWithdrawRate))
 }
 
@@ -631,14 +628,14 @@ func (f *GoodUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldName))
 }
 
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *GoodUserFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(gooduser.FieldMiningpoolType))
+// WhereCoinID applies the entql [16]byte predicate on the coin_id field.
+func (f *GoodUserFilter) WhereCoinID(p entql.ValueP) {
+	f.Where(p.Field(gooduser.FieldCoinID))
 }
 
-// WhereCoinType applies the entql string predicate on the coin_type field.
-func (f *GoodUserFilter) WhereCoinType(p entql.StringP) {
-	f.Where(p.Field(gooduser.FieldCoinType))
+// WhereRevenueID applies the entql [16]byte predicate on the revenue_id field.
+func (f *GoodUserFilter) WhereRevenueID(p entql.ValueP) {
+	f.Where(p.Field(gooduser.FieldRevenueID))
 }
 
 // WhereHashRate applies the entql float32 predicate on the hash_rate field.
@@ -649,11 +646,6 @@ func (f *GoodUserFilter) WhereHashRate(p entql.Float32P) {
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.
 func (f *GoodUserFilter) WhereReadPageLink(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldReadPageLink))
-}
-
-// WhereRevenueType applies the entql string predicate on the revenue_type field.
-func (f *GoodUserFilter) WhereRevenueType(p entql.StringP) {
-	f.Where(p.Field(gooduser.FieldRevenueType))
 }
 
 // addPredicate implements the predicateAdder interface.
@@ -716,11 +708,6 @@ func (f *OrderUserFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(orderuser.FieldEntID))
 }
 
-// WhereRootUserID applies the entql [16]byte predicate on the root_user_id field.
-func (f *OrderUserFilter) WhereRootUserID(p entql.ValueP) {
-	f.Where(p.Field(orderuser.FieldRootUserID))
-}
-
 // WhereGoodUserID applies the entql [16]byte predicate on the good_user_id field.
 func (f *OrderUserFilter) WhereGoodUserID(p entql.ValueP) {
 	f.Where(p.Field(orderuser.FieldGoodUserID))
@@ -739,16 +726,6 @@ func (f *OrderUserFilter) WhereAppID(p entql.ValueP) {
 // WhereName applies the entql string predicate on the name field.
 func (f *OrderUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldName))
-}
-
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *OrderUserFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(orderuser.FieldMiningpoolType))
-}
-
-// WhereCoinType applies the entql string predicate on the coin_type field.
-func (f *OrderUserFilter) WhereCoinType(p entql.StringP) {
-	f.Where(p.Field(orderuser.FieldCoinType))
 }
 
 // WhereProportion applies the entql other predicate on the proportion field.
@@ -846,6 +823,11 @@ func (f *PoolFilter) WhereSite(p entql.StringP) {
 	f.Where(p.Field(pool.FieldSite))
 }
 
+// WhereLogo applies the entql string predicate on the logo field.
+func (f *PoolFilter) WhereLogo(p entql.StringP) {
+	f.Where(p.Field(pool.FieldLogo))
+}
+
 // WhereDescription applies the entql string predicate on the description field.
 func (f *PoolFilter) WhereDescription(p entql.StringP) {
 	f.Where(p.Field(pool.FieldDescription))
@@ -916,9 +898,9 @@ func (f *RootUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(rootuser.FieldName))
 }
 
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *RootUserFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(rootuser.FieldMiningpoolType))
+// WherePoolID applies the entql [16]byte predicate on the pool_id field.
+func (f *RootUserFilter) WherePoolID(p entql.ValueP) {
+	f.Where(p.Field(rootuser.FieldPoolID))
 }
 
 // WhereEmail applies the entql string predicate on the email field.

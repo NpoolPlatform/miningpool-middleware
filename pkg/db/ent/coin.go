@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -26,20 +25,22 @@ type Coin struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
+	// PoolID holds the value of the "pool_id" field.
+	PoolID uuid.UUID `json:"pool_id,omitempty"`
 	// CoinType holds the value of the "coin_type" field.
 	CoinType string `json:"coin_type,omitempty"`
-	// RevenueTypes holds the value of the "revenue_types" field.
-	RevenueTypes []string `json:"revenue_types,omitempty"`
-	// FeeRate holds the value of the "fee_rate" field.
-	FeeRate decimal.Decimal `json:"fee_rate,omitempty"`
+	// RevenueType holds the value of the "revenue_type" field.
+	RevenueType string `json:"revenue_type,omitempty"`
+	// FeeRatio holds the value of the "fee_ratio" field.
+	FeeRatio decimal.Decimal `json:"fee_ratio,omitempty"`
 	// FixedRevenueAble holds the value of the "fixed_revenue_able" field.
 	FixedRevenueAble bool `json:"fixed_revenue_able,omitempty"`
+	// LeastTransferAmount holds the value of the "least_transfer_amount" field.
+	LeastTransferAmount decimal.Decimal `json:"least_transfer_amount,omitempty"`
+	// BenefitIntervalSeconds holds the value of the "benefit_interval_seconds" field.
+	BenefitIntervalSeconds uint32 `json:"benefit_interval_seconds,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// Threshold holds the value of the "threshold" field.
-	Threshold decimal.Decimal `json:"threshold,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -47,17 +48,15 @@ func (*Coin) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case coin.FieldRevenueTypes:
-			values[i] = new([]byte)
-		case coin.FieldFeeRate, coin.FieldThreshold:
+		case coin.FieldFeeRatio, coin.FieldLeastTransferAmount:
 			values[i] = new(decimal.Decimal)
 		case coin.FieldFixedRevenueAble:
 			values[i] = new(sql.NullBool)
-		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt:
+		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt, coin.FieldBenefitIntervalSeconds:
 			values[i] = new(sql.NullInt64)
-		case coin.FieldMiningpoolType, coin.FieldCoinType, coin.FieldRemark:
+		case coin.FieldCoinType, coin.FieldRevenueType, coin.FieldRemark:
 			values[i] = new(sql.NullString)
-		case coin.FieldEntID:
+		case coin.FieldEntID, coin.FieldPoolID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Coin", columns[i])
@@ -104,11 +103,11 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				c.EntID = *value
 			}
-		case coin.FieldMiningpoolType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
-			} else if value.Valid {
-				c.MiningpoolType = value.String
+		case coin.FieldPoolID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field pool_id", values[i])
+			} else if value != nil {
+				c.PoolID = *value
 			}
 		case coin.FieldCoinType:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -116,19 +115,17 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				c.CoinType = value.String
 			}
-		case coin.FieldRevenueTypes:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_types", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &c.RevenueTypes); err != nil {
-					return fmt.Errorf("unmarshal field revenue_types: %w", err)
-				}
+		case coin.FieldRevenueType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field revenue_type", values[i])
+			} else if value.Valid {
+				c.RevenueType = value.String
 			}
-		case coin.FieldFeeRate:
+		case coin.FieldFeeRatio:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field fee_rate", values[i])
+				return fmt.Errorf("unexpected type %T for field fee_ratio", values[i])
 			} else if value != nil {
-				c.FeeRate = *value
+				c.FeeRatio = *value
 			}
 		case coin.FieldFixedRevenueAble:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -136,17 +133,23 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				c.FixedRevenueAble = value.Bool
 			}
+		case coin.FieldLeastTransferAmount:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field least_transfer_amount", values[i])
+			} else if value != nil {
+				c.LeastTransferAmount = *value
+			}
+		case coin.FieldBenefitIntervalSeconds:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field benefit_interval_seconds", values[i])
+			} else if value.Valid {
+				c.BenefitIntervalSeconds = uint32(value.Int64)
+			}
 		case coin.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
 			} else if value.Valid {
 				c.Remark = value.String
-			}
-		case coin.FieldThreshold:
-			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field threshold", values[i])
-			} else if value != nil {
-				c.Threshold = *value
 			}
 		}
 	}
@@ -188,26 +191,29 @@ func (c *Coin) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", c.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(c.MiningpoolType)
+	builder.WriteString("pool_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.PoolID))
 	builder.WriteString(", ")
 	builder.WriteString("coin_type=")
 	builder.WriteString(c.CoinType)
 	builder.WriteString(", ")
-	builder.WriteString("revenue_types=")
-	builder.WriteString(fmt.Sprintf("%v", c.RevenueTypes))
+	builder.WriteString("revenue_type=")
+	builder.WriteString(c.RevenueType)
 	builder.WriteString(", ")
-	builder.WriteString("fee_rate=")
-	builder.WriteString(fmt.Sprintf("%v", c.FeeRate))
+	builder.WriteString("fee_ratio=")
+	builder.WriteString(fmt.Sprintf("%v", c.FeeRatio))
 	builder.WriteString(", ")
 	builder.WriteString("fixed_revenue_able=")
 	builder.WriteString(fmt.Sprintf("%v", c.FixedRevenueAble))
 	builder.WriteString(", ")
+	builder.WriteString("least_transfer_amount=")
+	builder.WriteString(fmt.Sprintf("%v", c.LeastTransferAmount))
+	builder.WriteString(", ")
+	builder.WriteString("benefit_interval_seconds=")
+	builder.WriteString(fmt.Sprintf("%v", c.BenefitIntervalSeconds))
+	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(c.Remark)
-	builder.WriteString(", ")
-	builder.WriteString("threshold=")
-	builder.WriteString(fmt.Sprintf("%v", c.Threshold))
 	builder.WriteByte(')')
 	return builder.String()
 }

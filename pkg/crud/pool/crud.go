@@ -12,10 +12,12 @@ import (
 )
 
 type Req struct {
+	ID             *uint32
 	EntID          *uuid.UUID
 	MiningpoolType *basetypes.MiningpoolType
 	Name           *string
 	Site           *string
+	Logo           *string
 	Description    *string
 	DeletedAt      *uint32
 }
@@ -32,6 +34,9 @@ func CreateSet(c *ent.PoolCreate, req *Req) *ent.PoolCreate {
 	}
 	if req.Site != nil {
 		c.SetSite(*req.Site)
+	}
+	if req.Logo != nil {
+		c.SetLogo(*req.Logo)
 	}
 	if req.Description != nil {
 		c.SetDescription(*req.Description)
@@ -50,6 +55,9 @@ func UpdateSet(u *ent.PoolUpdateOne, req *Req) (*ent.PoolUpdateOne, error) {
 	if req.Site != nil {
 		u = u.SetSite(*req.Site)
 	}
+	if req.Logo != nil {
+		u = u.SetLogo(*req.Logo)
+	}
 	if req.Description != nil {
 		u = u.SetDescription(*req.Description)
 	}
@@ -64,7 +72,6 @@ type Conds struct {
 	EntID          *cruder.Cond
 	MiningpoolType *cruder.Cond
 	Name           *cruder.Cond
-	Site           *cruder.Cond
 	Description    *cruder.Cond
 	EntIDs         *cruder.Cond
 }
@@ -131,18 +138,6 @@ func SetQueryConds(q *ent.PoolQuery, conds *Conds) (*ent.PoolQuery, error) { //n
 			q.Where(poolent.Name(name))
 		default:
 			return nil, fmt.Errorf("invalid name field")
-		}
-	}
-	if conds.Site != nil {
-		site, ok := conds.Site.Val.(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid site")
-		}
-		switch conds.Site.Op {
-		case cruder.EQ:
-			q.Where(poolent.Site(site))
-		default:
-			return nil, fmt.Errorf("invalid site field")
 		}
 	}
 	if conds.Description != nil {

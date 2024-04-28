@@ -21,20 +21,22 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
-	FieldMiningpoolType = "miningpool_type"
+	// FieldPoolID holds the string denoting the pool_id field in the database.
+	FieldPoolID = "pool_id"
 	// FieldCoinType holds the string denoting the coin_type field in the database.
 	FieldCoinType = "coin_type"
-	// FieldRevenueTypes holds the string denoting the revenue_types field in the database.
-	FieldRevenueTypes = "revenue_types"
-	// FieldFeeRate holds the string denoting the fee_rate field in the database.
-	FieldFeeRate = "fee_rate"
+	// FieldRevenueType holds the string denoting the revenue_type field in the database.
+	FieldRevenueType = "revenue_type"
+	// FieldFeeRatio holds the string denoting the fee_ratio field in the database.
+	FieldFeeRatio = "fee_ratio"
 	// FieldFixedRevenueAble holds the string denoting the fixed_revenue_able field in the database.
 	FieldFixedRevenueAble = "fixed_revenue_able"
+	// FieldLeastTransferAmount holds the string denoting the least_transfer_amount field in the database.
+	FieldLeastTransferAmount = "least_transfer_amount"
+	// FieldBenefitIntervalSeconds holds the string denoting the benefit_interval_seconds field in the database.
+	FieldBenefitIntervalSeconds = "benefit_interval_seconds"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
-	// FieldThreshold holds the string denoting the threshold field in the database.
-	FieldThreshold = "threshold"
 	// Table holds the table name of the coin in the database.
 	Table = "coins"
 )
@@ -46,13 +48,14 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldMiningpoolType,
+	FieldPoolID,
 	FieldCoinType,
-	FieldRevenueTypes,
-	FieldFeeRate,
+	FieldRevenueType,
+	FieldFeeRatio,
 	FieldFixedRevenueAble,
+	FieldLeastTransferAmount,
+	FieldBenefitIntervalSeconds,
 	FieldRemark,
-	FieldThreshold,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -83,18 +86,20 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
-	DefaultMiningpoolType string
+	// DefaultPoolID holds the default value on creation for the "pool_id" field.
+	DefaultPoolID func() uuid.UUID
 	// DefaultCoinType holds the default value on creation for the "coin_type" field.
 	DefaultCoinType string
-	// DefaultRevenueTypes holds the default value on creation for the "revenue_types" field.
-	DefaultRevenueTypes []string
-	// DefaultFeeRate holds the default value on creation for the "fee_rate" field.
-	DefaultFeeRate decimal.Decimal
+	// DefaultRevenueType holds the default value on creation for the "revenue_type" field.
+	DefaultRevenueType string
+	// DefaultFeeRatio holds the default value on creation for the "fee_ratio" field.
+	DefaultFeeRatio decimal.Decimal
 	// DefaultFixedRevenueAble holds the default value on creation for the "fixed_revenue_able" field.
 	DefaultFixedRevenueAble bool
+	// DefaultLeastTransferAmount holds the default value on creation for the "least_transfer_amount" field.
+	DefaultLeastTransferAmount decimal.Decimal
+	// DefaultBenefitIntervalSeconds holds the default value on creation for the "benefit_interval_seconds" field.
+	DefaultBenefitIntervalSeconds uint32
 	// DefaultRemark holds the default value on creation for the "remark" field.
 	DefaultRemark string
-	// DefaultThreshold holds the default value on creation for the "threshold" field.
-	DefaultThreshold decimal.Decimal
 )

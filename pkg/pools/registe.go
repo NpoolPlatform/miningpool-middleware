@@ -12,6 +12,7 @@ import (
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/const/time"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
@@ -24,16 +25,43 @@ func Init() {
 	RegisteFractionRule(context.Background())
 }
 
-func RegistePool(ctx context.Context) {
-	infos := []*poolmw.Pool{
+var (
+	poolInfos = []*poolmw.Pool{
 		{
 			MiningpoolType: v1.MiningpoolType_F2Pool,
 			Name:           v1.MiningpoolType_F2Pool.String(),
 			Site:           config.F2PoolSite,
+			Logo:           "https://static.f2pool.com/static/images/icon-logo-min-blue.png",
 			Description:    "",
 		},
 	}
-	for _, info := range infos {
+
+	coinInfos = []*coinmw.Coin{
+		{
+			MiningpoolType:         v1.MiningpoolType_F2Pool,
+			CoinType:               v1.CoinType_BitCoin,
+			RevenueType:            v1.RevenueType_FPPS,
+			FeeRatio:               f2pool.CoinType2FeeRatio[v1.CoinType_BitCoin],
+			FixedRevenueAble:       false,
+			LeastTransferAmount:    f2pool.CoinType2LeastTransferAmount[v1.CoinType_BitCoin],
+			BenefitIntervalSeconds: f2pool.CoinType2BenefitIntervalSeconds[v1.CoinType_BitCoin],
+		},
+	}
+
+	fractionruleInfos = []*fractionrulemw.FractionRule{
+		{
+			MiningpoolType: v1.MiningpoolType_F2Pool,
+			CoinType:       v1.CoinType_BitCoin,
+			// 30Day
+			WithdrawInterval: time.SecondsPerDay * 30,
+			MinAmount:        "0.0005",
+			WithdrawRate:     "0",
+		},
+	}
+)
+
+func RegistePool(ctx context.Context) {
+	for _, info := range poolInfos {
 		poolH, err := pool.NewHandler(ctx, pool.WithConds(&poolmw.Conds{
 			MiningpoolType: &basetypes.Uint32Val{
 				Op:    cruder.EQ,
@@ -62,6 +90,7 @@ func RegistePool(ctx context.Context) {
 			pool.WithMiningpoolType(&info.MiningpoolType, true),
 			pool.WithName(&info.Name, true),
 			pool.WithSite(&info.Site, true),
+			pool.WithLogo(&info.Logo, true),
 			pool.WithDescription(&info.Description, true),
 		)
 		if err != nil {
@@ -76,22 +105,9 @@ func RegistePool(ctx context.Context) {
 }
 
 func RegisteCoinInfo(ctx context.Context) {
-	infos := []*coinmw.Coin{
-		{
-			MiningpoolType:   v1.MiningpoolType_F2Pool,
-			CoinType:         v1.CoinType_BitCoin,
-			RevenueTypes:     []v1.RevenueType{v1.RevenueType_FPPS, v1.RevenueType_PPLNS},
-			FeeRate:          f2pool.CoinType2FeeRate[v1.CoinType_BitCoin],
-			FixedRevenueAble: false,
-			Threshold:        f2pool.CoinType2Threshold[v1.CoinType_BitCoin],
-		},
-	}
-	for _, info := range infos {
+	for _, info := range coinInfos {
+		// check if exist
 		coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinmw.Conds{
-			MiningpoolType: &basetypes.Uint32Val{
-				Op:    cruder.EQ,
-				Value: uint32(info.MiningpoolType),
-			},
 			CoinType: &basetypes.Uint32Val{
 				Op:    cruder.EQ,
 				Value: uint32(info.CoinType),
@@ -111,13 +127,40 @@ func RegisteCoinInfo(ctx context.Context) {
 			continue
 		}
 
+		// get pools
+		poolH, err := pool.NewHandler(ctx,
+			pool.WithConds(&poolmw.Conds{
+				MiningpoolType: &basetypes.Uint32Val{
+					Op:    cruder.EQ,
+					Value: uint32(info.MiningpoolType),
+				},
+			}),
+			pool.WithOffset(0),
+			pool.WithLimit(2),
+		)
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+		poolInfos, _, err := poolH.GetPools(ctx)
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+
+		if len(poolInfos) == 0 {
+			logger.Sugar().Errorf("have no pool of %v", info.MiningpoolType)
+			continue
+		}
+
+		// create coin
 		coinH, err = coin.NewHandler(ctx,
-			coin.WithMiningpoolType(&info.MiningpoolType, true),
+			coin.WithPoolID(&poolInfos[0].EntID, true),
 			coin.WithCoinType(&info.CoinType, true),
-			coin.WithRevenueTypes(&info.RevenueTypes, true),
-			coin.WithFeeRate(&info.FeeRate, true),
+			coin.WithRevenueType(&info.RevenueType, true),
+			coin.WithFeeRatio(&info.FeeRatio, true),
 			coin.WithFixedRevenueAble(&info.FixedRevenueAble, true),
-			coin.WithThreshold(&info.Threshold, true),
+			coin.WithLeastTransferAmount(&info.LeastTransferAmount, true),
 		)
 		if err != nil {
 			logger.Sugar().Error(err)
@@ -131,26 +174,37 @@ func RegisteCoinInfo(ctx context.Context) {
 }
 
 func RegisteFractionRule(ctx context.Context) {
-	infos := []*fractionrulemw.FractionRule{
-		{
-			MiningpoolType: v1.MiningpoolType_F2Pool,
-			CoinType:       v1.CoinType_BitCoin,
-			// 30Day
-			WithdrawInterval: 60 * 60 * 24 * 30,
-			MinAmount:        0.0005,
-			WithdrawRate:     0,
-		},
-	}
-	for _, info := range infos {
-		fractionruleH, err := fractionrule.NewHandler(ctx, fractionrule.WithConds(
-			&fractionrulemw.Conds{
-				MiningpoolType: &basetypes.Uint32Val{
-					Op:    cruder.EQ,
-					Value: uint32(info.MiningpoolType),
-				},
+	for _, info := range fractionruleInfos {
+
+		coinH, err := coin.NewHandler(ctx,
+			coin.WithConds(&coinmw.Conds{
 				CoinType: &basetypes.Uint32Val{
 					Op:    cruder.EQ,
 					Value: uint32(info.CoinType),
+				},
+			}),
+			coin.WithOffset(0),
+			coin.WithLimit(2))
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+
+		// get coins
+		coinInfos, _, err := coinH.GetCoins(ctx)
+		if err != nil {
+			logger.Sugar().Error(err)
+			continue
+		}
+		if len(coinInfos) == 0 {
+			logger.Sugar().Errorf("have no coin of %v", info.CoinType)
+		}
+		// check if exist
+		fractionruleH, err := fractionrule.NewHandler(ctx, fractionrule.WithConds(
+			&fractionrulemw.Conds{
+				CoinID: &basetypes.StringVal{
+					Op:    cruder.EQ,
+					Value: string(coinInfos[0].EntID),
 				},
 			},
 		))
@@ -167,10 +221,9 @@ func RegisteFractionRule(ctx context.Context) {
 		if exist {
 			continue
 		}
-
+		// create fraction rule
 		fractionruleH, err = fractionrule.NewHandler(ctx,
-			fractionrule.WithMiningpoolType(&info.MiningpoolType, true),
-			fractionrule.WithCoinType(&info.CoinType, true),
+			fractionrule.WithCoinID(&coinInfos[0].EntID, true),
 			fractionrule.WithWithdrawInterval(&info.WithdrawInterval, true),
 			fractionrule.WithMinAmount(&info.MinAmount, true),
 			fractionrule.WithWithdrawRate(&info.WithdrawRate, true),

@@ -79,20 +79,6 @@ func (ouc *OrderUserCreate) SetNillableEntID(u *uuid.UUID) *OrderUserCreate {
 	return ouc
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (ouc *OrderUserCreate) SetRootUserID(u uuid.UUID) *OrderUserCreate {
-	ouc.mutation.SetRootUserID(u)
-	return ouc
-}
-
-// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableRootUserID(u *uuid.UUID) *OrderUserCreate {
-	if u != nil {
-		ouc.SetRootUserID(*u)
-	}
-	return ouc
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (ouc *OrderUserCreate) SetGoodUserID(u uuid.UUID) *OrderUserCreate {
 	ouc.mutation.SetGoodUserID(u)
@@ -145,34 +131,6 @@ func (ouc *OrderUserCreate) SetName(s string) *OrderUserCreate {
 func (ouc *OrderUserCreate) SetNillableName(s *string) *OrderUserCreate {
 	if s != nil {
 		ouc.SetName(*s)
-	}
-	return ouc
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ouc *OrderUserCreate) SetMiningpoolType(s string) *OrderUserCreate {
-	ouc.mutation.SetMiningpoolType(s)
-	return ouc
-}
-
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableMiningpoolType(s *string) *OrderUserCreate {
-	if s != nil {
-		ouc.SetMiningpoolType(*s)
-	}
-	return ouc
-}
-
-// SetCoinType sets the "coin_type" field.
-func (ouc *OrderUserCreate) SetCoinType(s string) *OrderUserCreate {
-	ouc.mutation.SetCoinType(s)
-	return ouc
-}
-
-// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableCoinType(s *string) *OrderUserCreate {
-	if s != nil {
-		ouc.SetCoinType(*s)
 	}
 	return ouc
 }
@@ -346,13 +304,6 @@ func (ouc *OrderUserCreate) defaults() error {
 		v := orderuser.DefaultEntID()
 		ouc.mutation.SetEntID(v)
 	}
-	if _, ok := ouc.mutation.RootUserID(); !ok {
-		if orderuser.DefaultRootUserID == nil {
-			return fmt.Errorf("ent: uninitialized orderuser.DefaultRootUserID (forgotten import ent/runtime?)")
-		}
-		v := orderuser.DefaultRootUserID()
-		ouc.mutation.SetRootUserID(v)
-	}
 	if _, ok := ouc.mutation.GoodUserID(); !ok {
 		if orderuser.DefaultGoodUserID == nil {
 			return fmt.Errorf("ent: uninitialized orderuser.DefaultGoodUserID (forgotten import ent/runtime?)")
@@ -377,14 +328,6 @@ func (ouc *OrderUserCreate) defaults() error {
 	if _, ok := ouc.mutation.Name(); !ok {
 		v := orderuser.DefaultName
 		ouc.mutation.SetName(v)
-	}
-	if _, ok := ouc.mutation.MiningpoolType(); !ok {
-		v := orderuser.DefaultMiningpoolType
-		ouc.mutation.SetMiningpoolType(v)
-	}
-	if _, ok := ouc.mutation.CoinType(); !ok {
-		v := orderuser.DefaultCoinType
-		ouc.mutation.SetCoinType(v)
 	}
 	if _, ok := ouc.mutation.Proportion(); !ok {
 		v := orderuser.DefaultProportion
@@ -485,14 +428,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
-	if value, ok := ouc.mutation.RootUserID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: orderuser.FieldRootUserID,
-		})
-		_node.RootUserID = value
-	}
 	if value, ok := ouc.mutation.GoodUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -524,22 +459,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 			Column: orderuser.FieldName,
 		})
 		_node.Name = value
-	}
-	if value, ok := ouc.mutation.MiningpoolType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldMiningpoolType,
-		})
-		_node.MiningpoolType = value
-	}
-	if value, ok := ouc.mutation.CoinType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinType,
-		})
-		_node.CoinType = value
 	}
 	if value, ok := ouc.mutation.Proportion(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -691,24 +610,6 @@ func (u *OrderUserUpsert) UpdateEntID() *OrderUserUpsert {
 	return u
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (u *OrderUserUpsert) SetRootUserID(v uuid.UUID) *OrderUserUpsert {
-	u.Set(orderuser.FieldRootUserID, v)
-	return u
-}
-
-// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateRootUserID() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldRootUserID)
-	return u
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (u *OrderUserUpsert) ClearRootUserID() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldRootUserID)
-	return u
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsert) SetGoodUserID(v uuid.UUID) *OrderUserUpsert {
 	u.Set(orderuser.FieldGoodUserID, v)
@@ -778,42 +679,6 @@ func (u *OrderUserUpsert) UpdateName() *OrderUserUpsert {
 // ClearName clears the value of the "name" field.
 func (u *OrderUserUpsert) ClearName() *OrderUserUpsert {
 	u.SetNull(orderuser.FieldName)
-	return u
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *OrderUserUpsert) SetMiningpoolType(v string) *OrderUserUpsert {
-	u.Set(orderuser.FieldMiningpoolType, v)
-	return u
-}
-
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateMiningpoolType() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldMiningpoolType)
-	return u
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *OrderUserUpsert) ClearMiningpoolType() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldMiningpoolType)
-	return u
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *OrderUserUpsert) SetCoinType(v string) *OrderUserUpsert {
-	u.Set(orderuser.FieldCoinType, v)
-	return u
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateCoinType() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldCoinType)
-	return u
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *OrderUserUpsert) ClearCoinType() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldCoinType)
 	return u
 }
 
@@ -1014,27 +879,6 @@ func (u *OrderUserUpsertOne) UpdateEntID() *OrderUserUpsertOne {
 	})
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (u *OrderUserUpsertOne) SetRootUserID(v uuid.UUID) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetRootUserID(v)
-	})
-}
-
-// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateRootUserID() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateRootUserID()
-	})
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (u *OrderUserUpsertOne) ClearRootUserID() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRootUserID()
-	})
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsertOne) SetGoodUserID(v uuid.UUID) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1116,48 +960,6 @@ func (u *OrderUserUpsertOne) UpdateName() *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) ClearName() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.ClearName()
-	})
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *OrderUserUpsertOne) SetMiningpoolType(v string) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetMiningpoolType(v)
-	})
-}
-
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateMiningpoolType() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateMiningpoolType()
-	})
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *OrderUserUpsertOne) ClearMiningpoolType() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearMiningpoolType()
-	})
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *OrderUserUpsertOne) SetCoinType(v string) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCoinType(v)
-	})
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateCoinType() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCoinType()
-	})
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *OrderUserUpsertOne) ClearCoinType() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearCoinType()
 	})
 }
 
@@ -1533,27 +1335,6 @@ func (u *OrderUserUpsertBulk) UpdateEntID() *OrderUserUpsertBulk {
 	})
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (u *OrderUserUpsertBulk) SetRootUserID(v uuid.UUID) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetRootUserID(v)
-	})
-}
-
-// UpdateRootUserID sets the "root_user_id" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateRootUserID() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateRootUserID()
-	})
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (u *OrderUserUpsertBulk) ClearRootUserID() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRootUserID()
-	})
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (u *OrderUserUpsertBulk) SetGoodUserID(v uuid.UUID) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1635,48 +1416,6 @@ func (u *OrderUserUpsertBulk) UpdateName() *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) ClearName() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.ClearName()
-	})
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *OrderUserUpsertBulk) SetMiningpoolType(v string) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetMiningpoolType(v)
-	})
-}
-
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateMiningpoolType() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateMiningpoolType()
-	})
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *OrderUserUpsertBulk) ClearMiningpoolType() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearMiningpoolType()
-	})
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *OrderUserUpsertBulk) SetCoinType(v string) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetCoinType(v)
-	})
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateCoinType() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateCoinType()
-	})
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *OrderUserUpsertBulk) ClearCoinType() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearCoinType()
 	})
 }
 

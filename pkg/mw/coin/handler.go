@@ -8,6 +8,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -16,19 +17,10 @@ import (
 )
 
 type Handler struct {
-	ID               *uint32
-	EntID            *uuid.UUID
-	CoinType         *basetypes.CoinType
-	MiningpoolType   *basetypes.MiningpoolType
-	RevenueTypes     *[]basetypes.RevenueType
-	FeeRate          *decimal.Decimal
-	FixedRevenueAble *bool
-	Threshold        *decimal.Decimal
-	Remark           *string
-	Reqs             []*coincrud.Req
-	Conds            *coincrud.Conds
-	Offset           int32
-	Limit            int32
+	coincrud.Req
+	Conds  *coincrud.Conds
+	Offset int32
+	Limit  int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {
@@ -87,52 +79,64 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 	}
 }
 
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
+func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if miningpooltype == nil {
+		if revenuetype == nil {
 			if must {
-				return fmt.Errorf("invalid miningpooltype")
+				return fmt.Errorf("invalid revenuetype")
 			}
 			return nil
 		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
-			return fmt.Errorf("invalid miningpooltype,not allow be default type")
+		if *revenuetype == basetypes.RevenueType_DefaultRevenueType {
+			return fmt.Errorf("invalid revenuetype,not allow be default type")
 		}
-		h.MiningpoolType = miningpooltype
+		h.RevenueType = revenuetype
 		return nil
 	}
 }
 
-func WithRevenueTypes(revenuetypes *[]basetypes.RevenueType, must bool) func(context.Context, *Handler) error {
+func WithPoolID(poolid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if revenuetypes == nil || len(*revenuetypes) == 0 {
+		if poolid == nil {
 			if must {
-				return fmt.Errorf("invalid revenuetypes")
+				return fmt.Errorf("invalid poolid")
 			}
 			return nil
 		}
-		if len(*revenuetypes) == 0 {
-			return fmt.Errorf("invalid revenuetypes")
+		poolH, err := pool.NewHandler(ctx, pool.WithEntID(poolid, true))
+		if err != nil {
+			return err
 		}
-		h.RevenueTypes = revenuetypes
+		exist, err := poolH.ExistPool(ctx)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return fmt.Errorf("invalid poolid")
+		}
+		h.PoolID = poolH.EntID
 		return nil
 	}
 }
 
-func WithFeeRate(feerate *string, must bool) func(context.Context, *Handler) error {
+func WithFeeRatio(feeratio *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if feerate == nil {
+		if feeratio == nil {
 			if must {
-				return fmt.Errorf("invalid feerate")
+				return fmt.Errorf("invalid feeratio")
 			}
 			return nil
 		}
-		_feerate, err := decimal.NewFromString(*feerate)
+		_feeratio, err := decimal.NewFromString(*feeratio)
 		if err != nil {
 			return err
 		}
 
-		h.FeeRate = &_feerate
+		if _feeratio.Sign() <= 0 {
+			return fmt.Errorf("invalid feeratio")
+		}
+
+		h.FeeRatio = &_feeratio
 		return nil
 	}
 }
@@ -150,20 +154,35 @@ func WithFixedRevenueAble(fixedrevenueable *bool, must bool) func(context.Contex
 	}
 }
 
-func WithThreshold(threshold *string, must bool) func(context.Context, *Handler) error {
+func WithLeastTransferAmount(least_transfer_amount *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if threshold == nil {
+		if least_transfer_amount == nil {
 			if must {
-				return fmt.Errorf("invalid threshold")
+				return fmt.Errorf("invalid leasttransferamount")
 			}
 			return nil
 		}
-		_threshold, err := decimal.NewFromString(*threshold)
+		_least_transfer_amount, err := decimal.NewFromString(*least_transfer_amount)
 		if err != nil {
 			return err
 		}
+		if _least_transfer_amount.Sign() <= 0 {
+			return fmt.Errorf("invalid leasttransferamount")
+		}
+		h.LeastTransferAmount = &_least_transfer_amount
+		return nil
+	}
+}
 
-		h.Threshold = &_threshold
+func WithBenefitIntervalSeconds(benefitintervalseconds *uint32, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if benefitintervalseconds == nil {
+			if must {
+				return fmt.Errorf("invalid benefitintervalseconds")
+			}
+			return nil
+		}
+		h.BenefitIntervalSeconds = benefitintervalseconds
 		return nil
 	}
 }
@@ -204,6 +223,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
+		if conds.PoolID != nil {
+			id, err := uuid.Parse(conds.GetPoolID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.PoolID = &cruder.Cond{
+				Op:  conds.GetPoolID().GetOp(),
+				Val: id,
+			}
+		}
 		if conds.EntIDs != nil {
 			ids := []uuid.UUID{}
 			for _, id := range conds.GetEntIDs().GetValue() {
@@ -224,10 +253,10 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: basetypes.CoinType(conds.GetCoinType().GetValue()),
 			}
 		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+		if conds.RevenueType != nil {
+			h.Conds.RevenueType = &cruder.Cond{
+				Op:  conds.GetRevenueType().GetOp(),
+				Val: basetypes.RevenueType(conds.GetRevenueType().GetValue()),
 			}
 		}
 		if conds.FixedRevenueAble != nil {

@@ -128,6 +128,13 @@ func Site(v string) predicate.Pool {
 	})
 }
 
+// Logo applies equality check predicate on the "logo" field. It's identical to LogoEQ.
+func Logo(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLogo), v))
+	})
+}
+
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
 func Description(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
@@ -727,6 +734,119 @@ func SiteEqualFold(v string) predicate.Pool {
 func SiteContainsFold(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldSite), v))
+	})
+}
+
+// LogoEQ applies the EQ predicate on the "logo" field.
+func LogoEQ(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldLogo), v))
+	})
+}
+
+// LogoNEQ applies the NEQ predicate on the "logo" field.
+func LogoNEQ(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldLogo), v))
+	})
+}
+
+// LogoIn applies the In predicate on the "logo" field.
+func LogoIn(vs ...string) predicate.Pool {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldLogo), v...))
+	})
+}
+
+// LogoNotIn applies the NotIn predicate on the "logo" field.
+func LogoNotIn(vs ...string) predicate.Pool {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldLogo), v...))
+	})
+}
+
+// LogoGT applies the GT predicate on the "logo" field.
+func LogoGT(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldLogo), v))
+	})
+}
+
+// LogoGTE applies the GTE predicate on the "logo" field.
+func LogoGTE(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldLogo), v))
+	})
+}
+
+// LogoLT applies the LT predicate on the "logo" field.
+func LogoLT(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldLogo), v))
+	})
+}
+
+// LogoLTE applies the LTE predicate on the "logo" field.
+func LogoLTE(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldLogo), v))
+	})
+}
+
+// LogoContains applies the Contains predicate on the "logo" field.
+func LogoContains(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldLogo), v))
+	})
+}
+
+// LogoHasPrefix applies the HasPrefix predicate on the "logo" field.
+func LogoHasPrefix(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldLogo), v))
+	})
+}
+
+// LogoHasSuffix applies the HasSuffix predicate on the "logo" field.
+func LogoHasSuffix(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldLogo), v))
+	})
+}
+
+// LogoIsNil applies the IsNil predicate on the "logo" field.
+func LogoIsNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldLogo)))
+	})
+}
+
+// LogoNotNil applies the NotNil predicate on the "logo" field.
+func LogoNotNil() predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldLogo)))
+	})
+}
+
+// LogoEqualFold applies the EqualFold predicate on the "logo" field.
+func LogoEqualFold(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldLogo), v))
+	})
+}
+
+// LogoContainsFold applies the ContainsFold predicate on the "logo" field.
+func LogoContainsFold(v string) predicate.Pool {
+	return predicate.Pool(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldLogo), v))
 	})
 }
 

@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // FractionRule is the model entity for the FractionRule schema.
@@ -24,16 +25,14 @@ type FractionRule struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
-	// CoinType holds the value of the "coin_type" field.
-	CoinType string `json:"coin_type,omitempty"`
+	// CoinID holds the value of the "coin_id" field.
+	CoinID uuid.UUID `json:"coin_id,omitempty"`
 	// WithdrawInterval holds the value of the "withdraw_interval" field.
 	WithdrawInterval uint32 `json:"withdraw_interval,omitempty"`
 	// MinAmount holds the value of the "min_amount" field.
-	MinAmount float32 `json:"min_amount,omitempty"`
+	MinAmount decimal.Decimal `json:"min_amount,omitempty"`
 	// WithdrawRate holds the value of the "withdraw_rate" field.
-	WithdrawRate float32 `json:"withdraw_rate,omitempty"`
+	WithdrawRate decimal.Decimal `json:"withdraw_rate,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -42,12 +41,10 @@ func (*FractionRule) scanValues(columns []string) ([]interface{}, error) {
 	for i := range columns {
 		switch columns[i] {
 		case fractionrule.FieldMinAmount, fractionrule.FieldWithdrawRate:
-			values[i] = new(sql.NullFloat64)
+			values[i] = new(decimal.Decimal)
 		case fractionrule.FieldID, fractionrule.FieldCreatedAt, fractionrule.FieldUpdatedAt, fractionrule.FieldDeletedAt, fractionrule.FieldWithdrawInterval:
 			values[i] = new(sql.NullInt64)
-		case fractionrule.FieldMiningpoolType, fractionrule.FieldCoinType:
-			values[i] = new(sql.NullString)
-		case fractionrule.FieldEntID:
+		case fractionrule.FieldEntID, fractionrule.FieldCoinID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FractionRule", columns[i])
@@ -94,17 +91,11 @@ func (fr *FractionRule) assignValues(columns []string, values []interface{}) err
 			} else if value != nil {
 				fr.EntID = *value
 			}
-		case fractionrule.FieldMiningpoolType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
-			} else if value.Valid {
-				fr.MiningpoolType = value.String
-			}
-		case fractionrule.FieldCoinType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
-			} else if value.Valid {
-				fr.CoinType = value.String
+		case fractionrule.FieldCoinID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field coin_id", values[i])
+			} else if value != nil {
+				fr.CoinID = *value
 			}
 		case fractionrule.FieldWithdrawInterval:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -113,16 +104,16 @@ func (fr *FractionRule) assignValues(columns []string, values []interface{}) err
 				fr.WithdrawInterval = uint32(value.Int64)
 			}
 		case fractionrule.FieldMinAmount:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field min_amount", values[i])
-			} else if value.Valid {
-				fr.MinAmount = float32(value.Float64)
+			} else if value != nil {
+				fr.MinAmount = *value
 			}
 		case fractionrule.FieldWithdrawRate:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
+			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field withdraw_rate", values[i])
-			} else if value.Valid {
-				fr.WithdrawRate = float32(value.Float64)
+			} else if value != nil {
+				fr.WithdrawRate = *value
 			}
 		}
 	}
@@ -164,11 +155,8 @@ func (fr *FractionRule) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", fr.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(fr.MiningpoolType)
-	builder.WriteString(", ")
-	builder.WriteString("coin_type=")
-	builder.WriteString(fr.CoinType)
+	builder.WriteString("coin_id=")
+	builder.WriteString(fmt.Sprintf("%v", fr.CoinID))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_interval=")
 	builder.WriteString(fmt.Sprintf("%v", fr.WithdrawInterval))

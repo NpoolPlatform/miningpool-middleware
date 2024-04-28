@@ -106,30 +106,30 @@ func (guc *GoodUserCreate) SetNillableName(s *string) *GoodUserCreate {
 	return guc
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (guc *GoodUserCreate) SetMiningpoolType(s string) *GoodUserCreate {
-	guc.mutation.SetMiningpoolType(s)
+// SetCoinID sets the "coin_id" field.
+func (guc *GoodUserCreate) SetCoinID(u uuid.UUID) *GoodUserCreate {
+	guc.mutation.SetCoinID(u)
 	return guc
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableMiningpoolType(s *string) *GoodUserCreate {
-	if s != nil {
-		guc.SetMiningpoolType(*s)
+// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableCoinID(u *uuid.UUID) *GoodUserCreate {
+	if u != nil {
+		guc.SetCoinID(*u)
 	}
 	return guc
 }
 
-// SetCoinType sets the "coin_type" field.
-func (guc *GoodUserCreate) SetCoinType(s string) *GoodUserCreate {
-	guc.mutation.SetCoinType(s)
+// SetRevenueID sets the "revenue_id" field.
+func (guc *GoodUserCreate) SetRevenueID(u uuid.UUID) *GoodUserCreate {
+	guc.mutation.SetRevenueID(u)
 	return guc
 }
 
-// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableCoinType(s *string) *GoodUserCreate {
-	if s != nil {
-		guc.SetCoinType(*s)
+// SetNillableRevenueID sets the "revenue_id" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillableRevenueID(u *uuid.UUID) *GoodUserCreate {
+	if u != nil {
+		guc.SetRevenueID(*u)
 	}
 	return guc
 }
@@ -158,20 +158,6 @@ func (guc *GoodUserCreate) SetReadPageLink(s string) *GoodUserCreate {
 func (guc *GoodUserCreate) SetNillableReadPageLink(s *string) *GoodUserCreate {
 	if s != nil {
 		guc.SetReadPageLink(*s)
-	}
-	return guc
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (guc *GoodUserCreate) SetRevenueType(s string) *GoodUserCreate {
-	guc.mutation.SetRevenueType(s)
-	return guc
-}
-
-// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableRevenueType(s *string) *GoodUserCreate {
-	if s != nil {
-		guc.SetRevenueType(*s)
 	}
 	return guc
 }
@@ -300,13 +286,19 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultName
 		guc.mutation.SetName(v)
 	}
-	if _, ok := guc.mutation.MiningpoolType(); !ok {
-		v := gooduser.DefaultMiningpoolType
-		guc.mutation.SetMiningpoolType(v)
+	if _, ok := guc.mutation.CoinID(); !ok {
+		if gooduser.DefaultCoinID == nil {
+			return fmt.Errorf("ent: uninitialized gooduser.DefaultCoinID (forgotten import ent/runtime?)")
+		}
+		v := gooduser.DefaultCoinID()
+		guc.mutation.SetCoinID(v)
 	}
-	if _, ok := guc.mutation.CoinType(); !ok {
-		v := gooduser.DefaultCoinType
-		guc.mutation.SetCoinType(v)
+	if _, ok := guc.mutation.RevenueID(); !ok {
+		if gooduser.DefaultRevenueID == nil {
+			return fmt.Errorf("ent: uninitialized gooduser.DefaultRevenueID (forgotten import ent/runtime?)")
+		}
+		v := gooduser.DefaultRevenueID()
+		guc.mutation.SetRevenueID(v)
 	}
 	if _, ok := guc.mutation.HashRate(); !ok {
 		v := gooduser.DefaultHashRate
@@ -315,10 +307,6 @@ func (guc *GoodUserCreate) defaults() error {
 	if _, ok := guc.mutation.ReadPageLink(); !ok {
 		v := gooduser.DefaultReadPageLink
 		guc.mutation.SetReadPageLink(v)
-	}
-	if _, ok := guc.mutation.RevenueType(); !ok {
-		v := gooduser.DefaultRevenueType
-		guc.mutation.SetRevenueType(v)
 	}
 	return nil
 }
@@ -419,21 +407,21 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := guc.mutation.MiningpoolType(); ok {
+	if value, ok := guc.mutation.CoinID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: gooduser.FieldMiningpoolType,
+			Column: gooduser.FieldCoinID,
 		})
-		_node.MiningpoolType = value
+		_node.CoinID = value
 	}
-	if value, ok := guc.mutation.CoinType(); ok {
+	if value, ok := guc.mutation.RevenueID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: gooduser.FieldCoinType,
+			Column: gooduser.FieldRevenueID,
 		})
-		_node.CoinType = value
+		_node.RevenueID = value
 	}
 	if value, ok := guc.mutation.HashRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -450,14 +438,6 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 			Column: gooduser.FieldReadPageLink,
 		})
 		_node.ReadPageLink = value
-	}
-	if value, ok := guc.mutation.RevenueType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: gooduser.FieldRevenueType,
-		})
-		_node.RevenueType = value
 	}
 	return _node, _spec
 }
@@ -613,39 +593,39 @@ func (u *GoodUserUpsert) ClearName() *GoodUserUpsert {
 	return u
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *GoodUserUpsert) SetMiningpoolType(v string) *GoodUserUpsert {
-	u.Set(gooduser.FieldMiningpoolType, v)
+// SetCoinID sets the "coin_id" field.
+func (u *GoodUserUpsert) SetCoinID(v uuid.UUID) *GoodUserUpsert {
+	u.Set(gooduser.FieldCoinID, v)
 	return u
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateMiningpoolType() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldMiningpoolType)
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateCoinID() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldCoinID)
 	return u
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *GoodUserUpsert) ClearMiningpoolType() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldMiningpoolType)
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *GoodUserUpsert) ClearCoinID() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldCoinID)
 	return u
 }
 
-// SetCoinType sets the "coin_type" field.
-func (u *GoodUserUpsert) SetCoinType(v string) *GoodUserUpsert {
-	u.Set(gooduser.FieldCoinType, v)
+// SetRevenueID sets the "revenue_id" field.
+func (u *GoodUserUpsert) SetRevenueID(v uuid.UUID) *GoodUserUpsert {
+	u.Set(gooduser.FieldRevenueID, v)
 	return u
 }
 
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateCoinType() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldCoinType)
+// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdateRevenueID() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldRevenueID)
 	return u
 }
 
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *GoodUserUpsert) ClearCoinType() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldCoinType)
+// ClearRevenueID clears the value of the "revenue_id" field.
+func (u *GoodUserUpsert) ClearRevenueID() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldRevenueID)
 	return u
 }
 
@@ -688,24 +668,6 @@ func (u *GoodUserUpsert) UpdateReadPageLink() *GoodUserUpsert {
 // ClearReadPageLink clears the value of the "read_page_link" field.
 func (u *GoodUserUpsert) ClearReadPageLink() *GoodUserUpsert {
 	u.SetNull(gooduser.FieldReadPageLink)
-	return u
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *GoodUserUpsert) SetRevenueType(v string) *GoodUserUpsert {
-	u.Set(gooduser.FieldRevenueType, v)
-	return u
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateRevenueType() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldRevenueType)
-	return u
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *GoodUserUpsert) ClearRevenueType() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldRevenueType)
 	return u
 }
 
@@ -876,45 +838,45 @@ func (u *GoodUserUpsertOne) ClearName() *GoodUserUpsertOne {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *GoodUserUpsertOne) SetMiningpoolType(v string) *GoodUserUpsertOne {
+// SetCoinID sets the "coin_id" field.
+func (u *GoodUserUpsertOne) SetCoinID(v uuid.UUID) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetCoinID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateMiningpoolType() *GoodUserUpsertOne {
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateCoinID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateCoinID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *GoodUserUpsertOne) ClearMiningpoolType() *GoodUserUpsertOne {
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *GoodUserUpsertOne) ClearCoinID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearCoinID()
 	})
 }
 
-// SetCoinType sets the "coin_type" field.
-func (u *GoodUserUpsertOne) SetCoinType(v string) *GoodUserUpsertOne {
+// SetRevenueID sets the "revenue_id" field.
+func (u *GoodUserUpsertOne) SetRevenueID(v uuid.UUID) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetCoinType(v)
+		s.SetRevenueID(v)
 	})
 }
 
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateCoinType() *GoodUserUpsertOne {
+// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdateRevenueID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateCoinType()
+		s.UpdateRevenueID()
 	})
 }
 
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *GoodUserUpsertOne) ClearCoinType() *GoodUserUpsertOne {
+// ClearRevenueID clears the value of the "revenue_id" field.
+func (u *GoodUserUpsertOne) ClearRevenueID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearCoinType()
+		s.ClearRevenueID()
 	})
 }
 
@@ -964,27 +926,6 @@ func (u *GoodUserUpsertOne) UpdateReadPageLink() *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) ClearReadPageLink() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearReadPageLink()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *GoodUserUpsertOne) SetRevenueType(v string) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateRevenueType() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *GoodUserUpsertOne) ClearRevenueType() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearRevenueType()
 	})
 }
 
@@ -1318,45 +1259,45 @@ func (u *GoodUserUpsertBulk) ClearName() *GoodUserUpsertBulk {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *GoodUserUpsertBulk) SetMiningpoolType(v string) *GoodUserUpsertBulk {
+// SetCoinID sets the "coin_id" field.
+func (u *GoodUserUpsertBulk) SetCoinID(v uuid.UUID) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetCoinID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateMiningpoolType() *GoodUserUpsertBulk {
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateCoinID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateCoinID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *GoodUserUpsertBulk) ClearMiningpoolType() *GoodUserUpsertBulk {
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *GoodUserUpsertBulk) ClearCoinID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearCoinID()
 	})
 }
 
-// SetCoinType sets the "coin_type" field.
-func (u *GoodUserUpsertBulk) SetCoinType(v string) *GoodUserUpsertBulk {
+// SetRevenueID sets the "revenue_id" field.
+func (u *GoodUserUpsertBulk) SetRevenueID(v uuid.UUID) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetCoinType(v)
+		s.SetRevenueID(v)
 	})
 }
 
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateCoinType() *GoodUserUpsertBulk {
+// UpdateRevenueID sets the "revenue_id" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdateRevenueID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateCoinType()
+		s.UpdateRevenueID()
 	})
 }
 
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *GoodUserUpsertBulk) ClearCoinType() *GoodUserUpsertBulk {
+// ClearRevenueID clears the value of the "revenue_id" field.
+func (u *GoodUserUpsertBulk) ClearRevenueID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearCoinType()
+		s.ClearRevenueID()
 	})
 }
 
@@ -1406,27 +1347,6 @@ func (u *GoodUserUpsertBulk) UpdateReadPageLink() *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) ClearReadPageLink() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearReadPageLink()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *GoodUserUpsertBulk) SetRevenueType(v string) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateRevenueType() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *GoodUserUpsertBulk) ClearRevenueType() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearRevenueType()
 	})
 }
 

@@ -75,13 +75,6 @@ func (h *sqlHandler) baseKeysFiled() error {
 		}
 		h.baseVals[orderuser.FieldUserID] = string(strBytes)
 	}
-	if h.RootUserID != nil {
-		strBytes, err := json.Marshal(*h.RootUserID)
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldRootUserID] = string(strBytes)
-	}
 	if h.GoodUserID != nil {
 		strBytes, err := json.Marshal(*h.GoodUserID)
 		if err != nil {
@@ -97,21 +90,21 @@ func (h *sqlHandler) baseKeysFiled() error {
 		h.baseVals[orderuser.FieldName] = string(strBytes)
 		h.BondName = h.Name
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
-	}
-	if h.CoinType != nil {
-		strBytes, err := json.Marshal(h.CoinType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldCoinType] = string(strBytes)
-	}
+	// if h.MiningpoolType != nil {
+	// 	strBytes, err := json.Marshal(h.MiningpoolType.String())
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	h.baseVals[orderuser.FieldMiningpoolType] = string(strBytes)
+	// 	h.BondMiningpoolType = h.MiningpoolType
+	// }
+	// if h.CoinType != nil {
+	// 	strBytes, err := json.Marshal(h.CoinType.String())
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	h.baseVals[orderuser.FieldCoinType] = string(strBytes)
+	// }
 	if h.Proportion != nil {
 		strBytes, err := json.Marshal(*h.Proportion)
 		if err != nil {
@@ -141,23 +134,23 @@ func (h *sqlHandler) baseKeysFiled() error {
 		h.baseVals[orderuser.FieldAutoPay] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
-	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
-	if err != nil {
-		return err
-	}
-	h.bondVals[orderuser.FieldMiningpoolType] = string(strBytes)
+	// if h.BondMiningpoolType == nil {
+	// 	return fmt.Errorf("please give miningpooltype")
+	// }
+	// strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	// if err != nil {
+	// 	return err
+	// }
+	// h.bondVals[orderuser.FieldMiningpoolType] = string(strBytes)
 
-	if h.BondName == nil {
-		return fmt.Errorf("please give name")
-	}
-	strBytes, err = json.Marshal(*h.BondName)
-	if err != nil {
-		return err
-	}
-	h.bondVals[orderuser.FieldName] = string(strBytes)
+	// if h.BondName == nil {
+	// 	return fmt.Errorf("please give name")
+	// }
+	// strBytes, err = json.Marshal(*h.BondName)
+	// if err != nil {
+	// 	return err
+	// }
+	// h.bondVals[orderuser.FieldName] = string(strBytes)
 	return nil
 }
 

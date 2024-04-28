@@ -99,23 +99,23 @@ func (cu *CoinUpdate) SetNillableEntID(u *uuid.UUID) *CoinUpdate {
 	return cu
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (cu *CoinUpdate) SetMiningpoolType(s string) *CoinUpdate {
-	cu.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (cu *CoinUpdate) SetPoolID(u uuid.UUID) *CoinUpdate {
+	cu.mutation.SetPoolID(u)
 	return cu
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableMiningpoolType(s *string) *CoinUpdate {
-	if s != nil {
-		cu.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillablePoolID(u *uuid.UUID) *CoinUpdate {
+	if u != nil {
+		cu.SetPoolID(*u)
 	}
 	return cu
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (cu *CoinUpdate) ClearMiningpoolType() *CoinUpdate {
-	cu.mutation.ClearMiningpoolType()
+// ClearPoolID clears the value of the "pool_id" field.
+func (cu *CoinUpdate) ClearPoolID() *CoinUpdate {
+	cu.mutation.ClearPoolID()
 	return cu
 }
 
@@ -139,35 +139,43 @@ func (cu *CoinUpdate) ClearCoinType() *CoinUpdate {
 	return cu
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (cu *CoinUpdate) SetRevenueTypes(s []string) *CoinUpdate {
-	cu.mutation.SetRevenueTypes(s)
+// SetRevenueType sets the "revenue_type" field.
+func (cu *CoinUpdate) SetRevenueType(s string) *CoinUpdate {
+	cu.mutation.SetRevenueType(s)
 	return cu
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (cu *CoinUpdate) ClearRevenueTypes() *CoinUpdate {
-	cu.mutation.ClearRevenueTypes()
-	return cu
-}
-
-// SetFeeRate sets the "fee_rate" field.
-func (cu *CoinUpdate) SetFeeRate(d decimal.Decimal) *CoinUpdate {
-	cu.mutation.SetFeeRate(d)
-	return cu
-}
-
-// SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableFeeRate(d *decimal.Decimal) *CoinUpdate {
-	if d != nil {
-		cu.SetFeeRate(*d)
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableRevenueType(s *string) *CoinUpdate {
+	if s != nil {
+		cu.SetRevenueType(*s)
 	}
 	return cu
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (cu *CoinUpdate) ClearFeeRate() *CoinUpdate {
-	cu.mutation.ClearFeeRate()
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (cu *CoinUpdate) ClearRevenueType() *CoinUpdate {
+	cu.mutation.ClearRevenueType()
+	return cu
+}
+
+// SetFeeRatio sets the "fee_ratio" field.
+func (cu *CoinUpdate) SetFeeRatio(d decimal.Decimal) *CoinUpdate {
+	cu.mutation.SetFeeRatio(d)
+	return cu
+}
+
+// SetNillableFeeRatio sets the "fee_ratio" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableFeeRatio(d *decimal.Decimal) *CoinUpdate {
+	if d != nil {
+		cu.SetFeeRatio(*d)
+	}
+	return cu
+}
+
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (cu *CoinUpdate) ClearFeeRatio() *CoinUpdate {
+	cu.mutation.ClearFeeRatio()
 	return cu
 }
 
@@ -191,6 +199,53 @@ func (cu *CoinUpdate) ClearFixedRevenueAble() *CoinUpdate {
 	return cu
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (cu *CoinUpdate) SetLeastTransferAmount(d decimal.Decimal) *CoinUpdate {
+	cu.mutation.SetLeastTransferAmount(d)
+	return cu
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableLeastTransferAmount(d *decimal.Decimal) *CoinUpdate {
+	if d != nil {
+		cu.SetLeastTransferAmount(*d)
+	}
+	return cu
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (cu *CoinUpdate) ClearLeastTransferAmount() *CoinUpdate {
+	cu.mutation.ClearLeastTransferAmount()
+	return cu
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (cu *CoinUpdate) SetBenefitIntervalSeconds(u uint32) *CoinUpdate {
+	cu.mutation.ResetBenefitIntervalSeconds()
+	cu.mutation.SetBenefitIntervalSeconds(u)
+	return cu
+}
+
+// SetNillableBenefitIntervalSeconds sets the "benefit_interval_seconds" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableBenefitIntervalSeconds(u *uint32) *CoinUpdate {
+	if u != nil {
+		cu.SetBenefitIntervalSeconds(*u)
+	}
+	return cu
+}
+
+// AddBenefitIntervalSeconds adds u to the "benefit_interval_seconds" field.
+func (cu *CoinUpdate) AddBenefitIntervalSeconds(u int32) *CoinUpdate {
+	cu.mutation.AddBenefitIntervalSeconds(u)
+	return cu
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (cu *CoinUpdate) ClearBenefitIntervalSeconds() *CoinUpdate {
+	cu.mutation.ClearBenefitIntervalSeconds()
+	return cu
+}
+
 // SetRemark sets the "remark" field.
 func (cu *CoinUpdate) SetRemark(s string) *CoinUpdate {
 	cu.mutation.SetRemark(s)
@@ -208,26 +263,6 @@ func (cu *CoinUpdate) SetNillableRemark(s *string) *CoinUpdate {
 // ClearRemark clears the value of the "remark" field.
 func (cu *CoinUpdate) ClearRemark() *CoinUpdate {
 	cu.mutation.ClearRemark()
-	return cu
-}
-
-// SetThreshold sets the "threshold" field.
-func (cu *CoinUpdate) SetThreshold(d decimal.Decimal) *CoinUpdate {
-	cu.mutation.SetThreshold(d)
-	return cu
-}
-
-// SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableThreshold(d *decimal.Decimal) *CoinUpdate {
-	if d != nil {
-		cu.SetThreshold(*d)
-	}
-	return cu
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (cu *CoinUpdate) ClearThreshold() *CoinUpdate {
-	cu.mutation.ClearThreshold()
 	return cu
 }
 
@@ -378,17 +413,17 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldEntID,
 		})
 	}
-	if value, ok := cu.mutation.MiningpoolType(); ok {
+	if value, ok := cu.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: coin.FieldMiningpoolType,
+			Column: coin.FieldPoolID,
 		})
 	}
-	if cu.mutation.MiningpoolTypeCleared() {
+	if cu.mutation.PoolIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldMiningpoolType,
+			Type:   field.TypeUUID,
+			Column: coin.FieldPoolID,
 		})
 	}
 	if value, ok := cu.mutation.CoinType(); ok {
@@ -404,30 +439,30 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldCoinType,
 		})
 	}
-	if value, ok := cu.mutation.RevenueTypes(); ok {
+	if value, ok := cu.mutation.RevenueType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: coin.FieldRevenueTypes,
+			Column: coin.FieldRevenueType,
 		})
 	}
-	if cu.mutation.RevenueTypesCleared() {
+	if cu.mutation.RevenueTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Column: coin.FieldRevenueTypes,
+			Type:   field.TypeString,
+			Column: coin.FieldRevenueType,
 		})
 	}
-	if value, ok := cu.mutation.FeeRate(); ok {
+	if value, ok := cu.mutation.FeeRatio(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: coin.FieldFeeRate,
+			Column: coin.FieldFeeRatio,
 		})
 	}
-	if cu.mutation.FeeRateCleared() {
+	if cu.mutation.FeeRatioCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: coin.FieldFeeRate,
+			Column: coin.FieldFeeRatio,
 		})
 	}
 	if value, ok := cu.mutation.FixedRevenueAble(); ok {
@@ -443,6 +478,39 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldFixedRevenueAble,
 		})
 	}
+	if value, ok := cu.mutation.LeastTransferAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: coin.FieldLeastTransferAmount,
+		})
+	}
+	if cu.mutation.LeastTransferAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: coin.FieldLeastTransferAmount,
+		})
+	}
+	if value, ok := cu.mutation.BenefitIntervalSeconds(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
+	if value, ok := cu.mutation.AddedBenefitIntervalSeconds(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
+	if cu.mutation.BenefitIntervalSecondsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
 	if value, ok := cu.mutation.Remark(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -454,19 +522,6 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coin.FieldRemark,
-		})
-	}
-	if value, ok := cu.mutation.Threshold(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: coin.FieldThreshold,
-		})
-	}
-	if cu.mutation.ThresholdCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: coin.FieldThreshold,
 		})
 	}
 	_spec.Modifiers = cu.modifiers
@@ -559,23 +614,23 @@ func (cuo *CoinUpdateOne) SetNillableEntID(u *uuid.UUID) *CoinUpdateOne {
 	return cuo
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (cuo *CoinUpdateOne) SetMiningpoolType(s string) *CoinUpdateOne {
-	cuo.mutation.SetMiningpoolType(s)
+// SetPoolID sets the "pool_id" field.
+func (cuo *CoinUpdateOne) SetPoolID(u uuid.UUID) *CoinUpdateOne {
+	cuo.mutation.SetPoolID(u)
 	return cuo
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableMiningpoolType(s *string) *CoinUpdateOne {
-	if s != nil {
-		cuo.SetMiningpoolType(*s)
+// SetNillablePoolID sets the "pool_id" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillablePoolID(u *uuid.UUID) *CoinUpdateOne {
+	if u != nil {
+		cuo.SetPoolID(*u)
 	}
 	return cuo
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (cuo *CoinUpdateOne) ClearMiningpoolType() *CoinUpdateOne {
-	cuo.mutation.ClearMiningpoolType()
+// ClearPoolID clears the value of the "pool_id" field.
+func (cuo *CoinUpdateOne) ClearPoolID() *CoinUpdateOne {
+	cuo.mutation.ClearPoolID()
 	return cuo
 }
 
@@ -599,35 +654,43 @@ func (cuo *CoinUpdateOne) ClearCoinType() *CoinUpdateOne {
 	return cuo
 }
 
-// SetRevenueTypes sets the "revenue_types" field.
-func (cuo *CoinUpdateOne) SetRevenueTypes(s []string) *CoinUpdateOne {
-	cuo.mutation.SetRevenueTypes(s)
+// SetRevenueType sets the "revenue_type" field.
+func (cuo *CoinUpdateOne) SetRevenueType(s string) *CoinUpdateOne {
+	cuo.mutation.SetRevenueType(s)
 	return cuo
 }
 
-// ClearRevenueTypes clears the value of the "revenue_types" field.
-func (cuo *CoinUpdateOne) ClearRevenueTypes() *CoinUpdateOne {
-	cuo.mutation.ClearRevenueTypes()
-	return cuo
-}
-
-// SetFeeRate sets the "fee_rate" field.
-func (cuo *CoinUpdateOne) SetFeeRate(d decimal.Decimal) *CoinUpdateOne {
-	cuo.mutation.SetFeeRate(d)
-	return cuo
-}
-
-// SetNillableFeeRate sets the "fee_rate" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableFeeRate(d *decimal.Decimal) *CoinUpdateOne {
-	if d != nil {
-		cuo.SetFeeRate(*d)
+// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableRevenueType(s *string) *CoinUpdateOne {
+	if s != nil {
+		cuo.SetRevenueType(*s)
 	}
 	return cuo
 }
 
-// ClearFeeRate clears the value of the "fee_rate" field.
-func (cuo *CoinUpdateOne) ClearFeeRate() *CoinUpdateOne {
-	cuo.mutation.ClearFeeRate()
+// ClearRevenueType clears the value of the "revenue_type" field.
+func (cuo *CoinUpdateOne) ClearRevenueType() *CoinUpdateOne {
+	cuo.mutation.ClearRevenueType()
+	return cuo
+}
+
+// SetFeeRatio sets the "fee_ratio" field.
+func (cuo *CoinUpdateOne) SetFeeRatio(d decimal.Decimal) *CoinUpdateOne {
+	cuo.mutation.SetFeeRatio(d)
+	return cuo
+}
+
+// SetNillableFeeRatio sets the "fee_ratio" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableFeeRatio(d *decimal.Decimal) *CoinUpdateOne {
+	if d != nil {
+		cuo.SetFeeRatio(*d)
+	}
+	return cuo
+}
+
+// ClearFeeRatio clears the value of the "fee_ratio" field.
+func (cuo *CoinUpdateOne) ClearFeeRatio() *CoinUpdateOne {
+	cuo.mutation.ClearFeeRatio()
 	return cuo
 }
 
@@ -651,6 +714,53 @@ func (cuo *CoinUpdateOne) ClearFixedRevenueAble() *CoinUpdateOne {
 	return cuo
 }
 
+// SetLeastTransferAmount sets the "least_transfer_amount" field.
+func (cuo *CoinUpdateOne) SetLeastTransferAmount(d decimal.Decimal) *CoinUpdateOne {
+	cuo.mutation.SetLeastTransferAmount(d)
+	return cuo
+}
+
+// SetNillableLeastTransferAmount sets the "least_transfer_amount" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableLeastTransferAmount(d *decimal.Decimal) *CoinUpdateOne {
+	if d != nil {
+		cuo.SetLeastTransferAmount(*d)
+	}
+	return cuo
+}
+
+// ClearLeastTransferAmount clears the value of the "least_transfer_amount" field.
+func (cuo *CoinUpdateOne) ClearLeastTransferAmount() *CoinUpdateOne {
+	cuo.mutation.ClearLeastTransferAmount()
+	return cuo
+}
+
+// SetBenefitIntervalSeconds sets the "benefit_interval_seconds" field.
+func (cuo *CoinUpdateOne) SetBenefitIntervalSeconds(u uint32) *CoinUpdateOne {
+	cuo.mutation.ResetBenefitIntervalSeconds()
+	cuo.mutation.SetBenefitIntervalSeconds(u)
+	return cuo
+}
+
+// SetNillableBenefitIntervalSeconds sets the "benefit_interval_seconds" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableBenefitIntervalSeconds(u *uint32) *CoinUpdateOne {
+	if u != nil {
+		cuo.SetBenefitIntervalSeconds(*u)
+	}
+	return cuo
+}
+
+// AddBenefitIntervalSeconds adds u to the "benefit_interval_seconds" field.
+func (cuo *CoinUpdateOne) AddBenefitIntervalSeconds(u int32) *CoinUpdateOne {
+	cuo.mutation.AddBenefitIntervalSeconds(u)
+	return cuo
+}
+
+// ClearBenefitIntervalSeconds clears the value of the "benefit_interval_seconds" field.
+func (cuo *CoinUpdateOne) ClearBenefitIntervalSeconds() *CoinUpdateOne {
+	cuo.mutation.ClearBenefitIntervalSeconds()
+	return cuo
+}
+
 // SetRemark sets the "remark" field.
 func (cuo *CoinUpdateOne) SetRemark(s string) *CoinUpdateOne {
 	cuo.mutation.SetRemark(s)
@@ -668,26 +778,6 @@ func (cuo *CoinUpdateOne) SetNillableRemark(s *string) *CoinUpdateOne {
 // ClearRemark clears the value of the "remark" field.
 func (cuo *CoinUpdateOne) ClearRemark() *CoinUpdateOne {
 	cuo.mutation.ClearRemark()
-	return cuo
-}
-
-// SetThreshold sets the "threshold" field.
-func (cuo *CoinUpdateOne) SetThreshold(d decimal.Decimal) *CoinUpdateOne {
-	cuo.mutation.SetThreshold(d)
-	return cuo
-}
-
-// SetNillableThreshold sets the "threshold" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableThreshold(d *decimal.Decimal) *CoinUpdateOne {
-	if d != nil {
-		cuo.SetThreshold(*d)
-	}
-	return cuo
-}
-
-// ClearThreshold clears the value of the "threshold" field.
-func (cuo *CoinUpdateOne) ClearThreshold() *CoinUpdateOne {
-	cuo.mutation.ClearThreshold()
 	return cuo
 }
 
@@ -868,17 +958,17 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldEntID,
 		})
 	}
-	if value, ok := cuo.mutation.MiningpoolType(); ok {
+	if value, ok := cuo.mutation.PoolID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: coin.FieldMiningpoolType,
+			Column: coin.FieldPoolID,
 		})
 	}
-	if cuo.mutation.MiningpoolTypeCleared() {
+	if cuo.mutation.PoolIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldMiningpoolType,
+			Type:   field.TypeUUID,
+			Column: coin.FieldPoolID,
 		})
 	}
 	if value, ok := cuo.mutation.CoinType(); ok {
@@ -894,30 +984,30 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldCoinType,
 		})
 	}
-	if value, ok := cuo.mutation.RevenueTypes(); ok {
+	if value, ok := cuo.mutation.RevenueType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
-			Column: coin.FieldRevenueTypes,
+			Column: coin.FieldRevenueType,
 		})
 	}
-	if cuo.mutation.RevenueTypesCleared() {
+	if cuo.mutation.RevenueTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Column: coin.FieldRevenueTypes,
+			Type:   field.TypeString,
+			Column: coin.FieldRevenueType,
 		})
 	}
-	if value, ok := cuo.mutation.FeeRate(); ok {
+	if value, ok := cuo.mutation.FeeRatio(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Value:  value,
-			Column: coin.FieldFeeRate,
+			Column: coin.FieldFeeRatio,
 		})
 	}
-	if cuo.mutation.FeeRateCleared() {
+	if cuo.mutation.FeeRatioCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
-			Column: coin.FieldFeeRate,
+			Column: coin.FieldFeeRatio,
 		})
 	}
 	if value, ok := cuo.mutation.FixedRevenueAble(); ok {
@@ -933,6 +1023,39 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 			Column: coin.FieldFixedRevenueAble,
 		})
 	}
+	if value, ok := cuo.mutation.LeastTransferAmount(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: coin.FieldLeastTransferAmount,
+		})
+	}
+	if cuo.mutation.LeastTransferAmountCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: coin.FieldLeastTransferAmount,
+		})
+	}
+	if value, ok := cuo.mutation.BenefitIntervalSeconds(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
+	if value, ok := cuo.mutation.AddedBenefitIntervalSeconds(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Value:  value,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
+	if cuo.mutation.BenefitIntervalSecondsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: coin.FieldBenefitIntervalSeconds,
+		})
+	}
 	if value, ok := cuo.mutation.Remark(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -944,19 +1067,6 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coin.FieldRemark,
-		})
-	}
-	if value, ok := cuo.mutation.Threshold(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: coin.FieldThreshold,
-		})
-	}
-	if cuo.mutation.ThresholdCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: coin.FieldThreshold,
 		})
 	}
 	_spec.Modifiers = cuo.modifiers

@@ -22,8 +22,8 @@ const (
 	FieldEntID = "ent_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldMiningpoolType holds the string denoting the miningpool_type field in the database.
-	FieldMiningpoolType = "miningpool_type"
+	// FieldPoolID holds the string denoting the pool_id field in the database.
+	FieldPoolID = "pool_id"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
 	// FieldAuthToken holds the string denoting the auth_token field in the database.
@@ -46,7 +46,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldEntID,
 	FieldName,
-	FieldMiningpoolType,
+	FieldPoolID,
 	FieldEmail,
 	FieldAuthToken,
 	FieldAuthTokenSalt,
@@ -84,8 +84,8 @@ var (
 	DefaultEntID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
-	// DefaultMiningpoolType holds the default value on creation for the "miningpool_type" field.
-	DefaultMiningpoolType string
+	// DefaultPoolID holds the default value on creation for the "pool_id" field.
+	DefaultPoolID func() uuid.UUID
 	// DefaultEmail holds the default value on creation for the "email" field.
 	DefaultEmail string
 	// DefaultAuthToken holds the default value on creation for the "auth_token" field.

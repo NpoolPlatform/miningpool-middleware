@@ -6,17 +6,17 @@ import (
 	"strings"
 	"time"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
+	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
-	BondName           *string
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondCoinID *uuid.UUID
+	BondName   *string
+	bondVals   map[string]string
+	baseVals   map[string]string
+	idVals     map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -44,13 +44,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[gooduser.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.CoinID != nil {
+		strBytes, err := json.Marshal(h.CoinID.String())
 		if err != nil {
 			return err
 		}
-		h.baseVals[gooduser.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
+		h.baseVals[gooduser.FieldCoinID] = string(strBytes)
+		h.BondCoinID = h.CoinID
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
@@ -67,13 +67,6 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[gooduser.FieldRootUserID] = string(strBytes)
 	}
-	if h.CoinType != nil {
-		strBytes, err := json.Marshal(h.CoinType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[gooduser.FieldCoinType] = string(strBytes)
-	}
 	if h.HashRate != nil {
 		strBytes, err := json.Marshal(*h.HashRate)
 		if err != nil {
@@ -88,22 +81,15 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[gooduser.FieldReadPageLink] = string(strBytes)
 	}
-	if h.RevenueType != nil {
-		strBytes, err := json.Marshal(h.RevenueType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[gooduser.FieldRevenueType] = string(strBytes)
-	}
 
-	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
+	if h.BondCoinID == nil {
+		return fmt.Errorf("please give coinid")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondCoinID.String())
 	if err != nil {
 		return err
 	}
-	h.bondVals[gooduser.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[gooduser.FieldCoinID] = string(strBytes)
 
 	if h.BondName == nil {
 		return fmt.Errorf("please give name")

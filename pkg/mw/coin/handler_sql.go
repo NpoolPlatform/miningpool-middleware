@@ -8,15 +8,16 @@ import (
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
+	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
-	BondCoinType       *basetypes.CoinType
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondPoolID   *uuid.UUID
+	BondCoinType *basetypes.CoinType
+	bondVals     map[string]string
+	baseVals     map[string]string
+	idVals       map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -44,13 +45,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[coin.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.PoolID != nil {
+		strBytes, err := json.Marshal(h.PoolID.String())
 		if err != nil {
 			return err
 		}
-		h.baseVals[coin.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
+		h.baseVals[coin.FieldPoolID] = string(strBytes)
+		h.BondPoolID = h.PoolID
 	}
 	if h.CoinType != nil {
 		fmt.Println(*h.CoinType)
@@ -61,24 +62,6 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[coin.FieldCoinType] = string(strBytes)
 		h.BondCoinType = h.CoinType
 	}
-	if h.RevenueTypes != nil {
-		revenueTypes := []string{}
-		for _, v := range *h.RevenueTypes {
-			revenueTypes = append(revenueTypes, v.String())
-		}
-		strBytes, err := json.Marshal(revenueTypes)
-		if err != nil {
-			return err
-		}
-		h.baseVals[coin.FieldRevenueTypes] = fmt.Sprintf("'%v'", string(strBytes))
-	}
-	if h.FeeRate != nil {
-		strBytes, err := json.Marshal(*h.FeeRate)
-		if err != nil {
-			return err
-		}
-		h.baseVals[coin.FieldFeeRate] = string(strBytes)
-	}
 	if h.FixedRevenueAble != nil {
 		strBytes, err := json.Marshal(*h.FixedRevenueAble)
 		if err != nil {
@@ -86,12 +69,12 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[coin.FieldFixedRevenueAble] = string(strBytes)
 	}
-	if h.Threshold != nil {
-		strBytes, err := json.Marshal(*h.Threshold)
+	if h.LeastTransferAmount != nil {
+		strBytes, err := json.Marshal(*h.LeastTransferAmount)
 		if err != nil {
 			return err
 		}
-		h.baseVals[coin.FieldThreshold] = string(strBytes)
+		h.baseVals[coin.FieldLeastTransferAmount] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)
@@ -101,14 +84,14 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[coin.FieldRemark] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
+	if h.BondPoolID == nil {
+		return fmt.Errorf("please give poolid")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondPoolID.String())
 	if err != nil {
 		return err
 	}
-	h.bondVals[coin.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[coin.FieldPoolID] = string(strBytes)
 
 	if h.BondCoinType == nil {
 		return fmt.Errorf("please give cointype")

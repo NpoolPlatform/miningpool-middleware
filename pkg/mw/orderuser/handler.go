@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
@@ -18,13 +17,10 @@ import (
 type Handler struct {
 	ID             *uint32
 	EntID          *uuid.UUID
-	RootUserID     *uuid.UUID
 	GoodUserID     *uuid.UUID
 	AppID          *uuid.UUID
 	UserID         *uuid.UUID
 	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
-	CoinType       *basetypes.CoinType
 	Proportion     *decimal.Decimal
 	RevenueAddress *string
 	ReadPageLink   *string
@@ -71,23 +67,6 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 			return err
 		}
 		h.EntID = &_id
-		return nil
-	}
-}
-
-func WithRootUserID(rootuserid *string, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if rootuserid == nil {
-			if must {
-				return fmt.Errorf("invalid rootuserid")
-			}
-			return nil
-		}
-		_id, err := uuid.Parse(*rootuserid)
-		if err != nil {
-			return err
-		}
-		h.RootUserID = &_id
 		return nil
 	}
 }
@@ -152,38 +131,6 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 			return nil
 		}
 		h.Name = name
-		return nil
-	}
-}
-
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if miningpooltype == nil {
-			if must {
-				return fmt.Errorf("invalid miningpooltype")
-			}
-			return nil
-		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
-			return fmt.Errorf("invalid miningpooltype,not allow be default type")
-		}
-		h.MiningpoolType = miningpooltype
-		return nil
-	}
-}
-
-func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if cointype == nil {
-			if must {
-				return fmt.Errorf("invalid cointype")
-			}
-			return nil
-		}
-		if *cointype == basetypes.CoinType_DefaultCoinType {
-			return fmt.Errorf("invalid cointype,not allow be default type")
-		}
-		h.CoinType = cointype
 		return nil
 	}
 }
@@ -287,16 +234,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: conds.GetName().GetValue(),
 			}
 		}
-		if conds.RootUserID != nil {
-			id, err := uuid.Parse(conds.GetRootUserID().GetValue())
-			if err != nil {
-				return err
-			}
-			h.Conds.RootUserID = &cruder.Cond{
-				Op:  conds.GetRootUserID().GetOp(),
-				Val: id,
-			}
-		}
 		if conds.GoodUserID != nil {
 			id, err := uuid.Parse(conds.GetGoodUserID().GetValue())
 			if err != nil {
@@ -325,24 +262,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.UserID = &cruder.Cond{
 				Op:  conds.GetUserID().GetOp(),
 				Val: id,
-			}
-		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
-			}
-		}
-		if conds.CoinType != nil {
-			h.Conds.CoinType = &cruder.Cond{
-				Op:  conds.GetCoinType().GetOp(),
-				Val: basetypes.CoinType(conds.GetCoinType().GetValue()),
-			}
-		}
-		if conds.RevenueAddress != nil {
-			h.Conds.RevenueAddress = &cruder.Cond{
-				Op:  conds.GetRevenueAddress().GetOp(),
-				Val: conds.GetRevenueAddress().GetValue(),
 			}
 		}
 		if conds.AutoPay != nil {

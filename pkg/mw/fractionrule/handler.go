@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	fractionrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -17,11 +17,10 @@ import (
 type Handler struct {
 	ID               *uint32
 	EntID            *uuid.UUID
-	MiningpoolType   *basetypes.MiningpoolType
-	CoinType         *basetypes.CoinType
+	CoinID           *uuid.UUID
 	WithdrawInterval *uint32
-	MinAmount        *float32
-	WithdrawRate     *float32
+	MinAmount        *decimal.Decimal
+	WithdrawRate     *decimal.Decimal
 	Reqs             []*fractionrulecrud.Req
 	Conds            *fractionrulecrud.Conds
 	Offset           int32
@@ -68,34 +67,19 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
+func WithCoinID(coinid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if miningpooltype == nil {
+		if coinid == nil {
 			if must {
-				return fmt.Errorf("invalid miningpooltype")
+				return fmt.Errorf("invalid coinid")
 			}
 			return nil
 		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
-			return fmt.Errorf("invalid miningpooltype,not allow be default type")
+		_id, err := uuid.Parse(*coinid)
+		if err != nil {
+			return err
 		}
-		h.MiningpoolType = miningpooltype
-		return nil
-	}
-}
-
-func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if cointype == nil {
-			if must {
-				return fmt.Errorf("invalid cointype")
-			}
-			return nil
-		}
-		if *cointype == basetypes.CoinType_DefaultCoinType {
-			return fmt.Errorf("invalid cointype,not allow be default type")
-		}
-		h.CoinType = cointype
+		h.CoinID = &_id
 		return nil
 	}
 }
@@ -113,7 +97,7 @@ func WithWithdrawInterval(withdrawinterval *uint32, must bool) func(context.Cont
 	}
 }
 
-func WithMinAmount(minamount *float32, must bool) func(context.Context, *Handler) error {
+func WithMinAmount(minamount *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if minamount == nil {
 			if must {
@@ -121,12 +105,16 @@ func WithMinAmount(minamount *float32, must bool) func(context.Context, *Handler
 			}
 			return nil
 		}
-		h.MinAmount = minamount
+		_minamount, err := decimal.NewFromString(*minamount)
+		if err != nil {
+			return fmt.Errorf("invalid minamount,err: %v", err)
+		}
+		h.MinAmount = &_minamount
 		return nil
 	}
 }
 
-func WithWithdrawRate(withdrawrate *float32, must bool) func(context.Context, *Handler) error {
+func WithWithdrawRate(withdrawrate *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawrate == nil {
 			if must {
@@ -134,7 +122,11 @@ func WithWithdrawRate(withdrawrate *float32, must bool) func(context.Context, *H
 			}
 			return nil
 		}
-		h.WithdrawRate = withdrawrate
+		_withdrawrate, err := decimal.NewFromString(*withdrawrate)
+		if err != nil {
+			return fmt.Errorf("invalid withdrawrate,err: %v", err)
+		}
+		h.WithdrawRate = &_withdrawrate
 		return nil
 	}
 }
@@ -176,22 +168,14 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: ids,
 			}
 		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+		if conds.CoinID != nil {
+			id, err := uuid.Parse(conds.GetCoinID().GetValue())
+			if err != nil {
+				return err
 			}
-		}
-		if conds.CoinType != nil {
-			h.Conds.CoinType = &cruder.Cond{
-				Op:  conds.GetCoinType().GetOp(),
-				Val: basetypes.CoinType(conds.GetCoinType().GetValue()),
-			}
-		}
-		if conds.WithdrawInterval != nil {
-			h.Conds.WithdrawInterval = &cruder.Cond{
-				Op:  conds.GetWithdrawInterval().GetOp(),
-				Val: conds.GetWithdrawInterval().GetValue(),
+			h.Conds.CoinID = &cruder.Cond{
+				Op:  conds.GetCoinID().GetOp(),
+				Val: id,
 			}
 		}
 		return nil

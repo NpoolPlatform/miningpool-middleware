@@ -8,12 +8,14 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
@@ -30,20 +32,21 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
+	MiningpoolType: basetype.MiningpoolType_F2Pool,
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",
 }
 
 var req = &npool.RootUserReq{
-	EntID:          &ret.EntID,
-	MiningpoolType: &ret.MiningpoolType,
-	Email:          &ret.Email,
-	AuthToken:      &ret.AuthToken,
-	Authed:         &ret.Authed,
-	Remark:         &ret.Remark,
+	EntID:     &ret.EntID,
+	PoolID:    &ret.PoolID,
+	Email:     &ret.Email,
+	AuthToken: &ret.AuthToken,
+	Authed:    &ret.Authed,
+	Remark:    &ret.Remark,
 }
 
 func create(t *testing.T) {
@@ -55,7 +58,42 @@ func create(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),
-		WithMiningpoolType(req.MiningpoolType, true),
+		WithPoolID(req.PoolID, true),
+		WithEmail(req.Email, true),
+		WithAuthToken(req.AuthToken, true),
+		WithAuthed(req.Authed, true),
+		WithRemark(req.Remark, true),
+	)
+	assert.Nil(t, err)
+
+	err = handler.CreateRootUser(context.Background())
+	assert.NotNil(t, err)
+
+	poolH, err := pool.NewHandler(context.Background(),
+		pool.WithConds(&poolmw.Conds{
+			MiningpoolType: &v1.Uint32Val{
+				Op:    cruder.EQ,
+				Value: uint32(ret.MiningpoolType),
+			},
+		}),
+		pool.WithLimit(2),
+		pool.WithOffset(0),
+	)
+	assert.Nil(t, err)
+
+	poolInfos, _, err := poolH.GetPools(context.Background())
+	assert.Nil(t, err)
+	if !assert.NotEqual(t, len(poolInfos), 0) {
+		return
+	}
+
+	ret.PoolID = poolInfos[0].EntID
+	req.PoolID = &poolInfos[0].EntID
+
+	handler, err = NewHandler(
+		context.Background(),
+		WithName(req.Name, true),
+		WithPoolID(req.PoolID, true),
 		WithEmail(req.Email, true),
 		WithAuthToken(req.AuthToken, true),
 		WithAuthed(req.Authed, true),
@@ -94,7 +132,6 @@ func update(t *testing.T) {
 
 	info, err := handler.GetRootUser(context.Background())
 	if assert.Nil(t, err) {
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
@@ -119,7 +156,6 @@ func deleteRow(t *testing.T) {
 	infos, total, err := handler.GetRootUsers(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
-		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
 		ret.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], ret)
 	}

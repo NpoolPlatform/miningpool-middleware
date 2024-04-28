@@ -28,12 +28,9 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithEntID(req.EntID, false),
-		orderuser.WithRootUserID(req.RootUserID, true),
 		orderuser.WithGoodUserID(req.GoodUserID, true),
 		orderuser.WithAppID(req.AppID, true),
 		orderuser.WithUserID(req.UserID, true),
-		orderuser.WithMiningpoolType(req.MiningpoolType, false),
-		orderuser.WithCoinType(req.CoinType, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

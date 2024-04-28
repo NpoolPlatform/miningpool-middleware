@@ -99,26 +99,6 @@ func (ouu *OrderUserUpdate) SetNillableEntID(u *uuid.UUID) *OrderUserUpdate {
 	return ouu
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (ouu *OrderUserUpdate) SetRootUserID(u uuid.UUID) *OrderUserUpdate {
-	ouu.mutation.SetRootUserID(u)
-	return ouu
-}
-
-// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableRootUserID(u *uuid.UUID) *OrderUserUpdate {
-	if u != nil {
-		ouu.SetRootUserID(*u)
-	}
-	return ouu
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (ouu *OrderUserUpdate) ClearRootUserID() *OrderUserUpdate {
-	ouu.mutation.ClearRootUserID()
-	return ouu
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (ouu *OrderUserUpdate) SetGoodUserID(u uuid.UUID) *OrderUserUpdate {
 	ouu.mutation.SetGoodUserID(u)
@@ -196,46 +176,6 @@ func (ouu *OrderUserUpdate) SetNillableName(s *string) *OrderUserUpdate {
 // ClearName clears the value of the "name" field.
 func (ouu *OrderUserUpdate) ClearName() *OrderUserUpdate {
 	ouu.mutation.ClearName()
-	return ouu
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ouu *OrderUserUpdate) SetMiningpoolType(s string) *OrderUserUpdate {
-	ouu.mutation.SetMiningpoolType(s)
-	return ouu
-}
-
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableMiningpoolType(s *string) *OrderUserUpdate {
-	if s != nil {
-		ouu.SetMiningpoolType(*s)
-	}
-	return ouu
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (ouu *OrderUserUpdate) ClearMiningpoolType() *OrderUserUpdate {
-	ouu.mutation.ClearMiningpoolType()
-	return ouu
-}
-
-// SetCoinType sets the "coin_type" field.
-func (ouu *OrderUserUpdate) SetCoinType(s string) *OrderUserUpdate {
-	ouu.mutation.SetCoinType(s)
-	return ouu
-}
-
-// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableCoinType(s *string) *OrderUserUpdate {
-	if s != nil {
-		ouu.SetCoinType(*s)
-	}
-	return ouu
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (ouu *OrderUserUpdate) ClearCoinType() *OrderUserUpdate {
-	ouu.mutation.ClearCoinType()
 	return ouu
 }
 
@@ -466,19 +406,6 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldEntID,
 		})
 	}
-	if value, ok := ouu.mutation.RootUserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: orderuser.FieldRootUserID,
-		})
-	}
-	if ouu.mutation.RootUserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: orderuser.FieldRootUserID,
-		})
-	}
 	if value, ok := ouu.mutation.GoodUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -529,32 +456,6 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: orderuser.FieldName,
-		})
-	}
-	if value, ok := ouu.mutation.MiningpoolType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldMiningpoolType,
-		})
-	}
-	if ouu.mutation.MiningpoolTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldMiningpoolType,
-		})
-	}
-	if value, ok := ouu.mutation.CoinType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinType,
-		})
-	}
-	if ouu.mutation.CoinTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldCoinType,
 		})
 	}
 	if value, ok := ouu.mutation.Proportion(); ok {
@@ -699,26 +600,6 @@ func (ouuo *OrderUserUpdateOne) SetNillableEntID(u *uuid.UUID) *OrderUserUpdateO
 	return ouuo
 }
 
-// SetRootUserID sets the "root_user_id" field.
-func (ouuo *OrderUserUpdateOne) SetRootUserID(u uuid.UUID) *OrderUserUpdateOne {
-	ouuo.mutation.SetRootUserID(u)
-	return ouuo
-}
-
-// SetNillableRootUserID sets the "root_user_id" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableRootUserID(u *uuid.UUID) *OrderUserUpdateOne {
-	if u != nil {
-		ouuo.SetRootUserID(*u)
-	}
-	return ouuo
-}
-
-// ClearRootUserID clears the value of the "root_user_id" field.
-func (ouuo *OrderUserUpdateOne) ClearRootUserID() *OrderUserUpdateOne {
-	ouuo.mutation.ClearRootUserID()
-	return ouuo
-}
-
 // SetGoodUserID sets the "good_user_id" field.
 func (ouuo *OrderUserUpdateOne) SetGoodUserID(u uuid.UUID) *OrderUserUpdateOne {
 	ouuo.mutation.SetGoodUserID(u)
@@ -796,46 +677,6 @@ func (ouuo *OrderUserUpdateOne) SetNillableName(s *string) *OrderUserUpdateOne {
 // ClearName clears the value of the "name" field.
 func (ouuo *OrderUserUpdateOne) ClearName() *OrderUserUpdateOne {
 	ouuo.mutation.ClearName()
-	return ouuo
-}
-
-// SetMiningpoolType sets the "miningpool_type" field.
-func (ouuo *OrderUserUpdateOne) SetMiningpoolType(s string) *OrderUserUpdateOne {
-	ouuo.mutation.SetMiningpoolType(s)
-	return ouuo
-}
-
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableMiningpoolType(s *string) *OrderUserUpdateOne {
-	if s != nil {
-		ouuo.SetMiningpoolType(*s)
-	}
-	return ouuo
-}
-
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (ouuo *OrderUserUpdateOne) ClearMiningpoolType() *OrderUserUpdateOne {
-	ouuo.mutation.ClearMiningpoolType()
-	return ouuo
-}
-
-// SetCoinType sets the "coin_type" field.
-func (ouuo *OrderUserUpdateOne) SetCoinType(s string) *OrderUserUpdateOne {
-	ouuo.mutation.SetCoinType(s)
-	return ouuo
-}
-
-// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableCoinType(s *string) *OrderUserUpdateOne {
-	if s != nil {
-		ouuo.SetCoinType(*s)
-	}
-	return ouuo
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (ouuo *OrderUserUpdateOne) ClearCoinType() *OrderUserUpdateOne {
-	ouuo.mutation.ClearCoinType()
 	return ouuo
 }
 
@@ -1096,19 +937,6 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldEntID,
 		})
 	}
-	if value, ok := ouuo.mutation.RootUserID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: orderuser.FieldRootUserID,
-		})
-	}
-	if ouuo.mutation.RootUserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: orderuser.FieldRootUserID,
-		})
-	}
 	if value, ok := ouuo.mutation.GoodUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
@@ -1159,32 +987,6 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: orderuser.FieldName,
-		})
-	}
-	if value, ok := ouuo.mutation.MiningpoolType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldMiningpoolType,
-		})
-	}
-	if ouuo.mutation.MiningpoolTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldMiningpoolType,
-		})
-	}
-	if value, ok := ouuo.mutation.CoinType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldCoinType,
-		})
-	}
-	if ouuo.mutation.CoinTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldCoinType,
 		})
 	}
 	if value, ok := ouuo.mutation.Proportion(); ok {

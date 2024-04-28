@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	rootuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
@@ -12,14 +11,14 @@ import (
 )
 
 type Req struct {
-	EntID          *uuid.UUID
-	Name           *string
-	MiningpoolType *basetypes.MiningpoolType
-	Email          *string
-	AuthToken      *string
-	Authed         *bool
-	Remark         *string
-	DeletedAt      *uint32
+	EntID     *uuid.UUID
+	Name      *string
+	PoolID    *uuid.UUID
+	Email     *string
+	AuthToken *string
+	Authed    *bool
+	Remark    *string
+	DeletedAt *uint32
 }
 
 func CreateSet(c *ent.RootUserCreate, req *Req) *ent.RootUserCreate {
@@ -29,8 +28,8 @@ func CreateSet(c *ent.RootUserCreate, req *Req) *ent.RootUserCreate {
 	if req.Name != nil {
 		c.SetName(*req.Name)
 	}
-	if req.MiningpoolType != nil {
-		c.SetMiningpoolType(req.MiningpoolType.String())
+	if req.PoolID != nil {
+		c.SetPoolID(*req.PoolID)
 	}
 	if req.Email != nil {
 		c.SetEmail(*req.Email)
@@ -51,8 +50,8 @@ func UpdateSet(u *ent.RootUserUpdateOne, req *Req) (*ent.RootUserUpdateOne, erro
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
 	}
-	if req.MiningpoolType != nil {
-		u = u.SetMiningpoolType(req.MiningpoolType.String())
+	if req.PoolID != nil {
+		u = u.SetPoolID(*req.PoolID)
 	}
 	if req.Email != nil {
 		u = u.SetEmail(*req.Email)
@@ -73,15 +72,13 @@ func UpdateSet(u *ent.RootUserUpdateOne, req *Req) (*ent.RootUserUpdateOne, erro
 }
 
 type Conds struct {
-	ID             *cruder.Cond
-	EntID          *cruder.Cond
-	Name           *cruder.Cond
-	MiningpoolType *cruder.Cond
-	Email          *cruder.Cond
-	AuthToken      *cruder.Cond
-	Authed         *cruder.Cond
-	Remark         *cruder.Cond
-	EntIDs         *cruder.Cond
+	ID     *cruder.Cond
+	EntID  *cruder.Cond
+	Name   *cruder.Cond
+	PoolID *cruder.Cond
+	Email  *cruder.Cond
+	Authed *cruder.Cond
+	EntIDs *cruder.Cond
 }
 
 func SetQueryConds(q *ent.RootUserQuery, conds *Conds) (*ent.RootUserQuery, error) { //nolint
@@ -136,16 +133,16 @@ func SetQueryConds(q *ent.RootUserQuery, conds *Conds) (*ent.RootUserQuery, erro
 			return nil, fmt.Errorf("invalid name field")
 		}
 	}
-	if conds.MiningpoolType != nil {
-		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
+	if conds.PoolID != nil {
+		id, ok := conds.PoolID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid miningpooltype")
+			return nil, fmt.Errorf("invalid poolid")
 		}
-		switch conds.MiningpoolType.Op {
+		switch conds.PoolID.Op {
 		case cruder.EQ:
-			q.Where(rootuserent.MiningpoolType(miningpooltype.String()))
+			q.Where(rootuserent.PoolID(id))
 		default:
-			return nil, fmt.Errorf("invalid miningpooltype field")
+			return nil, fmt.Errorf("invalid poolid field")
 		}
 	}
 	if conds.Email != nil {
@@ -160,18 +157,6 @@ func SetQueryConds(q *ent.RootUserQuery, conds *Conds) (*ent.RootUserQuery, erro
 			return nil, fmt.Errorf("invalid email field")
 		}
 	}
-	if conds.AuthToken != nil {
-		authtoken, ok := conds.AuthToken.Val.(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid authtoken")
-		}
-		switch conds.AuthToken.Op {
-		case cruder.EQ:
-			q.Where(rootuserent.AuthToken(authtoken))
-		default:
-			return nil, fmt.Errorf("invalid authtoken field")
-		}
-	}
 	if conds.Authed != nil {
 		authed, ok := conds.Authed.Val.(bool)
 		if !ok {
@@ -182,18 +167,6 @@ func SetQueryConds(q *ent.RootUserQuery, conds *Conds) (*ent.RootUserQuery, erro
 			q.Where(rootuserent.Authed(authed))
 		default:
 			return nil, fmt.Errorf("invalid authed field")
-		}
-	}
-	if conds.Remark != nil {
-		remark, ok := conds.Remark.Val.(string)
-		if !ok {
-			return nil, fmt.Errorf("invalid remark")
-		}
-		switch conds.Remark.Op {
-		case cruder.EQ:
-			q.Where(rootuserent.Remark(remark))
-		default:
-			return nil, fmt.Errorf("invalid remark field")
 		}
 	}
 	return q, nil

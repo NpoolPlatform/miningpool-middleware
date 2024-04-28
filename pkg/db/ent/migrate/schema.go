@@ -38,13 +38,14 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "pool_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "revenue_types", Type: field.TypeJSON, Nullable: true},
-		{Name: "fee_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "revenue_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "fee_ratio", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "fixed_revenue_able", Type: field.TypeBool, Nullable: true, Default: false},
+		{Name: "least_transfer_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "benefit_interval_seconds", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "threshold", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// CoinsTable holds the schema information for the "coins" table.
 	CoinsTable = &schema.Table{
@@ -99,11 +100,10 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "coin_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_interval", Type: field.TypeUint32, Nullable: true, Default: 0},
-		{Name: "min_amount", Type: field.TypeFloat32, Nullable: true, Default: 0},
-		{Name: "withdraw_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "min_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "withdraw_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// FractionRulesTable holds the schema information for the "fraction_rules" table.
 	FractionRulesTable = &schema.Table{
@@ -127,11 +127,10 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "coin_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "revenue_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "hash_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
-		{Name: "revenue_type", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.
 	GoodUsersTable = &schema.Table{
@@ -150,7 +149,7 @@ var (
 				Columns: []*schema.Column{GoodUsersColumns[5]},
 			},
 			{
-				Name:    "gooduser_miningpool_type_coin_type",
+				Name:    "gooduser_coin_id_revenue_id",
 				Unique:  false,
 				Columns: []*schema.Column{GoodUsersColumns[7], GoodUsersColumns[8]},
 			},
@@ -163,13 +162,10 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "good_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "proportion", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "revenue_address", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
@@ -189,17 +185,12 @@ var (
 			{
 				Name:    "orderuser_app_id",
 				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[8]},
+				Columns: []*schema.Column{OrderUsersColumns[7]},
 			},
 			{
 				Name:    "orderuser_good_user_id",
 				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[6]},
-			},
-			{
-				Name:    "orderuser_miningpool_type_coin_type",
-				Unique:  false,
-				Columns: []*schema.Column{OrderUsersColumns[10], OrderUsersColumns[11]},
+				Columns: []*schema.Column{OrderUsersColumns[5]},
 			},
 		},
 	}
@@ -213,6 +204,7 @@ var (
 		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "site", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "description", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// PoolsTable holds the schema information for the "pools" table.
@@ -236,7 +228,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "pool_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "email", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "auth_token", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 		{Name: "auth_token_salt", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},

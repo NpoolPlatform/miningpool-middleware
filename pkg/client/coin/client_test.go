@@ -27,25 +27,20 @@ func init() {
 }
 
 var ret = &npool.Coin{
-	EntID:            uuid.NewString(),
-	MiningpoolType:   basetypes.MiningpoolType_F2Pool,
-	CoinType:         basetypes.CoinType_BitCoin,
-	RevenueTypes:     []basetypes.RevenueType{basetypes.RevenueType_FPPS, basetypes.RevenueType_PPLNS},
-	FeeRate:          "2.0",
-	FixedRevenueAble: false,
-	Threshold:        "3.0",
-	Remark:           "sdfasdfasdf",
+	EntID:               uuid.NewString(),
+	MiningpoolType:      basetypes.MiningpoolType_F2Pool,
+	CoinType:            basetypes.CoinType_BitCoin,
+	FixedRevenueAble:    false,
+	LeastTransferAmount: "3.0",
+	Remark:              "sdfasdfasdf",
 }
 
 var req = &npool.CoinReq{
-	EntID:            &ret.EntID,
-	MiningpoolType:   &ret.MiningpoolType,
-	CoinType:         &ret.CoinType,
-	RevenueTypes:     ret.RevenueTypes,
-	FeeRate:          &ret.FeeRate,
-	FixedRevenueAble: &ret.FixedRevenueAble,
-	Threshold:        &ret.Threshold,
-	Remark:           &ret.Remark,
+	EntID:               &ret.EntID,
+	CoinType:            &ret.CoinType,
+	FixedRevenueAble:    &ret.FixedRevenueAble,
+	LeastTransferAmount: &ret.LeastTransferAmount,
+	Remark:              &ret.Remark,
 }
 
 func createCoin(t *testing.T) {
@@ -56,7 +51,6 @@ func createCoin(t *testing.T) {
 	}
 
 	ret.MiningpoolType = infos[0].MiningpoolType
-	req.MiningpoolType = &infos[0].MiningpoolType
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
 

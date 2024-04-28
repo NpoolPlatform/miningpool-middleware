@@ -79,9 +79,9 @@ func mockMiningUserGet() {
 		if _, ok := revenueAddrs[req.MiningUserName]; ok {
 			for k, v := range revenueAddrs[req.MiningUserName] {
 				wallets = append(wallets, types.Wallet{
-					Currency:  k,
-					Address:   v,
-					Threshold: 0.005,
+					Currency:            k,
+					Address:             v,
+					LeastTransferAmount: 0.005,
 				})
 			}
 		}

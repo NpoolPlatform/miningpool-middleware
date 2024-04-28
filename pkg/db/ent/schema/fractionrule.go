@@ -2,9 +2,12 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
+	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // FractionRule holds the schema definition for the FractionRule entity.
@@ -23,15 +26,27 @@ func (FractionRule) Mixin() []ent.Mixin {
 func (FractionRule) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("miningpool_type").Optional().Default(""),
-		field.
-			String("coin_type").Optional().Default(""),
+			UUID("coin_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
 		field.
 			Uint32("withdraw_interval").Optional().Default(0),
 		field.
-			Float32("min_amount").Optional().Default(0),
+			Other("min_amount", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 		field.
-			Float32("withdraw_rate").Optional().Default(0),
+			Other("withdraw_rate", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
 	}
 }
 

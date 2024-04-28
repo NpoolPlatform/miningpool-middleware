@@ -114,10 +114,10 @@ func Name(v string) predicate.RootUser {
 	})
 }
 
-// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
-func MiningpoolType(v string) predicate.RootUser {
+// PoolID applies equality check predicate on the "pool_id" field. It's identical to PoolIDEQ.
+func PoolID(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldPoolID), v))
 	})
 }
 
@@ -525,116 +525,81 @@ func NameContainsFold(v string) predicate.RootUser {
 	})
 }
 
-// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
-func MiningpoolTypeEQ(v string) predicate.RootUser {
+// PoolIDEQ applies the EQ predicate on the "pool_id" field.
+func PoolIDEQ(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
-func MiningpoolTypeNEQ(v string) predicate.RootUser {
+// PoolIDNEQ applies the NEQ predicate on the "pool_id" field.
+func PoolIDNEQ(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NEQ(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
-func MiningpoolTypeIn(vs ...string) predicate.RootUser {
+// PoolIDIn applies the In predicate on the "pool_id" field.
+func PoolIDIn(vs ...uuid.UUID) predicate.RootUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.In(s.C(FieldPoolID), v...))
 	})
 }
 
-// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
-func MiningpoolTypeNotIn(vs ...string) predicate.RootUser {
+// PoolIDNotIn applies the NotIn predicate on the "pool_id" field.
+func PoolIDNotIn(vs ...uuid.UUID) predicate.RootUser {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.NotIn(s.C(FieldPoolID), v...))
 	})
 }
 
-// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
-func MiningpoolTypeGT(v string) predicate.RootUser {
+// PoolIDGT applies the GT predicate on the "pool_id" field.
+func PoolIDGT(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GT(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
-func MiningpoolTypeGTE(v string) predicate.RootUser {
+// PoolIDGTE applies the GTE predicate on the "pool_id" field.
+func PoolIDGTE(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GTE(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
-func MiningpoolTypeLT(v string) predicate.RootUser {
+// PoolIDLT applies the LT predicate on the "pool_id" field.
+func PoolIDLT(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LT(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
-func MiningpoolTypeLTE(v string) predicate.RootUser {
+// PoolIDLTE applies the LTE predicate on the "pool_id" field.
+func PoolIDLTE(v uuid.UUID) predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LTE(s.C(FieldPoolID), v))
 	})
 }
 
-// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
-func MiningpoolTypeContains(v string) predicate.RootUser {
+// PoolIDIsNil applies the IsNil predicate on the "pool_id" field.
+func PoolIDIsNil() predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+		s.Where(sql.IsNull(s.C(FieldPoolID)))
 	})
 }
 
-// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasPrefix(v string) predicate.RootUser {
+// PoolIDNotNil applies the NotNil predicate on the "pool_id" field.
+func PoolIDNotNil() predicate.RootUser {
 	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasSuffix(v string) predicate.RootUser {
-	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
-func MiningpoolTypeIsNil() predicate.RootUser {
-	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
-func MiningpoolTypeNotNil() predicate.RootUser {
-	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
-	})
-}
-
-// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
-func MiningpoolTypeEqualFold(v string) predicate.RootUser {
-	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
-	})
-}
-
-// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
-func MiningpoolTypeContainsFold(v string) predicate.RootUser {
-	return predicate.RootUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NotNull(s.C(FieldPoolID)))
 	})
 }
 

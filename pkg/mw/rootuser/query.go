@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	rootuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
@@ -26,7 +28,7 @@ func (h *queryHandler) selectRootUser(stm *ent.RootUserQuery) {
 		rootuserent.FieldID,
 		rootuserent.FieldEntID,
 		rootuserent.FieldName,
-		rootuserent.FieldMiningpoolType,
+		rootuserent.FieldPoolID,
 		rootuserent.FieldEmail,
 		rootuserent.FieldAuthToken,
 		rootuserent.FieldAuthed,
@@ -67,6 +69,22 @@ func (h *queryHandler) queryRootUsers(ctx context.Context, cli *ent.Client) erro
 	return nil
 }
 
+func (h *queryHandler) queryJoin() {
+	h.stm.Modify(
+		h.queryJoinPool,
+	)
+}
+
+func (h *queryHandler) queryJoinPool(s *sql.Selector) {
+	poolT := sql.Table(pool.Table)
+	s.LeftJoin(poolT).On(
+		s.C(rootuserent.FieldPoolID),
+		poolT.C(pool.FieldEntID),
+	).AppendSelect(
+		poolT.C(pool.FieldMiningpoolType),
+	)
+}
+
 func (h *queryHandler) scan(ctx context.Context) error {
 	return h.stm.Scan(ctx, &h.infos)
 }
@@ -86,6 +104,7 @@ func (h *Handler) GetRootUser(ctx context.Context) (*npool.RootUser, error) {
 		if err := handler.queryRootUser(cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -113,6 +132,7 @@ func (h *Handler) GetRootUsers(ctx context.Context) ([]*npool.RootUser, uint32, 
 		if err := handler.queryRootUsers(ctx, cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

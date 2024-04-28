@@ -120,6 +120,20 @@ func (pc *PoolCreate) SetNillableSite(s *string) *PoolCreate {
 	return pc
 }
 
+// SetLogo sets the "logo" field.
+func (pc *PoolCreate) SetLogo(s string) *PoolCreate {
+	pc.mutation.SetLogo(s)
+	return pc
+}
+
+// SetNillableLogo sets the "logo" field if the given value is not nil.
+func (pc *PoolCreate) SetNillableLogo(s *string) *PoolCreate {
+	if s != nil {
+		pc.SetLogo(*s)
+	}
+	return pc
+}
+
 // SetDescription sets the "description" field.
 func (pc *PoolCreate) SetDescription(s string) *PoolCreate {
 	pc.mutation.SetDescription(s)
@@ -259,6 +273,10 @@ func (pc *PoolCreate) defaults() error {
 		v := pool.DefaultSite
 		pc.mutation.SetSite(v)
 	}
+	if _, ok := pc.mutation.Logo(); !ok {
+		v := pool.DefaultLogo
+		pc.mutation.SetLogo(v)
+	}
 	if _, ok := pc.mutation.Description(); !ok {
 		v := pool.DefaultDescription
 		pc.mutation.SetDescription(v)
@@ -369,6 +387,14 @@ func (pc *PoolCreate) createSpec() (*Pool, *sqlgraph.CreateSpec) {
 			Column: pool.FieldSite,
 		})
 		_node.Site = value
+	}
+	if value, ok := pc.mutation.Logo(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: pool.FieldLogo,
+		})
+		_node.Logo = value
 	}
 	if value, ok := pc.mutation.Description(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -547,6 +573,24 @@ func (u *PoolUpsert) UpdateSite() *PoolUpsert {
 // ClearSite clears the value of the "site" field.
 func (u *PoolUpsert) ClearSite() *PoolUpsert {
 	u.SetNull(pool.FieldSite)
+	return u
+}
+
+// SetLogo sets the "logo" field.
+func (u *PoolUpsert) SetLogo(v string) *PoolUpsert {
+	u.Set(pool.FieldLogo, v)
+	return u
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *PoolUpsert) UpdateLogo() *PoolUpsert {
+	u.SetExcluded(pool.FieldLogo)
+	return u
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *PoolUpsert) ClearLogo() *PoolUpsert {
+	u.SetNull(pool.FieldLogo)
 	return u
 }
 
@@ -753,6 +797,27 @@ func (u *PoolUpsertOne) UpdateSite() *PoolUpsertOne {
 func (u *PoolUpsertOne) ClearSite() *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
 		s.ClearSite()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *PoolUpsertOne) SetLogo(v string) *PoolUpsertOne {
+	return u.Update(func(s *PoolUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *PoolUpsertOne) UpdateLogo() *PoolUpsertOne {
+	return u.Update(func(s *PoolUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *PoolUpsertOne) ClearLogo() *PoolUpsertOne {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearLogo()
 	})
 }
 
@@ -1125,6 +1190,27 @@ func (u *PoolUpsertBulk) UpdateSite() *PoolUpsertBulk {
 func (u *PoolUpsertBulk) ClearSite() *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
 		s.ClearSite()
+	})
+}
+
+// SetLogo sets the "logo" field.
+func (u *PoolUpsertBulk) SetLogo(v string) *PoolUpsertBulk {
+	return u.Update(func(s *PoolUpsert) {
+		s.SetLogo(v)
+	})
+}
+
+// UpdateLogo sets the "logo" field to the value that was provided on create.
+func (u *PoolUpsertBulk) UpdateLogo() *PoolUpsertBulk {
+	return u.Update(func(s *PoolUpsert) {
+		s.UpdateLogo()
+	})
+}
+
+// ClearLogo clears the value of the "logo" field.
+func (u *PoolUpsertBulk) ClearLogo() *PoolUpsertBulk {
+	return u.Update(func(s *PoolUpsert) {
+		s.ClearLogo()
 	})
 }
 

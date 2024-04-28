@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 // FractionRuleCreate is the builder for creating a FractionRule entity.
@@ -78,30 +79,16 @@ func (frc *FractionRuleCreate) SetNillableEntID(u *uuid.UUID) *FractionRuleCreat
 	return frc
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (frc *FractionRuleCreate) SetMiningpoolType(s string) *FractionRuleCreate {
-	frc.mutation.SetMiningpoolType(s)
+// SetCoinID sets the "coin_id" field.
+func (frc *FractionRuleCreate) SetCoinID(u uuid.UUID) *FractionRuleCreate {
+	frc.mutation.SetCoinID(u)
 	return frc
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (frc *FractionRuleCreate) SetNillableMiningpoolType(s *string) *FractionRuleCreate {
-	if s != nil {
-		frc.SetMiningpoolType(*s)
-	}
-	return frc
-}
-
-// SetCoinType sets the "coin_type" field.
-func (frc *FractionRuleCreate) SetCoinType(s string) *FractionRuleCreate {
-	frc.mutation.SetCoinType(s)
-	return frc
-}
-
-// SetNillableCoinType sets the "coin_type" field if the given value is not nil.
-func (frc *FractionRuleCreate) SetNillableCoinType(s *string) *FractionRuleCreate {
-	if s != nil {
-		frc.SetCoinType(*s)
+// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillableCoinID(u *uuid.UUID) *FractionRuleCreate {
+	if u != nil {
+		frc.SetCoinID(*u)
 	}
 	return frc
 }
@@ -121,29 +108,29 @@ func (frc *FractionRuleCreate) SetNillableWithdrawInterval(u *uint32) *FractionR
 }
 
 // SetMinAmount sets the "min_amount" field.
-func (frc *FractionRuleCreate) SetMinAmount(f float32) *FractionRuleCreate {
-	frc.mutation.SetMinAmount(f)
+func (frc *FractionRuleCreate) SetMinAmount(d decimal.Decimal) *FractionRuleCreate {
+	frc.mutation.SetMinAmount(d)
 	return frc
 }
 
 // SetNillableMinAmount sets the "min_amount" field if the given value is not nil.
-func (frc *FractionRuleCreate) SetNillableMinAmount(f *float32) *FractionRuleCreate {
-	if f != nil {
-		frc.SetMinAmount(*f)
+func (frc *FractionRuleCreate) SetNillableMinAmount(d *decimal.Decimal) *FractionRuleCreate {
+	if d != nil {
+		frc.SetMinAmount(*d)
 	}
 	return frc
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
-func (frc *FractionRuleCreate) SetWithdrawRate(f float32) *FractionRuleCreate {
-	frc.mutation.SetWithdrawRate(f)
+func (frc *FractionRuleCreate) SetWithdrawRate(d decimal.Decimal) *FractionRuleCreate {
+	frc.mutation.SetWithdrawRate(d)
 	return frc
 }
 
 // SetNillableWithdrawRate sets the "withdraw_rate" field if the given value is not nil.
-func (frc *FractionRuleCreate) SetNillableWithdrawRate(f *float32) *FractionRuleCreate {
-	if f != nil {
-		frc.SetWithdrawRate(*f)
+func (frc *FractionRuleCreate) SetNillableWithdrawRate(d *decimal.Decimal) *FractionRuleCreate {
+	if d != nil {
+		frc.SetWithdrawRate(*d)
 	}
 	return frc
 }
@@ -261,13 +248,12 @@ func (frc *FractionRuleCreate) defaults() error {
 		v := fractionrule.DefaultEntID()
 		frc.mutation.SetEntID(v)
 	}
-	if _, ok := frc.mutation.MiningpoolType(); !ok {
-		v := fractionrule.DefaultMiningpoolType
-		frc.mutation.SetMiningpoolType(v)
-	}
-	if _, ok := frc.mutation.CoinType(); !ok {
-		v := fractionrule.DefaultCoinType
-		frc.mutation.SetCoinType(v)
+	if _, ok := frc.mutation.CoinID(); !ok {
+		if fractionrule.DefaultCoinID == nil {
+			return fmt.Errorf("ent: uninitialized fractionrule.DefaultCoinID (forgotten import ent/runtime?)")
+		}
+		v := fractionrule.DefaultCoinID()
+		frc.mutation.SetCoinID(v)
 	}
 	if _, ok := frc.mutation.WithdrawInterval(); !ok {
 		v := fractionrule.DefaultWithdrawInterval
@@ -364,21 +350,13 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 		})
 		_node.EntID = value
 	}
-	if value, ok := frc.mutation.MiningpoolType(); ok {
+	if value, ok := frc.mutation.CoinID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fractionrule.FieldMiningpoolType,
+			Column: fractionrule.FieldCoinID,
 		})
-		_node.MiningpoolType = value
-	}
-	if value, ok := frc.mutation.CoinType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: fractionrule.FieldCoinType,
-		})
-		_node.CoinType = value
+		_node.CoinID = value
 	}
 	if value, ok := frc.mutation.WithdrawInterval(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -390,7 +368,7 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 	}
 	if value, ok := frc.mutation.MinAmount(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: fractionrule.FieldMinAmount,
 		})
@@ -398,7 +376,7 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 	}
 	if value, ok := frc.mutation.WithdrawRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
+			Type:   field.TypeOther,
 			Value:  value,
 			Column: fractionrule.FieldWithdrawRate,
 		})
@@ -522,39 +500,21 @@ func (u *FractionRuleUpsert) UpdateEntID() *FractionRuleUpsert {
 	return u
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *FractionRuleUpsert) SetMiningpoolType(v string) *FractionRuleUpsert {
-	u.Set(fractionrule.FieldMiningpoolType, v)
+// SetCoinID sets the "coin_id" field.
+func (u *FractionRuleUpsert) SetCoinID(v uuid.UUID) *FractionRuleUpsert {
+	u.Set(fractionrule.FieldCoinID, v)
 	return u
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *FractionRuleUpsert) UpdateMiningpoolType() *FractionRuleUpsert {
-	u.SetExcluded(fractionrule.FieldMiningpoolType)
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *FractionRuleUpsert) UpdateCoinID() *FractionRuleUpsert {
+	u.SetExcluded(fractionrule.FieldCoinID)
 	return u
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *FractionRuleUpsert) ClearMiningpoolType() *FractionRuleUpsert {
-	u.SetNull(fractionrule.FieldMiningpoolType)
-	return u
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *FractionRuleUpsert) SetCoinType(v string) *FractionRuleUpsert {
-	u.Set(fractionrule.FieldCoinType, v)
-	return u
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *FractionRuleUpsert) UpdateCoinType() *FractionRuleUpsert {
-	u.SetExcluded(fractionrule.FieldCoinType)
-	return u
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *FractionRuleUpsert) ClearCoinType() *FractionRuleUpsert {
-	u.SetNull(fractionrule.FieldCoinType)
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *FractionRuleUpsert) ClearCoinID() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldCoinID)
 	return u
 }
 
@@ -583,7 +543,7 @@ func (u *FractionRuleUpsert) ClearWithdrawInterval() *FractionRuleUpsert {
 }
 
 // SetMinAmount sets the "min_amount" field.
-func (u *FractionRuleUpsert) SetMinAmount(v float32) *FractionRuleUpsert {
+func (u *FractionRuleUpsert) SetMinAmount(v decimal.Decimal) *FractionRuleUpsert {
 	u.Set(fractionrule.FieldMinAmount, v)
 	return u
 }
@@ -594,12 +554,6 @@ func (u *FractionRuleUpsert) UpdateMinAmount() *FractionRuleUpsert {
 	return u
 }
 
-// AddMinAmount adds v to the "min_amount" field.
-func (u *FractionRuleUpsert) AddMinAmount(v float32) *FractionRuleUpsert {
-	u.Add(fractionrule.FieldMinAmount, v)
-	return u
-}
-
 // ClearMinAmount clears the value of the "min_amount" field.
 func (u *FractionRuleUpsert) ClearMinAmount() *FractionRuleUpsert {
 	u.SetNull(fractionrule.FieldMinAmount)
@@ -607,7 +561,7 @@ func (u *FractionRuleUpsert) ClearMinAmount() *FractionRuleUpsert {
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
-func (u *FractionRuleUpsert) SetWithdrawRate(v float32) *FractionRuleUpsert {
+func (u *FractionRuleUpsert) SetWithdrawRate(v decimal.Decimal) *FractionRuleUpsert {
 	u.Set(fractionrule.FieldWithdrawRate, v)
 	return u
 }
@@ -615,12 +569,6 @@ func (u *FractionRuleUpsert) SetWithdrawRate(v float32) *FractionRuleUpsert {
 // UpdateWithdrawRate sets the "withdraw_rate" field to the value that was provided on create.
 func (u *FractionRuleUpsert) UpdateWithdrawRate() *FractionRuleUpsert {
 	u.SetExcluded(fractionrule.FieldWithdrawRate)
-	return u
-}
-
-// AddWithdrawRate adds v to the "withdraw_rate" field.
-func (u *FractionRuleUpsert) AddWithdrawRate(v float32) *FractionRuleUpsert {
-	u.Add(fractionrule.FieldWithdrawRate, v)
 	return u
 }
 
@@ -755,45 +703,24 @@ func (u *FractionRuleUpsertOne) UpdateEntID() *FractionRuleUpsertOne {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *FractionRuleUpsertOne) SetMiningpoolType(v string) *FractionRuleUpsertOne {
+// SetCoinID sets the "coin_id" field.
+func (u *FractionRuleUpsertOne) SetCoinID(v uuid.UUID) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetCoinID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *FractionRuleUpsertOne) UpdateMiningpoolType() *FractionRuleUpsertOne {
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *FractionRuleUpsertOne) UpdateCoinID() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateCoinID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *FractionRuleUpsertOne) ClearMiningpoolType() *FractionRuleUpsertOne {
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *FractionRuleUpsertOne) ClearCoinID() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearMiningpoolType()
-	})
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *FractionRuleUpsertOne) SetCoinType(v string) *FractionRuleUpsertOne {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetCoinType(v)
-	})
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *FractionRuleUpsertOne) UpdateCoinType() *FractionRuleUpsertOne {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateCoinType()
-	})
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *FractionRuleUpsertOne) ClearCoinType() *FractionRuleUpsertOne {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearCoinType()
+		s.ClearCoinID()
 	})
 }
 
@@ -826,16 +753,9 @@ func (u *FractionRuleUpsertOne) ClearWithdrawInterval() *FractionRuleUpsertOne {
 }
 
 // SetMinAmount sets the "min_amount" field.
-func (u *FractionRuleUpsertOne) SetMinAmount(v float32) *FractionRuleUpsertOne {
+func (u *FractionRuleUpsertOne) SetMinAmount(v decimal.Decimal) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.SetMinAmount(v)
-	})
-}
-
-// AddMinAmount adds v to the "min_amount" field.
-func (u *FractionRuleUpsertOne) AddMinAmount(v float32) *FractionRuleUpsertOne {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.AddMinAmount(v)
 	})
 }
 
@@ -854,16 +774,9 @@ func (u *FractionRuleUpsertOne) ClearMinAmount() *FractionRuleUpsertOne {
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
-func (u *FractionRuleUpsertOne) SetWithdrawRate(v float32) *FractionRuleUpsertOne {
+func (u *FractionRuleUpsertOne) SetWithdrawRate(v decimal.Decimal) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.SetWithdrawRate(v)
-	})
-}
-
-// AddWithdrawRate adds v to the "withdraw_rate" field.
-func (u *FractionRuleUpsertOne) AddWithdrawRate(v float32) *FractionRuleUpsertOne {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.AddWithdrawRate(v)
 	})
 }
 
@@ -1169,45 +1082,24 @@ func (u *FractionRuleUpsertBulk) UpdateEntID() *FractionRuleUpsertBulk {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *FractionRuleUpsertBulk) SetMiningpoolType(v string) *FractionRuleUpsertBulk {
+// SetCoinID sets the "coin_id" field.
+func (u *FractionRuleUpsertBulk) SetCoinID(v uuid.UUID) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetCoinID(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *FractionRuleUpsertBulk) UpdateMiningpoolType() *FractionRuleUpsertBulk {
+// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
+func (u *FractionRuleUpsertBulk) UpdateCoinID() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateCoinID()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *FractionRuleUpsertBulk) ClearMiningpoolType() *FractionRuleUpsertBulk {
+// ClearCoinID clears the value of the "coin_id" field.
+func (u *FractionRuleUpsertBulk) ClearCoinID() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearMiningpoolType()
-	})
-}
-
-// SetCoinType sets the "coin_type" field.
-func (u *FractionRuleUpsertBulk) SetCoinType(v string) *FractionRuleUpsertBulk {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetCoinType(v)
-	})
-}
-
-// UpdateCoinType sets the "coin_type" field to the value that was provided on create.
-func (u *FractionRuleUpsertBulk) UpdateCoinType() *FractionRuleUpsertBulk {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateCoinType()
-	})
-}
-
-// ClearCoinType clears the value of the "coin_type" field.
-func (u *FractionRuleUpsertBulk) ClearCoinType() *FractionRuleUpsertBulk {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearCoinType()
+		s.ClearCoinID()
 	})
 }
 
@@ -1240,16 +1132,9 @@ func (u *FractionRuleUpsertBulk) ClearWithdrawInterval() *FractionRuleUpsertBulk
 }
 
 // SetMinAmount sets the "min_amount" field.
-func (u *FractionRuleUpsertBulk) SetMinAmount(v float32) *FractionRuleUpsertBulk {
+func (u *FractionRuleUpsertBulk) SetMinAmount(v decimal.Decimal) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.SetMinAmount(v)
-	})
-}
-
-// AddMinAmount adds v to the "min_amount" field.
-func (u *FractionRuleUpsertBulk) AddMinAmount(v float32) *FractionRuleUpsertBulk {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.AddMinAmount(v)
 	})
 }
 
@@ -1268,16 +1153,9 @@ func (u *FractionRuleUpsertBulk) ClearMinAmount() *FractionRuleUpsertBulk {
 }
 
 // SetWithdrawRate sets the "withdraw_rate" field.
-func (u *FractionRuleUpsertBulk) SetWithdrawRate(v float32) *FractionRuleUpsertBulk {
+func (u *FractionRuleUpsertBulk) SetWithdrawRate(v decimal.Decimal) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.SetWithdrawRate(v)
-	})
-}
-
-// AddWithdrawRate adds v to the "withdraw_rate" field.
-func (u *FractionRuleUpsertBulk) AddWithdrawRate(v float32) *FractionRuleUpsertBulk {
-	return u.Update(func(s *FractionRuleUpsert) {
-		s.AddWithdrawRate(v)
 	})
 }
 

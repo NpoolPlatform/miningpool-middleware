@@ -176,7 +176,6 @@ func RegisteCoinInfo(ctx context.Context) {
 
 func RegisteFractionRule(ctx context.Context) {
 	for _, info := range fractionruleInfos {
-
 		coinH, err := coin.NewHandler(ctx,
 			coin.WithConds(&coinmw.Conds{
 				CoinType: &basetypes.Uint32Val{
@@ -205,7 +204,7 @@ func RegisteFractionRule(ctx context.Context) {
 			&fractionrulemw.Conds{
 				CoinID: &basetypes.StringVal{
 					Op:    cruder.EQ,
-					Value: string(coinInfos[0].EntID),
+					Value: coinInfos[0].EntID,
 				},
 			},
 		))

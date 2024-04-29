@@ -29,7 +29,7 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	err = h.checkUpdateAuthed(info, ctx)
+	err = h.checkUpdateAuthed(ctx, info)
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 	})
 }
 
-func (h *Handler) checkUpdateAuthed(oldInfo *npool.RootUser, ctx context.Context) error {
+func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser) error {
 	if h.AuthToken == nil && h.PoolID == nil {
 		return nil
 	}

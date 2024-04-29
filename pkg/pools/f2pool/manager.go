@@ -19,10 +19,10 @@ import (
 )
 
 type Manager struct {
-	currency              string
-	authToken             string
-	cli                   *client.Client
-	least_transfer_amount float64
+	currency            string
+	authToken           string
+	cli                 *client.Client
+	leastTransferAmount float64
 }
 
 var (
@@ -271,7 +271,7 @@ func (mgr *Manager) SetRevenueAddress(ctx context.Context, name, address string)
 					{
 						Currency:            mgr.currency,
 						Address:             address,
-						LeastTransferAmount: mgr.least_transfer_amount,
+						LeastTransferAmount: mgr.leastTransferAmount,
 					},
 				},
 			},

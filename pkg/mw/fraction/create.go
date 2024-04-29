@@ -3,9 +3,13 @@ package fraction
 import (
 	"context"
 	"fmt"
+	"time"
 
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -35,37 +39,37 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return fmt.Errorf("invalid userid")
 	}
 
-	// rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
-	// if err != nil {
-	// 	return err
-	// }
-	// rootUser, err := rootuserH.GetAuthToken(ctx)
-	// if err != nil {
-	// 	return err
-	// }
-	// if rootUser == nil {
-	// 	return fmt.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
-	// }
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
+	if err != nil {
+		return err
+	}
+	rootUser, err := rootuserH.GetAuthToken(ctx)
+	if err != nil {
+		return err
+	}
+	if rootUser == nil {
+		return fmt.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
+	}
 
-	// mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, orderUser.CoinType, rootUser.AuthToken)
-	// if err != nil {
-	// 	return err
-	// }
-	// withdrawTime := uint32(time.Now().Unix())
-	// h.WithdrawTime = &withdrawTime
-	// _paytime, err := mgr.WithdrawPraction(ctx, orderUser.Name)
-	// paytime := uint32(_paytime)
-	// if err != nil {
-	// 	errMsg := err.Error()
-	// 	h.Msg = &errMsg
-	// 	h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
-	// } else if paytime == 0 {
-	// 	h.PayTime = &paytime
-	// 	h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
-	// } else {
-	// 	h.PayTime = &paytime
-	// 	h.WithdrawState = v1.WithdrawState_WithdrawStateSuccess.Enum()
-	// }
+	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, orderUser.CoinType, rootUser.AuthTokenPlain)
+	if err != nil {
+		return err
+	}
+	withdrawTime := uint32(time.Now().Unix())
+	h.WithdrawTime = &withdrawTime
+	_paytime, err := mgr.WithdrawPraction(ctx, orderUser.Name)
+	paytime := uint32(_paytime)
+	if err != nil {
+		errMsg := err.Error()
+		h.Msg = &errMsg
+		h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
+	} else if paytime == 0 {
+		h.PayTime = &paytime
+		h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
+	} else {
+		h.PayTime = &paytime
+		h.WithdrawState = v1.WithdrawState_WithdrawStateSuccess.Enum()
+	}
 	return nil
 }
 

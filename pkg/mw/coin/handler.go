@@ -154,22 +154,22 @@ func WithFixedRevenueAble(fixedrevenueable *bool, must bool) func(context.Contex
 	}
 }
 
-func WithLeastTransferAmount(least_transfer_amount *string, must bool) func(context.Context, *Handler) error {
+func WithLeastTransferAmount(leastTransferAmount *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if least_transfer_amount == nil {
+		if leastTransferAmount == nil {
 			if must {
 				return fmt.Errorf("invalid leasttransferamount")
 			}
 			return nil
 		}
-		_least_transfer_amount, err := decimal.NewFromString(*least_transfer_amount)
+		_leastTransferAmount, err := decimal.NewFromString(*leastTransferAmount)
 		if err != nil {
 			return err
 		}
-		if _least_transfer_amount.Sign() <= 0 {
+		if _leastTransferAmount.Sign() <= 0 {
 			return fmt.Errorf("invalid leasttransferamount")
 		}
-		h.LeastTransferAmount = &_least_transfer_amount
+		h.LeastTransferAmount = &_leastTransferAmount
 		return nil
 	}
 }

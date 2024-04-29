@@ -28,6 +28,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 	handler, err := rootuser.NewHandler(
 		ctx,
 		rootuser.WithEntID(req.EntID, false),
+		rootuser.WithPoolID(req.PoolID, true),
 		rootuser.WithName(req.Name, true),
 		rootuser.WithEmail(req.Email, true),
 		rootuser.WithAuthToken(req.AuthToken, true),

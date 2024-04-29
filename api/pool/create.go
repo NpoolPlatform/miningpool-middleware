@@ -31,6 +31,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 		pool.WithMiningpoolType(req.MiningpoolType, true),
 		pool.WithName(req.Name, true),
 		pool.WithSite(req.Site, true),
+		pool.WithLogo(req.Logo, true),
 		pool.WithDescription(req.Description, false),
 	)
 	if err != nil {

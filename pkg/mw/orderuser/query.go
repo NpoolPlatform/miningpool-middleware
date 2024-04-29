@@ -96,6 +96,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		coin.FieldCoinType,
 		coin.FieldRevenueType,
 		pool.FieldMiningpoolType,
+		gooduser.FieldRootUserID,
 	)
 }
 

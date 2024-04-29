@@ -81,6 +81,7 @@ func create(t *testing.T) {
 		ret.RevenueTypeStr = info.RevenueTypeStr
 		ret.RevenueType = info.RevenueType
 		ret.Proportion = info.Proportion
+		ret.RootUserID = info.RootUserID
 		ret.ID = info.ID
 		ret.EntID = info.EntID
 		ret.Name = info.Name

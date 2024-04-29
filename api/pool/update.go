@@ -31,6 +31,7 @@ func (s *Server) UpdatePool(ctx context.Context, in *npool.UpdatePoolRequest) (*
 		pool.WithEntID(req.EntID, false),
 		pool.WithName(req.Name, false),
 		pool.WithSite(req.Site, false),
+		pool.WithLogo(req.Logo, false),
 		pool.WithDescription(req.Description, false),
 	)
 	if err != nil {

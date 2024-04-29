@@ -43,6 +43,9 @@ func createOrderUser(t *testing.T) {
 		orderserRet.AutoPay = info.AutoPay
 		orderserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		orderserRet.CoinTypeStr = info.CoinTypeStr
+		orderserRet.RevenueTypeStr = info.RevenueTypeStr
+		orderserRet.RevenueType = info.RevenueType
+		orderserRet.RootUserID = info.RootUserID
 		orderserRet.UpdatedAt = info.UpdatedAt
 		orderserRet.Proportion = info.Proportion
 		orderserRet.ID = info.ID

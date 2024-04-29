@@ -7,9 +7,11 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
+	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -47,6 +49,18 @@ var req = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
+	poolInfos, _, err := pool.GetPools(context.Background(), &poolmw.Conds{
+		MiningpoolType: &v1.Uint32Val{
+			Op:    cruder.EQ,
+			Value: uint32(ret.MiningpoolType),
+		},
+	}, 0, 2)
+	assert.Nil(t, err)
+	assert.NotEqual(t, 0, len(poolInfos))
+
+	ret.PoolID = poolInfos[0].EntID
+	req.PoolID = &poolInfos[0].EntID
+
 	name, err := f2pool.RandomF2PoolUser(7)
 	assert.Nil(t, err)
 

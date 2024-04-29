@@ -7,9 +7,11 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
+	coinmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -47,7 +49,23 @@ var req = &npool.GoodUserReq{
 }
 
 func createGoodUser(t *testing.T) {
-	err := CreateGoodUser(context.Background(), req)
+	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmw.Conds{
+		CoinType: &v1.Uint32Val{
+			Op:    cruder.EQ,
+			Value: uint32(ret.CoinType),
+		},
+		PoolID: &v1.StringVal{
+			Op:    cruder.EQ,
+			Value: rootUserRet.PoolID,
+		},
+	}, 0, 2)
+	assert.Nil(t, err)
+	assert.NotEqual(t, 0, len(coinInfos))
+
+	ret.CoinID = coinInfos[0].EntID
+	req.CoinID = &coinInfos[0].EntID
+
+	err = CreateGoodUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetGoodUser(context.Background(), *req.EntID)
@@ -58,6 +76,7 @@ func createGoodUser(t *testing.T) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RevenueTypeStr = info.RevenueTypeStr
+		ret.FeeRatio = info.FeeRatio
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
 		ret.EntID = info.EntID

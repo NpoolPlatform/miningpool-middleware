@@ -37,7 +37,7 @@ func createGoodUser(t *testing.T) {
 		coin.WithConds(&coinmw.Conds{
 			CoinType: &v1.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(ret.CoinType),
+				Value: uint32(gooduserRet.CoinType),
 			},
 			PoolID: &v1.StringVal{
 				Op:    cruder.EQ,

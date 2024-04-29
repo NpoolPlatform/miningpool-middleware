@@ -146,7 +146,7 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 		bondVals = append(bondVals, fmt.Sprintf("%v=%v", k, v))
 	}
 
-	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and  deleted_at=0);",
+	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp where not exists (select * from %v where %v and deleted_at=0);",
 		gooduser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),

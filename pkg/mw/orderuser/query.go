@@ -4,13 +4,17 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 )
@@ -70,6 +74,31 @@ func (h *queryHandler) queryOrderUsers(ctx context.Context, cli *ent.Client) err
 	return nil
 }
 
+func (h *queryHandler) queryJoin() {
+	h.stm.Modify(h.queryJoinCoinAndPool)
+}
+
+func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
+	guT := sql.Table(gooduser.Table)
+	coinT := sql.Table(coin.Table)
+	poolT := sql.Table(pool.Table)
+
+	s.LeftJoin(guT).On(
+		s.C(orderuserent.FieldGoodUserID),
+		guT.C(gooduser.FieldEntID),
+	).LeftJoin(coinT).On(
+		guT.C(gooduser.FieldCoinID),
+		coinT.C(coin.FieldEntID),
+	).LeftJoin(poolT).On(
+		coinT.C(coin.FieldPoolID),
+		poolT.C(pool.FieldEntID),
+	).AppendSelect(
+		coin.FieldCoinType,
+		coin.FieldRevenueType,
+		pool.FieldMiningpoolType,
+	)
+}
+
 func (h *queryHandler) scan(ctx context.Context) error {
 	return h.stm.Scan(ctx, &h.infos)
 }
@@ -85,6 +114,7 @@ func (h *queryHandler) formalize() {
 		}()
 		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
+		info.RevenueType = basetypes.RevenueType(basetypes.RevenueType_value[info.RevenueTypeStr])
 	}
 }
 
@@ -97,6 +127,7 @@ func (h *Handler) GetOrderUser(ctx context.Context) (*npool.OrderUser, error) {
 		if err := handler.queryOrderUser(cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -124,6 +155,7 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 		if err := handler.queryOrderUsers(ctx, cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

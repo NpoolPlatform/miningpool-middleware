@@ -4,12 +4,16 @@ import (
 	"context"
 	"testing"
 
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/google/uuid"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -32,6 +36,27 @@ var rootuserReq = &npool.RootUserReq{
 }
 
 func createRootUser(t *testing.T) {
+	poolH, err := pool.NewHandler(context.Background(),
+		pool.WithConds(&poolmw.Conds{
+			MiningpoolType: &v1.Uint32Val{
+				Op:    cruder.EQ,
+				Value: uint32(rootuserRet.MiningpoolType),
+			},
+		}),
+		pool.WithLimit(2),
+		pool.WithOffset(0),
+	)
+	assert.Nil(t, err)
+
+	poolInfos, _, err := poolH.GetPools(context.Background())
+	assert.Nil(t, err)
+	if !assert.NotEqual(t, len(poolInfos), 0) {
+		return
+	}
+
+	rootuserRet.PoolID = poolInfos[0].EntID
+	rootuserReq.PoolID = &poolInfos[0].EntID
+
 	name, err := f2pool.RandomF2PoolUser(8)
 	assert.Nil(t, err)
 
@@ -41,6 +66,7 @@ func createRootUser(t *testing.T) {
 	handler, err := rootuser.NewHandler(
 		context.Background(),
 		rootuser.WithEntID(rootuserReq.EntID, true),
+		rootuser.WithPoolID(rootuserReq.PoolID, true),
 		rootuser.WithName(rootuserReq.Name, true),
 		rootuser.WithEmail(rootuserReq.Email, true),
 		rootuser.WithAuthToken(rootuserReq.AuthToken, true),

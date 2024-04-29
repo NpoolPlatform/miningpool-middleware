@@ -16,17 +16,11 @@ import (
 )
 
 type Handler struct {
-	ID           *uint32
-	EntID        *uuid.UUID
-	RootUserID   *uuid.UUID
-	CoinID       *uuid.UUID
-	Name         *string
-	HashRate     *float32
-	ReadPageLink *string
-	Reqs         []*goodusercrud.Req
-	Conds        *goodusercrud.Conds
-	Offset       int32
-	Limit        int32
+	goodusercrud.Req
+	Reqs   []*goodusercrud.Req
+	Conds  *goodusercrud.Conds
+	Offset int32
+	Limit  int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {

@@ -11,6 +11,7 @@ import (
 )
 
 type Req struct {
+	ID        *uint32
 	EntID     *uuid.UUID
 	Name      *string
 	PoolID    *uuid.UUID

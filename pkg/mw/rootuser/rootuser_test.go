@@ -64,9 +64,7 @@ func create(t *testing.T) {
 		WithAuthed(req.Authed, true),
 		WithRemark(req.Remark, true),
 	)
-	assert.Nil(t, err)
-
-	err = handler.CreateRootUser(context.Background())
+	assert.Nil(t, handler)
 	assert.NotNil(t, err)
 
 	poolH, err := pool.NewHandler(context.Background(),

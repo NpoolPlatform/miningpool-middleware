@@ -7,6 +7,8 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	"github.com/google/uuid"
 )
@@ -39,69 +41,52 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 }
 
 func (h *Handler) newOrderUserInPool(ctx context.Context) error {
+	if h.GoodUserID == nil {
+		return fmt.Errorf("invalid gooduserid")
+	}
 	gooduserID := h.GoodUserID.String()
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&gooduserID, true))
 	if err != nil {
 		return err
 	}
-	goodUser, err := gooduserH.GetGoodUser(ctx)
+	guInfo, err := gooduserH.GetGoodUser(ctx)
 	if err != nil {
 		return err
 	}
-	if goodUser == nil {
+	if guInfo == nil {
 		return fmt.Errorf("have no gooduser,entid: %v", gooduserID)
 	}
 
-	// if h.MiningpoolType == nil {
-	// 	h.MiningpoolType = &goodUser.MiningpoolType
-	// }
-	// if h.CoinType == nil {
-	// 	h.CoinType = &goodUser.CoinType
-	// }
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&guInfo.RootUserID, true))
+	if err != nil {
+		return err
+	}
+	ruInfo, err := rootuserH.GetAuthToken(ctx)
+	if err != nil {
+		return err
+	}
+	if ruInfo == nil {
+		return fmt.Errorf("have no rootuser,entid: %v", guInfo.RootUserID)
+	}
 
-	// if h.MiningpoolType.String() != goodUser.MiningpoolType.String() {
-	// 	return fmt.Errorf("the miningpool type is different from type of gooduser")
-	// }
+	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, guInfo.CoinType, ruInfo.AuthTokenPlain)
+	if err != nil {
+		return err
+	}
 
-	// if h.CoinType.String() != goodUser.CoinType.String() {
-	// 	return fmt.Errorf("the coin type is different from type of gooduser")
-	// }
+	name, pagelink, err := mgr.AddMiningUser(ctx)
+	if err != nil {
+		return err
+	}
+	h.Name = &name
+	h.ReadPageLink = &pagelink
 
-	// if h.RootUserID == nil || h.RootUserID.String() != goodUser.RootUserID {
-	// 	return fmt.Errorf("invalid rootuserid")
-	// }
-
-	// rootuserID := h.RootUserID.String()
-	// rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&rootuserID, true))
-	// if err != nil {
-	// 	return err
-	// }
-	// rootUser, err := rootuserH.GetAuthToken(ctx)
-	// if err != nil {
-	// 	return err
-	// }
-	// if rootUser == nil {
-	// 	return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
-	// }
-
-	// mgr, err := pools.NewPoolManager(*h.MiningpoolType, *h.CoinType, rootUser.AuthTokenPlain)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// name, pagelink, err := mgr.AddMiningUser(ctx)
-	// if err != nil {
-	// 	return err
-	// }
-	// h.Name = &name
-	// h.ReadPageLink = &pagelink
-
-	// paused, err := mgr.PausePayment(ctx, name)
-	// if err != nil {
-	// 	return err
-	// }
-	// autopay := !paused
-	// h.AutoPay = &autopay
+	paused, err := mgr.PausePayment(ctx, name)
+	if err != nil {
+		return err
+	}
+	autopay := !paused
+	h.AutoPay = &autopay
 
 	return nil
 }

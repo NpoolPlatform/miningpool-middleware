@@ -9,6 +9,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/google/uuid"
 )
 
 func (h *Handler) UpdateOrderUser(ctx context.Context) error {
@@ -30,8 +31,13 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 		return err
 	}
 
+	gooduserID, err := uuid.Parse(info.GoodUserID)
+	if err != nil {
+		return err
+	}
+
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondGoodUserID = &gooduserID
 	sqlH.BondName = &info.Name
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

@@ -85,6 +85,7 @@ func (h *Handler) GetPool(ctx context.Context) (*npool.Pool, error) {
 		if err := handler.queryPool(cli); err != nil {
 			return err
 		}
+
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)

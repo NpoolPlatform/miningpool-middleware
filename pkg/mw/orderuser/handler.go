@@ -15,20 +15,11 @@ import (
 )
 
 type Handler struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	GoodUserID     *uuid.UUID
-	AppID          *uuid.UUID
-	UserID         *uuid.UUID
-	Name           *string
-	Proportion     *decimal.Decimal
-	RevenueAddress *string
-	ReadPageLink   *string
-	AutoPay        *bool
-	Reqs           []*orderusercrud.Req
-	Conds          *orderusercrud.Conds
-	Offset         int32
-	Limit          int32
+	orderusercrud.Req
+	Reqs   []*orderusercrud.Req
+	Conds  *orderusercrud.Conds
+	Offset int32
+	Limit  int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {

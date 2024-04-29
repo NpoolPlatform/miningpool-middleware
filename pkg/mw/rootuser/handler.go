@@ -17,16 +17,9 @@ import (
 )
 
 type Handler struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	PoolID         *uuid.UUID
-	Name           *string
-	Email          *string
-	AuthToken      *string
+	rootusercrud.Req
 	AuthTokenPlain *string
 	AuthTokenSalt  *string
-	Authed         *bool
-	Remark         *string
 	Reqs           []*rootusercrud.Req
 	Conds          *rootusercrud.Conds
 	Offset         int32

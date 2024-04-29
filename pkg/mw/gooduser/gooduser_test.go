@@ -30,11 +30,12 @@ func init() {
 }
 
 var ret = &npool.GoodUser{
-	EntID:       uuid.NewString(),
-	RootUserID:  rootuserRet.EntID,
-	HashRate:    5.0,
-	CoinType:    basetypes.CoinType_BitCoin,
-	RevenueType: basetypes.RevenueType_FPPS,
+	EntID:          uuid.NewString(),
+	RootUserID:     rootuserRet.EntID,
+	HashRate:       5.0,
+	CoinType:       basetypes.CoinType_BitCoin,
+	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	RevenueType:    basetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{
@@ -49,6 +50,10 @@ func create(t *testing.T) {
 			CoinType: &v1.Uint32Val{
 				Op:    cruder.EQ,
 				Value: uint32(ret.CoinType),
+			},
+			PoolID: &v1.StringVal{
+				Op:    cruder.EQ,
+				Value: rootuserRet.PoolID,
 			},
 		}),
 		coin.WithOffset(0),
@@ -87,7 +92,10 @@ func create(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RevenueTypeStr = info.RevenueTypeStr
+		ret.RevenueType = info.RevenueType
+		ret.FeeRatio = info.FeeRatio
 		ret.ID = info.ID
 		ret.EntID = info.EntID
 		ret.Name = info.Name
@@ -97,8 +105,6 @@ func create(t *testing.T) {
 }
 
 func update(t *testing.T) {
-	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
-	ret.RevenueType = basetypes.RevenueType_PPLNS
 	ret.HashRate = 666
 
 	handler, err := NewHandler(

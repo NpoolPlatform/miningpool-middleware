@@ -12,6 +12,7 @@ import (
 )
 
 type Req struct {
+	ID               *uint32
 	EntID            *uuid.UUID
 	CoinID           *uuid.UUID
 	WithdrawInterval *uint32

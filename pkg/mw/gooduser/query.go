@@ -70,28 +70,22 @@ func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) erro
 }
 
 func (h *queryHandler) queryJoin() {
-	h.stm.Modify(h.queryJoinCoin)
+	h.stm.Modify(h.queryJoinCoinAndPool)
 }
 
-func (h *queryHandler) queryJoinCoin(s *sql.Selector) {
+func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	coinT := sql.Table(coin.Table)
+	poolT := sql.Table(pool.Table)
 	s.LeftJoin(coinT).On(
 		s.C(gooduserent.FieldCoinID),
 		coinT.C(coin.FieldEntID),
+	).LeftJoin(poolT).On(
+		coinT.C(coin.FieldPoolID),
+		poolT.C(pool.FieldEntID),
 	).AppendSelect(
 		coinT.C(coin.FieldCoinType),
 		coinT.C(coin.FieldRevenueType),
 		coinT.C(coin.FieldFeeRatio),
-		// coinT.C(coin.FieldPoolID),
-	)
-}
-
-func (h *queryHandler) queryJoinPool(s *sql.Selector) {
-	poolT := sql.Table(pool.Table)
-	s.LeftJoin(poolT).On(
-		s.C(coin.FieldPoolID),
-		poolT.C(pool.FieldEntID),
-	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),
 	)
 }

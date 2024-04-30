@@ -7,7 +7,6 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 	gooduser "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -57,7 +56,6 @@ func (s *Server) GetGoodUsers(ctx context.Context, in *npool.GetGoodUsersRequest
 		)
 		return &npool.GetGoodUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
 	}
-	logger.Sugar().Error(utils.PrettyStruct(handler))
 	infos, total, err := handler.GetGoodUsers(ctx)
 	if err != nil {
 		logger.Sugar().Errorw(

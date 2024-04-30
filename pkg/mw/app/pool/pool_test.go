@@ -97,16 +97,13 @@ func update(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.PoolID = uuid.NewString()
-	handler, err = NewHandler(
+	poolID := uuid.NewString()
+	_, err = NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithPoolID(&ret.PoolID, false),
+		WithPoolID(&poolID, false),
 	)
-	assert.Nil(t, err)
-
-	err = handler.UpdatePool(context.Background())
-	assert.Nil(t, err)
+	assert.NotNil(t, err)
 }
 
 func deleteRow(t *testing.T) {

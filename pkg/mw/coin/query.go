@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	coinent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/utils"
 
 	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
 )
@@ -86,7 +88,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 		poolT.C(pool.FieldMiningpoolType),
 	)
 
-	if h.Conds.MiningpoolType != nil {
+	if h.Conds != nil && h.Conds.MiningpoolType != nil {
 		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(v1.MiningpoolType); ok {
 			s.OnP(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
 		}
@@ -116,6 +118,7 @@ func (h *Handler) GetCoin(ctx context.Context) (*npool.Coin, error) {
 		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
+		logger.Sugar().Error(utils.PrettyStruct(h))
 		return handler.scan(_ctx)
 	})
 	if err != nil {

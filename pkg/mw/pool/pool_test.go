@@ -30,6 +30,7 @@ var ret = &npool.Pool{
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Name:           "5.4",
 	Site:           "false.com",
+	Logo:           "false.com",
 	Description:    "asdfaf",
 }
 

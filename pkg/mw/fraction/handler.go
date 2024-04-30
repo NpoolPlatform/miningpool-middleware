@@ -8,6 +8,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 
@@ -104,11 +105,21 @@ func WithOrderUserID(orderuserid *string, must bool) func(context.Context, *Hand
 			}
 			return nil
 		}
-		_id, err := uuid.Parse(*orderuserid)
+
+		ouH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(orderuserid, true))
 		if err != nil {
 			return err
 		}
-		h.OrderUserID = &_id
+		exists, err := ouH.ExistOrderUser(ctx)
+		if err != nil {
+			return err
+		}
+
+		if !exists {
+			return fmt.Errorf("invalid orderuserid")
+		}
+
+		h.OrderUserID = ouH.EntID
 		return nil
 	}
 }

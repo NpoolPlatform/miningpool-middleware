@@ -61,6 +61,7 @@ func createGoodUser(t *testing.T) {
 		goodUserRet.Name = info.Name
 		goodUserRet.ReadPageLink = info.ReadPageLink
 		goodUserRet.CreatedAt = info.CreatedAt
+		goodUserRet.PoolID = info.PoolID
 		goodUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		goodUserRet.CoinTypeStr = info.CoinTypeStr
 		goodUserRet.RevenueTypeStr = info.RevenueTypeStr

@@ -7,6 +7,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
 	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -70,11 +71,18 @@ func WithGoodUserID(gooduserid *string, must bool) func(context.Context, *Handle
 			}
 			return nil
 		}
-		_id, err := uuid.Parse(*gooduserid)
+		guH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(gooduserid, true))
 		if err != nil {
 			return err
 		}
-		h.GoodUserID = &_id
+		exist, err := guH.ExistGoodUser(ctx)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return fmt.Errorf("invalid gooduserid")
+		}
+		h.GoodUserID = guH.EntID
 		return nil
 	}
 }

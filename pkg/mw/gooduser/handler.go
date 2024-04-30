@@ -210,8 +210,8 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			}
 		}
 		if conds.Name != nil {
-			h.Conds.CoinID = &cruder.Cond{
-				Op:  conds.GetCoinID().GetOp(),
+			h.Conds.Name = &cruder.Cond{
+				Op:  conds.GetName().GetOp(),
 				Val: conds.GetName().GetValue(),
 			}
 		}

@@ -9,6 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
+	apppool "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/app/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
@@ -50,6 +51,15 @@ var req = &npool.OrderUserReq{
 }
 
 func create(t *testing.T) {
+	apppoolH, err := apppool.NewHandler(
+		context.Background(),
+		apppool.WithAppID(&ret.AppID, true),
+		apppool.WithPoolID(&gooduserRet.PoolID, true),
+	)
+	assert.Nil(t, err)
+	err = apppoolH.CreatePool(context.Background())
+	assert.Nil(t, err)
+
 	name, err := f2pool.RandomF2PoolUser(8)
 	if !assert.Nil(t, err) {
 		return

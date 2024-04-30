@@ -11,11 +11,13 @@ import (
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 
+	apppoolclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/app/pool"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 )
 
@@ -45,7 +47,13 @@ var req = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	err := CreateOrderUser(context.Background(), req)
+	err := apppoolclient.CreatePool(context.Background(), &pool.PoolReq{
+		AppID:  &ret.AppID,
+		PoolID: &goodUserRet.PoolID,
+	})
+	assert.Nil(t, err)
+
+	err = CreateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetOrderUser(context.Background(), *req.EntID)

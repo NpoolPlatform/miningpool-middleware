@@ -91,6 +91,7 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
+		ret.PoolID = info.PoolID
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RevenueTypeStr = info.RevenueTypeStr

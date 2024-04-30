@@ -19,14 +19,13 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	if info == nil {
+		return fmt.Errorf("invalid id or ent_id")
+	}
 
 	poolID, err := uuid.Parse(info.PoolID)
 	if err != nil {
 		return err
-	}
-
-	if info == nil {
-		return fmt.Errorf("invalid id or ent_id")
 	}
 
 	err = h.checkUpdateAuthed(ctx, info)

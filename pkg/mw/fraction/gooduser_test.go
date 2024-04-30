@@ -79,6 +79,7 @@ func createGoodUser(t *testing.T) {
 	if assert.Nil(t, err) {
 		gooduserRet.UpdatedAt = info.UpdatedAt
 		gooduserRet.CreatedAt = info.CreatedAt
+		gooduserRet.PoolID = info.PoolID
 		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		gooduserRet.CoinTypeStr = info.CoinTypeStr
 		gooduserRet.RevenueTypeStr = info.RevenueTypeStr

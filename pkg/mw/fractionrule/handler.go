@@ -7,6 +7,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	fractionrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -75,11 +76,20 @@ func WithCoinID(coinid *string, must bool) func(context.Context, *Handler) error
 			}
 			return nil
 		}
-		_id, err := uuid.Parse(*coinid)
+
+		coinH, err := coin.NewHandler(ctx, coin.WithEntID(coinid, true))
 		if err != nil {
 			return err
 		}
-		h.CoinID = &_id
+
+		exist, err := coinH.ExistCoin(ctx)
+		if err != nil {
+			return err
+		}
+		if !exist {
+			return fmt.Errorf("invalid coinid")
+		}
+		h.CoinID = coinH.EntID
 		return nil
 	}
 }

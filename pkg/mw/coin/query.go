@@ -85,6 +85,12 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),
 	)
+
+	if h.Conds.MiningpoolType != nil {
+		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(v1.MiningpoolType); ok {
+			s.OnP(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
+		}
+	}
 }
 
 func (h *queryHandler) scan(ctx context.Context) error {

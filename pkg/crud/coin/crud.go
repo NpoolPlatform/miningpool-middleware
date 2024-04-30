@@ -93,6 +93,7 @@ type Conds struct {
 	EntID            *cruder.Cond
 	PoolID           *cruder.Cond
 	CoinType         *cruder.Cond
+	MiningpoolType   *cruder.Cond
 	RevenueType      *cruder.Cond
 	FixedRevenueAble *cruder.Cond
 	EntIDs           *cruder.Cond

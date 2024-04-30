@@ -253,6 +253,12 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: basetypes.CoinType(conds.GetCoinType().GetValue()),
 			}
 		}
+		if conds.MiningpoolType != nil {
+			h.Conds.MiningpoolType = &cruder.Cond{
+				Op:  conds.GetMiningpoolType().GetOp(),
+				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+			}
+		}
 		if conds.RevenueType != nil {
 			h.Conds.RevenueType = &cruder.Cond{
 				Op:  conds.GetRevenueType().GetOp(),

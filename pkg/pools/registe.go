@@ -112,6 +112,10 @@ func RegisteCoinInfo(ctx context.Context) {
 				Op:    cruder.EQ,
 				Value: uint32(info.CoinType),
 			},
+			MiningpoolType: &basetypes.Uint32Val{
+				Op:    cruder.EQ,
+				Value: uint32(info.MiningpoolType),
+			},
 		}))
 		if err != nil {
 			logger.Sugar().Error(err)
@@ -182,6 +186,10 @@ func RegisteFractionRule(ctx context.Context) {
 					Op:    cruder.EQ,
 					Value: uint32(info.CoinType),
 				},
+				MiningpoolType: &basetypes.Uint32Val{
+					Op:    cruder.EQ,
+					Value: uint32(info.MiningpoolType),
+				},
 			}),
 			coin.WithOffset(0),
 			coin.WithLimit(2))
@@ -198,6 +206,7 @@ func RegisteFractionRule(ctx context.Context) {
 		}
 		if len(coinInfos) == 0 {
 			logger.Sugar().Errorf("have no coin of %v", info.CoinType)
+			continue
 		}
 		// check if exist
 		fractionruleH, err := fractionrule.NewHandler(ctx, fractionrule.WithConds(

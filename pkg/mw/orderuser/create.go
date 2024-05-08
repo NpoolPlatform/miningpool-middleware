@@ -18,7 +18,16 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
 
-	err := h.newOrderUserInPool(ctx)
+	authed, err := h.checkAppAuth(ctx)
+	if err != nil {
+		return err
+	}
+
+	if !authed {
+		return fmt.Errorf("invalid appid")
+	}
+
+	err = h.newOrderUserInPool(ctx)
 	if err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/google/uuid"
 )
@@ -153,13 +154,26 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 		return err
 	}
 
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&goodUser.RootUserID, true))
+	if err != nil {
+		return err
+	}
+	rootUser, err := rootuserH.GetAuthToken(ctx)
+	if err != nil {
+		return err
+	}
+	if rootUser == nil {
+		err = fmt.Errorf("have no record of rootuser with entid %v", goodUser.RootUserID)
+		return err
+	}
+
 	h.baseInfo = &baseInfo{
 		OrderUserID:    orderUser.ID,
 		MiningpoolType: orderUser.MiningpoolType,
 		CoinType:       orderUser.CoinType,
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,
-		// AuthToken:      rootUser.AuthTokenPlain,
+		AuthToken:      rootUser.AuthTokenPlain,
 		RevenueAddress: orderUser.RevenueAddress,
 	}
 	return nil

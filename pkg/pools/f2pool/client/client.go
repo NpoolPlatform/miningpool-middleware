@@ -62,6 +62,7 @@ func (cli *Client) post(path string, req, resp interface{}) error {
 
 	socksProxy := os.Getenv("ENV_F2POOL_REQUEST_PROXY")
 
+	// set tls handshake timeout
 	client := &http.Client{
 		Transport: &http.Transport{
 			DialContext: (&net.Dialer{

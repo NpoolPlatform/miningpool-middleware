@@ -54,7 +54,6 @@ func (h *sqlHandler) baseKeys() error {
 		h.BondPoolID = h.PoolID
 	}
 	if h.CoinType != nil {
-		fmt.Println(*h.CoinType)
 		strBytes, err := json.Marshal(h.CoinType.String())
 		if err != nil {
 			return err
@@ -63,7 +62,6 @@ func (h *sqlHandler) baseKeys() error {
 		h.BondCoinType = h.CoinType
 	}
 	if h.FeeRatio != nil {
-		fmt.Println(*h.FeeRatio)
 		strBytes, err := json.Marshal(h.FeeRatio.String())
 		if err != nil {
 			return err
@@ -71,7 +69,6 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[coin.FieldFeeRatio] = string(strBytes)
 	}
 	if h.RevenueType != nil {
-		fmt.Println(*h.RevenueType)
 		strBytes, err := json.Marshal(h.RevenueType.String())
 		if err != nil {
 			return err

@@ -43,7 +43,6 @@ var req = &npool.PoolReq{
 func createPool(t *testing.T) {
 	infos, _, err := pool.GetPools(context.Background(), nil, 0, 2)
 	assert.Nil(t, err)
-	fmt.Println(err)
 	if len(infos) == 0 {
 		return
 	}

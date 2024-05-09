@@ -200,8 +200,6 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 		h.Handler.AppID.String(),
 	)
 
-	fmt.Println(sql)
-
 	return sql, nil
 }
 

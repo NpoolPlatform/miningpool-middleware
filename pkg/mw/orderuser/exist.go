@@ -51,6 +51,7 @@ func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
 		if err != nil {
 			return err
 		}
+		defer rows.Close()
 
 		if err := rows.Err(); err != nil {
 			return err

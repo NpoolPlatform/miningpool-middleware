@@ -2,43 +2,37 @@ package orderuser
 
 import (
 	"context"
+	"fmt"
 
-	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 )
 
 type existHandler struct {
 	*Handler
-	conds *orderusercrud.Conds
+	checkAppAuthSQL string
 }
 
-func (h *existHandler) existJoinCoinAndAppPool(s *sql.Selector) {
-	guT := sql.Table(gooduser.Table)
-	coinT := sql.Table(coin.Table)
-	apppoolT := sql.Table(apppool.Table)
+func (h *existHandler) existJoinCoinAndAppPool() error {
+	if h.AppID == nil || h.GoodUserID == nil {
+		return wlog.Errorf("invalid appid or gooduserid")
+	}
 
-	s.LeftJoin(guT).On(
-		s.C(orderuserent.FieldGoodUserID),
-		guT.C(gooduser.FieldEntID),
-	).LeftJoin(coinT).On(
-		guT.C(gooduser.FieldCoinID),
-		coinT.C(coin.FieldEntID),
-	).LeftJoin(apppoolT).On(
-		coinT.C(coin.FieldPoolID),
-		apppoolT.C(apppool.FieldPoolID),
-	).AppendSelect(
-		coin.FieldCoinType,
-		coin.FieldRevenueType,
-		gooduser.FieldRootUserID,
-		apppool.FieldAppID,
+	sql := fmt.Sprintf(`SELECT DISTINCT 
+	coin_type,revenue_type,root_user_id,t1.ent_id,app_id 
+	FROM good_users AS t1 
+	LEFT JOIN coins AS t2 ON t1.coin_id = t2.ent_id 
+	LEFT JOIN app_pools AS t3 ON t2.pool_id = t3.pool_id 
+	WHERE (t1.ent_id = '%v' AND t3.app_id = '%v') AND t3.deleted_at = 0;`,
+		h.GoodUserID.String(),
+		h.AppID.String(),
 	)
+
+	h.checkAppAuthSQL = sql
+	return nil
 }
 
 func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
@@ -46,29 +40,27 @@ func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
 	var err error
 	existH := &existHandler{
 		Handler: h,
-		conds: &orderusercrud.Conds{
-			GoodUserID: &cruder.Cond{
-				Op:  cruder.EQ,
-				Val: *h.GoodUserID,
-			},
-			AppID: &cruder.Cond{
-				Op:  cruder.EQ,
-				Val: *h.AppID,
-			},
-		},
 	}
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), existH.Conds)
+		err := existH.existJoinCoinAndAppPool()
 		if err != nil {
 			return err
 		}
 
-		stm.Modify(existH.existJoinCoinAndAppPool)
-
-		exist, err = stm.Exist(_ctx)
+		rows, err := cli.QueryContext(ctx, existH.checkAppAuthSQL)
 		if err != nil {
 			return err
 		}
+
+		if err := rows.Err(); err != nil {
+			return err
+		}
+
+		cols, err := rows.Columns()
+		if err != nil {
+			return err
+		}
+		exist = len(cols) > 0
 		return nil
 	})
 	if err != nil {

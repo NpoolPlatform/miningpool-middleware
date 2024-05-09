@@ -4,6 +4,8 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"net"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,12 +15,12 @@ import (
 )
 
 const (
-	F2PoolRps = 1
-	// f2pool api rps=1
-	defaultLockTimeout = time.Second / F2PoolRps
-	postTimeout        = time.Second * 3
-	maxRetreies        = 3
-	successStatusCode  = 200
+	F2PoolRps           = 1
+	defaultLockTimeout  = time.Second / F2PoolRps
+	postTimeout         = time.Second * 3
+	tlsHandshakeTimeout = time.Second * 1
+	maxRetreies         = 3
+	successStatusCode   = 200
 )
 
 type Client struct {
@@ -59,7 +61,17 @@ func (cli *Client) post(path string, req, resp interface{}) error {
 	errResp := types.ErrorResponse{}
 
 	socksProxy := os.Getenv("ENV_F2POOL_REQUEST_PROXY")
-	restycli := resty.New()
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			DialContext: (&net.Dialer{
+				Timeout:   tlsHandshakeTimeout,
+				DualStack: true,
+			}).DialContext,
+			TLSHandshakeTimeout: tlsHandshakeTimeout,
+		},
+	}
+	restycli := resty.NewWithClient(client)
 	if socksProxy != "" {
 		restycli = restycli.SetProxy(socksProxy)
 	}

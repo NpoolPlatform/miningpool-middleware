@@ -1,9 +1,11 @@
 package utils
 
-import "encoding/json"
+import (
+	"github.com/bytedance/sonic"
+)
 
 func PrettyStruct(data interface{}) string {
-	val, err := json.MarshalIndent(data, "", " ")
+	val, err := sonic.ConfigFastest.MarshalIndent(data, "", " ")
 	if err != nil {
 		return err.Error()
 	}

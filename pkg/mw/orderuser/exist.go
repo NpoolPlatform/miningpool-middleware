@@ -22,7 +22,7 @@ func (h *existHandler) existJoinCoinAndAppPool() error {
 	}
 
 	sql := fmt.Sprintf(`SELECT DISTINCT 
-	coin_type,revenue_type,root_user_id,t1.ent_id,app_id 
+	root_user_id,t1.ent_id,app_id 
 	FROM good_users AS t1 
 	LEFT JOIN coins AS t2 ON t1.coin_id = t2.ent_id 
 	LEFT JOIN app_pools AS t3 ON t2.pool_id = t3.pool_id 
@@ -57,11 +57,11 @@ func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
 			return err
 		}
 
-		cols, err := rows.Columns()
-		if err != nil {
-			return err
+		exist = false
+		for rows.Next() {
+			exist = true
+			break
 		}
-		exist = len(cols) > 0
 		return nil
 	})
 	if err != nil {

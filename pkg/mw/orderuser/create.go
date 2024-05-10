@@ -24,7 +24,7 @@ func (h *Handler) CreateOrderUser(ctx context.Context) error {
 	}
 
 	if !authed {
-		return fmt.Errorf("invalid appid")
+		return fmt.Errorf("invalid appid or gooduserid")
 	}
 
 	err = h.newOrderUserInPool(ctx)

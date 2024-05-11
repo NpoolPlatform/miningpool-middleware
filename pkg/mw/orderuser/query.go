@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	"github.com/shopspring/decimal"
 
@@ -87,7 +88,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		s.C(orderuserent.FieldGoodUserID),
 		guT.C(gooduser.FieldEntID),
 	).LeftJoin(coinT).On(
-		guT.C(gooduser.FieldCoinID),
+		guT.C(gooduser.FieldPoolCoinTypeID),
 		coinT.C(coin.FieldEntID),
 	).LeftJoin(poolT).On(
 		coinT.C(coin.FieldPoolID),
@@ -113,9 +114,9 @@ func (h *queryHandler) formalize() {
 			}
 			return amount.String()
 		}()
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = basetypes.RevenueType(basetypes.RevenueType_value[info.RevenueTypeStr])
+		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
 	}
 }
 

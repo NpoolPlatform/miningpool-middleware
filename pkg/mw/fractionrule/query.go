@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -27,7 +28,7 @@ func (h *queryHandler) selectFractionRule(stm *ent.FractionRuleQuery) {
 		fractionruleent.FieldCreatedAt,
 		fractionruleent.FieldUpdatedAt,
 		fractionruleent.FieldEntID,
-		fractionruleent.FieldCoinID,
+		fractionruleent.FieldPoolCoinTypeID,
 		fractionruleent.FieldWithdrawInterval,
 		fractionruleent.FieldMinAmount,
 		fractionruleent.FieldWithdrawRate,
@@ -71,7 +72,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }

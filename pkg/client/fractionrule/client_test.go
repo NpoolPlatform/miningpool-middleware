@@ -11,7 +11,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 
 	"github.com/google/uuid"
@@ -28,8 +29,8 @@ func init() {
 
 var ret = &npool.FractionRule{
 	EntID:            uuid.NewString(),
-	MiningpoolType:   basetypes.MiningpoolType_F2Pool,
-	CoinType:         basetypes.CoinType_BitCoin,
+	MiningpoolType:   mpbasetypes.MiningpoolType_F2Pool,
+	CoinType:         basetypes.CoinType_CoinTypeBitCoin,
 	WithdrawInterval: 3,
 	MinAmount:        "2.0",
 	WithdrawRate:     "2.0",

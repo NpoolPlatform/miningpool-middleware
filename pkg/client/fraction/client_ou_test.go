@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	apppool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	apppoolclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/app/pool"
@@ -21,8 +21,8 @@ var orderserRet = &npool.OrderUser{
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var orderuserReq = &npool.OrderUserReq{
@@ -63,7 +63,7 @@ func createOrderUser(t *testing.T) {
 
 func deleteOrderUser(t *testing.T) {
 	exist, err := orderuserclient.ExistOrderUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: orderserRet.EntID,
 		},
@@ -76,7 +76,7 @@ func deleteOrderUser(t *testing.T) {
 	assert.Nil(t, err)
 
 	exist, err = orderuserclient.ExistOrderUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: orderserRet.EntID,
 		},

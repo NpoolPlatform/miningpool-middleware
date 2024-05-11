@@ -74,7 +74,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return fmt.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
-	coinID := h.CoinID.String()
+	coinID := h.PoolCoinTypeID.String()
 	coinH, err := coin.NewHandler(ctx, coin.WithEntID(&coinID, true))
 	if err != nil {
 		return err
@@ -84,7 +84,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return err
 	}
 	if ruInfo.PoolID != coinInfo.PoolID {
-		return fmt.Errorf("pool not match between coinid and poolid")
+		return fmt.Errorf("pool not match between poolcointypeid and poolid")
 	}
 
 	mgr, err := pools.NewPoolManager(coinInfo.MiningpoolType, coinInfo.CoinType, rootuserToken.AuthTokenPlain)

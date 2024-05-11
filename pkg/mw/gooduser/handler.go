@@ -63,16 +63,16 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-func WithCoinID(coinid *string, must bool) func(context.Context, *Handler) error {
+func WithPoolCoinTypeID(poolcointypeid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if coinid == nil {
+		if poolcointypeid == nil {
 			if must {
-				return fmt.Errorf("invalid coinid")
+				return fmt.Errorf("invalid poolcointypeid")
 			}
 			return nil
 		}
 
-		coinH, err := coin.NewHandler(ctx, coin.WithEntID(coinid, true))
+		coinH, err := coin.NewHandler(ctx, coin.WithEntID(poolcointypeid, true))
 		if err != nil {
 			return err
 		}
@@ -82,9 +82,9 @@ func WithCoinID(coinid *string, must bool) func(context.Context, *Handler) error
 			return err
 		}
 		if !exist {
-			return fmt.Errorf("invalid coinid")
+			return fmt.Errorf("invalid poolcointypeid")
 		}
-		h.CoinID = coinH.EntID
+		h.PoolCoinTypeID = coinH.EntID
 		return nil
 	}
 }
@@ -186,13 +186,13 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
-		if conds.CoinID != nil {
-			id, err := uuid.Parse(conds.GetCoinID().GetValue())
+		if conds.PoolCoinTypeID != nil {
+			id, err := uuid.Parse(conds.GetPoolCoinTypeID().GetValue())
 			if err != nil {
 				return err
 			}
-			h.Conds.CoinID = &cruder.Cond{
-				Op:  conds.GetCoinID().GetOp(),
+			h.Conds.PoolCoinTypeID = &cruder.Cond{
+				Op:  conds.GetPoolCoinTypeID().GetOp(),
 				Val: id,
 			}
 		}

@@ -11,6 +11,7 @@ import (
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
@@ -204,7 +205,9 @@ func TestRootUser(t *testing.T) {
 		return
 	}
 
+	pools.InitTestInfo(context.Background())
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
+	pools.CleanTestInfo(context.Background())
 }

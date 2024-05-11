@@ -14,7 +14,7 @@ import (
 type Req struct {
 	ID               *uint32
 	EntID            *uuid.UUID
-	CoinID           *uuid.UUID
+	PoolCoinTypeID   *uuid.UUID
 	WithdrawInterval *uint32
 	MinAmount        *decimal.Decimal
 	WithdrawRate     *decimal.Decimal
@@ -25,8 +25,8 @@ func CreateSet(c *ent.FractionRuleCreate, req *Req) *ent.FractionRuleCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
 	}
-	if req.CoinID != nil {
-		c.SetCoinID(*req.CoinID)
+	if req.PoolCoinTypeID != nil {
+		c.SetPoolCoinTypeID(*req.PoolCoinTypeID)
 	}
 	if req.WithdrawInterval != nil {
 		c.SetWithdrawInterval(*req.WithdrawInterval)
@@ -41,8 +41,8 @@ func CreateSet(c *ent.FractionRuleCreate, req *Req) *ent.FractionRuleCreate {
 }
 
 func UpdateSet(u *ent.FractionRuleUpdateOne, req *Req) (*ent.FractionRuleUpdateOne, error) {
-	if req.CoinID != nil {
-		u = u.SetCoinID(*req.CoinID)
+	if req.PoolCoinTypeID != nil {
+		u = u.SetPoolCoinTypeID(*req.PoolCoinTypeID)
 	}
 	if req.WithdrawInterval != nil {
 		u = u.SetWithdrawInterval(*req.WithdrawInterval)
@@ -63,7 +63,7 @@ type Conds struct {
 	ID               *cruder.Cond
 	EntID            *cruder.Cond
 	MiningpoolType   *cruder.Cond
-	CoinID           *cruder.Cond
+	PoolCoinTypeID   *cruder.Cond
 	WithdrawInterval *cruder.Cond
 	EntIDs           *cruder.Cond
 }
@@ -108,16 +108,16 @@ func SetQueryConds(q *ent.FractionRuleQuery, conds *Conds) (*ent.FractionRuleQue
 			return nil, fmt.Errorf("invalid entids field")
 		}
 	}
-	if conds.CoinID != nil {
-		coinid, ok := conds.CoinID.Val.(uuid.UUID)
+	if conds.PoolCoinTypeID != nil {
+		poolcointypeid, ok := conds.PoolCoinTypeID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid coinid")
+			return nil, fmt.Errorf("invalid poolcointypeid")
 		}
-		switch conds.CoinID.Op {
+		switch conds.PoolCoinTypeID.Op {
 		case cruder.EQ:
-			q.Where(fractionruleent.CoinID(coinid))
+			q.Where(fractionruleent.PoolCoinTypeID(poolcointypeid))
 		default:
-			return nil, fmt.Errorf("invalid coinid field")
+			return nil, fmt.Errorf("invalid poolcointypeid field")
 		}
 	}
 	return q, nil

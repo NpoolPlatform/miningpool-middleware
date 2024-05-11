@@ -11,11 +11,12 @@ import (
 	coinmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -32,9 +33,9 @@ func init() {
 var ret = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	CoinType:       basetypes.CoinType_BitCoin,
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	RevenueType:    basetypes.RevenueType_FPPS,
+	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	RevenueType:    mpbasetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{
@@ -45,11 +46,11 @@ var req = &npool.GoodUserReq{
 func create(t *testing.T) {
 	coinH, err := coin.NewHandler(context.Background(),
 		coin.WithConds(&coinmw.Conds{
-			CoinType: &v1.Uint32Val{
+			CoinType: &basetypes.Uint32Val{
 				Op:    cruder.EQ,
 				Value: uint32(ret.CoinType),
 			},
-			PoolID: &v1.StringVal{
+			PoolID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: rootuserRet.PoolID,
 			},
@@ -66,14 +67,14 @@ func create(t *testing.T) {
 		return
 	}
 
-	ret.CoinID = coinInfos[0].EntID
-	req.CoinID = &coinInfos[0].EntID
+	ret.PoolCoinTypeID = coinInfos[0].EntID
+	req.PoolCoinTypeID = &coinInfos[0].EntID
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithRootUserID(req.RootUserID, true),
-		WithCoinID(req.CoinID, true),
+		WithPoolCoinTypeID(req.PoolCoinTypeID, true),
 	)
 	if !assert.Nil(t, err) {
 		return
@@ -133,7 +134,7 @@ func update(t *testing.T) {
 
 func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
 		},
@@ -183,7 +184,7 @@ func deleteRow(t *testing.T) {
 	handler, err = NewHandler(
 		context.Background(),
 		WithConds(&npool.Conds{
-			EntID: &v1.StringVal{
+			EntID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: ret.EntID,
 			},
@@ -201,10 +202,11 @@ func TestGoodUser(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-
+	pools.InitTestInfo(context.Background())
 	t.Run("create", createRootUser)
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
 	t.Run("deleteRow", deleteRootUser)
+	pools.CleanTestInfo(context.Background())
 }

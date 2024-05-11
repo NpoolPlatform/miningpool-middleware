@@ -304,7 +304,7 @@ func (c *CoinClient) UpdateOne(co *Coin) *CoinUpdateOne {
 
 // UpdateOneID returns an update builder for the given id.
 func (c *CoinClient) UpdateOneID(id uint32) *CoinUpdateOne {
-	mutation := newCoinMutation(c.config, OpUpdateOne, withCoinID(id))
+	mutation := newCoinMutation(c.config, OpUpdateOne, withPoolCoinTypeID(id))
 	return &CoinUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 

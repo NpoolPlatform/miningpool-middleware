@@ -15,8 +15,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 )
@@ -35,8 +35,8 @@ var ret = &npool.OrderUser{
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var req = &npool.OrderUserReq{
@@ -164,7 +164,7 @@ func getOrderUser(t *testing.T) {
 
 func getOrderUsers(t *testing.T) {
 	infos, total, err := GetOrderUsers(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{Op: cruder.EQ, Value: ret.EntID},
+		EntID: &basetypes.StringVal{Op: cruder.EQ, Value: ret.EntID},
 	}, 0, 1)
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 1)
@@ -175,7 +175,7 @@ func getOrderUsers(t *testing.T) {
 
 func deleteOrderUser(t *testing.T) {
 	exist, err := ExistOrderUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
 		},
@@ -188,7 +188,7 @@ func deleteOrderUser(t *testing.T) {
 	assert.Nil(t, err)
 
 	exist, err = ExistOrderUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
 		},

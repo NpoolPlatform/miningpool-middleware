@@ -12,6 +12,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
@@ -194,6 +195,7 @@ func TestFraction(t *testing.T) {
 		return grpc.Dial(fmt.Sprintf("localhost:%v", gport), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	})
 
+	pools.InitTestInfo(context.Background())
 	t.Run("create", createRootUser)
 	t.Run("create", createGoodUser)
 	t.Run("create", createOrderUser)
@@ -203,4 +205,5 @@ func TestFraction(t *testing.T) {
 	t.Run("deleteRow", deleteOrderUser)
 	t.Run("deleteRow", deleteGoodUser)
 	t.Run("deleteRow", deleteRootUser)
+	pools.CleanTestInfo(context.Background())
 }

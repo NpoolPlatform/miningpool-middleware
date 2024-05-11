@@ -190,7 +190,7 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 
 	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp "+
 		"where not exists (select * from %v where %v and deleted_at=0)"+
-		"and exists (select * from good_users A left join coins B on A.coin_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v');",
+		"and exists (select * from good_users A left join coins B on A.pool_coin_type_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v');",
 		orderuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),

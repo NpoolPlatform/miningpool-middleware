@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -32,7 +33,7 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldEntID,
 		gooduserent.FieldRootUserID,
 		gooduserent.FieldName,
-		gooduserent.FieldCoinID,
+		gooduserent.FieldPoolCoinTypeID,
 		gooduserent.FieldReadPageLink,
 	)
 }
@@ -76,7 +77,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	coinT := sql.Table(coin.Table)
 	poolT := sql.Table(pool.Table)
 	s.LeftJoin(coinT).On(
-		s.C(gooduserent.FieldCoinID),
+		s.C(gooduserent.FieldPoolCoinTypeID),
 		coinT.C(coin.FieldEntID),
 	).LeftJoin(poolT).On(
 		coinT.C(coin.FieldPoolID),
@@ -96,9 +97,9 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = basetypes.RevenueType(basetypes.RevenueType_value[info.RevenueTypeStr])
+		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
 	}
 }
 

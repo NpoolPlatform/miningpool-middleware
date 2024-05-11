@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
@@ -61,8 +62,8 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 
 type baseInfo struct {
 	OrderUserID    uint32
-	MiningpoolType v1.MiningpoolType
-	CoinType       v1.CoinType
+	MiningpoolType mpbasetypes.MiningpoolType
+	CoinType       basetypes.CoinType
 	AuthToken      string
 	Recipient      string
 	Distributor    string

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -78,7 +78,7 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 		return fmt.Errorf("invalid poolid")
 	}
 
-	defaultCoinType := v1.CoinType_BitCoin
+	defaultCoinType := basetypes.CoinType_CoinTypeBitCoin
 	miningtype := info.MiningpoolType
 	authtoken := h.AuthTokenPlain
 	authed := false

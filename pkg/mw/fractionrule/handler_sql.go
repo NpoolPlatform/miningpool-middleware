@@ -12,10 +12,10 @@ import (
 
 type sqlHandler struct {
 	*Handler
-	BondCoinID *uuid.UUID
-	bondVals   map[string]string
-	baseVals   map[string]string
-	idVals     map[string]string
+	BondPoolCoinTypeID *uuid.UUID
+	bondVals           map[string]string
+	baseVals           map[string]string
+	idVals             map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -43,13 +43,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[fractionrule.FieldEntID] = string(strBytes)
 	}
-	if h.CoinID != nil {
-		strBytes, err := json.Marshal(h.CoinID.String())
+	if h.PoolCoinTypeID != nil {
+		strBytes, err := json.Marshal(h.PoolCoinTypeID.String())
 		if err != nil {
 			return err
 		}
-		h.baseVals[fractionrule.FieldCoinID] = string(strBytes)
-		h.BondCoinID = h.CoinID
+		h.baseVals[fractionrule.FieldPoolCoinTypeID] = string(strBytes)
+		h.BondPoolCoinTypeID = h.PoolCoinTypeID
 	}
 	if h.WithdrawInterval != nil {
 		strBytes, err := json.Marshal(*h.WithdrawInterval)
@@ -73,14 +73,14 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[fractionrule.FieldWithdrawRate] = string(strBytes)
 	}
 
-	if h.BondCoinID == nil {
-		return fmt.Errorf("please give coinid")
+	if h.BondPoolCoinTypeID == nil {
+		return fmt.Errorf("please give poolcointypeid")
 	}
-	strBytes, err := json.Marshal(h.BondCoinID.String())
+	strBytes, err := json.Marshal(h.BondPoolCoinTypeID.String())
 	if err != nil {
 		return err
 	}
-	h.bondVals[fractionrule.FieldCoinID] = string(strBytes)
+	h.bondVals[fractionrule.FieldPoolCoinTypeID] = string(strBytes)
 
 	return nil
 }

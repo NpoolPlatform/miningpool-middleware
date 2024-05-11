@@ -11,21 +11,21 @@ import (
 )
 
 type Req struct {
-	ID           *uint32
-	EntID        *uuid.UUID
-	CoinID       *uuid.UUID
-	RootUserID   *uuid.UUID
-	Name         *string
-	ReadPageLink *string
-	DeletedAt    *uint32
+	ID             *uint32
+	EntID          *uuid.UUID
+	PoolCoinTypeID *uuid.UUID
+	RootUserID     *uuid.UUID
+	Name           *string
+	ReadPageLink   *string
+	DeletedAt      *uint32
 }
 
 func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
 	}
-	if req.CoinID != nil {
-		c.SetCoinID(*req.CoinID)
+	if req.PoolCoinTypeID != nil {
+		c.SetPoolCoinTypeID(*req.PoolCoinTypeID)
 	}
 	if req.RootUserID != nil {
 		c.SetRootUserID(*req.RootUserID)
@@ -40,8 +40,8 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 }
 
 func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, error) {
-	if req.CoinID != nil {
-		u = u.SetCoinID(*req.CoinID)
+	if req.PoolCoinTypeID != nil {
+		u = u.SetPoolCoinTypeID(*req.PoolCoinTypeID)
 	}
 	if req.RootUserID != nil {
 		u = u.SetRootUserID(*req.RootUserID)
@@ -59,12 +59,12 @@ func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, erro
 }
 
 type Conds struct {
-	ID         *cruder.Cond
-	EntID      *cruder.Cond
-	Name       *cruder.Cond
-	RootUserID *cruder.Cond
-	CoinID     *cruder.Cond
-	EntIDs     *cruder.Cond
+	ID             *cruder.Cond
+	EntID          *cruder.Cond
+	Name           *cruder.Cond
+	RootUserID     *cruder.Cond
+	PoolCoinTypeID *cruder.Cond
+	EntIDs         *cruder.Cond
 }
 
 func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, error) { //nolint
@@ -107,16 +107,16 @@ func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, erro
 			return nil, fmt.Errorf("invalid entids field")
 		}
 	}
-	if conds.CoinID != nil {
-		id, ok := conds.CoinID.Val.(uuid.UUID)
+	if conds.PoolCoinTypeID != nil {
+		id, ok := conds.PoolCoinTypeID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid coinid")
+			return nil, fmt.Errorf("invalid poolcointypeid")
 		}
-		switch conds.CoinID.Op {
+		switch conds.PoolCoinTypeID.Op {
 		case cruder.EQ:
-			q.Where(gooduserent.CoinID(id))
+			q.Where(gooduserent.PoolCoinTypeID(id))
 		default:
-			return nil, fmt.Errorf("invalid coinid field")
+			return nil, fmt.Errorf("invalid poolcointypeid field")
 		}
 	}
 	if conds.RootUserID != nil {

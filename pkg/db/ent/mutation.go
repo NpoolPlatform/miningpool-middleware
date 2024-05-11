@@ -820,8 +820,8 @@ func newCoinMutation(c config, op Op, opts ...coinOption) *CoinMutation {
 	return m
 }
 
-// withCoinID sets the ID field of the mutation.
-func withCoinID(id uint32) coinOption {
+// withPoolCoinTypeID sets the ID field of the mutation.
+func withPoolCoinTypeID(id uint32) coinOption {
 	return func(m *CoinMutation) {
 		var (
 			err   error

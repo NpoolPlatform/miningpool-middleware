@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 )
 
@@ -21,26 +21,28 @@ var goodUserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
+	PoolCoinTypeID: uuid.NewString(),
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	ReadPageLink:   "fffff",
-	RevenueType:    basetypes.RevenueType_FPPS,
+	RevenueType:    mpbasetypes.RevenueType_FPPS,
 }
 
 var goodUserReq = &npool.GoodUserReq{
-	EntID:        &goodUserRet.EntID,
-	Name:         &goodUserRet.Name,
-	RootUserID:   &goodUserRet.RootUserID,
-	ReadPageLink: &goodUserRet.ReadPageLink,
+	EntID:          &goodUserRet.EntID,
+	PoolCoinTypeID: &goodUserRet.PoolCoinTypeID,
+	Name:           &goodUserRet.Name,
+	RootUserID:     &goodUserRet.RootUserID,
+	ReadPageLink:   &goodUserRet.ReadPageLink,
 }
 
 func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmw.Conds{
-		CoinType: &v1.Uint32Val{
+		CoinType: &basetypes.Uint32Val{
 			Op:    cruder.EQ,
 			Value: uint32(ret.CoinType),
 		},
-		PoolID: &v1.StringVal{
+		PoolID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: rootUserRet.PoolID,
 		},
@@ -48,8 +50,8 @@ func createGoodUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, len(coinInfos))
 
-	goodUserRet.CoinID = coinInfos[0].EntID
-	goodUserReq.CoinID = &coinInfos[0].EntID
+	goodUserRet.PoolCoinTypeID = coinInfos[0].EntID
+	goodUserReq.PoolCoinTypeID = &coinInfos[0].EntID
 
 	err = gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
 	assert.Nil(t, err)
@@ -73,7 +75,7 @@ func createGoodUser(t *testing.T) {
 
 func deleteGoodUser(t *testing.T) {
 	exist, err := gooduserclient.ExistGoodUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: goodUserRet.EntID,
 		},
@@ -86,7 +88,7 @@ func deleteGoodUser(t *testing.T) {
 	assert.Nil(t, err)
 
 	exist, err = gooduserclient.ExistGoodUserConds(context.Background(), &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: goodUserRet.EntID,
 		},

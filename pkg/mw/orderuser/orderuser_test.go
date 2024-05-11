@@ -10,13 +10,14 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	apppool "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/app/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -35,8 +36,8 @@ var ret = &npool.OrderUser{
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	RevenueAddress: "sssss",
 	AutoPay:        false,
 }
@@ -101,8 +102,8 @@ func create(t *testing.T) {
 }
 
 func update(t *testing.T) {
-	ret.MiningpoolType = basetypes.MiningpoolType_F2Pool
-	ret.CoinType = basetypes.CoinType_BitCoin
+	ret.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
+	ret.CoinType = basetypes.CoinType_CoinTypeBitCoin
 	ret.Proportion = decimal.NewFromFloat(66).String()
 
 	handler, err := NewHandler(
@@ -127,7 +128,7 @@ func update(t *testing.T) {
 
 func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
 		},
@@ -177,7 +178,7 @@ func deleteRow(t *testing.T) {
 	handler, err = NewHandler(
 		context.Background(),
 		WithConds(&npool.Conds{
-			EntID: &v1.StringVal{
+			EntID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: ret.EntID,
 			},
@@ -196,6 +197,7 @@ func TestOrderUser(t *testing.T) {
 		return
 	}
 
+	pools.InitTestInfo(context.Background())
 	t.Run("create", createRootUser)
 	t.Run("create", createGoodUser)
 	t.Run("create", create)
@@ -203,4 +205,5 @@ func TestOrderUser(t *testing.T) {
 	t.Run("deleteRow", deleteRow)
 	t.Run("deleteRow", deleteGoodUser)
 	t.Run("deleteRow", deleteRootUser)
+	pools.CleanTestInfo(context.Background())
 }

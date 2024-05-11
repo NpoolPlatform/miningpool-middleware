@@ -19,13 +19,13 @@ func (h *Handler) UpdateGoodUser(ctx context.Context) error {
 		return fmt.Errorf("invalid id or ent_id")
 	}
 
-	coinID, err := uuid.Parse(info.CoinID)
+	coinID, err := uuid.Parse(info.PoolCoinTypeID)
 	if err != nil {
 		return err
 	}
 	sqlH := h.newSQLHandler()
 	sqlH.BondName = &info.Name
-	sqlH.BondCoinID = &coinID
+	sqlH.BondPoolCoinTypeID = &coinID
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()

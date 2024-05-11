@@ -23,7 +23,7 @@ var orderuserRet = &npool.OrderUser{
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_BitCoin,
+	CoinType:       v1.CoinType_CoinTypeBitCoin,
 	RevenueAddress: "sssss",
 	AutoPay:        false,
 }

@@ -153,15 +153,15 @@ func WithWithdrawAt(withdrawtime *uint32, must bool) func(context.Context, *Hand
 	}
 }
 
-func WithPromisePayAt(PromisePayAt *uint32, must bool) func(context.Context, *Handler) error {
+func WithPromisePayAt(promisepayat *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if PromisePayAt == nil {
+		if promisepayat == nil {
 			if must {
-				return fmt.Errorf("invalid PromisePayAt")
+				return fmt.Errorf("invalid promisepayat")
 			}
 			return nil
 		}
-		h.PromisePayAt = PromisePayAt
+		h.PromisePayAt = promisepayat
 		return nil
 	}
 }

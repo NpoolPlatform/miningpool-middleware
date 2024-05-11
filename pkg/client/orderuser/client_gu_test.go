@@ -21,7 +21,6 @@ var goodUserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
-	PoolCoinTypeID: uuid.NewString(),
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	ReadPageLink:   "fffff",
@@ -29,11 +28,10 @@ var goodUserRet = &npool.GoodUser{
 }
 
 var goodUserReq = &npool.GoodUserReq{
-	EntID:          &goodUserRet.EntID,
-	PoolCoinTypeID: &goodUserRet.PoolCoinTypeID,
-	Name:           &goodUserRet.Name,
-	RootUserID:     &goodUserRet.RootUserID,
-	ReadPageLink:   &goodUserRet.ReadPageLink,
+	EntID:        &goodUserRet.EntID,
+	Name:         &goodUserRet.Name,
+	RootUserID:   &goodUserRet.RootUserID,
+	ReadPageLink: &goodUserRet.ReadPageLink,
 }
 
 func createGoodUser(t *testing.T) {

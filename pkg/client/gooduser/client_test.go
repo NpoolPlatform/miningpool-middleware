@@ -35,7 +35,6 @@ var ret = &npool.GoodUser{
 	RootUserID:     rootUserRet.EntID,
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
-	HashRate:       66,
 	ReadPageLink:   "fffff",
 	RevenueType:    basetypes.RevenueType_FPPS,
 }
@@ -44,7 +43,6 @@ var req = &npool.GoodUserReq{
 	EntID:        &ret.EntID,
 	Name:         &ret.Name,
 	RootUserID:   &ret.RootUserID,
-	HashRate:     &ret.HashRate,
 	ReadPageLink: &ret.ReadPageLink,
 }
 
@@ -86,9 +84,7 @@ func createGoodUser(t *testing.T) {
 }
 
 func updateGoodUser(t *testing.T) {
-	ret.HashRate = 77
 	req.ID = &ret.ID
-	req.HashRate = &ret.HashRate
 	err := UpdateGoodUser(context.Background(), req)
 	assert.Nil(t, err)
 
@@ -98,9 +94,7 @@ func updateGoodUser(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.HashRate = 88
 	req.ID = &ret.ID
-	req.HashRate = &ret.HashRate
 	err = UpdateGoodUser(context.Background(), req)
 	assert.Nil(t, err)
 

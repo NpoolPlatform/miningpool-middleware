@@ -79,16 +79,16 @@ func (frc *FractionRuleCreate) SetNillableEntID(u *uuid.UUID) *FractionRuleCreat
 	return frc
 }
 
-// SetCoinID sets the "coin_id" field.
-func (frc *FractionRuleCreate) SetCoinID(u uuid.UUID) *FractionRuleCreate {
-	frc.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (frc *FractionRuleCreate) SetPoolCoinTypeID(u uuid.UUID) *FractionRuleCreate {
+	frc.mutation.SetPoolCoinTypeID(u)
 	return frc
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (frc *FractionRuleCreate) SetNillableCoinID(u *uuid.UUID) *FractionRuleCreate {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillablePoolCoinTypeID(u *uuid.UUID) *FractionRuleCreate {
 	if u != nil {
-		frc.SetCoinID(*u)
+		frc.SetPoolCoinTypeID(*u)
 	}
 	return frc
 }
@@ -248,12 +248,12 @@ func (frc *FractionRuleCreate) defaults() error {
 		v := fractionrule.DefaultEntID()
 		frc.mutation.SetEntID(v)
 	}
-	if _, ok := frc.mutation.CoinID(); !ok {
-		if fractionrule.DefaultCoinID == nil {
-			return fmt.Errorf("ent: uninitialized fractionrule.DefaultCoinID (forgotten import ent/runtime?)")
+	if _, ok := frc.mutation.PoolCoinTypeID(); !ok {
+		if fractionrule.DefaultPoolCoinTypeID == nil {
+			return fmt.Errorf("ent: uninitialized fractionrule.DefaultPoolCoinTypeID (forgotten import ent/runtime?)")
 		}
-		v := fractionrule.DefaultCoinID()
-		frc.mutation.SetCoinID(v)
+		v := fractionrule.DefaultPoolCoinTypeID()
+		frc.mutation.SetPoolCoinTypeID(v)
 	}
 	if _, ok := frc.mutation.WithdrawInterval(); !ok {
 		v := fractionrule.DefaultWithdrawInterval
@@ -350,13 +350,13 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 		})
 		_node.EntID = value
 	}
-	if value, ok := frc.mutation.CoinID(); ok {
+	if value, ok := frc.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fractionrule.FieldCoinID,
+			Column: fractionrule.FieldPoolCoinTypeID,
 		})
-		_node.CoinID = value
+		_node.PoolCoinTypeID = value
 	}
 	if value, ok := frc.mutation.WithdrawInterval(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -401,6 +401,7 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (frc *FractionRuleCreate) OnConflict(opts ...sql.ConflictOption) *FractionRuleUpsertOne {
 	frc.conflict = opts
 	return &FractionRuleUpsertOne{
@@ -414,6 +415,7 @@ func (frc *FractionRuleCreate) OnConflict(opts ...sql.ConflictOption) *FractionR
 //	client.FractionRule.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (frc *FractionRuleCreate) OnConflictColumns(columns ...string) *FractionRuleUpsertOne {
 	frc.conflict = append(frc.conflict, sql.ConflictColumns(columns...))
 	return &FractionRuleUpsertOne{
@@ -500,21 +502,21 @@ func (u *FractionRuleUpsert) UpdateEntID() *FractionRuleUpsert {
 	return u
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *FractionRuleUpsert) SetCoinID(v uuid.UUID) *FractionRuleUpsert {
-	u.Set(fractionrule.FieldCoinID, v)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *FractionRuleUpsert) SetPoolCoinTypeID(v uuid.UUID) *FractionRuleUpsert {
+	u.Set(fractionrule.FieldPoolCoinTypeID, v)
 	return u
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *FractionRuleUpsert) UpdateCoinID() *FractionRuleUpsert {
-	u.SetExcluded(fractionrule.FieldCoinID)
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *FractionRuleUpsert) UpdatePoolCoinTypeID() *FractionRuleUpsert {
+	u.SetExcluded(fractionrule.FieldPoolCoinTypeID)
 	return u
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *FractionRuleUpsert) ClearCoinID() *FractionRuleUpsert {
-	u.SetNull(fractionrule.FieldCoinID)
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *FractionRuleUpsert) ClearPoolCoinTypeID() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldPoolCoinTypeID)
 	return u
 }
 
@@ -589,6 +591,7 @@ func (u *FractionRuleUpsert) ClearWithdrawRate() *FractionRuleUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionRuleUpsertOne) UpdateNewValues() *FractionRuleUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -602,9 +605,10 @@ func (u *FractionRuleUpsertOne) UpdateNewValues() *FractionRuleUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.FractionRule.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.FractionRule.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *FractionRuleUpsertOne) Ignore() *FractionRuleUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -703,24 +707,24 @@ func (u *FractionRuleUpsertOne) UpdateEntID() *FractionRuleUpsertOne {
 	})
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *FractionRuleUpsertOne) SetCoinID(v uuid.UUID) *FractionRuleUpsertOne {
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *FractionRuleUpsertOne) SetPoolCoinTypeID(v uuid.UUID) *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetCoinID(v)
+		s.SetPoolCoinTypeID(v)
 	})
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *FractionRuleUpsertOne) UpdateCoinID() *FractionRuleUpsertOne {
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *FractionRuleUpsertOne) UpdatePoolCoinTypeID() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateCoinID()
+		s.UpdatePoolCoinTypeID()
 	})
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *FractionRuleUpsertOne) ClearCoinID() *FractionRuleUpsertOne {
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *FractionRuleUpsertOne) ClearPoolCoinTypeID() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearCoinID()
+		s.ClearPoolCoinTypeID()
 	})
 }
 
@@ -928,6 +932,7 @@ func (frcb *FractionRuleCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (frcb *FractionRuleCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionRuleUpsertBulk {
 	frcb.conflict = opts
 	return &FractionRuleUpsertBulk{
@@ -941,6 +946,7 @@ func (frcb *FractionRuleCreateBulk) OnConflict(opts ...sql.ConflictOption) *Frac
 //	client.FractionRule.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (frcb *FractionRuleCreateBulk) OnConflictColumns(columns ...string) *FractionRuleUpsertBulk {
 	frcb.conflict = append(frcb.conflict, sql.ConflictColumns(columns...))
 	return &FractionRuleUpsertBulk{
@@ -965,6 +971,7 @@ type FractionRuleUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionRuleUpsertBulk) UpdateNewValues() *FractionRuleUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -984,6 +991,7 @@ func (u *FractionRuleUpsertBulk) UpdateNewValues() *FractionRuleUpsertBulk {
 //	client.FractionRule.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *FractionRuleUpsertBulk) Ignore() *FractionRuleUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1082,24 +1090,24 @@ func (u *FractionRuleUpsertBulk) UpdateEntID() *FractionRuleUpsertBulk {
 	})
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *FractionRuleUpsertBulk) SetCoinID(v uuid.UUID) *FractionRuleUpsertBulk {
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *FractionRuleUpsertBulk) SetPoolCoinTypeID(v uuid.UUID) *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.SetCoinID(v)
+		s.SetPoolCoinTypeID(v)
 	})
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *FractionRuleUpsertBulk) UpdateCoinID() *FractionRuleUpsertBulk {
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *FractionRuleUpsertBulk) UpdatePoolCoinTypeID() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.UpdateCoinID()
+		s.UpdatePoolCoinTypeID()
 	})
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *FractionRuleUpsertBulk) ClearCoinID() *FractionRuleUpsertBulk {
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *FractionRuleUpsertBulk) ClearPoolCoinTypeID() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
-		s.ClearCoinID()
+		s.ClearPoolCoinTypeID()
 	})
 }
 

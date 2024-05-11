@@ -28,10 +28,8 @@ type GoodUser struct {
 	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// CoinID holds the value of the "coin_id" field.
-	CoinID uuid.UUID `json:"coin_id,omitempty"`
-	// HashRate holds the value of the "hash_rate" field.
-	HashRate float32 `json:"hash_rate,omitempty"`
+	// PoolCoinTypeID holds the value of the "pool_coin_type_id" field.
+	PoolCoinTypeID uuid.UUID `json:"pool_coin_type_id,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
 }
@@ -41,13 +39,11 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case gooduser.FieldHashRate:
-			values[i] = new(sql.NullFloat64)
 		case gooduser.FieldID, gooduser.FieldCreatedAt, gooduser.FieldUpdatedAt, gooduser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
 		case gooduser.FieldName, gooduser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldCoinID:
+		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldPoolCoinTypeID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -106,17 +102,11 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				gu.Name = value.String
 			}
-		case gooduser.FieldCoinID:
+		case gooduser.FieldPoolCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_id", values[i])
+				return fmt.Errorf("unexpected type %T for field pool_coin_type_id", values[i])
 			} else if value != nil {
-				gu.CoinID = *value
-			}
-		case gooduser.FieldHashRate:
-			if value, ok := values[i].(*sql.NullFloat64); !ok {
-				return fmt.Errorf("unexpected type %T for field hash_rate", values[i])
-			} else if value.Valid {
-				gu.HashRate = float32(value.Float64)
+				gu.PoolCoinTypeID = *value
 			}
 		case gooduser.FieldReadPageLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -170,11 +160,8 @@ func (gu *GoodUser) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(gu.Name)
 	builder.WriteString(", ")
-	builder.WriteString("coin_id=")
-	builder.WriteString(fmt.Sprintf("%v", gu.CoinID))
-	builder.WriteString(", ")
-	builder.WriteString("hash_rate=")
-	builder.WriteString(fmt.Sprintf("%v", gu.HashRate))
+	builder.WriteString("pool_coin_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", gu.PoolCoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(gu.ReadPageLink)

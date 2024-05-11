@@ -135,17 +135,17 @@ func WithdrawState(v string) predicate.Fraction {
 	})
 }
 
-// WithdrawTime applies equality check predicate on the "withdraw_time" field. It's identical to WithdrawTimeEQ.
-func WithdrawTime(v uint32) predicate.Fraction {
+// WithdrawAt applies equality check predicate on the "withdraw_at" field. It's identical to WithdrawAtEQ.
+func WithdrawAt(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldWithdrawTime), v))
+		s.Where(sql.EQ(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// PayTime applies equality check predicate on the "pay_time" field. It's identical to PayTimeEQ.
-func PayTime(v uint32) predicate.Fraction {
+// PromisePayAt applies equality check predicate on the "promise_pay_at" field. It's identical to PromisePayAtEQ.
+func PromisePayAt(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPayTime), v))
+		s.Where(sql.EQ(s.C(FieldPromisePayAt), v))
 	})
 }
 
@@ -759,159 +759,159 @@ func WithdrawStateContainsFold(v string) predicate.Fraction {
 	})
 }
 
-// WithdrawTimeEQ applies the EQ predicate on the "withdraw_time" field.
-func WithdrawTimeEQ(v uint32) predicate.Fraction {
+// WithdrawAtEQ applies the EQ predicate on the "withdraw_at" field.
+func WithdrawAtEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldWithdrawTime), v))
+		s.Where(sql.EQ(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeNEQ applies the NEQ predicate on the "withdraw_time" field.
-func WithdrawTimeNEQ(v uint32) predicate.Fraction {
+// WithdrawAtNEQ applies the NEQ predicate on the "withdraw_at" field.
+func WithdrawAtNEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldWithdrawTime), v))
+		s.Where(sql.NEQ(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeIn applies the In predicate on the "withdraw_time" field.
-func WithdrawTimeIn(vs ...uint32) predicate.Fraction {
+// WithdrawAtIn applies the In predicate on the "withdraw_at" field.
+func WithdrawAtIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldWithdrawTime), v...))
+		s.Where(sql.In(s.C(FieldWithdrawAt), v...))
 	})
 }
 
-// WithdrawTimeNotIn applies the NotIn predicate on the "withdraw_time" field.
-func WithdrawTimeNotIn(vs ...uint32) predicate.Fraction {
+// WithdrawAtNotIn applies the NotIn predicate on the "withdraw_at" field.
+func WithdrawAtNotIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldWithdrawTime), v...))
+		s.Where(sql.NotIn(s.C(FieldWithdrawAt), v...))
 	})
 }
 
-// WithdrawTimeGT applies the GT predicate on the "withdraw_time" field.
-func WithdrawTimeGT(v uint32) predicate.Fraction {
+// WithdrawAtGT applies the GT predicate on the "withdraw_at" field.
+func WithdrawAtGT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldWithdrawTime), v))
+		s.Where(sql.GT(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeGTE applies the GTE predicate on the "withdraw_time" field.
-func WithdrawTimeGTE(v uint32) predicate.Fraction {
+// WithdrawAtGTE applies the GTE predicate on the "withdraw_at" field.
+func WithdrawAtGTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldWithdrawTime), v))
+		s.Where(sql.GTE(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeLT applies the LT predicate on the "withdraw_time" field.
-func WithdrawTimeLT(v uint32) predicate.Fraction {
+// WithdrawAtLT applies the LT predicate on the "withdraw_at" field.
+func WithdrawAtLT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldWithdrawTime), v))
+		s.Where(sql.LT(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeLTE applies the LTE predicate on the "withdraw_time" field.
-func WithdrawTimeLTE(v uint32) predicate.Fraction {
+// WithdrawAtLTE applies the LTE predicate on the "withdraw_at" field.
+func WithdrawAtLTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldWithdrawTime), v))
+		s.Where(sql.LTE(s.C(FieldWithdrawAt), v))
 	})
 }
 
-// WithdrawTimeIsNil applies the IsNil predicate on the "withdraw_time" field.
-func WithdrawTimeIsNil() predicate.Fraction {
+// WithdrawAtIsNil applies the IsNil predicate on the "withdraw_at" field.
+func WithdrawAtIsNil() predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldWithdrawTime)))
+		s.Where(sql.IsNull(s.C(FieldWithdrawAt)))
 	})
 }
 
-// WithdrawTimeNotNil applies the NotNil predicate on the "withdraw_time" field.
-func WithdrawTimeNotNil() predicate.Fraction {
+// WithdrawAtNotNil applies the NotNil predicate on the "withdraw_at" field.
+func WithdrawAtNotNil() predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldWithdrawTime)))
+		s.Where(sql.NotNull(s.C(FieldWithdrawAt)))
 	})
 }
 
-// PayTimeEQ applies the EQ predicate on the "pay_time" field.
-func PayTimeEQ(v uint32) predicate.Fraction {
+// PromisePayAtEQ applies the EQ predicate on the "promise_pay_at" field.
+func PromisePayAtEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPayTime), v))
+		s.Where(sql.EQ(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeNEQ applies the NEQ predicate on the "pay_time" field.
-func PayTimeNEQ(v uint32) predicate.Fraction {
+// PromisePayAtNEQ applies the NEQ predicate on the "promise_pay_at" field.
+func PromisePayAtNEQ(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPayTime), v))
+		s.Where(sql.NEQ(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeIn applies the In predicate on the "pay_time" field.
-func PayTimeIn(vs ...uint32) predicate.Fraction {
+// PromisePayAtIn applies the In predicate on the "promise_pay_at" field.
+func PromisePayAtIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldPayTime), v...))
+		s.Where(sql.In(s.C(FieldPromisePayAt), v...))
 	})
 }
 
-// PayTimeNotIn applies the NotIn predicate on the "pay_time" field.
-func PayTimeNotIn(vs ...uint32) predicate.Fraction {
+// PromisePayAtNotIn applies the NotIn predicate on the "promise_pay_at" field.
+func PromisePayAtNotIn(vs ...uint32) predicate.Fraction {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldPayTime), v...))
+		s.Where(sql.NotIn(s.C(FieldPromisePayAt), v...))
 	})
 }
 
-// PayTimeGT applies the GT predicate on the "pay_time" field.
-func PayTimeGT(v uint32) predicate.Fraction {
+// PromisePayAtGT applies the GT predicate on the "promise_pay_at" field.
+func PromisePayAtGT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldPayTime), v))
+		s.Where(sql.GT(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeGTE applies the GTE predicate on the "pay_time" field.
-func PayTimeGTE(v uint32) predicate.Fraction {
+// PromisePayAtGTE applies the GTE predicate on the "promise_pay_at" field.
+func PromisePayAtGTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldPayTime), v))
+		s.Where(sql.GTE(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeLT applies the LT predicate on the "pay_time" field.
-func PayTimeLT(v uint32) predicate.Fraction {
+// PromisePayAtLT applies the LT predicate on the "promise_pay_at" field.
+func PromisePayAtLT(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldPayTime), v))
+		s.Where(sql.LT(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeLTE applies the LTE predicate on the "pay_time" field.
-func PayTimeLTE(v uint32) predicate.Fraction {
+// PromisePayAtLTE applies the LTE predicate on the "promise_pay_at" field.
+func PromisePayAtLTE(v uint32) predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldPayTime), v))
+		s.Where(sql.LTE(s.C(FieldPromisePayAt), v))
 	})
 }
 
-// PayTimeIsNil applies the IsNil predicate on the "pay_time" field.
-func PayTimeIsNil() predicate.Fraction {
+// PromisePayAtIsNil applies the IsNil predicate on the "promise_pay_at" field.
+func PromisePayAtIsNil() predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldPayTime)))
+		s.Where(sql.IsNull(s.C(FieldPromisePayAt)))
 	})
 }
 
-// PayTimeNotNil applies the NotNil predicate on the "pay_time" field.
-func PayTimeNotNil() predicate.Fraction {
+// PromisePayAtNotNil applies the NotNil predicate on the "promise_pay_at" field.
+func PromisePayAtNotNil() predicate.Fraction {
 	return predicate.Fraction(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldPayTime)))
+		s.Where(sql.NotNull(s.C(FieldPromisePayAt)))
 	})
 }
 

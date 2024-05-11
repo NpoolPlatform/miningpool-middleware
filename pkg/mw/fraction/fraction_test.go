@@ -45,8 +45,8 @@ var req = &npool.FractionReq{
 	UserID:        &ret.UserID,
 	OrderUserID:   &ret.OrderUserID,
 	WithdrawState: &ret.WithdrawState,
-	WithdrawTime:  &ret.WithdrawTime,
-	PayTime:       &ret.PayTime,
+	WithdrawAt:    &ret.WithdrawAt,
+	PromisePayAt:  &ret.PromisePayAt,
 }
 
 func create(t *testing.T) {
@@ -70,8 +70,8 @@ func create(t *testing.T) {
 		ret.ID = info.ID
 		ret.EntID = info.EntID
 		ret.WithdrawState = info.WithdrawState
-		ret.WithdrawTime = info.WithdrawTime
-		ret.PayTime = info.PayTime
+		ret.WithdrawAt = info.WithdrawAt
+		ret.PromisePayAt = info.PromisePayAt
 		ret.Msg = info.Msg
 		assert.Equal(t, info, ret)
 	}
@@ -79,14 +79,14 @@ func create(t *testing.T) {
 
 func update(t *testing.T) {
 	ret.WithdrawState = basetypes.WithdrawState_WithdrawStateSuccess
-	ret.WithdrawTime = 8888
+	ret.WithdrawAt = 8888
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithWithdrawState(&ret.WithdrawState, false),
-		WithWithdrawTime(&ret.WithdrawTime, false),
-		WithPayTime(nil, false),
+		WithWithdrawAt(&ret.WithdrawAt, false),
+		WithPromisePayAt(nil, false),
 	)
 	assert.Nil(t, err)
 
@@ -101,14 +101,14 @@ func update(t *testing.T) {
 	}
 
 	ret.WithdrawStateStr = basetypes.WithdrawState_WithdrawStateFailed.String()
-	ret.PayTime = 9999
+	ret.PromisePayAt = 9999
 
 	handler, err = NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
 		WithWithdrawState(&ret.WithdrawState, false),
-		WithWithdrawTime(&ret.WithdrawTime, false),
-		WithPayTime(&ret.PayTime, false),
+		WithWithdrawAt(&ret.WithdrawAt, false),
+		WithPromisePayAt(&ret.PromisePayAt, false),
 	)
 	assert.Nil(t, err)
 

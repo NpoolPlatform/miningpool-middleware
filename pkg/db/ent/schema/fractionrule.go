@@ -26,7 +26,7 @@ func (FractionRule) Mixin() []ent.Mixin {
 func (FractionRule) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			UUID("coin_id", uuid.UUID{}).
+			UUID("pool_coin_type_id", uuid.UUID{}).
 			Optional().
 			Default(func() uuid.UUID {
 				return uuid.Nil

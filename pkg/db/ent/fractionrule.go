@@ -25,8 +25,8 @@ type FractionRule struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// CoinID holds the value of the "coin_id" field.
-	CoinID uuid.UUID `json:"coin_id,omitempty"`
+	// PoolCoinTypeID holds the value of the "pool_coin_type_id" field.
+	PoolCoinTypeID uuid.UUID `json:"pool_coin_type_id,omitempty"`
 	// WithdrawInterval holds the value of the "withdraw_interval" field.
 	WithdrawInterval uint32 `json:"withdraw_interval,omitempty"`
 	// MinAmount holds the value of the "min_amount" field.
@@ -44,7 +44,7 @@ func (*FractionRule) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(decimal.Decimal)
 		case fractionrule.FieldID, fractionrule.FieldCreatedAt, fractionrule.FieldUpdatedAt, fractionrule.FieldDeletedAt, fractionrule.FieldWithdrawInterval:
 			values[i] = new(sql.NullInt64)
-		case fractionrule.FieldEntID, fractionrule.FieldCoinID:
+		case fractionrule.FieldEntID, fractionrule.FieldPoolCoinTypeID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FractionRule", columns[i])
@@ -91,11 +91,11 @@ func (fr *FractionRule) assignValues(columns []string, values []interface{}) err
 			} else if value != nil {
 				fr.EntID = *value
 			}
-		case fractionrule.FieldCoinID:
+		case fractionrule.FieldPoolCoinTypeID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field coin_id", values[i])
+				return fmt.Errorf("unexpected type %T for field pool_coin_type_id", values[i])
 			} else if value != nil {
-				fr.CoinID = *value
+				fr.PoolCoinTypeID = *value
 			}
 		case fractionrule.FieldWithdrawInterval:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -155,8 +155,8 @@ func (fr *FractionRule) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", fr.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("coin_id=")
-	builder.WriteString(fmt.Sprintf("%v", fr.CoinID))
+	builder.WriteString("pool_coin_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", fr.PoolCoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_interval=")
 	builder.WriteString(fmt.Sprintf("%v", fr.WithdrawInterval))

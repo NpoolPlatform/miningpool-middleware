@@ -16,7 +16,6 @@ type Req struct {
 	CoinID       *uuid.UUID
 	RootUserID   *uuid.UUID
 	Name         *string
-	HashRate     *float32
 	ReadPageLink *string
 	DeletedAt    *uint32
 }
@@ -34,9 +33,6 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.Name != nil {
 		c.SetName(*req.Name)
 	}
-	if req.HashRate != nil {
-		c.SetHashRate(*req.HashRate)
-	}
 	if req.ReadPageLink != nil {
 		c.SetReadPageLink(*req.ReadPageLink)
 	}
@@ -52,9 +48,6 @@ func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, erro
 	}
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
-	}
-	if req.HashRate != nil {
-		u = u.SetHashRate(*req.HashRate)
 	}
 	if req.ReadPageLink != nil {
 		u = u.SetReadPageLink(*req.ReadPageLink)

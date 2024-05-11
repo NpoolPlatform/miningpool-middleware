@@ -29,6 +29,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 		ctx,
 		coin.WithEntID(req.EntID, false),
 		coin.WithPoolID(req.PoolID, true),
+		coin.WithCoinTypeID(req.CoinTypeID, true),
 		coin.WithCoinType(req.CoinType, true),
 		coin.WithRevenueType(req.RevenueType, true),
 		coin.WithFeeRatio(req.FeeRatio, true),

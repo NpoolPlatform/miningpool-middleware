@@ -106,30 +106,16 @@ func (guc *GoodUserCreate) SetNillableName(s *string) *GoodUserCreate {
 	return guc
 }
 
-// SetCoinID sets the "coin_id" field.
-func (guc *GoodUserCreate) SetCoinID(u uuid.UUID) *GoodUserCreate {
-	guc.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (guc *GoodUserCreate) SetPoolCoinTypeID(u uuid.UUID) *GoodUserCreate {
+	guc.mutation.SetPoolCoinTypeID(u)
 	return guc
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableCoinID(u *uuid.UUID) *GoodUserCreate {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (guc *GoodUserCreate) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserCreate {
 	if u != nil {
-		guc.SetCoinID(*u)
-	}
-	return guc
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (guc *GoodUserCreate) SetHashRate(f float32) *GoodUserCreate {
-	guc.mutation.SetHashRate(f)
-	return guc
-}
-
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillableHashRate(f *float32) *GoodUserCreate {
-	if f != nil {
-		guc.SetHashRate(*f)
+		guc.SetPoolCoinTypeID(*u)
 	}
 	return guc
 }
@@ -272,16 +258,12 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultName
 		guc.mutation.SetName(v)
 	}
-	if _, ok := guc.mutation.CoinID(); !ok {
-		if gooduser.DefaultCoinID == nil {
-			return fmt.Errorf("ent: uninitialized gooduser.DefaultCoinID (forgotten import ent/runtime?)")
+	if _, ok := guc.mutation.PoolCoinTypeID(); !ok {
+		if gooduser.DefaultPoolCoinTypeID == nil {
+			return fmt.Errorf("ent: uninitialized gooduser.DefaultPoolCoinTypeID (forgotten import ent/runtime?)")
 		}
-		v := gooduser.DefaultCoinID()
-		guc.mutation.SetCoinID(v)
-	}
-	if _, ok := guc.mutation.HashRate(); !ok {
-		v := gooduser.DefaultHashRate
-		guc.mutation.SetHashRate(v)
+		v := gooduser.DefaultPoolCoinTypeID()
+		guc.mutation.SetPoolCoinTypeID(v)
 	}
 	if _, ok := guc.mutation.ReadPageLink(); !ok {
 		v := gooduser.DefaultReadPageLink
@@ -386,21 +368,13 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := guc.mutation.CoinID(); ok {
+	if value, ok := guc.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: gooduser.FieldCoinID,
+			Column: gooduser.FieldPoolCoinTypeID,
 		})
-		_node.CoinID = value
-	}
-	if value, ok := guc.mutation.HashRate(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-		_node.HashRate = value
+		_node.PoolCoinTypeID = value
 	}
 	if value, ok := guc.mutation.ReadPageLink(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -429,6 +403,7 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (guc *GoodUserCreate) OnConflict(opts ...sql.ConflictOption) *GoodUserUpsertOne {
 	guc.conflict = opts
 	return &GoodUserUpsertOne{
@@ -442,6 +417,7 @@ func (guc *GoodUserCreate) OnConflict(opts ...sql.ConflictOption) *GoodUserUpser
 //	client.GoodUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (guc *GoodUserCreate) OnConflictColumns(columns ...string) *GoodUserUpsertOne {
 	guc.conflict = append(guc.conflict, sql.ConflictColumns(columns...))
 	return &GoodUserUpsertOne{
@@ -564,45 +540,21 @@ func (u *GoodUserUpsert) ClearName() *GoodUserUpsert {
 	return u
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *GoodUserUpsert) SetCoinID(v uuid.UUID) *GoodUserUpsert {
-	u.Set(gooduser.FieldCoinID, v)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *GoodUserUpsert) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsert {
+	u.Set(gooduser.FieldPoolCoinTypeID, v)
 	return u
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateCoinID() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldCoinID)
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *GoodUserUpsert) UpdatePoolCoinTypeID() *GoodUserUpsert {
+	u.SetExcluded(gooduser.FieldPoolCoinTypeID)
 	return u
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *GoodUserUpsert) ClearCoinID() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldCoinID)
-	return u
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsert) SetHashRate(v float32) *GoodUserUpsert {
-	u.Set(gooduser.FieldHashRate, v)
-	return u
-}
-
-// UpdateHashRate sets the "hash_rate" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdateHashRate() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldHashRate)
-	return u
-}
-
-// AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsert) AddHashRate(v float32) *GoodUserUpsert {
-	u.Add(gooduser.FieldHashRate, v)
-	return u
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsert) ClearHashRate() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldHashRate)
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *GoodUserUpsert) ClearPoolCoinTypeID() *GoodUserUpsert {
+	u.SetNull(gooduser.FieldPoolCoinTypeID)
 	return u
 }
 
@@ -635,6 +587,7 @@ func (u *GoodUserUpsert) ClearReadPageLink() *GoodUserUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertOne) UpdateNewValues() *GoodUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -648,9 +601,10 @@ func (u *GoodUserUpsertOne) UpdateNewValues() *GoodUserUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.GoodUser.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.GoodUser.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *GoodUserUpsertOne) Ignore() *GoodUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -791,52 +745,24 @@ func (u *GoodUserUpsertOne) ClearName() *GoodUserUpsertOne {
 	})
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *GoodUserUpsertOne) SetCoinID(v uuid.UUID) *GoodUserUpsertOne {
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *GoodUserUpsertOne) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetCoinID(v)
+		s.SetPoolCoinTypeID(v)
 	})
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateCoinID() *GoodUserUpsertOne {
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *GoodUserUpsertOne) UpdatePoolCoinTypeID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateCoinID()
+		s.UpdatePoolCoinTypeID()
 	})
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *GoodUserUpsertOne) ClearCoinID() *GoodUserUpsertOne {
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *GoodUserUpsertOne) ClearPoolCoinTypeID() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearCoinID()
-	})
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsertOne) SetHashRate(v float32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetHashRate(v)
-	})
-}
-
-// AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsertOne) AddHashRate(v float32) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddHashRate(v)
-	})
-}
-
-// UpdateHashRate sets the "hash_rate" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdateHashRate() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateHashRate()
-	})
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsertOne) ClearHashRate() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearHashRate()
+		s.ClearPoolCoinTypeID()
 	})
 }
 
@@ -995,6 +921,7 @@ func (gucb *GoodUserCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (gucb *GoodUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *GoodUserUpsertBulk {
 	gucb.conflict = opts
 	return &GoodUserUpsertBulk{
@@ -1008,6 +935,7 @@ func (gucb *GoodUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *GoodUser
 //	client.GoodUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (gucb *GoodUserCreateBulk) OnConflictColumns(columns ...string) *GoodUserUpsertBulk {
 	gucb.conflict = append(gucb.conflict, sql.ConflictColumns(columns...))
 	return &GoodUserUpsertBulk{
@@ -1032,6 +960,7 @@ type GoodUserUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertBulk) UpdateNewValues() *GoodUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1051,6 +980,7 @@ func (u *GoodUserUpsertBulk) UpdateNewValues() *GoodUserUpsertBulk {
 //	client.GoodUser.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *GoodUserUpsertBulk) Ignore() *GoodUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1191,52 +1121,24 @@ func (u *GoodUserUpsertBulk) ClearName() *GoodUserUpsertBulk {
 	})
 }
 
-// SetCoinID sets the "coin_id" field.
-func (u *GoodUserUpsertBulk) SetCoinID(v uuid.UUID) *GoodUserUpsertBulk {
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (u *GoodUserUpsertBulk) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.SetCoinID(v)
+		s.SetPoolCoinTypeID(v)
 	})
 }
 
-// UpdateCoinID sets the "coin_id" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateCoinID() *GoodUserUpsertBulk {
+// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
+func (u *GoodUserUpsertBulk) UpdatePoolCoinTypeID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateCoinID()
+		s.UpdatePoolCoinTypeID()
 	})
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (u *GoodUserUpsertBulk) ClearCoinID() *GoodUserUpsertBulk {
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (u *GoodUserUpsertBulk) ClearPoolCoinTypeID() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearCoinID()
-	})
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (u *GoodUserUpsertBulk) SetHashRate(v float32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetHashRate(v)
-	})
-}
-
-// AddHashRate adds v to the "hash_rate" field.
-func (u *GoodUserUpsertBulk) AddHashRate(v float32) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.AddHashRate(v)
-	})
-}
-
-// UpdateHashRate sets the "hash_rate" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdateHashRate() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdateHashRate()
-	})
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (u *GoodUserUpsertBulk) ClearHashRate() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearHashRate()
+		s.ClearPoolCoinTypeID()
 	})
 }
 

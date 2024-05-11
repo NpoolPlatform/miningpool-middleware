@@ -62,8 +62,8 @@ func (h *Handler) UpdateFraction(ctx context.Context) error {
 				UserID:        h.UserID,
 				OrderUserID:   h.OrderUserID,
 				WithdrawState: h.WithdrawState,
-				WithdrawTime:  h.WithdrawTime,
-				PayTime:       h.PayTime,
+				WithdrawAt:    h.WithdrawAt,
+				PromisePayAt:  h.PromisePayAt,
 				Msg:           h.Msg,
 			},
 		)

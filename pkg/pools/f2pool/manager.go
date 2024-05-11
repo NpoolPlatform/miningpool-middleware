@@ -9,7 +9,8 @@ import (
 	"strings"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
-	basetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	miningpoolbase "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetype "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/const/time"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
@@ -26,18 +27,18 @@ type Manager struct {
 }
 
 var (
-	MiningPoolType                                 = basetype.MiningpoolType_F2Pool
+	MiningPoolType                                 = miningpoolbase.MiningpoolType_F2Pool
 	CoinType2Currency map[basetype.CoinType]string = map[basetype.CoinType]string{
-		basetype.CoinType_BitCoin: "bitcoin",
+		basetype.CoinType_CoinTypeBitCoin: "bitcoin",
 	}
 	CoinType2LeastTransferAmount map[basetype.CoinType]string = map[basetype.CoinType]string{
-		basetype.CoinType_BitCoin: "0.005",
+		basetype.CoinType_CoinTypeBitCoin: "0.005",
 	}
 	CoinType2FeeRatio map[basetype.CoinType]string = map[basetype.CoinType]string{
-		basetype.CoinType_BitCoin: "0.04",
+		basetype.CoinType_CoinTypeBitCoin: "0.04",
 	}
 	CoinType2BenefitIntervalSeconds map[basetype.CoinType]uint32 = map[basetype.CoinType]uint32{
-		basetype.CoinType_BitCoin: time.SecondsPerDay,
+		basetype.CoinType_CoinTypeBitCoin: time.SecondsPerDay,
 	}
 	MaxRetries    = 10
 	MaxProportion = decimal.NewFromFloat(100)

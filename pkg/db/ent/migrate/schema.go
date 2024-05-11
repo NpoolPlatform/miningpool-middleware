@@ -39,6 +39,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "pool_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "revenue_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "fee_ratio", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
@@ -71,8 +72,8 @@ var (
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "order_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_state", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "withdraw_time", Type: field.TypeUint32, Nullable: true, Default: 0},
-		{Name: "pay_time", Type: field.TypeUint32, Nullable: true, Default: 0},
+		{Name: "withdraw_at", Type: field.TypeUint32, Nullable: true, Default: 0},
+		{Name: "promise_pay_at", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "msg", Type: field.TypeString, Nullable: true, Default: ""},
 	}
 	// FractionsTable holds the schema information for the "fractions" table.
@@ -100,7 +101,7 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "coin_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_interval", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "min_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "withdraw_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
@@ -127,8 +128,7 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "coin_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "hash_rate", Type: field.TypeFloat32, Nullable: true, Default: 0},
+		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.

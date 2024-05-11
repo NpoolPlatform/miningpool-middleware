@@ -126,19 +126,6 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-func WithHashRate(hashrate *float32, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if hashrate == nil || *hashrate < 0 {
-			if must {
-				return fmt.Errorf("invalid hashrate")
-			}
-			return nil
-		}
-		h.HashRate = hashrate
-		return nil
-	}
-}
-
 func WithReadPageLink(readpagelink *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if readpagelink == nil {

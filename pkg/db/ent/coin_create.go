@@ -93,6 +93,20 @@ func (cc *CoinCreate) SetNillablePoolID(u *uuid.UUID) *CoinCreate {
 	return cc
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (cc *CoinCreate) SetCoinTypeID(u uuid.UUID) *CoinCreate {
+	cc.mutation.SetCoinTypeID(u)
+	return cc
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (cc *CoinCreate) SetNillableCoinTypeID(u *uuid.UUID) *CoinCreate {
+	if u != nil {
+		cc.SetCoinTypeID(*u)
+	}
+	return cc
+}
+
 // SetCoinType sets the "coin_type" field.
 func (cc *CoinCreate) SetCoinType(s string) *CoinCreate {
 	cc.mutation.SetCoinType(s)
@@ -311,6 +325,13 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultPoolID()
 		cc.mutation.SetPoolID(v)
 	}
+	if _, ok := cc.mutation.CoinTypeID(); !ok {
+		if coin.DefaultCoinTypeID == nil {
+			return fmt.Errorf("ent: uninitialized coin.DefaultCoinTypeID (forgotten import ent/runtime?)")
+		}
+		v := coin.DefaultCoinTypeID()
+		cc.mutation.SetCoinTypeID(v)
+	}
 	if _, ok := cc.mutation.CoinType(); !ok {
 		v := coin.DefaultCoinType
 		cc.mutation.SetCoinType(v)
@@ -430,6 +451,14 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.PoolID = value
 	}
+	if value, ok := cc.mutation.CoinTypeID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: coin.FieldCoinTypeID,
+		})
+		_node.CoinTypeID = value
+	}
 	if value, ok := cc.mutation.CoinType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -505,6 +534,7 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 	cc.conflict = opts
 	return &CoinUpsertOne{
@@ -518,6 +548,7 @@ func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (cc *CoinCreate) OnConflictColumns(columns ...string) *CoinUpsertOne {
 	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertOne{
@@ -619,6 +650,24 @@ func (u *CoinUpsert) UpdatePoolID() *CoinUpsert {
 // ClearPoolID clears the value of the "pool_id" field.
 func (u *CoinUpsert) ClearPoolID() *CoinUpsert {
 	u.SetNull(coin.FieldPoolID)
+	return u
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *CoinUpsert) SetCoinTypeID(v uuid.UUID) *CoinUpsert {
+	u.Set(coin.FieldCoinTypeID, v)
+	return u
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *CoinUpsert) UpdateCoinTypeID() *CoinUpsert {
+	u.SetExcluded(coin.FieldCoinTypeID)
+	return u
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *CoinUpsert) ClearCoinTypeID() *CoinUpsert {
+	u.SetNull(coin.FieldCoinTypeID)
 	return u
 }
 
@@ -765,6 +814,7 @@ func (u *CoinUpsert) ClearRemark() *CoinUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -778,9 +828,10 @@ func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Coin.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.Coin.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *CoinUpsertOne) Ignore() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -897,6 +948,27 @@ func (u *CoinUpsertOne) UpdatePoolID() *CoinUpsertOne {
 func (u *CoinUpsertOne) ClearPoolID() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearPoolID()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *CoinUpsertOne) SetCoinTypeID(v uuid.UUID) *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *CoinUpsertOne) UpdateCoinTypeID() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *CoinUpsertOne) ClearCoinTypeID() *CoinUpsertOne {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 
@@ -1188,6 +1260,7 @@ func (ccb *CoinCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBulk {
 	ccb.conflict = opts
 	return &CoinUpsertBulk{
@@ -1201,6 +1274,7 @@ func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBul
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (ccb *CoinCreateBulk) OnConflictColumns(columns ...string) *CoinUpsertBulk {
 	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertBulk{
@@ -1225,6 +1299,7 @@ type CoinUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1244,6 +1319,7 @@ func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 //	client.Coin.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *CoinUpsertBulk) Ignore() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1360,6 +1436,27 @@ func (u *CoinUpsertBulk) UpdatePoolID() *CoinUpsertBulk {
 func (u *CoinUpsertBulk) ClearPoolID() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearPoolID()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *CoinUpsertBulk) SetCoinTypeID(v uuid.UUID) *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *CoinUpsertBulk) UpdateCoinTypeID() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *CoinUpsertBulk) ClearCoinTypeID() *CoinUpsertBulk {
+	return u.Update(func(s *CoinUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 

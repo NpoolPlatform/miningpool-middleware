@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/google/uuid"
 )
@@ -52,6 +52,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[coin.FieldPoolID] = string(strBytes)
 		h.BondPoolID = h.PoolID
+	}
+	if h.CoinTypeID != nil {
+		strBytes, err := json.Marshal(h.CoinTypeID.String())
+		if err != nil {
+			return err
+		}
+		h.baseVals[coin.FieldCoinTypeID] = string(strBytes)
 	}
 	if h.CoinType != nil {
 		strBytes, err := json.Marshal(h.CoinType.String())

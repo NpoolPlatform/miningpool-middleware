@@ -56,18 +56,18 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return err
 	}
 	withdrawTime := uint32(time.Now().Unix())
-	h.WithdrawTime = &withdrawTime
-	_paytime, err := mgr.WithdrawPraction(ctx, orderUser.Name)
-	paytime := uint32(_paytime)
+	h.WithdrawAt = &withdrawTime
+	_PromisePayAt, err := mgr.WithdrawPraction(ctx, orderUser.Name)
+	PromisePayAt := uint32(_PromisePayAt)
 	if err != nil {
 		errMsg := err.Error()
 		h.Msg = &errMsg
 		h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
-	} else if paytime == 0 {
-		h.PayTime = &paytime
+	} else if PromisePayAt == 0 {
+		h.PromisePayAt = &PromisePayAt
 		h.WithdrawState = v1.WithdrawState_WithdrawStateFailed.Enum()
 	} else {
-		h.PayTime = &paytime
+		h.PromisePayAt = &PromisePayAt
 		h.WithdrawState = v1.WithdrawState_WithdrawStateSuccess.Enum()
 	}
 	return nil
@@ -92,8 +92,8 @@ func (h *Handler) CreateFraction(ctx context.Context) error {
 				UserID:        h.UserID,
 				OrderUserID:   h.OrderUserID,
 				WithdrawState: h.WithdrawState,
-				WithdrawTime:  h.WithdrawTime,
-				PayTime:       h.PayTime,
+				WithdrawAt:    h.WithdrawAt,
+				PromisePayAt:  h.PromisePayAt,
 				Msg:           h.Msg,
 			},
 		).Save(ctx)

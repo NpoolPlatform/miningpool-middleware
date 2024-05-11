@@ -23,7 +23,6 @@ var goodUserRet = &npool.GoodUser{
 	RootUserID:     rootUserRet.EntID,
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_BitCoin,
-	HashRate:       66,
 	ReadPageLink:   "fffff",
 	RevenueType:    basetypes.RevenueType_FPPS,
 }
@@ -32,7 +31,6 @@ var goodUserReq = &npool.GoodUserReq{
 	EntID:        &goodUserRet.EntID,
 	Name:         &goodUserRet.Name,
 	RootUserID:   &goodUserRet.RootUserID,
-	HashRate:     &goodUserRet.HashRate,
 	ReadPageLink: &goodUserRet.ReadPageLink,
 }
 

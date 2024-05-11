@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	coinent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/shopspring/decimal"
@@ -16,8 +17,9 @@ type Req struct {
 	ID                     *uint32
 	EntID                  *uuid.UUID
 	PoolID                 *uuid.UUID
+	CoinTypeID             *uuid.UUID
 	CoinType               *basetypes.CoinType
-	RevenueType            *basetypes.RevenueType
+	RevenueType            *mpbasetypes.RevenueType
 	FeeRatio               *decimal.Decimal
 	FixedRevenueAble       *bool
 	LeastTransferAmount    *decimal.Decimal
@@ -32,6 +34,9 @@ func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 	}
 	if req.PoolID != nil {
 		c.SetPoolID(*req.PoolID)
+	}
+	if req.CoinTypeID != nil {
+		c.SetCoinTypeID(*req.CoinTypeID)
 	}
 	if req.CoinType != nil {
 		c.SetCoinType(req.CoinType.String())
@@ -60,6 +65,9 @@ func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 	if req.PoolID != nil {
 		u = u.SetPoolID(*req.PoolID)
+	}
+	if req.CoinTypeID != nil {
+		u = u.SetCoinTypeID(*req.CoinTypeID)
 	}
 	if req.CoinType != nil {
 		u = u.SetCoinType(req.CoinType.String())
@@ -92,6 +100,7 @@ type Conds struct {
 	ID               *cruder.Cond
 	EntID            *cruder.Cond
 	PoolID           *cruder.Cond
+	CoinTypeID       *cruder.Cond
 	CoinType         *cruder.Cond
 	MiningpoolType   *cruder.Cond
 	RevenueType      *cruder.Cond
@@ -151,6 +160,18 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			return nil, fmt.Errorf("invalid poolid field")
 		}
 	}
+	if conds.CoinTypeID != nil {
+		cointypeid, ok := conds.CoinTypeID.Val.(uuid.UUID)
+		if !ok {
+			return nil, fmt.Errorf("invalid cointypeid")
+		}
+		switch conds.CoinTypeID.Op {
+		case cruder.EQ:
+			q.Where(coinent.CoinTypeID(cointypeid))
+		default:
+			return nil, fmt.Errorf("invalid cointypeid field")
+		}
+	}
 	if conds.CoinType != nil {
 		cointype, ok := conds.CoinType.Val.(basetypes.CoinType)
 		if !ok {
@@ -164,7 +185,7 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 		}
 	}
 	if conds.RevenueType != nil {
-		revenuetype, ok := conds.RevenueType.Val.(basetypes.RevenueType)
+		revenuetype, ok := conds.RevenueType.Val.(mpbasetypes.RevenueType)
 		if !ok {
 			return nil, fmt.Errorf("invalid revenuetype")
 		}

@@ -138,50 +138,23 @@ func (guu *GoodUserUpdate) ClearName() *GoodUserUpdate {
 	return guu
 }
 
-// SetCoinID sets the "coin_id" field.
-func (guu *GoodUserUpdate) SetCoinID(u uuid.UUID) *GoodUserUpdate {
-	guu.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (guu *GoodUserUpdate) SetPoolCoinTypeID(u uuid.UUID) *GoodUserUpdate {
+	guu.mutation.SetPoolCoinTypeID(u)
 	return guu
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillableCoinID(u *uuid.UUID) *GoodUserUpdate {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (guu *GoodUserUpdate) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserUpdate {
 	if u != nil {
-		guu.SetCoinID(*u)
+		guu.SetPoolCoinTypeID(*u)
 	}
 	return guu
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (guu *GoodUserUpdate) ClearCoinID() *GoodUserUpdate {
-	guu.mutation.ClearCoinID()
-	return guu
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (guu *GoodUserUpdate) SetHashRate(f float32) *GoodUserUpdate {
-	guu.mutation.ResetHashRate()
-	guu.mutation.SetHashRate(f)
-	return guu
-}
-
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillableHashRate(f *float32) *GoodUserUpdate {
-	if f != nil {
-		guu.SetHashRate(*f)
-	}
-	return guu
-}
-
-// AddHashRate adds f to the "hash_rate" field.
-func (guu *GoodUserUpdate) AddHashRate(f float32) *GoodUserUpdate {
-	guu.mutation.AddHashRate(f)
-	return guu
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (guu *GoodUserUpdate) ClearHashRate() *GoodUserUpdate {
-	guu.mutation.ClearHashRate()
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (guu *GoodUserUpdate) ClearPoolCoinTypeID() *GoodUserUpdate {
+	guu.mutation.ClearPoolCoinTypeID()
 	return guu
 }
 
@@ -378,37 +351,17 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldName,
 		})
 	}
-	if value, ok := guu.mutation.CoinID(); ok {
+	if value, ok := guu.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: gooduser.FieldCoinID,
+			Column: gooduser.FieldPoolCoinTypeID,
 		})
 	}
-	if guu.mutation.CoinIDCleared() {
+	if guu.mutation.PoolCoinTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: gooduser.FieldCoinID,
-		})
-	}
-	if value, ok := guu.mutation.HashRate(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if value, ok := guu.mutation.AddedHashRate(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if guu.mutation.HashRateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Column: gooduser.FieldHashRate,
+			Column: gooduser.FieldPoolCoinTypeID,
 		})
 	}
 	if value, ok := guu.mutation.ReadPageLink(); ok {
@@ -554,50 +507,23 @@ func (guuo *GoodUserUpdateOne) ClearName() *GoodUserUpdateOne {
 	return guuo
 }
 
-// SetCoinID sets the "coin_id" field.
-func (guuo *GoodUserUpdateOne) SetCoinID(u uuid.UUID) *GoodUserUpdateOne {
-	guuo.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (guuo *GoodUserUpdateOne) SetPoolCoinTypeID(u uuid.UUID) *GoodUserUpdateOne {
+	guuo.mutation.SetPoolCoinTypeID(u)
 	return guuo
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillableCoinID(u *uuid.UUID) *GoodUserUpdateOne {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (guuo *GoodUserUpdateOne) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserUpdateOne {
 	if u != nil {
-		guuo.SetCoinID(*u)
+		guuo.SetPoolCoinTypeID(*u)
 	}
 	return guuo
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (guuo *GoodUserUpdateOne) ClearCoinID() *GoodUserUpdateOne {
-	guuo.mutation.ClearCoinID()
-	return guuo
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) SetHashRate(f float32) *GoodUserUpdateOne {
-	guuo.mutation.ResetHashRate()
-	guuo.mutation.SetHashRate(f)
-	return guuo
-}
-
-// SetNillableHashRate sets the "hash_rate" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillableHashRate(f *float32) *GoodUserUpdateOne {
-	if f != nil {
-		guuo.SetHashRate(*f)
-	}
-	return guuo
-}
-
-// AddHashRate adds f to the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) AddHashRate(f float32) *GoodUserUpdateOne {
-	guuo.mutation.AddHashRate(f)
-	return guuo
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (guuo *GoodUserUpdateOne) ClearHashRate() *GoodUserUpdateOne {
-	guuo.mutation.ClearHashRate()
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (guuo *GoodUserUpdateOne) ClearPoolCoinTypeID() *GoodUserUpdateOne {
+	guuo.mutation.ClearPoolCoinTypeID()
 	return guuo
 }
 
@@ -824,37 +750,17 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 			Column: gooduser.FieldName,
 		})
 	}
-	if value, ok := guuo.mutation.CoinID(); ok {
+	if value, ok := guuo.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: gooduser.FieldCoinID,
+			Column: gooduser.FieldPoolCoinTypeID,
 		})
 	}
-	if guuo.mutation.CoinIDCleared() {
+	if guuo.mutation.PoolCoinTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: gooduser.FieldCoinID,
-		})
-	}
-	if value, ok := guuo.mutation.HashRate(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if value, ok := guuo.mutation.AddedHashRate(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Value:  value,
-			Column: gooduser.FieldHashRate,
-		})
-	}
-	if guuo.mutation.HashRateCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeFloat32,
-			Column: gooduser.FieldHashRate,
+			Column: gooduser.FieldPoolCoinTypeID,
 		})
 	}
 	if value, ok := guuo.mutation.ReadPageLink(); ok {

@@ -28,10 +28,10 @@ const (
 	FieldOrderUserID = "order_user_id"
 	// FieldWithdrawState holds the string denoting the withdraw_state field in the database.
 	FieldWithdrawState = "withdraw_state"
-	// FieldWithdrawTime holds the string denoting the withdraw_time field in the database.
-	FieldWithdrawTime = "withdraw_time"
-	// FieldPayTime holds the string denoting the pay_time field in the database.
-	FieldPayTime = "pay_time"
+	// FieldWithdrawAt holds the string denoting the withdraw_at field in the database.
+	FieldWithdrawAt = "withdraw_at"
+	// FieldPromisePayAt holds the string denoting the promise_pay_at field in the database.
+	FieldPromisePayAt = "promise_pay_at"
 	// FieldMsg holds the string denoting the msg field in the database.
 	FieldMsg = "msg"
 	// Table holds the table name of the fraction in the database.
@@ -49,8 +49,8 @@ var Columns = []string{
 	FieldUserID,
 	FieldOrderUserID,
 	FieldWithdrawState,
-	FieldWithdrawTime,
-	FieldPayTime,
+	FieldWithdrawAt,
+	FieldPromisePayAt,
 	FieldMsg,
 }
 
@@ -69,6 +69,7 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
+//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -90,10 +91,10 @@ var (
 	DefaultOrderUserID func() uuid.UUID
 	// DefaultWithdrawState holds the default value on creation for the "withdraw_state" field.
 	DefaultWithdrawState string
-	// DefaultWithdrawTime holds the default value on creation for the "withdraw_time" field.
-	DefaultWithdrawTime uint32
-	// DefaultPayTime holds the default value on creation for the "pay_time" field.
-	DefaultPayTime uint32
+	// DefaultWithdrawAt holds the default value on creation for the "withdraw_at" field.
+	DefaultWithdrawAt uint32
+	// DefaultPromisePayAt holds the default value on creation for the "promise_pay_at" field.
+	DefaultPromisePayAt uint32
 	// DefaultMsg holds the default value on creation for the "msg" field.
 	DefaultMsg string
 )

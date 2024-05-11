@@ -21,8 +21,8 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// FieldEntID holds the string denoting the ent_id field in the database.
 	FieldEntID = "ent_id"
-	// FieldCoinID holds the string denoting the coin_id field in the database.
-	FieldCoinID = "coin_id"
+	// FieldPoolCoinTypeID holds the string denoting the pool_coin_type_id field in the database.
+	FieldPoolCoinTypeID = "pool_coin_type_id"
 	// FieldWithdrawInterval holds the string denoting the withdraw_interval field in the database.
 	FieldWithdrawInterval = "withdraw_interval"
 	// FieldMinAmount holds the string denoting the min_amount field in the database.
@@ -40,7 +40,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 	FieldEntID,
-	FieldCoinID,
+	FieldPoolCoinTypeID,
 	FieldWithdrawInterval,
 	FieldMinAmount,
 	FieldWithdrawRate,
@@ -61,6 +61,7 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
+//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -74,8 +75,8 @@ var (
 	DefaultDeletedAt func() uint32
 	// DefaultEntID holds the default value on creation for the "ent_id" field.
 	DefaultEntID func() uuid.UUID
-	// DefaultCoinID holds the default value on creation for the "coin_id" field.
-	DefaultCoinID func() uuid.UUID
+	// DefaultPoolCoinTypeID holds the default value on creation for the "pool_coin_type_id" field.
+	DefaultPoolCoinTypeID func() uuid.UUID
 	// DefaultWithdrawInterval holds the default value on creation for the "withdraw_interval" field.
 	DefaultWithdrawInterval uint32
 	// DefaultMinAmount holds the default value on creation for the "min_amount" field.

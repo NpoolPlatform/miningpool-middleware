@@ -108,10 +108,10 @@ func EntID(v uuid.UUID) predicate.FractionRule {
 	})
 }
 
-// CoinID applies equality check predicate on the "coin_id" field. It's identical to CoinIDEQ.
-func CoinID(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeID applies equality check predicate on the "pool_coin_type_id" field. It's identical to PoolCoinTypeIDEQ.
+func PoolCoinTypeID(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinID), v))
+		s.Where(sql.EQ(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
@@ -392,81 +392,81 @@ func EntIDLTE(v uuid.UUID) predicate.FractionRule {
 	})
 }
 
-// CoinIDEQ applies the EQ predicate on the "coin_id" field.
-func CoinIDEQ(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDEQ applies the EQ predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDEQ(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCoinID), v))
+		s.Where(sql.EQ(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDNEQ applies the NEQ predicate on the "coin_id" field.
-func CoinIDNEQ(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDNEQ applies the NEQ predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDNEQ(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCoinID), v))
+		s.Where(sql.NEQ(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDIn applies the In predicate on the "coin_id" field.
-func CoinIDIn(vs ...uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDIn applies the In predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDIn(vs ...uuid.UUID) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCoinID), v...))
+		s.Where(sql.In(s.C(FieldPoolCoinTypeID), v...))
 	})
 }
 
-// CoinIDNotIn applies the NotIn predicate on the "coin_id" field.
-func CoinIDNotIn(vs ...uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDNotIn applies the NotIn predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDNotIn(vs ...uuid.UUID) predicate.FractionRule {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCoinID), v...))
+		s.Where(sql.NotIn(s.C(FieldPoolCoinTypeID), v...))
 	})
 }
 
-// CoinIDGT applies the GT predicate on the "coin_id" field.
-func CoinIDGT(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDGT applies the GT predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDGT(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCoinID), v))
+		s.Where(sql.GT(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDGTE applies the GTE predicate on the "coin_id" field.
-func CoinIDGTE(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDGTE applies the GTE predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDGTE(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCoinID), v))
+		s.Where(sql.GTE(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDLT applies the LT predicate on the "coin_id" field.
-func CoinIDLT(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDLT applies the LT predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDLT(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCoinID), v))
+		s.Where(sql.LT(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDLTE applies the LTE predicate on the "coin_id" field.
-func CoinIDLTE(v uuid.UUID) predicate.FractionRule {
+// PoolCoinTypeIDLTE applies the LTE predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDLTE(v uuid.UUID) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCoinID), v))
+		s.Where(sql.LTE(s.C(FieldPoolCoinTypeID), v))
 	})
 }
 
-// CoinIDIsNil applies the IsNil predicate on the "coin_id" field.
-func CoinIDIsNil() predicate.FractionRule {
+// PoolCoinTypeIDIsNil applies the IsNil predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDIsNil() predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldCoinID)))
+		s.Where(sql.IsNull(s.C(FieldPoolCoinTypeID)))
 	})
 }
 
-// CoinIDNotNil applies the NotNil predicate on the "coin_id" field.
-func CoinIDNotNil() predicate.FractionRule {
+// PoolCoinTypeIDNotNil applies the NotNil predicate on the "pool_coin_type_id" field.
+func PoolCoinTypeIDNotNil() predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldCoinID)))
+		s.Where(sql.NotNull(s.C(FieldPoolCoinTypeID)))
 	})
 }
 

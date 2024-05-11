@@ -56,6 +56,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldDeletedAt:              {Type: field.TypeUint32, Column: coin.FieldDeletedAt},
 			coin.FieldEntID:                  {Type: field.TypeUUID, Column: coin.FieldEntID},
 			coin.FieldPoolID:                 {Type: field.TypeUUID, Column: coin.FieldPoolID},
+			coin.FieldCoinTypeID:             {Type: field.TypeUUID, Column: coin.FieldCoinTypeID},
 			coin.FieldCoinType:               {Type: field.TypeString, Column: coin.FieldCoinType},
 			coin.FieldRevenueType:            {Type: field.TypeString, Column: coin.FieldRevenueType},
 			coin.FieldFeeRatio:               {Type: field.TypeOther, Column: coin.FieldFeeRatio},
@@ -84,8 +85,8 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fraction.FieldUserID:        {Type: field.TypeUUID, Column: fraction.FieldUserID},
 			fraction.FieldOrderUserID:   {Type: field.TypeUUID, Column: fraction.FieldOrderUserID},
 			fraction.FieldWithdrawState: {Type: field.TypeString, Column: fraction.FieldWithdrawState},
-			fraction.FieldWithdrawTime:  {Type: field.TypeUint32, Column: fraction.FieldWithdrawTime},
-			fraction.FieldPayTime:       {Type: field.TypeUint32, Column: fraction.FieldPayTime},
+			fraction.FieldWithdrawAt:    {Type: field.TypeUint32, Column: fraction.FieldWithdrawAt},
+			fraction.FieldPromisePayAt:  {Type: field.TypeUint32, Column: fraction.FieldPromisePayAt},
 			fraction.FieldMsg:           {Type: field.TypeString, Column: fraction.FieldMsg},
 		},
 	}
@@ -104,7 +105,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fractionrule.FieldUpdatedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldUpdatedAt},
 			fractionrule.FieldDeletedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldDeletedAt},
 			fractionrule.FieldEntID:            {Type: field.TypeUUID, Column: fractionrule.FieldEntID},
-			fractionrule.FieldCoinID:           {Type: field.TypeUUID, Column: fractionrule.FieldCoinID},
+			fractionrule.FieldPoolCoinTypeID:   {Type: field.TypeUUID, Column: fractionrule.FieldPoolCoinTypeID},
 			fractionrule.FieldWithdrawInterval: {Type: field.TypeUint32, Column: fractionrule.FieldWithdrawInterval},
 			fractionrule.FieldMinAmount:        {Type: field.TypeOther, Column: fractionrule.FieldMinAmount},
 			fractionrule.FieldWithdrawRate:     {Type: field.TypeOther, Column: fractionrule.FieldWithdrawRate},
@@ -121,15 +122,14 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "GoodUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			gooduser.FieldCreatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
-			gooduser.FieldUpdatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
-			gooduser.FieldDeletedAt:    {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
-			gooduser.FieldEntID:        {Type: field.TypeUUID, Column: gooduser.FieldEntID},
-			gooduser.FieldRootUserID:   {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
-			gooduser.FieldName:         {Type: field.TypeString, Column: gooduser.FieldName},
-			gooduser.FieldCoinID:       {Type: field.TypeUUID, Column: gooduser.FieldCoinID},
-			gooduser.FieldHashRate:     {Type: field.TypeFloat32, Column: gooduser.FieldHashRate},
-			gooduser.FieldReadPageLink: {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
+			gooduser.FieldCreatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
+			gooduser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
+			gooduser.FieldDeletedAt:      {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
+			gooduser.FieldEntID:          {Type: field.TypeUUID, Column: gooduser.FieldEntID},
+			gooduser.FieldRootUserID:     {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
+			gooduser.FieldName:           {Type: field.TypeString, Column: gooduser.FieldName},
+			gooduser.FieldPoolCoinTypeID: {Type: field.TypeUUID, Column: gooduser.FieldPoolCoinTypeID},
+			gooduser.FieldReadPageLink:   {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -347,6 +347,11 @@ func (f *CoinFilter) WherePoolID(p entql.ValueP) {
 	f.Where(p.Field(coin.FieldPoolID))
 }
 
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *CoinFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(coin.FieldCoinTypeID))
+}
+
 // WhereCoinType applies the entql string predicate on the coin_type field.
 func (f *CoinFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(coin.FieldCoinType))
@@ -462,14 +467,14 @@ func (f *FractionFilter) WhereWithdrawState(p entql.StringP) {
 	f.Where(p.Field(fraction.FieldWithdrawState))
 }
 
-// WhereWithdrawTime applies the entql uint32 predicate on the withdraw_time field.
-func (f *FractionFilter) WhereWithdrawTime(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldWithdrawTime))
+// WhereWithdrawAt applies the entql uint32 predicate on the withdraw_at field.
+func (f *FractionFilter) WhereWithdrawAt(p entql.Uint32P) {
+	f.Where(p.Field(fraction.FieldWithdrawAt))
 }
 
-// WherePayTime applies the entql uint32 predicate on the pay_time field.
-func (f *FractionFilter) WherePayTime(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldPayTime))
+// WherePromisePayAt applies the entql uint32 predicate on the promise_pay_at field.
+func (f *FractionFilter) WherePromisePayAt(p entql.Uint32P) {
+	f.Where(p.Field(fraction.FieldPromisePayAt))
 }
 
 // WhereMsg applies the entql string predicate on the msg field.
@@ -537,9 +542,9 @@ func (f *FractionRuleFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(fractionrule.FieldEntID))
 }
 
-// WhereCoinID applies the entql [16]byte predicate on the coin_id field.
-func (f *FractionRuleFilter) WhereCoinID(p entql.ValueP) {
-	f.Where(p.Field(fractionrule.FieldCoinID))
+// WherePoolCoinTypeID applies the entql [16]byte predicate on the pool_coin_type_id field.
+func (f *FractionRuleFilter) WherePoolCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fractionrule.FieldPoolCoinTypeID))
 }
 
 // WhereWithdrawInterval applies the entql uint32 predicate on the withdraw_interval field.
@@ -627,14 +632,9 @@ func (f *GoodUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldName))
 }
 
-// WhereCoinID applies the entql [16]byte predicate on the coin_id field.
-func (f *GoodUserFilter) WhereCoinID(p entql.ValueP) {
-	f.Where(p.Field(gooduser.FieldCoinID))
-}
-
-// WhereHashRate applies the entql float32 predicate on the hash_rate field.
-func (f *GoodUserFilter) WhereHashRate(p entql.Float32P) {
-	f.Where(p.Field(gooduser.FieldHashRate))
+// WherePoolCoinTypeID applies the entql [16]byte predicate on the pool_coin_type_id field.
+func (f *GoodUserFilter) WherePoolCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(gooduser.FieldPoolCoinTypeID))
 }
 
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.

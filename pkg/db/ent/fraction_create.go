@@ -134,30 +134,30 @@ func (fc *FractionCreate) SetNillableWithdrawState(s *string) *FractionCreate {
 	return fc
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (fc *FractionCreate) SetWithdrawTime(u uint32) *FractionCreate {
-	fc.mutation.SetWithdrawTime(u)
+// SetWithdrawAt sets the "withdraw_at" field.
+func (fc *FractionCreate) SetWithdrawAt(u uint32) *FractionCreate {
+	fc.mutation.SetWithdrawAt(u)
 	return fc
 }
 
-// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
-func (fc *FractionCreate) SetNillableWithdrawTime(u *uint32) *FractionCreate {
+// SetNillableWithdrawAt sets the "withdraw_at" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableWithdrawAt(u *uint32) *FractionCreate {
 	if u != nil {
-		fc.SetWithdrawTime(*u)
+		fc.SetWithdrawAt(*u)
 	}
 	return fc
 }
 
-// SetPayTime sets the "pay_time" field.
-func (fc *FractionCreate) SetPayTime(u uint32) *FractionCreate {
-	fc.mutation.SetPayTime(u)
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (fc *FractionCreate) SetPromisePayAt(u uint32) *FractionCreate {
+	fc.mutation.SetPromisePayAt(u)
 	return fc
 }
 
-// SetNillablePayTime sets the "pay_time" field if the given value is not nil.
-func (fc *FractionCreate) SetNillablePayTime(u *uint32) *FractionCreate {
+// SetNillablePromisePayAt sets the "promise_pay_at" field if the given value is not nil.
+func (fc *FractionCreate) SetNillablePromisePayAt(u *uint32) *FractionCreate {
 	if u != nil {
-		fc.SetPayTime(*u)
+		fc.SetPromisePayAt(*u)
 	}
 	return fc
 }
@@ -314,13 +314,13 @@ func (fc *FractionCreate) defaults() error {
 		v := fraction.DefaultWithdrawState
 		fc.mutation.SetWithdrawState(v)
 	}
-	if _, ok := fc.mutation.WithdrawTime(); !ok {
-		v := fraction.DefaultWithdrawTime
-		fc.mutation.SetWithdrawTime(v)
+	if _, ok := fc.mutation.WithdrawAt(); !ok {
+		v := fraction.DefaultWithdrawAt
+		fc.mutation.SetWithdrawAt(v)
 	}
-	if _, ok := fc.mutation.PayTime(); !ok {
-		v := fraction.DefaultPayTime
-		fc.mutation.SetPayTime(v)
+	if _, ok := fc.mutation.PromisePayAt(); !ok {
+		v := fraction.DefaultPromisePayAt
+		fc.mutation.SetPromisePayAt(v)
 	}
 	if _, ok := fc.mutation.Msg(); !ok {
 		v := fraction.DefaultMsg
@@ -441,21 +441,21 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 		})
 		_node.WithdrawState = value
 	}
-	if value, ok := fc.mutation.WithdrawTime(); ok {
+	if value, ok := fc.mutation.WithdrawAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
-		_node.WithdrawTime = value
+		_node.WithdrawAt = value
 	}
-	if value, ok := fc.mutation.PayTime(); ok {
+	if value, ok := fc.mutation.PromisePayAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
-		_node.PayTime = value
+		_node.PromisePayAt = value
 	}
 	if value, ok := fc.mutation.Msg(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -484,6 +484,7 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsertOne {
 	fc.conflict = opts
 	return &FractionUpsertOne{
@@ -497,6 +498,7 @@ func (fc *FractionCreate) OnConflict(opts ...sql.ConflictOption) *FractionUpsert
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (fc *FractionCreate) OnConflictColumns(columns ...string) *FractionUpsertOne {
 	fc.conflict = append(fc.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertOne{
@@ -655,51 +657,51 @@ func (u *FractionUpsert) ClearWithdrawState() *FractionUpsert {
 	return u
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsert) SetWithdrawTime(v uint32) *FractionUpsert {
-	u.Set(fraction.FieldWithdrawTime, v)
+// SetWithdrawAt sets the "withdraw_at" field.
+func (u *FractionUpsert) SetWithdrawAt(v uint32) *FractionUpsert {
+	u.Set(fraction.FieldWithdrawAt, v)
 	return u
 }
 
-// UpdateWithdrawTime sets the "withdraw_time" field to the value that was provided on create.
-func (u *FractionUpsert) UpdateWithdrawTime() *FractionUpsert {
-	u.SetExcluded(fraction.FieldWithdrawTime)
+// UpdateWithdrawAt sets the "withdraw_at" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateWithdrawAt() *FractionUpsert {
+	u.SetExcluded(fraction.FieldWithdrawAt)
 	return u
 }
 
-// AddWithdrawTime adds v to the "withdraw_time" field.
-func (u *FractionUpsert) AddWithdrawTime(v uint32) *FractionUpsert {
-	u.Add(fraction.FieldWithdrawTime, v)
+// AddWithdrawAt adds v to the "withdraw_at" field.
+func (u *FractionUpsert) AddWithdrawAt(v uint32) *FractionUpsert {
+	u.Add(fraction.FieldWithdrawAt, v)
 	return u
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (u *FractionUpsert) ClearWithdrawTime() *FractionUpsert {
-	u.SetNull(fraction.FieldWithdrawTime)
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (u *FractionUpsert) ClearWithdrawAt() *FractionUpsert {
+	u.SetNull(fraction.FieldWithdrawAt)
 	return u
 }
 
-// SetPayTime sets the "pay_time" field.
-func (u *FractionUpsert) SetPayTime(v uint32) *FractionUpsert {
-	u.Set(fraction.FieldPayTime, v)
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (u *FractionUpsert) SetPromisePayAt(v uint32) *FractionUpsert {
+	u.Set(fraction.FieldPromisePayAt, v)
 	return u
 }
 
-// UpdatePayTime sets the "pay_time" field to the value that was provided on create.
-func (u *FractionUpsert) UpdatePayTime() *FractionUpsert {
-	u.SetExcluded(fraction.FieldPayTime)
+// UpdatePromisePayAt sets the "promise_pay_at" field to the value that was provided on create.
+func (u *FractionUpsert) UpdatePromisePayAt() *FractionUpsert {
+	u.SetExcluded(fraction.FieldPromisePayAt)
 	return u
 }
 
-// AddPayTime adds v to the "pay_time" field.
-func (u *FractionUpsert) AddPayTime(v uint32) *FractionUpsert {
-	u.Add(fraction.FieldPayTime, v)
+// AddPromisePayAt adds v to the "promise_pay_at" field.
+func (u *FractionUpsert) AddPromisePayAt(v uint32) *FractionUpsert {
+	u.Add(fraction.FieldPromisePayAt, v)
 	return u
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (u *FractionUpsert) ClearPayTime() *FractionUpsert {
-	u.SetNull(fraction.FieldPayTime)
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (u *FractionUpsert) ClearPromisePayAt() *FractionUpsert {
+	u.SetNull(fraction.FieldPromisePayAt)
 	return u
 }
 
@@ -732,6 +734,7 @@ func (u *FractionUpsert) ClearMsg() *FractionUpsert {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -745,9 +748,10 @@ func (u *FractionUpsertOne) UpdateNewValues() *FractionUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Fraction.Create().
-//	    OnConflict(sql.ResolveWithIgnore()).
-//	    Exec(ctx)
+//  client.Fraction.Create().
+//      OnConflict(sql.ResolveWithIgnore()).
+//      Exec(ctx)
+//
 func (u *FractionUpsertOne) Ignore() *FractionUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -930,59 +934,59 @@ func (u *FractionUpsertOne) ClearWithdrawState() *FractionUpsertOne {
 	})
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsertOne) SetWithdrawTime(v uint32) *FractionUpsertOne {
+// SetWithdrawAt sets the "withdraw_at" field.
+func (u *FractionUpsertOne) SetWithdrawAt(v uint32) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetWithdrawTime(v)
+		s.SetWithdrawAt(v)
 	})
 }
 
-// AddWithdrawTime adds v to the "withdraw_time" field.
-func (u *FractionUpsertOne) AddWithdrawTime(v uint32) *FractionUpsertOne {
+// AddWithdrawAt adds v to the "withdraw_at" field.
+func (u *FractionUpsertOne) AddWithdrawAt(v uint32) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.AddWithdrawTime(v)
+		s.AddWithdrawAt(v)
 	})
 }
 
-// UpdateWithdrawTime sets the "withdraw_time" field to the value that was provided on create.
-func (u *FractionUpsertOne) UpdateWithdrawTime() *FractionUpsertOne {
+// UpdateWithdrawAt sets the "withdraw_at" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateWithdrawAt() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdateWithdrawTime()
+		s.UpdateWithdrawAt()
 	})
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (u *FractionUpsertOne) ClearWithdrawTime() *FractionUpsertOne {
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (u *FractionUpsertOne) ClearWithdrawAt() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.ClearWithdrawTime()
+		s.ClearWithdrawAt()
 	})
 }
 
-// SetPayTime sets the "pay_time" field.
-func (u *FractionUpsertOne) SetPayTime(v uint32) *FractionUpsertOne {
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (u *FractionUpsertOne) SetPromisePayAt(v uint32) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetPayTime(v)
+		s.SetPromisePayAt(v)
 	})
 }
 
-// AddPayTime adds v to the "pay_time" field.
-func (u *FractionUpsertOne) AddPayTime(v uint32) *FractionUpsertOne {
+// AddPromisePayAt adds v to the "promise_pay_at" field.
+func (u *FractionUpsertOne) AddPromisePayAt(v uint32) *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.AddPayTime(v)
+		s.AddPromisePayAt(v)
 	})
 }
 
-// UpdatePayTime sets the "pay_time" field to the value that was provided on create.
-func (u *FractionUpsertOne) UpdatePayTime() *FractionUpsertOne {
+// UpdatePromisePayAt sets the "promise_pay_at" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdatePromisePayAt() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdatePayTime()
+		s.UpdatePromisePayAt()
 	})
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (u *FractionUpsertOne) ClearPayTime() *FractionUpsertOne {
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (u *FractionUpsertOne) ClearPromisePayAt() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
-		s.ClearPayTime()
+		s.ClearPromisePayAt()
 	})
 }
 
@@ -1141,6 +1145,7 @@ func (fcb *FractionCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
+//
 func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionUpsertBulk {
 	fcb.conflict = opts
 	return &FractionUpsertBulk{
@@ -1154,6 +1159,7 @@ func (fcb *FractionCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionU
 //	client.Fraction.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
+//
 func (fcb *FractionCreateBulk) OnConflictColumns(columns ...string) *FractionUpsertBulk {
 	fcb.conflict = append(fcb.conflict, sql.ConflictColumns(columns...))
 	return &FractionUpsertBulk{
@@ -1178,6 +1184,7 @@ type FractionUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
+//
 func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1197,6 +1204,7 @@ func (u *FractionUpsertBulk) UpdateNewValues() *FractionUpsertBulk {
 //	client.Fraction.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
+//
 func (u *FractionUpsertBulk) Ignore() *FractionUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1379,59 +1387,59 @@ func (u *FractionUpsertBulk) ClearWithdrawState() *FractionUpsertBulk {
 	})
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (u *FractionUpsertBulk) SetWithdrawTime(v uint32) *FractionUpsertBulk {
+// SetWithdrawAt sets the "withdraw_at" field.
+func (u *FractionUpsertBulk) SetWithdrawAt(v uint32) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetWithdrawTime(v)
+		s.SetWithdrawAt(v)
 	})
 }
 
-// AddWithdrawTime adds v to the "withdraw_time" field.
-func (u *FractionUpsertBulk) AddWithdrawTime(v uint32) *FractionUpsertBulk {
+// AddWithdrawAt adds v to the "withdraw_at" field.
+func (u *FractionUpsertBulk) AddWithdrawAt(v uint32) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.AddWithdrawTime(v)
+		s.AddWithdrawAt(v)
 	})
 }
 
-// UpdateWithdrawTime sets the "withdraw_time" field to the value that was provided on create.
-func (u *FractionUpsertBulk) UpdateWithdrawTime() *FractionUpsertBulk {
+// UpdateWithdrawAt sets the "withdraw_at" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateWithdrawAt() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdateWithdrawTime()
+		s.UpdateWithdrawAt()
 	})
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (u *FractionUpsertBulk) ClearWithdrawTime() *FractionUpsertBulk {
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (u *FractionUpsertBulk) ClearWithdrawAt() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.ClearWithdrawTime()
+		s.ClearWithdrawAt()
 	})
 }
 
-// SetPayTime sets the "pay_time" field.
-func (u *FractionUpsertBulk) SetPayTime(v uint32) *FractionUpsertBulk {
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (u *FractionUpsertBulk) SetPromisePayAt(v uint32) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.SetPayTime(v)
+		s.SetPromisePayAt(v)
 	})
 }
 
-// AddPayTime adds v to the "pay_time" field.
-func (u *FractionUpsertBulk) AddPayTime(v uint32) *FractionUpsertBulk {
+// AddPromisePayAt adds v to the "promise_pay_at" field.
+func (u *FractionUpsertBulk) AddPromisePayAt(v uint32) *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.AddPayTime(v)
+		s.AddPromisePayAt(v)
 	})
 }
 
-// UpdatePayTime sets the "pay_time" field to the value that was provided on create.
-func (u *FractionUpsertBulk) UpdatePayTime() *FractionUpsertBulk {
+// UpdatePromisePayAt sets the "promise_pay_at" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdatePromisePayAt() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.UpdatePayTime()
+		s.UpdatePromisePayAt()
 	})
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (u *FractionUpsertBulk) ClearPayTime() *FractionUpsertBulk {
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (u *FractionUpsertBulk) ClearPromisePayAt() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
-		s.ClearPayTime()
+		s.ClearPromisePayAt()
 	})
 }
 

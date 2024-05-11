@@ -24,10 +24,8 @@ const (
 	FieldRootUserID = "root_user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldCoinID holds the string denoting the coin_id field in the database.
-	FieldCoinID = "coin_id"
-	// FieldHashRate holds the string denoting the hash_rate field in the database.
-	FieldHashRate = "hash_rate"
+	// FieldPoolCoinTypeID holds the string denoting the pool_coin_type_id field in the database.
+	FieldPoolCoinTypeID = "pool_coin_type_id"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
 	FieldReadPageLink = "read_page_link"
 	// Table holds the table name of the gooduser in the database.
@@ -43,8 +41,7 @@ var Columns = []string{
 	FieldEntID,
 	FieldRootUserID,
 	FieldName,
-	FieldCoinID,
-	FieldHashRate,
+	FieldPoolCoinTypeID,
 	FieldReadPageLink,
 }
 
@@ -63,6 +60,7 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
+//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -80,10 +78,8 @@ var (
 	DefaultRootUserID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
-	// DefaultCoinID holds the default value on creation for the "coin_id" field.
-	DefaultCoinID func() uuid.UUID
-	// DefaultHashRate holds the default value on creation for the "hash_rate" field.
-	DefaultHashRate float32
+	// DefaultPoolCoinTypeID holds the default value on creation for the "pool_coin_type_id" field.
+	DefaultPoolCoinTypeID func() uuid.UUID
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
 	DefaultReadPageLink string
 )

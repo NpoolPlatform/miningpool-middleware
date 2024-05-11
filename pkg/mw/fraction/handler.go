@@ -140,7 +140,7 @@ func WithWithdrawState(withdrawstate *basetypes.WithdrawState, must bool) func(c
 	}
 }
 
-func WithWithdrawTime(withdrawtime *uint32, must bool) func(context.Context, *Handler) error {
+func WithWithdrawAt(withdrawtime *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawtime == nil {
 			if must {
@@ -148,20 +148,20 @@ func WithWithdrawTime(withdrawtime *uint32, must bool) func(context.Context, *Ha
 			}
 			return nil
 		}
-		h.WithdrawTime = withdrawtime
+		h.WithdrawAt = withdrawtime
 		return nil
 	}
 }
 
-func WithPayTime(paytime *uint32, must bool) func(context.Context, *Handler) error {
+func WithPromisePayAt(PromisePayAt *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if paytime == nil {
+		if PromisePayAt == nil {
 			if must {
-				return fmt.Errorf("invalid paytime")
+				return fmt.Errorf("invalid PromisePayAt")
 			}
 			return nil
 		}
-		h.PayTime = paytime
+		h.PromisePayAt = PromisePayAt
 		return nil
 	}
 }

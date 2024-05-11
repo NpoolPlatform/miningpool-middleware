@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	coincrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/coin"
@@ -79,7 +80,7 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 	}
 }
 
-func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context.Context, *Handler) error {
+func WithRevenueType(revenuetype *mpbasetypes.RevenueType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if revenuetype == nil {
 			if must {
@@ -87,10 +88,27 @@ func WithRevenueType(revenuetype *basetypes.RevenueType, must bool) func(context
 			}
 			return nil
 		}
-		if *revenuetype == basetypes.RevenueType_DefaultRevenueType {
+		if *revenuetype == mpbasetypes.RevenueType_DefaultRevenueType {
 			return fmt.Errorf("invalid revenuetype,not allow be default type")
 		}
 		h.RevenueType = revenuetype
+		return nil
+	}
+}
+
+func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if cointypeid == nil {
+			if must {
+				return fmt.Errorf("invalid cointypeid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*cointypeid)
+		if err != nil {
+			return err
+		}
+		h.CoinTypeID = &_id
 		return nil
 	}
 }
@@ -233,6 +251,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
+		if conds.CoinTypeID != nil {
+			id, err := uuid.Parse(conds.GetCoinTypeID().GetValue())
+			if err != nil {
+				return err
+			}
+			h.Conds.CoinTypeID = &cruder.Cond{
+				Op:  conds.GetCoinTypeID().GetOp(),
+				Val: id,
+			}
+		}
 		if conds.EntIDs != nil {
 			ids := []uuid.UUID{}
 			for _, id := range conds.GetEntIDs().GetValue() {
@@ -256,13 +284,13 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.MiningpoolType != nil {
 			h.Conds.MiningpoolType = &cruder.Cond{
 				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+				Val: mpbasetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
 			}
 		}
 		if conds.RevenueType != nil {
 			h.Conds.RevenueType = &cruder.Cond{
 				Op:  conds.GetRevenueType().GetOp(),
-				Val: basetypes.RevenueType(conds.GetRevenueType().GetValue()),
+				Val: mpbasetypes.RevenueType(conds.GetRevenueType().GetValue()),
 			}
 		}
 		if conds.FixedRevenueAble != nil {

@@ -178,57 +178,57 @@ func (fu *FractionUpdate) ClearWithdrawState() *FractionUpdate {
 	return fu
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (fu *FractionUpdate) SetWithdrawTime(u uint32) *FractionUpdate {
-	fu.mutation.ResetWithdrawTime()
-	fu.mutation.SetWithdrawTime(u)
+// SetWithdrawAt sets the "withdraw_at" field.
+func (fu *FractionUpdate) SetWithdrawAt(u uint32) *FractionUpdate {
+	fu.mutation.ResetWithdrawAt()
+	fu.mutation.SetWithdrawAt(u)
 	return fu
 }
 
-// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
-func (fu *FractionUpdate) SetNillableWithdrawTime(u *uint32) *FractionUpdate {
+// SetNillableWithdrawAt sets the "withdraw_at" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableWithdrawAt(u *uint32) *FractionUpdate {
 	if u != nil {
-		fu.SetWithdrawTime(*u)
+		fu.SetWithdrawAt(*u)
 	}
 	return fu
 }
 
-// AddWithdrawTime adds u to the "withdraw_time" field.
-func (fu *FractionUpdate) AddWithdrawTime(u int32) *FractionUpdate {
-	fu.mutation.AddWithdrawTime(u)
+// AddWithdrawAt adds u to the "withdraw_at" field.
+func (fu *FractionUpdate) AddWithdrawAt(u int32) *FractionUpdate {
+	fu.mutation.AddWithdrawAt(u)
 	return fu
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (fu *FractionUpdate) ClearWithdrawTime() *FractionUpdate {
-	fu.mutation.ClearWithdrawTime()
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (fu *FractionUpdate) ClearWithdrawAt() *FractionUpdate {
+	fu.mutation.ClearWithdrawAt()
 	return fu
 }
 
-// SetPayTime sets the "pay_time" field.
-func (fu *FractionUpdate) SetPayTime(u uint32) *FractionUpdate {
-	fu.mutation.ResetPayTime()
-	fu.mutation.SetPayTime(u)
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (fu *FractionUpdate) SetPromisePayAt(u uint32) *FractionUpdate {
+	fu.mutation.ResetPromisePayAt()
+	fu.mutation.SetPromisePayAt(u)
 	return fu
 }
 
-// SetNillablePayTime sets the "pay_time" field if the given value is not nil.
-func (fu *FractionUpdate) SetNillablePayTime(u *uint32) *FractionUpdate {
+// SetNillablePromisePayAt sets the "promise_pay_at" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillablePromisePayAt(u *uint32) *FractionUpdate {
 	if u != nil {
-		fu.SetPayTime(*u)
+		fu.SetPromisePayAt(*u)
 	}
 	return fu
 }
 
-// AddPayTime adds u to the "pay_time" field.
-func (fu *FractionUpdate) AddPayTime(u int32) *FractionUpdate {
-	fu.mutation.AddPayTime(u)
+// AddPromisePayAt adds u to the "promise_pay_at" field.
+func (fu *FractionUpdate) AddPromisePayAt(u int32) *FractionUpdate {
+	fu.mutation.AddPromisePayAt(u)
 	return fu
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (fu *FractionUpdate) ClearPayTime() *FractionUpdate {
-	fu.mutation.ClearPayTime()
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (fu *FractionUpdate) ClearPromisePayAt() *FractionUpdate {
+	fu.mutation.ClearPromisePayAt()
 	return fu
 }
 
@@ -451,44 +451,44 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldWithdrawState,
 		})
 	}
-	if value, ok := fu.mutation.WithdrawTime(); ok {
+	if value, ok := fu.mutation.WithdrawAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if value, ok := fu.mutation.AddedWithdrawTime(); ok {
+	if value, ok := fu.mutation.AddedWithdrawAt(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if fu.mutation.WithdrawTimeCleared() {
+	if fu.mutation.WithdrawAtCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if value, ok := fu.mutation.PayTime(); ok {
+	if value, ok := fu.mutation.PromisePayAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
-	if value, ok := fu.mutation.AddedPayTime(); ok {
+	if value, ok := fu.mutation.AddedPromisePayAt(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
-	if fu.mutation.PayTimeCleared() {
+	if fu.mutation.PromisePayAtCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
 	if value, ok := fu.mutation.Msg(); ok {
@@ -674,57 +674,57 @@ func (fuo *FractionUpdateOne) ClearWithdrawState() *FractionUpdateOne {
 	return fuo
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (fuo *FractionUpdateOne) SetWithdrawTime(u uint32) *FractionUpdateOne {
-	fuo.mutation.ResetWithdrawTime()
-	fuo.mutation.SetWithdrawTime(u)
+// SetWithdrawAt sets the "withdraw_at" field.
+func (fuo *FractionUpdateOne) SetWithdrawAt(u uint32) *FractionUpdateOne {
+	fuo.mutation.ResetWithdrawAt()
+	fuo.mutation.SetWithdrawAt(u)
 	return fuo
 }
 
-// SetNillableWithdrawTime sets the "withdraw_time" field if the given value is not nil.
-func (fuo *FractionUpdateOne) SetNillableWithdrawTime(u *uint32) *FractionUpdateOne {
+// SetNillableWithdrawAt sets the "withdraw_at" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableWithdrawAt(u *uint32) *FractionUpdateOne {
 	if u != nil {
-		fuo.SetWithdrawTime(*u)
+		fuo.SetWithdrawAt(*u)
 	}
 	return fuo
 }
 
-// AddWithdrawTime adds u to the "withdraw_time" field.
-func (fuo *FractionUpdateOne) AddWithdrawTime(u int32) *FractionUpdateOne {
-	fuo.mutation.AddWithdrawTime(u)
+// AddWithdrawAt adds u to the "withdraw_at" field.
+func (fuo *FractionUpdateOne) AddWithdrawAt(u int32) *FractionUpdateOne {
+	fuo.mutation.AddWithdrawAt(u)
 	return fuo
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (fuo *FractionUpdateOne) ClearWithdrawTime() *FractionUpdateOne {
-	fuo.mutation.ClearWithdrawTime()
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (fuo *FractionUpdateOne) ClearWithdrawAt() *FractionUpdateOne {
+	fuo.mutation.ClearWithdrawAt()
 	return fuo
 }
 
-// SetPayTime sets the "pay_time" field.
-func (fuo *FractionUpdateOne) SetPayTime(u uint32) *FractionUpdateOne {
-	fuo.mutation.ResetPayTime()
-	fuo.mutation.SetPayTime(u)
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (fuo *FractionUpdateOne) SetPromisePayAt(u uint32) *FractionUpdateOne {
+	fuo.mutation.ResetPromisePayAt()
+	fuo.mutation.SetPromisePayAt(u)
 	return fuo
 }
 
-// SetNillablePayTime sets the "pay_time" field if the given value is not nil.
-func (fuo *FractionUpdateOne) SetNillablePayTime(u *uint32) *FractionUpdateOne {
+// SetNillablePromisePayAt sets the "promise_pay_at" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillablePromisePayAt(u *uint32) *FractionUpdateOne {
 	if u != nil {
-		fuo.SetPayTime(*u)
+		fuo.SetPromisePayAt(*u)
 	}
 	return fuo
 }
 
-// AddPayTime adds u to the "pay_time" field.
-func (fuo *FractionUpdateOne) AddPayTime(u int32) *FractionUpdateOne {
-	fuo.mutation.AddPayTime(u)
+// AddPromisePayAt adds u to the "promise_pay_at" field.
+func (fuo *FractionUpdateOne) AddPromisePayAt(u int32) *FractionUpdateOne {
+	fuo.mutation.AddPromisePayAt(u)
 	return fuo
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (fuo *FractionUpdateOne) ClearPayTime() *FractionUpdateOne {
-	fuo.mutation.ClearPayTime()
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (fuo *FractionUpdateOne) ClearPromisePayAt() *FractionUpdateOne {
+	fuo.mutation.ClearPromisePayAt()
 	return fuo
 }
 
@@ -977,44 +977,44 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 			Column: fraction.FieldWithdrawState,
 		})
 	}
-	if value, ok := fuo.mutation.WithdrawTime(); ok {
+	if value, ok := fuo.mutation.WithdrawAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if value, ok := fuo.mutation.AddedWithdrawTime(); ok {
+	if value, ok := fuo.mutation.AddedWithdrawAt(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if fuo.mutation.WithdrawTimeCleared() {
+	if fuo.mutation.WithdrawAtCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
-			Column: fraction.FieldWithdrawTime,
+			Column: fraction.FieldWithdrawAt,
 		})
 	}
-	if value, ok := fuo.mutation.PayTime(); ok {
+	if value, ok := fuo.mutation.PromisePayAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
-	if value, ok := fuo.mutation.AddedPayTime(); ok {
+	if value, ok := fuo.mutation.AddedPromisePayAt(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
 			Value:  value,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
-	if fuo.mutation.PayTimeCleared() {
+	if fuo.mutation.PromisePayAtCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint32,
-			Column: fraction.FieldPayTime,
+			Column: fraction.FieldPromisePayAt,
 		})
 	}
 	if value, ok := fuo.mutation.Msg(); ok {

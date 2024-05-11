@@ -49,8 +49,8 @@ func createFraction(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.WithdrawStateStr = info.WithdrawStateStr
 		ret.WithdrawState = info.WithdrawState
-		ret.WithdrawTime = info.WithdrawTime
-		ret.PayTime = info.PayTime
+		ret.WithdrawAt = info.WithdrawAt
+		ret.PromisePayAt = info.PromisePayAt
 		ret.Msg = info.Msg
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID

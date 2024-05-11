@@ -119,6 +119,26 @@ func (cu *CoinUpdate) ClearPoolID() *CoinUpdate {
 	return cu
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (cu *CoinUpdate) SetCoinTypeID(u uuid.UUID) *CoinUpdate {
+	cu.mutation.SetCoinTypeID(u)
+	return cu
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (cu *CoinUpdate) SetNillableCoinTypeID(u *uuid.UUID) *CoinUpdate {
+	if u != nil {
+		cu.SetCoinTypeID(*u)
+	}
+	return cu
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (cu *CoinUpdate) ClearCoinTypeID() *CoinUpdate {
+	cu.mutation.ClearCoinTypeID()
+	return cu
+}
+
 // SetCoinType sets the "coin_type" field.
 func (cu *CoinUpdate) SetCoinType(s string) *CoinUpdate {
 	cu.mutation.SetCoinType(s)
@@ -426,6 +446,19 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldPoolID,
 		})
 	}
+	if value, ok := cu.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: coin.FieldCoinTypeID,
+		})
+	}
+	if cu.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: coin.FieldCoinTypeID,
+		})
+	}
 	if value, ok := cu.mutation.CoinType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -631,6 +664,26 @@ func (cuo *CoinUpdateOne) SetNillablePoolID(u *uuid.UUID) *CoinUpdateOne {
 // ClearPoolID clears the value of the "pool_id" field.
 func (cuo *CoinUpdateOne) ClearPoolID() *CoinUpdateOne {
 	cuo.mutation.ClearPoolID()
+	return cuo
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (cuo *CoinUpdateOne) SetCoinTypeID(u uuid.UUID) *CoinUpdateOne {
+	cuo.mutation.SetCoinTypeID(u)
+	return cuo
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (cuo *CoinUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *CoinUpdateOne {
+	if u != nil {
+		cuo.SetCoinTypeID(*u)
+	}
+	return cuo
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (cuo *CoinUpdateOne) ClearCoinTypeID() *CoinUpdateOne {
+	cuo.mutation.ClearCoinTypeID()
 	return cuo
 }
 
@@ -969,6 +1022,19 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: coin.FieldPoolID,
+		})
+	}
+	if value, ok := cuo.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: coin.FieldCoinTypeID,
+		})
+	}
+	if cuo.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: coin.FieldCoinTypeID,
 		})
 	}
 	if value, ok := cuo.mutation.CoinType(); ok {

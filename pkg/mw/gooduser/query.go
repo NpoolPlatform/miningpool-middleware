@@ -33,7 +33,6 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldRootUserID,
 		gooduserent.FieldName,
 		gooduserent.FieldCoinID,
-		gooduserent.FieldHashRate,
 		gooduserent.FieldReadPageLink,
 	)
 }

@@ -18,8 +18,8 @@ type Req struct {
 	UserID        *uuid.UUID
 	OrderUserID   *uuid.UUID
 	WithdrawState *basetypes.WithdrawState
-	WithdrawTime  *uint32
-	PayTime       *uint32
+	WithdrawAt    *uint32
+	PromisePayAt  *uint32
 	Msg           *string
 	DeletedAt     *uint32
 }
@@ -40,11 +40,11 @@ func CreateSet(c *ent.FractionCreate, req *Req) *ent.FractionCreate {
 	if req.WithdrawState != nil {
 		c.SetWithdrawState(req.WithdrawState.String())
 	}
-	if req.WithdrawTime != nil {
-		c.SetWithdrawTime(*req.WithdrawTime)
+	if req.WithdrawAt != nil {
+		c.SetWithdrawAt(*req.WithdrawAt)
 	}
-	if req.PayTime != nil {
-		c.SetPayTime(*req.PayTime)
+	if req.PromisePayAt != nil {
+		c.SetPromisePayAt(*req.PromisePayAt)
 	}
 	if req.Msg != nil {
 		c.SetMsg(*req.Msg)
@@ -65,11 +65,11 @@ func UpdateSet(u *ent.FractionUpdateOne, req *Req) (*ent.FractionUpdateOne, erro
 	if req.WithdrawState != nil {
 		u = u.SetWithdrawState(req.WithdrawState.String())
 	}
-	if req.WithdrawTime != nil {
-		u = u.SetWithdrawTime(*req.WithdrawTime)
+	if req.WithdrawAt != nil {
+		u = u.SetWithdrawAt(*req.WithdrawAt)
 	}
-	if req.PayTime != nil {
-		u = u.SetPayTime(*req.PayTime)
+	if req.PromisePayAt != nil {
+		u = u.SetPromisePayAt(*req.PromisePayAt)
 	}
 	if req.Msg != nil {
 		u = u.SetMsg(*req.Msg)

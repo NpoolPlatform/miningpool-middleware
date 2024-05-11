@@ -32,10 +32,10 @@ type Fraction struct {
 	OrderUserID uuid.UUID `json:"order_user_id,omitempty"`
 	// WithdrawState holds the value of the "withdraw_state" field.
 	WithdrawState string `json:"withdraw_state,omitempty"`
-	// WithdrawTime holds the value of the "withdraw_time" field.
-	WithdrawTime uint32 `json:"withdraw_time,omitempty"`
-	// PayTime holds the value of the "pay_time" field.
-	PayTime uint32 `json:"pay_time,omitempty"`
+	// WithdrawAt holds the value of the "withdraw_at" field.
+	WithdrawAt uint32 `json:"withdraw_at,omitempty"`
+	// PromisePayAt holds the value of the "promise_pay_at" field.
+	PromisePayAt uint32 `json:"promise_pay_at,omitempty"`
 	// Msg holds the value of the "msg" field.
 	Msg string `json:"msg,omitempty"`
 }
@@ -45,7 +45,7 @@ func (*Fraction) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case fraction.FieldID, fraction.FieldCreatedAt, fraction.FieldUpdatedAt, fraction.FieldDeletedAt, fraction.FieldWithdrawTime, fraction.FieldPayTime:
+		case fraction.FieldID, fraction.FieldCreatedAt, fraction.FieldUpdatedAt, fraction.FieldDeletedAt, fraction.FieldWithdrawAt, fraction.FieldPromisePayAt:
 			values[i] = new(sql.NullInt64)
 		case fraction.FieldWithdrawState, fraction.FieldMsg:
 			values[i] = new(sql.NullString)
@@ -120,17 +120,17 @@ func (f *Fraction) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				f.WithdrawState = value.String
 			}
-		case fraction.FieldWithdrawTime:
+		case fraction.FieldWithdrawAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field withdraw_time", values[i])
+				return fmt.Errorf("unexpected type %T for field withdraw_at", values[i])
 			} else if value.Valid {
-				f.WithdrawTime = uint32(value.Int64)
+				f.WithdrawAt = uint32(value.Int64)
 			}
-		case fraction.FieldPayTime:
+		case fraction.FieldPromisePayAt:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field pay_time", values[i])
+				return fmt.Errorf("unexpected type %T for field promise_pay_at", values[i])
 			} else if value.Valid {
-				f.PayTime = uint32(value.Int64)
+				f.PromisePayAt = uint32(value.Int64)
 			}
 		case fraction.FieldMsg:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -190,11 +190,11 @@ func (f *Fraction) String() string {
 	builder.WriteString("withdraw_state=")
 	builder.WriteString(f.WithdrawState)
 	builder.WriteString(", ")
-	builder.WriteString("withdraw_time=")
-	builder.WriteString(fmt.Sprintf("%v", f.WithdrawTime))
+	builder.WriteString("withdraw_at=")
+	builder.WriteString(fmt.Sprintf("%v", f.WithdrawAt))
 	builder.WriteString(", ")
-	builder.WriteString("pay_time=")
-	builder.WriteString(fmt.Sprintf("%v", f.PayTime))
+	builder.WriteString("promise_pay_at=")
+	builder.WriteString(fmt.Sprintf("%v", f.PromisePayAt))
 	builder.WriteString(", ")
 	builder.WriteString("msg=")
 	builder.WriteString(f.Msg)

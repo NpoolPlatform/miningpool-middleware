@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -28,8 +28,9 @@ func init() {
 
 var ret = &npool.Coin{
 	EntID:               uuid.NewString(),
-	CoinType:            basetypes.CoinType_BitCoin,
+	CoinType:            basetypes.CoinType_CoinTypeBitCoin,
 	PoolID:              uuid.NewString(),
+	CoinTypeID:          uuid.NewString(),
 	FixedRevenueAble:    false,
 	LeastTransferAmount: decimal.NewFromFloat(5.4).String(),
 	Remark:              "asdfaf",
@@ -37,6 +38,7 @@ var ret = &npool.Coin{
 
 var req = &npool.CoinReq{
 	EntID:               &ret.EntID,
+	CoinTypeID:          &ret.CoinTypeID,
 	CoinType:            &ret.CoinType,
 	PoolID:              &ret.PoolID,
 	FixedRevenueAble:    &ret.FixedRevenueAble,
@@ -65,6 +67,7 @@ func create(t *testing.T) {
 		WithEntID(req.EntID, true),
 		WithCoinType(req.CoinType, true),
 		WithPoolID(req.PoolID, true),
+		WithCoinTypeID(req.CoinTypeID, true),
 		WithFixedRevenueAble(req.FixedRevenueAble, true),
 		WithLeastTransferAmount(req.LeastTransferAmount, true),
 		WithRemark(req.Remark, true),

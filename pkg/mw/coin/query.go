@@ -5,7 +5,8 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -30,6 +31,7 @@ func (h *queryHandler) selectCoin(stm *ent.CoinQuery) {
 		coinent.FieldUpdatedAt,
 		coinent.FieldEntID,
 		coinent.FieldPoolID,
+		coinent.FieldCoinTypeID,
 		coinent.FieldCoinType,
 		coinent.FieldRevenueType,
 		coinent.FieldFeeRatio,
@@ -87,7 +89,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	)
 
 	if h.Conds != nil && h.Conds.MiningpoolType != nil {
-		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(v1.MiningpoolType); ok {
+		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(mpbasetypes.MiningpoolType); ok {
 			s.OnP(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
 		}
 	}
@@ -99,8 +101,8 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = v1.MiningpoolType(v1.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = v1.CoinType(v1.CoinType_value[info.CoinTypeStr])
+		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }
 

@@ -99,23 +99,23 @@ func (fru *FractionRuleUpdate) SetNillableEntID(u *uuid.UUID) *FractionRuleUpdat
 	return fru
 }
 
-// SetCoinID sets the "coin_id" field.
-func (fru *FractionRuleUpdate) SetCoinID(u uuid.UUID) *FractionRuleUpdate {
-	fru.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (fru *FractionRuleUpdate) SetPoolCoinTypeID(u uuid.UUID) *FractionRuleUpdate {
+	fru.mutation.SetPoolCoinTypeID(u)
 	return fru
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (fru *FractionRuleUpdate) SetNillableCoinID(u *uuid.UUID) *FractionRuleUpdate {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillablePoolCoinTypeID(u *uuid.UUID) *FractionRuleUpdate {
 	if u != nil {
-		fru.SetCoinID(*u)
+		fru.SetPoolCoinTypeID(*u)
 	}
 	return fru
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (fru *FractionRuleUpdate) ClearCoinID() *FractionRuleUpdate {
-	fru.mutation.ClearCoinID()
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (fru *FractionRuleUpdate) ClearPoolCoinTypeID() *FractionRuleUpdate {
+	fru.mutation.ClearPoolCoinTypeID()
 	return fru
 }
 
@@ -333,17 +333,17 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fractionrule.FieldEntID,
 		})
 	}
-	if value, ok := fru.mutation.CoinID(); ok {
+	if value, ok := fru.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fractionrule.FieldCoinID,
+			Column: fractionrule.FieldPoolCoinTypeID,
 		})
 	}
-	if fru.mutation.CoinIDCleared() {
+	if fru.mutation.PoolCoinTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: fractionrule.FieldCoinID,
+			Column: fractionrule.FieldPoolCoinTypeID,
 		})
 	}
 	if value, ok := fru.mutation.WithdrawInterval(); ok {
@@ -482,23 +482,23 @@ func (fruo *FractionRuleUpdateOne) SetNillableEntID(u *uuid.UUID) *FractionRuleU
 	return fruo
 }
 
-// SetCoinID sets the "coin_id" field.
-func (fruo *FractionRuleUpdateOne) SetCoinID(u uuid.UUID) *FractionRuleUpdateOne {
-	fruo.mutation.SetCoinID(u)
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (fruo *FractionRuleUpdateOne) SetPoolCoinTypeID(u uuid.UUID) *FractionRuleUpdateOne {
+	fruo.mutation.SetPoolCoinTypeID(u)
 	return fruo
 }
 
-// SetNillableCoinID sets the "coin_id" field if the given value is not nil.
-func (fruo *FractionRuleUpdateOne) SetNillableCoinID(u *uuid.UUID) *FractionRuleUpdateOne {
+// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillablePoolCoinTypeID(u *uuid.UUID) *FractionRuleUpdateOne {
 	if u != nil {
-		fruo.SetCoinID(*u)
+		fruo.SetPoolCoinTypeID(*u)
 	}
 	return fruo
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (fruo *FractionRuleUpdateOne) ClearCoinID() *FractionRuleUpdateOne {
-	fruo.mutation.ClearCoinID()
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (fruo *FractionRuleUpdateOne) ClearPoolCoinTypeID() *FractionRuleUpdateOne {
+	fruo.mutation.ClearPoolCoinTypeID()
 	return fruo
 }
 
@@ -746,17 +746,17 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 			Column: fractionrule.FieldEntID,
 		})
 	}
-	if value, ok := fruo.mutation.CoinID(); ok {
+	if value, ok := fruo.mutation.PoolCoinTypeID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Value:  value,
-			Column: fractionrule.FieldCoinID,
+			Column: fractionrule.FieldPoolCoinTypeID,
 		})
 	}
-	if fruo.mutation.CoinIDCleared() {
+	if fruo.mutation.PoolCoinTypeIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
-			Column: fractionrule.FieldCoinID,
+			Column: fractionrule.FieldPoolCoinTypeID,
 		})
 	}
 	if value, ok := fruo.mutation.WithdrawInterval(); ok {

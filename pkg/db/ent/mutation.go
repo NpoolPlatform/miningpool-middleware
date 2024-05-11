@@ -786,6 +786,7 @@ type CoinMutation struct {
 	adddeleted_at               *int32
 	ent_id                      *uuid.UUID
 	pool_id                     *uuid.UUID
+	coin_type_id                *uuid.UUID
 	coin_type                   *string
 	revenue_type                *string
 	fee_ratio                   *decimal.Decimal
@@ -1155,6 +1156,55 @@ func (m *CoinMutation) PoolIDCleared() bool {
 func (m *CoinMutation) ResetPoolID() {
 	m.pool_id = nil
 	delete(m.clearedFields, coin.FieldPoolID)
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (m *CoinMutation) SetCoinTypeID(u uuid.UUID) {
+	m.coin_type_id = &u
+}
+
+// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
+func (m *CoinMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.coin_type_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinTypeID returns the old "coin_type_id" field's value of the Coin entity.
+// If the Coin object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CoinMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+	}
+	return oldValue.CoinTypeID, nil
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (m *CoinMutation) ClearCoinTypeID() {
+	m.coin_type_id = nil
+	m.clearedFields[coin.FieldCoinTypeID] = struct{}{}
+}
+
+// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
+func (m *CoinMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[coin.FieldCoinTypeID]
+	return ok
+}
+
+// ResetCoinTypeID resets all changes to the "coin_type_id" field.
+func (m *CoinMutation) ResetCoinTypeID() {
+	m.coin_type_id = nil
+	delete(m.clearedFields, coin.FieldCoinTypeID)
 }
 
 // SetCoinType sets the "coin_type" field.
@@ -1540,7 +1590,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -1555,6 +1605,9 @@ func (m *CoinMutation) Fields() []string {
 	}
 	if m.pool_id != nil {
 		fields = append(fields, coin.FieldPoolID)
+	}
+	if m.coin_type_id != nil {
+		fields = append(fields, coin.FieldCoinTypeID)
 	}
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
@@ -1595,6 +1648,8 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.EntID()
 	case coin.FieldPoolID:
 		return m.PoolID()
+	case coin.FieldCoinTypeID:
+		return m.CoinTypeID()
 	case coin.FieldCoinType:
 		return m.CoinType()
 	case coin.FieldRevenueType:
@@ -1628,6 +1683,8 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldEntID(ctx)
 	case coin.FieldPoolID:
 		return m.OldPoolID(ctx)
+	case coin.FieldCoinTypeID:
+		return m.OldCoinTypeID(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
 	case coin.FieldRevenueType:
@@ -1685,6 +1742,13 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPoolID(v)
+		return nil
+	case coin.FieldCoinTypeID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinTypeID(v)
 		return nil
 	case coin.FieldCoinType:
 		v, ok := value.(string)
@@ -1819,6 +1883,9 @@ func (m *CoinMutation) ClearedFields() []string {
 	if m.FieldCleared(coin.FieldPoolID) {
 		fields = append(fields, coin.FieldPoolID)
 	}
+	if m.FieldCleared(coin.FieldCoinTypeID) {
+		fields = append(fields, coin.FieldCoinTypeID)
+	}
 	if m.FieldCleared(coin.FieldCoinType) {
 		fields = append(fields, coin.FieldCoinType)
 	}
@@ -1856,6 +1923,9 @@ func (m *CoinMutation) ClearField(name string) error {
 	switch name {
 	case coin.FieldPoolID:
 		m.ClearPoolID()
+		return nil
+	case coin.FieldCoinTypeID:
+		m.ClearCoinTypeID()
 		return nil
 	case coin.FieldCoinType:
 		m.ClearCoinType()
@@ -1900,6 +1970,9 @@ func (m *CoinMutation) ResetField(name string) error {
 		return nil
 	case coin.FieldPoolID:
 		m.ResetPoolID()
+		return nil
+	case coin.FieldCoinTypeID:
+		m.ResetCoinTypeID()
 		return nil
 	case coin.FieldCoinType:
 		m.ResetCoinType()
@@ -1977,29 +2050,29 @@ func (m *CoinMutation) ResetEdge(name string) error {
 // FractionMutation represents an operation that mutates the Fraction nodes in the graph.
 type FractionMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *uint32
-	created_at       *uint32
-	addcreated_at    *int32
-	updated_at       *uint32
-	addupdated_at    *int32
-	deleted_at       *uint32
-	adddeleted_at    *int32
-	ent_id           *uuid.UUID
-	app_id           *uuid.UUID
-	user_id          *uuid.UUID
-	order_user_id    *uuid.UUID
-	withdraw_state   *string
-	withdraw_time    *uint32
-	addwithdraw_time *int32
-	pay_time         *uint32
-	addpay_time      *int32
-	msg              *string
-	clearedFields    map[string]struct{}
-	done             bool
-	oldValue         func(context.Context) (*Fraction, error)
-	predicates       []predicate.Fraction
+	op                Op
+	typ               string
+	id                *uint32
+	created_at        *uint32
+	addcreated_at     *int32
+	updated_at        *uint32
+	addupdated_at     *int32
+	deleted_at        *uint32
+	adddeleted_at     *int32
+	ent_id            *uuid.UUID
+	app_id            *uuid.UUID
+	user_id           *uuid.UUID
+	order_user_id     *uuid.UUID
+	withdraw_state    *string
+	withdraw_at       *uint32
+	addwithdraw_at    *int32
+	promise_pay_at    *uint32
+	addpromise_pay_at *int32
+	msg               *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*Fraction, error)
+	predicates        []predicate.Fraction
 }
 
 var _ ent.Mutation = (*FractionMutation)(nil)
@@ -2506,144 +2579,144 @@ func (m *FractionMutation) ResetWithdrawState() {
 	delete(m.clearedFields, fraction.FieldWithdrawState)
 }
 
-// SetWithdrawTime sets the "withdraw_time" field.
-func (m *FractionMutation) SetWithdrawTime(u uint32) {
-	m.withdraw_time = &u
-	m.addwithdraw_time = nil
+// SetWithdrawAt sets the "withdraw_at" field.
+func (m *FractionMutation) SetWithdrawAt(u uint32) {
+	m.withdraw_at = &u
+	m.addwithdraw_at = nil
 }
 
-// WithdrawTime returns the value of the "withdraw_time" field in the mutation.
-func (m *FractionMutation) WithdrawTime() (r uint32, exists bool) {
-	v := m.withdraw_time
+// WithdrawAt returns the value of the "withdraw_at" field in the mutation.
+func (m *FractionMutation) WithdrawAt() (r uint32, exists bool) {
+	v := m.withdraw_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldWithdrawTime returns the old "withdraw_time" field's value of the Fraction entity.
+// OldWithdrawAt returns the old "withdraw_at" field's value of the Fraction entity.
 // If the Fraction object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldWithdrawTime(ctx context.Context) (v uint32, err error) {
+func (m *FractionMutation) OldWithdrawAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldWithdrawTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldWithdrawAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldWithdrawTime requires an ID field in the mutation")
+		return v, errors.New("OldWithdrawAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWithdrawTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldWithdrawAt: %w", err)
 	}
-	return oldValue.WithdrawTime, nil
+	return oldValue.WithdrawAt, nil
 }
 
-// AddWithdrawTime adds u to the "withdraw_time" field.
-func (m *FractionMutation) AddWithdrawTime(u int32) {
-	if m.addwithdraw_time != nil {
-		*m.addwithdraw_time += u
+// AddWithdrawAt adds u to the "withdraw_at" field.
+func (m *FractionMutation) AddWithdrawAt(u int32) {
+	if m.addwithdraw_at != nil {
+		*m.addwithdraw_at += u
 	} else {
-		m.addwithdraw_time = &u
+		m.addwithdraw_at = &u
 	}
 }
 
-// AddedWithdrawTime returns the value that was added to the "withdraw_time" field in this mutation.
-func (m *FractionMutation) AddedWithdrawTime() (r int32, exists bool) {
-	v := m.addwithdraw_time
+// AddedWithdrawAt returns the value that was added to the "withdraw_at" field in this mutation.
+func (m *FractionMutation) AddedWithdrawAt() (r int32, exists bool) {
+	v := m.addwithdraw_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearWithdrawTime clears the value of the "withdraw_time" field.
-func (m *FractionMutation) ClearWithdrawTime() {
-	m.withdraw_time = nil
-	m.addwithdraw_time = nil
-	m.clearedFields[fraction.FieldWithdrawTime] = struct{}{}
+// ClearWithdrawAt clears the value of the "withdraw_at" field.
+func (m *FractionMutation) ClearWithdrawAt() {
+	m.withdraw_at = nil
+	m.addwithdraw_at = nil
+	m.clearedFields[fraction.FieldWithdrawAt] = struct{}{}
 }
 
-// WithdrawTimeCleared returns if the "withdraw_time" field was cleared in this mutation.
-func (m *FractionMutation) WithdrawTimeCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldWithdrawTime]
+// WithdrawAtCleared returns if the "withdraw_at" field was cleared in this mutation.
+func (m *FractionMutation) WithdrawAtCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldWithdrawAt]
 	return ok
 }
 
-// ResetWithdrawTime resets all changes to the "withdraw_time" field.
-func (m *FractionMutation) ResetWithdrawTime() {
-	m.withdraw_time = nil
-	m.addwithdraw_time = nil
-	delete(m.clearedFields, fraction.FieldWithdrawTime)
+// ResetWithdrawAt resets all changes to the "withdraw_at" field.
+func (m *FractionMutation) ResetWithdrawAt() {
+	m.withdraw_at = nil
+	m.addwithdraw_at = nil
+	delete(m.clearedFields, fraction.FieldWithdrawAt)
 }
 
-// SetPayTime sets the "pay_time" field.
-func (m *FractionMutation) SetPayTime(u uint32) {
-	m.pay_time = &u
-	m.addpay_time = nil
+// SetPromisePayAt sets the "promise_pay_at" field.
+func (m *FractionMutation) SetPromisePayAt(u uint32) {
+	m.promise_pay_at = &u
+	m.addpromise_pay_at = nil
 }
 
-// PayTime returns the value of the "pay_time" field in the mutation.
-func (m *FractionMutation) PayTime() (r uint32, exists bool) {
-	v := m.pay_time
+// PromisePayAt returns the value of the "promise_pay_at" field in the mutation.
+func (m *FractionMutation) PromisePayAt() (r uint32, exists bool) {
+	v := m.promise_pay_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPayTime returns the old "pay_time" field's value of the Fraction entity.
+// OldPromisePayAt returns the old "promise_pay_at" field's value of the Fraction entity.
 // If the Fraction object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldPayTime(ctx context.Context) (v uint32, err error) {
+func (m *FractionMutation) OldPromisePayAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPayTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldPromisePayAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPayTime requires an ID field in the mutation")
+		return v, errors.New("OldPromisePayAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPayTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldPromisePayAt: %w", err)
 	}
-	return oldValue.PayTime, nil
+	return oldValue.PromisePayAt, nil
 }
 
-// AddPayTime adds u to the "pay_time" field.
-func (m *FractionMutation) AddPayTime(u int32) {
-	if m.addpay_time != nil {
-		*m.addpay_time += u
+// AddPromisePayAt adds u to the "promise_pay_at" field.
+func (m *FractionMutation) AddPromisePayAt(u int32) {
+	if m.addpromise_pay_at != nil {
+		*m.addpromise_pay_at += u
 	} else {
-		m.addpay_time = &u
+		m.addpromise_pay_at = &u
 	}
 }
 
-// AddedPayTime returns the value that was added to the "pay_time" field in this mutation.
-func (m *FractionMutation) AddedPayTime() (r int32, exists bool) {
-	v := m.addpay_time
+// AddedPromisePayAt returns the value that was added to the "promise_pay_at" field in this mutation.
+func (m *FractionMutation) AddedPromisePayAt() (r int32, exists bool) {
+	v := m.addpromise_pay_at
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearPayTime clears the value of the "pay_time" field.
-func (m *FractionMutation) ClearPayTime() {
-	m.pay_time = nil
-	m.addpay_time = nil
-	m.clearedFields[fraction.FieldPayTime] = struct{}{}
+// ClearPromisePayAt clears the value of the "promise_pay_at" field.
+func (m *FractionMutation) ClearPromisePayAt() {
+	m.promise_pay_at = nil
+	m.addpromise_pay_at = nil
+	m.clearedFields[fraction.FieldPromisePayAt] = struct{}{}
 }
 
-// PayTimeCleared returns if the "pay_time" field was cleared in this mutation.
-func (m *FractionMutation) PayTimeCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldPayTime]
+// PromisePayAtCleared returns if the "promise_pay_at" field was cleared in this mutation.
+func (m *FractionMutation) PromisePayAtCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldPromisePayAt]
 	return ok
 }
 
-// ResetPayTime resets all changes to the "pay_time" field.
-func (m *FractionMutation) ResetPayTime() {
-	m.pay_time = nil
-	m.addpay_time = nil
-	delete(m.clearedFields, fraction.FieldPayTime)
+// ResetPromisePayAt resets all changes to the "promise_pay_at" field.
+func (m *FractionMutation) ResetPromisePayAt() {
+	m.promise_pay_at = nil
+	m.addpromise_pay_at = nil
+	delete(m.clearedFields, fraction.FieldPromisePayAt)
 }
 
 // SetMsg sets the "msg" field.
@@ -2739,11 +2812,11 @@ func (m *FractionMutation) Fields() []string {
 	if m.withdraw_state != nil {
 		fields = append(fields, fraction.FieldWithdrawState)
 	}
-	if m.withdraw_time != nil {
-		fields = append(fields, fraction.FieldWithdrawTime)
+	if m.withdraw_at != nil {
+		fields = append(fields, fraction.FieldWithdrawAt)
 	}
-	if m.pay_time != nil {
-		fields = append(fields, fraction.FieldPayTime)
+	if m.promise_pay_at != nil {
+		fields = append(fields, fraction.FieldPromisePayAt)
 	}
 	if m.msg != nil {
 		fields = append(fields, fraction.FieldMsg)
@@ -2772,10 +2845,10 @@ func (m *FractionMutation) Field(name string) (ent.Value, bool) {
 		return m.OrderUserID()
 	case fraction.FieldWithdrawState:
 		return m.WithdrawState()
-	case fraction.FieldWithdrawTime:
-		return m.WithdrawTime()
-	case fraction.FieldPayTime:
-		return m.PayTime()
+	case fraction.FieldWithdrawAt:
+		return m.WithdrawAt()
+	case fraction.FieldPromisePayAt:
+		return m.PromisePayAt()
 	case fraction.FieldMsg:
 		return m.Msg()
 	}
@@ -2803,10 +2876,10 @@ func (m *FractionMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldOrderUserID(ctx)
 	case fraction.FieldWithdrawState:
 		return m.OldWithdrawState(ctx)
-	case fraction.FieldWithdrawTime:
-		return m.OldWithdrawTime(ctx)
-	case fraction.FieldPayTime:
-		return m.OldPayTime(ctx)
+	case fraction.FieldWithdrawAt:
+		return m.OldWithdrawAt(ctx)
+	case fraction.FieldPromisePayAt:
+		return m.OldPromisePayAt(ctx)
 	case fraction.FieldMsg:
 		return m.OldMsg(ctx)
 	}
@@ -2874,19 +2947,19 @@ func (m *FractionMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetWithdrawState(v)
 		return nil
-	case fraction.FieldWithdrawTime:
+	case fraction.FieldWithdrawAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetWithdrawTime(v)
+		m.SetWithdrawAt(v)
 		return nil
-	case fraction.FieldPayTime:
+	case fraction.FieldPromisePayAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPayTime(v)
+		m.SetPromisePayAt(v)
 		return nil
 	case fraction.FieldMsg:
 		v, ok := value.(string)
@@ -2912,11 +2985,11 @@ func (m *FractionMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, fraction.FieldDeletedAt)
 	}
-	if m.addwithdraw_time != nil {
-		fields = append(fields, fraction.FieldWithdrawTime)
+	if m.addwithdraw_at != nil {
+		fields = append(fields, fraction.FieldWithdrawAt)
 	}
-	if m.addpay_time != nil {
-		fields = append(fields, fraction.FieldPayTime)
+	if m.addpromise_pay_at != nil {
+		fields = append(fields, fraction.FieldPromisePayAt)
 	}
 	return fields
 }
@@ -2932,10 +3005,10 @@ func (m *FractionMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case fraction.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case fraction.FieldWithdrawTime:
-		return m.AddedWithdrawTime()
-	case fraction.FieldPayTime:
-		return m.AddedPayTime()
+	case fraction.FieldWithdrawAt:
+		return m.AddedWithdrawAt()
+	case fraction.FieldPromisePayAt:
+		return m.AddedPromisePayAt()
 	}
 	return nil, false
 }
@@ -2966,19 +3039,19 @@ func (m *FractionMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddDeletedAt(v)
 		return nil
-	case fraction.FieldWithdrawTime:
+	case fraction.FieldWithdrawAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddWithdrawTime(v)
+		m.AddWithdrawAt(v)
 		return nil
-	case fraction.FieldPayTime:
+	case fraction.FieldPromisePayAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddPayTime(v)
+		m.AddPromisePayAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Fraction numeric field %s", name)
@@ -3000,11 +3073,11 @@ func (m *FractionMutation) ClearedFields() []string {
 	if m.FieldCleared(fraction.FieldWithdrawState) {
 		fields = append(fields, fraction.FieldWithdrawState)
 	}
-	if m.FieldCleared(fraction.FieldWithdrawTime) {
-		fields = append(fields, fraction.FieldWithdrawTime)
+	if m.FieldCleared(fraction.FieldWithdrawAt) {
+		fields = append(fields, fraction.FieldWithdrawAt)
 	}
-	if m.FieldCleared(fraction.FieldPayTime) {
-		fields = append(fields, fraction.FieldPayTime)
+	if m.FieldCleared(fraction.FieldPromisePayAt) {
+		fields = append(fields, fraction.FieldPromisePayAt)
 	}
 	if m.FieldCleared(fraction.FieldMsg) {
 		fields = append(fields, fraction.FieldMsg)
@@ -3035,11 +3108,11 @@ func (m *FractionMutation) ClearField(name string) error {
 	case fraction.FieldWithdrawState:
 		m.ClearWithdrawState()
 		return nil
-	case fraction.FieldWithdrawTime:
-		m.ClearWithdrawTime()
+	case fraction.FieldWithdrawAt:
+		m.ClearWithdrawAt()
 		return nil
-	case fraction.FieldPayTime:
-		m.ClearPayTime()
+	case fraction.FieldPromisePayAt:
+		m.ClearPromisePayAt()
 		return nil
 	case fraction.FieldMsg:
 		m.ClearMsg()
@@ -3076,11 +3149,11 @@ func (m *FractionMutation) ResetField(name string) error {
 	case fraction.FieldWithdrawState:
 		m.ResetWithdrawState()
 		return nil
-	case fraction.FieldWithdrawTime:
-		m.ResetWithdrawTime()
+	case fraction.FieldWithdrawAt:
+		m.ResetWithdrawAt()
 		return nil
-	case fraction.FieldPayTime:
-		m.ResetPayTime()
+	case fraction.FieldPromisePayAt:
+		m.ResetPromisePayAt()
 		return nil
 	case fraction.FieldMsg:
 		m.ResetMsg()
@@ -3150,7 +3223,7 @@ type FractionRuleMutation struct {
 	deleted_at           *uint32
 	adddeleted_at        *int32
 	ent_id               *uuid.UUID
-	coin_id              *uuid.UUID
+	pool_coin_type_id    *uuid.UUID
 	withdraw_interval    *uint32
 	addwithdraw_interval *int32
 	min_amount           *decimal.Decimal
@@ -3469,53 +3542,53 @@ func (m *FractionRuleMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetCoinID sets the "coin_id" field.
-func (m *FractionRuleMutation) SetCoinID(u uuid.UUID) {
-	m.coin_id = &u
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (m *FractionRuleMutation) SetPoolCoinTypeID(u uuid.UUID) {
+	m.pool_coin_type_id = &u
 }
 
-// CoinID returns the value of the "coin_id" field in the mutation.
-func (m *FractionRuleMutation) CoinID() (r uuid.UUID, exists bool) {
-	v := m.coin_id
+// PoolCoinTypeID returns the value of the "pool_coin_type_id" field in the mutation.
+func (m *FractionRuleMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.pool_coin_type_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinID returns the old "coin_id" field's value of the FractionRule entity.
+// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the FractionRule entity.
 // If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldCoinID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionRuleMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinID is only allowed on UpdateOne operations")
+		return v, errors.New("OldPoolCoinTypeID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinID requires an ID field in the mutation")
+		return v, errors.New("OldPoolCoinTypeID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinID: %w", err)
+		return v, fmt.Errorf("querying old value for OldPoolCoinTypeID: %w", err)
 	}
-	return oldValue.CoinID, nil
+	return oldValue.PoolCoinTypeID, nil
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (m *FractionRuleMutation) ClearCoinID() {
-	m.coin_id = nil
-	m.clearedFields[fractionrule.FieldCoinID] = struct{}{}
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (m *FractionRuleMutation) ClearPoolCoinTypeID() {
+	m.pool_coin_type_id = nil
+	m.clearedFields[fractionrule.FieldPoolCoinTypeID] = struct{}{}
 }
 
-// CoinIDCleared returns if the "coin_id" field was cleared in this mutation.
-func (m *FractionRuleMutation) CoinIDCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldCoinID]
+// PoolCoinTypeIDCleared returns if the "pool_coin_type_id" field was cleared in this mutation.
+func (m *FractionRuleMutation) PoolCoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldPoolCoinTypeID]
 	return ok
 }
 
-// ResetCoinID resets all changes to the "coin_id" field.
-func (m *FractionRuleMutation) ResetCoinID() {
-	m.coin_id = nil
-	delete(m.clearedFields, fractionrule.FieldCoinID)
+// ResetPoolCoinTypeID resets all changes to the "pool_coin_type_id" field.
+func (m *FractionRuleMutation) ResetPoolCoinTypeID() {
+	m.pool_coin_type_id = nil
+	delete(m.clearedFields, fractionrule.FieldPoolCoinTypeID)
 }
 
 // SetWithdrawInterval sets the "withdraw_interval" field.
@@ -3718,8 +3791,8 @@ func (m *FractionRuleMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, fractionrule.FieldEntID)
 	}
-	if m.coin_id != nil {
-		fields = append(fields, fractionrule.FieldCoinID)
+	if m.pool_coin_type_id != nil {
+		fields = append(fields, fractionrule.FieldPoolCoinTypeID)
 	}
 	if m.withdraw_interval != nil {
 		fields = append(fields, fractionrule.FieldWithdrawInterval)
@@ -3746,8 +3819,8 @@ func (m *FractionRuleMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case fractionrule.FieldEntID:
 		return m.EntID()
-	case fractionrule.FieldCoinID:
-		return m.CoinID()
+	case fractionrule.FieldPoolCoinTypeID:
+		return m.PoolCoinTypeID()
 	case fractionrule.FieldWithdrawInterval:
 		return m.WithdrawInterval()
 	case fractionrule.FieldMinAmount:
@@ -3771,8 +3844,8 @@ func (m *FractionRuleMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldDeletedAt(ctx)
 	case fractionrule.FieldEntID:
 		return m.OldEntID(ctx)
-	case fractionrule.FieldCoinID:
-		return m.OldCoinID(ctx)
+	case fractionrule.FieldPoolCoinTypeID:
+		return m.OldPoolCoinTypeID(ctx)
 	case fractionrule.FieldWithdrawInterval:
 		return m.OldWithdrawInterval(ctx)
 	case fractionrule.FieldMinAmount:
@@ -3816,12 +3889,12 @@ func (m *FractionRuleMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case fractionrule.FieldCoinID:
+	case fractionrule.FieldPoolCoinTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCoinID(v)
+		m.SetPoolCoinTypeID(v)
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		v, ok := value.(uint32)
@@ -3925,8 +3998,8 @@ func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *FractionRuleMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(fractionrule.FieldCoinID) {
-		fields = append(fields, fractionrule.FieldCoinID)
+	if m.FieldCleared(fractionrule.FieldPoolCoinTypeID) {
+		fields = append(fields, fractionrule.FieldPoolCoinTypeID)
 	}
 	if m.FieldCleared(fractionrule.FieldWithdrawInterval) {
 		fields = append(fields, fractionrule.FieldWithdrawInterval)
@@ -3951,8 +4024,8 @@ func (m *FractionRuleMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *FractionRuleMutation) ClearField(name string) error {
 	switch name {
-	case fractionrule.FieldCoinID:
-		m.ClearCoinID()
+	case fractionrule.FieldPoolCoinTypeID:
+		m.ClearPoolCoinTypeID()
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		m.ClearWithdrawInterval()
@@ -3983,8 +4056,8 @@ func (m *FractionRuleMutation) ResetField(name string) error {
 	case fractionrule.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case fractionrule.FieldCoinID:
-		m.ResetCoinID()
+	case fractionrule.FieldPoolCoinTypeID:
+		m.ResetPoolCoinTypeID()
 		return nil
 	case fractionrule.FieldWithdrawInterval:
 		m.ResetWithdrawInterval()
@@ -4050,26 +4123,24 @@ func (m *FractionRuleMutation) ResetEdge(name string) error {
 // GoodUserMutation represents an operation that mutates the GoodUser nodes in the graph.
 type GoodUserMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *uint32
-	created_at     *uint32
-	addcreated_at  *int32
-	updated_at     *uint32
-	addupdated_at  *int32
-	deleted_at     *uint32
-	adddeleted_at  *int32
-	ent_id         *uuid.UUID
-	root_user_id   *uuid.UUID
-	name           *string
-	coin_id        *uuid.UUID
-	hash_rate      *float32
-	addhash_rate   *float32
-	read_page_link *string
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*GoodUser, error)
-	predicates     []predicate.GoodUser
+	op                Op
+	typ               string
+	id                *uint32
+	created_at        *uint32
+	addcreated_at     *int32
+	updated_at        *uint32
+	addupdated_at     *int32
+	deleted_at        *uint32
+	adddeleted_at     *int32
+	ent_id            *uuid.UUID
+	root_user_id      *uuid.UUID
+	name              *string
+	pool_coin_type_id *uuid.UUID
+	read_page_link    *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*GoodUser, error)
+	predicates        []predicate.GoodUser
 }
 
 var _ ent.Mutation = (*GoodUserMutation)(nil)
@@ -4478,123 +4549,53 @@ func (m *GoodUserMutation) ResetName() {
 	delete(m.clearedFields, gooduser.FieldName)
 }
 
-// SetCoinID sets the "coin_id" field.
-func (m *GoodUserMutation) SetCoinID(u uuid.UUID) {
-	m.coin_id = &u
+// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
+func (m *GoodUserMutation) SetPoolCoinTypeID(u uuid.UUID) {
+	m.pool_coin_type_id = &u
 }
 
-// CoinID returns the value of the "coin_id" field in the mutation.
-func (m *GoodUserMutation) CoinID() (r uuid.UUID, exists bool) {
-	v := m.coin_id
+// PoolCoinTypeID returns the value of the "pool_coin_type_id" field in the mutation.
+func (m *GoodUserMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.pool_coin_type_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCoinID returns the old "coin_id" field's value of the GoodUser entity.
+// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the GoodUser entity.
 // If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldCoinID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *GoodUserMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoinID is only allowed on UpdateOne operations")
+		return v, errors.New("OldPoolCoinTypeID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoinID requires an ID field in the mutation")
+		return v, errors.New("OldPoolCoinTypeID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoinID: %w", err)
+		return v, fmt.Errorf("querying old value for OldPoolCoinTypeID: %w", err)
 	}
-	return oldValue.CoinID, nil
+	return oldValue.PoolCoinTypeID, nil
 }
 
-// ClearCoinID clears the value of the "coin_id" field.
-func (m *GoodUserMutation) ClearCoinID() {
-	m.coin_id = nil
-	m.clearedFields[gooduser.FieldCoinID] = struct{}{}
+// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
+func (m *GoodUserMutation) ClearPoolCoinTypeID() {
+	m.pool_coin_type_id = nil
+	m.clearedFields[gooduser.FieldPoolCoinTypeID] = struct{}{}
 }
 
-// CoinIDCleared returns if the "coin_id" field was cleared in this mutation.
-func (m *GoodUserMutation) CoinIDCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldCoinID]
+// PoolCoinTypeIDCleared returns if the "pool_coin_type_id" field was cleared in this mutation.
+func (m *GoodUserMutation) PoolCoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[gooduser.FieldPoolCoinTypeID]
 	return ok
 }
 
-// ResetCoinID resets all changes to the "coin_id" field.
-func (m *GoodUserMutation) ResetCoinID() {
-	m.coin_id = nil
-	delete(m.clearedFields, gooduser.FieldCoinID)
-}
-
-// SetHashRate sets the "hash_rate" field.
-func (m *GoodUserMutation) SetHashRate(f float32) {
-	m.hash_rate = &f
-	m.addhash_rate = nil
-}
-
-// HashRate returns the value of the "hash_rate" field in the mutation.
-func (m *GoodUserMutation) HashRate() (r float32, exists bool) {
-	v := m.hash_rate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldHashRate returns the old "hash_rate" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldHashRate(ctx context.Context) (v float32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldHashRate is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldHashRate requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHashRate: %w", err)
-	}
-	return oldValue.HashRate, nil
-}
-
-// AddHashRate adds f to the "hash_rate" field.
-func (m *GoodUserMutation) AddHashRate(f float32) {
-	if m.addhash_rate != nil {
-		*m.addhash_rate += f
-	} else {
-		m.addhash_rate = &f
-	}
-}
-
-// AddedHashRate returns the value that was added to the "hash_rate" field in this mutation.
-func (m *GoodUserMutation) AddedHashRate() (r float32, exists bool) {
-	v := m.addhash_rate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearHashRate clears the value of the "hash_rate" field.
-func (m *GoodUserMutation) ClearHashRate() {
-	m.hash_rate = nil
-	m.addhash_rate = nil
-	m.clearedFields[gooduser.FieldHashRate] = struct{}{}
-}
-
-// HashRateCleared returns if the "hash_rate" field was cleared in this mutation.
-func (m *GoodUserMutation) HashRateCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldHashRate]
-	return ok
-}
-
-// ResetHashRate resets all changes to the "hash_rate" field.
-func (m *GoodUserMutation) ResetHashRate() {
-	m.hash_rate = nil
-	m.addhash_rate = nil
-	delete(m.clearedFields, gooduser.FieldHashRate)
+// ResetPoolCoinTypeID resets all changes to the "pool_coin_type_id" field.
+func (m *GoodUserMutation) ResetPoolCoinTypeID() {
+	m.pool_coin_type_id = nil
+	delete(m.clearedFields, gooduser.FieldPoolCoinTypeID)
 }
 
 // SetReadPageLink sets the "read_page_link" field.
@@ -4665,7 +4666,7 @@ func (m *GoodUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodUserMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, gooduser.FieldCreatedAt)
 	}
@@ -4684,11 +4685,8 @@ func (m *GoodUserMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.coin_id != nil {
-		fields = append(fields, gooduser.FieldCoinID)
-	}
-	if m.hash_rate != nil {
-		fields = append(fields, gooduser.FieldHashRate)
+	if m.pool_coin_type_id != nil {
+		fields = append(fields, gooduser.FieldPoolCoinTypeID)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, gooduser.FieldReadPageLink)
@@ -4713,10 +4711,8 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.RootUserID()
 	case gooduser.FieldName:
 		return m.Name()
-	case gooduser.FieldCoinID:
-		return m.CoinID()
-	case gooduser.FieldHashRate:
-		return m.HashRate()
+	case gooduser.FieldPoolCoinTypeID:
+		return m.PoolCoinTypeID()
 	case gooduser.FieldReadPageLink:
 		return m.ReadPageLink()
 	}
@@ -4740,10 +4736,8 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRootUserID(ctx)
 	case gooduser.FieldName:
 		return m.OldName(ctx)
-	case gooduser.FieldCoinID:
-		return m.OldCoinID(ctx)
-	case gooduser.FieldHashRate:
-		return m.OldHashRate(ctx)
+	case gooduser.FieldPoolCoinTypeID:
+		return m.OldPoolCoinTypeID(ctx)
 	case gooduser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
 	}
@@ -4797,19 +4791,12 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case gooduser.FieldCoinID:
+	case gooduser.FieldPoolCoinTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCoinID(v)
-		return nil
-	case gooduser.FieldHashRate:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetHashRate(v)
+		m.SetPoolCoinTypeID(v)
 		return nil
 	case gooduser.FieldReadPageLink:
 		v, ok := value.(string)
@@ -4835,9 +4822,6 @@ func (m *GoodUserMutation) AddedFields() []string {
 	if m.adddeleted_at != nil {
 		fields = append(fields, gooduser.FieldDeletedAt)
 	}
-	if m.addhash_rate != nil {
-		fields = append(fields, gooduser.FieldHashRate)
-	}
 	return fields
 }
 
@@ -4852,8 +4836,6 @@ func (m *GoodUserMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUpdatedAt()
 	case gooduser.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case gooduser.FieldHashRate:
-		return m.AddedHashRate()
 	}
 	return nil, false
 }
@@ -4884,13 +4866,6 @@ func (m *GoodUserMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddDeletedAt(v)
 		return nil
-	case gooduser.FieldHashRate:
-		v, ok := value.(float32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddHashRate(v)
-		return nil
 	}
 	return fmt.Errorf("unknown GoodUser numeric field %s", name)
 }
@@ -4905,11 +4880,8 @@ func (m *GoodUserMutation) ClearedFields() []string {
 	if m.FieldCleared(gooduser.FieldName) {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.FieldCleared(gooduser.FieldCoinID) {
-		fields = append(fields, gooduser.FieldCoinID)
-	}
-	if m.FieldCleared(gooduser.FieldHashRate) {
-		fields = append(fields, gooduser.FieldHashRate)
+	if m.FieldCleared(gooduser.FieldPoolCoinTypeID) {
+		fields = append(fields, gooduser.FieldPoolCoinTypeID)
 	}
 	if m.FieldCleared(gooduser.FieldReadPageLink) {
 		fields = append(fields, gooduser.FieldReadPageLink)
@@ -4934,11 +4906,8 @@ func (m *GoodUserMutation) ClearField(name string) error {
 	case gooduser.FieldName:
 		m.ClearName()
 		return nil
-	case gooduser.FieldCoinID:
-		m.ClearCoinID()
-		return nil
-	case gooduser.FieldHashRate:
-		m.ClearHashRate()
+	case gooduser.FieldPoolCoinTypeID:
+		m.ClearPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ClearReadPageLink()
@@ -4969,11 +4938,8 @@ func (m *GoodUserMutation) ResetField(name string) error {
 	case gooduser.FieldName:
 		m.ResetName()
 		return nil
-	case gooduser.FieldCoinID:
-		m.ResetCoinID()
-		return nil
-	case gooduser.FieldHashRate:
-		m.ResetHashRate()
+	case gooduser.FieldPoolCoinTypeID:
+		m.ResetPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ResetReadPageLink()

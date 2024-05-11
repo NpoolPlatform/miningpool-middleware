@@ -32,6 +32,12 @@ func (Coin) Fields() []ent.Field {
 				return uuid.Nil
 			}),
 		field.
+			UUID("coin_type_id", uuid.UUID{}).
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
+		field.
 			String("coin_type").Optional().Default(""),
 		field.
 			String("revenue_type").Optional().Default(""),

@@ -23,6 +23,8 @@ const (
 	FieldEntID = "ent_id"
 	// FieldPoolID holds the string denoting the pool_id field in the database.
 	FieldPoolID = "pool_id"
+	// FieldCoinTypeID holds the string denoting the coin_type_id field in the database.
+	FieldCoinTypeID = "coin_type_id"
 	// FieldCoinType holds the string denoting the coin_type field in the database.
 	FieldCoinType = "coin_type"
 	// FieldRevenueType holds the string denoting the revenue_type field in the database.
@@ -49,6 +51,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldEntID,
 	FieldPoolID,
+	FieldCoinTypeID,
 	FieldCoinType,
 	FieldRevenueType,
 	FieldFeeRatio,
@@ -73,6 +76,7 @@ func ValidColumn(column string) bool {
 // it should be imported in the main as follows:
 //
 //	import _ "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/runtime"
+//
 var (
 	Hooks  [1]ent.Hook
 	Policy ent.Policy
@@ -88,6 +92,8 @@ var (
 	DefaultEntID func() uuid.UUID
 	// DefaultPoolID holds the default value on creation for the "pool_id" field.
 	DefaultPoolID func() uuid.UUID
+	// DefaultCoinTypeID holds the default value on creation for the "coin_type_id" field.
+	DefaultCoinTypeID func() uuid.UUID
 	// DefaultCoinType holds the default value on creation for the "coin_type" field.
 	DefaultCoinType string
 	// DefaultRevenueType holds the default value on creation for the "revenue_type" field.

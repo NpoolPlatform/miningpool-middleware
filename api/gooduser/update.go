@@ -28,7 +28,6 @@ func (s *Server) UpdateGoodUser(ctx context.Context, in *npool.UpdateGoodUserReq
 		ctx,
 		gooduser.WithID(req.ID, false),
 		gooduser.WithEntID(req.EntID, false),
-		gooduser.WithHashRate(req.HashRate, false),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

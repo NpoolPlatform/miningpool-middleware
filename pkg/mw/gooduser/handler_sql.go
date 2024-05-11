@@ -67,13 +67,6 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[gooduser.FieldRootUserID] = string(strBytes)
 	}
-	if h.HashRate != nil {
-		strBytes, err := json.Marshal(*h.HashRate)
-		if err != nil {
-			return err
-		}
-		h.baseVals[gooduser.FieldHashRate] = string(strBytes)
-	}
 	if h.ReadPageLink != nil {
 		strBytes, err := json.Marshal(*h.ReadPageLink)
 		if err != nil {

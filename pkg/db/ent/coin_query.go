@@ -264,6 +264,7 @@ func (cq *CoinQuery) Clone() *CoinQuery {
 //		GroupBy(coin.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
+//
 func (cq *CoinQuery) GroupBy(field string, fields ...string) *CoinGroupBy {
 	grbuild := &CoinGroupBy{config: cq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,6 +291,7 @@ func (cq *CoinQuery) GroupBy(field string, fields ...string) *CoinGroupBy {
 //	client.Coin.Query().
 //		Select(coin.FieldCreatedAt).
 //		Scan(ctx, &v)
+//
 func (cq *CoinQuery) Select(fields ...string) *CoinSelect {
 	cq.fields = append(cq.fields, fields...)
 	selbuild := &CoinSelect{CoinQuery: cq}

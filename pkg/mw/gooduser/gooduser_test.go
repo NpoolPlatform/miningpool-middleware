@@ -111,7 +111,7 @@ func update(t *testing.T) {
 	assert.Nil(t, err)
 
 	err = handler.UpdateGoodUser(context.Background())
-	assert.Nil(t, err)
+	assert.NotNil(t, err)
 
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
@@ -120,16 +120,6 @@ func update(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
-
-	handler, err = NewHandler(
-		context.Background(),
-		WithID(&ret.ID, true),
-		WithReadPageLink(nil, false),
-	)
-	assert.Nil(t, err)
-
-	err = handler.UpdateGoodUser(context.Background())
-	assert.Nil(t, err)
 }
 
 func deleteRow(t *testing.T) {

@@ -83,28 +83,6 @@ func createGoodUser(t *testing.T) {
 	}
 }
 
-func updateGoodUser(t *testing.T) {
-	req.ID = &ret.ID
-	err := UpdateGoodUser(context.Background(), req)
-	assert.Nil(t, err)
-
-	info, err := GetGoodUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-
-	req.ID = &ret.ID
-	err = UpdateGoodUser(context.Background(), req)
-	assert.Nil(t, err)
-
-	info, err = GetGoodUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-}
-
 func getGoodUser(t *testing.T) {
 	info, err := GetGoodUser(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
@@ -155,7 +133,6 @@ func TestClient(t *testing.T) {
 
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
-	t.Run("updateGoodUser", updateGoodUser)
 	t.Run("getGoodUser", getGoodUser)
 	t.Run("getGoodUsers", getGoodUsers)
 	t.Run("deleteGoodUser", deleteGoodUser)

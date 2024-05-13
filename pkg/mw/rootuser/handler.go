@@ -101,7 +101,7 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 		}
 		re := regexp.MustCompile("^[a-zA-Z0-9\u3040-\u31ff][[a-zA-Z0-9_\\-\\.\u3040-\u31ff]{3,32}$") //nolint
 		if !re.MatchString(*name) {
-			return fmt.Errorf("invalid username")
+			return fmt.Errorf("invalid name")
 		}
 		h.Name = name
 		return nil

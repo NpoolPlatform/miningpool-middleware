@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
@@ -160,9 +161,11 @@ func TestClient(t *testing.T) {
 		return
 	}
 
+	pools.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("updateRootUser", updateRootUser)
 	t.Run("getRootUser", getRootUser)
 	t.Run("getRootUsers", getRootUsers)
 	t.Run("deleteRootUser", deleteRootUser)
+	pools.CleanTestInfo(context.Background())
 }

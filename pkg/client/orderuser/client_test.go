@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -203,6 +204,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
+	pools.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
@@ -212,4 +214,5 @@ func TestClient(t *testing.T) {
 	t.Run("deleteOrderUser", deleteOrderUser)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
+	pools.CleanTestInfo(context.Background())
 }

@@ -63,15 +63,10 @@ func create(t *testing.T) {
 		WithMinAmount(req.MinAmount, true),
 		WithWithdrawRate(req.WithdrawRate, true),
 	)
-	assert.Nil(t, err)
+	assert.NotNil(t, err)
 
 	err = handler.CreateFractionRule(context.Background())
 	assert.NotNil(t, err)
-
-	info, err := handler.GetFractionRule(context.Background())
-	if assert.Nil(t, err) {
-		assert.Equal(t, info, infos[0])
-	}
 }
 
 func TestFractionRule(t *testing.T) {

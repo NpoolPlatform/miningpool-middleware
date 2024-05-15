@@ -37,7 +37,6 @@ var ret = &npool.GoodUser{
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	ReadPageLink:   "fffff",
-	RevenueType:    mpbasetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{

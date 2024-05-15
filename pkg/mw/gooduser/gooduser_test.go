@@ -35,7 +35,6 @@ var ret = &npool.GoodUser{
 	RootUserID:     rootuserRet.EntID,
 	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	RevenueType:    mpbasetypes.RevenueType_FPPS,
 }
 
 var req = &npool.GoodUserReq{

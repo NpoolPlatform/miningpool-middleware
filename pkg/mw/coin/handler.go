@@ -200,7 +200,7 @@ func WithBenefitIntervalSeconds(benefitintervalseconds *uint32, must bool) func(
 			}
 			return nil
 		}
-		if *benefitintervalseconds > 0 {
+		if *benefitintervalseconds == 0 {
 			return fmt.Errorf("invalid benefitintervalseconds")
 		}
 		h.BenefitIntervalSeconds = benefitintervalseconds

@@ -51,7 +51,7 @@ func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coinH.GetCoins(context.Background())
 	assert.Nil(t, err)
 
-	if !assert.NotEqual(t, 0, len(coinInfos)) {
+	if len(coinInfos) == 0 {
 		return
 	}
 

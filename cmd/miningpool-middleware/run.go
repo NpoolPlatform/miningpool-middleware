@@ -5,6 +5,7 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/api"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	apicli "github.com/NpoolPlatform/basal-middleware/pkg/client/api"
 	"github.com/NpoolPlatform/go-service-framework/pkg/action"
@@ -39,7 +40,7 @@ func run(ctx context.Context) error {
 	if err := migrator.Migrate(ctx); err != nil {
 		return err
 	}
-
+	pools.InitTestInfo(ctx)
 	return nil
 }
 

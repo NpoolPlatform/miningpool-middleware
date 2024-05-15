@@ -33,6 +33,7 @@ var ret = &npool.Pool{
 	Name:           "ssss",
 	Site:           "sss",
 	Description:    "asdfadf",
+	Logo:           "sdfasdf",
 }
 
 var req = &npool.PoolReq{
@@ -40,6 +41,7 @@ var req = &npool.PoolReq{
 	MiningpoolType: &ret.MiningpoolType,
 	Name:           &ret.Name,
 	Site:           &ret.Site,
+	Logo:           &ret.Logo,
 	Description:    &ret.Description,
 }
 

@@ -23,7 +23,6 @@ var gooduserRet = &npool.GoodUser{
 	RootUserID:     rootuserRet.EntID,
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       v1.CoinType_CoinTypeBitCoin,
-	RevenueType:    basetypes.RevenueType_FPPS,
 }
 
 var gooduserReq = &npool.GoodUserReq{
@@ -82,6 +81,7 @@ func createGoodUser(t *testing.T) {
 		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		gooduserRet.CoinTypeStr = info.CoinTypeStr
 		gooduserRet.RevenueTypeStr = info.RevenueTypeStr
+		gooduserRet.RevenueType = info.RevenueType
 		gooduserRet.FeeRatio = info.FeeRatio
 		gooduserRet.ID = info.ID
 		gooduserRet.EntID = info.EntID

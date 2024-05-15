@@ -55,7 +55,7 @@ func create(t *testing.T) {
 	ret.EntID = infos[0].EntID
 	req.EntID = &infos[0].EntID
 
-	_, err = NewHandler(
+	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithPoolCoinTypeID(req.PoolCoinTypeID, true),
@@ -63,6 +63,9 @@ func create(t *testing.T) {
 		WithMinAmount(req.MinAmount, true),
 		WithWithdrawRate(req.WithdrawRate, true),
 	)
+	assert.Nil(t, err)
+
+	handler.CreateFractionRule(context.Background())
 	assert.NotNil(t, err)
 }
 

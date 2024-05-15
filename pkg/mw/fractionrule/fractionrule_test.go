@@ -65,7 +65,7 @@ func create(t *testing.T) {
 	)
 	assert.Nil(t, err)
 
-	handler.CreateFractionRule(context.Background())
+	err = handler.CreateFractionRule(context.Background())
 	assert.NotNil(t, err)
 }
 

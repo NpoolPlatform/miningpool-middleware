@@ -119,6 +119,9 @@ func WithMinAmount(minamount *string, must bool) func(context.Context, *Handler)
 		if err != nil {
 			return fmt.Errorf("invalid minamount,err: %v", err)
 		}
+		if _minamount.Sign() <= 0 {
+			return fmt.Errorf("invalid minamount")
+		}
 		h.MinAmount = &_minamount
 		return nil
 	}

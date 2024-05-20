@@ -44,7 +44,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	s.LeftJoin(poolT).On(
 		s.C(apppoolent.FieldPoolID),
 		poolT.C(pool.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	)
 }

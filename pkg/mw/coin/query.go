@@ -84,7 +84,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	s.LeftJoin(poolT).On(
 		s.C(coinent.FieldPoolID),
 		poolT.C(pool.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),
@@ -92,7 +92,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 
 	if h.Conds != nil && h.Conds.MiningpoolType != nil {
 		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(mpbasetypes.MiningpoolType); ok {
-			s.OnP(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
+			s.Where(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
 		}
 	}
 }

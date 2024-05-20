@@ -55,22 +55,22 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	s.LeftJoin(ouT).On(
 		s.C(fractionent.FieldOrderUserID),
 		ouT.C(orderuser.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(ouT.C(orderuser.FieldDeletedAt), 0),
 	).LeftJoin(guT).On(
 		ouT.C(orderuser.FieldGoodUserID),
 		guT.C(gooduser.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(guT.C(gooduser.FieldDeletedAt), 0),
 	).LeftJoin(coinT).On(
 		guT.C(gooduser.FieldPoolCoinTypeID),
 		coinT.C(coin.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
 	).LeftJoin(poolT).On(
 		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldEntID),
-	).OnP(
+	).Where(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	)
 }

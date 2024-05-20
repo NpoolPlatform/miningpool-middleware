@@ -141,7 +141,7 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 	}
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		if err := handler.queryGoodUsers(ctx, cli.Debug()); err != nil {
+		if err := handler.queryGoodUsers(ctx, cli); err != nil {
 			return err
 		}
 		handler.queryJoin()

@@ -79,12 +79,12 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	s.LeftJoin(coinT).On(
 		s.C(gooduserent.FieldPoolCoinTypeID),
 		coinT.C(coin.FieldEntID),
-	).Where(
+	).OnP(
 		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
 	).LeftJoin(poolT).On(
 		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldEntID),
-	).Where(
+	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		coinT.C(coin.FieldCoinType),

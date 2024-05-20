@@ -84,7 +84,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),
-	)
+	).Distinct()
 }
 
 func (h *queryHandler) scan(ctx context.Context) error {

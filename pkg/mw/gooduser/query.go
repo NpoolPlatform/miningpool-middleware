@@ -92,7 +92,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		coinT.C(coin.FieldFeeRatio),
 		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldMiningpoolType),
-	)
+	).Distinct()
 }
 
 func (h *queryHandler) scan(ctx context.Context) error {

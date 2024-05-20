@@ -28,7 +28,7 @@ var ret = &npool.FractionRule{
 	PoolCoinTypeID:   uuid.NewString(),
 	WithdrawInterval: 1000,
 	MinAmount:        "2.0",
-	WithdrawRate:     "3.0",
+	WithdrawRate:     "0.03",
 }
 
 var req = &npool.FractionRuleReq{

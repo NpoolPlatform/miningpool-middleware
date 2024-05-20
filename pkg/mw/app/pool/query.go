@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	apppoolent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 
 	apppoolcrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/app/pool"
 )
@@ -28,6 +30,22 @@ func (h *queryHandler) selectPool(stm *ent.AppPoolQuery) {
 		apppoolent.FieldPoolID,
 		apppoolent.FieldCreatedAt,
 		apppoolent.FieldUpdatedAt,
+	)
+}
+
+func (h *queryHandler) queryJoin() {
+	h.stm.Modify(
+		h.queryJoinPool,
+	)
+}
+
+func (h *queryHandler) queryJoinPool(s *sql.Selector) {
+	poolT := sql.Table(pool.Table)
+	s.LeftJoin(poolT).On(
+		s.C(apppoolent.FieldPoolID),
+		poolT.C(pool.FieldEntID),
+	).OnP(
+		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	)
 }
 
@@ -78,6 +96,7 @@ func (h *Handler) GetPool(ctx context.Context) (*npool.Pool, error) {
 		if err := handler.queryPool(cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -105,6 +124,7 @@ func (h *Handler) GetPools(ctx context.Context) ([]*npool.Pool, uint32, error) {
 		if err := handler.queryPools(ctx, cli); err != nil {
 			return err
 		}
+		handler.queryJoin()
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

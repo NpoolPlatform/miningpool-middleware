@@ -81,10 +81,10 @@ func (h *queryHandler) queryJoin() {
 
 func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	poolT := sql.Table(pool.Table)
-	s.LeftJoin(poolT).On(
+	s.Join(poolT).On(
 		s.C(coinent.FieldPoolID),
 		poolT.C(pool.FieldEntID),
-	).Where(
+	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),

@@ -76,12 +76,12 @@ func (h *queryHandler) queryJoin() {
 func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	coinT := sql.Table(coin.Table)
 	poolT := sql.Table(pool.Table)
-	s.LeftJoin(coinT).On(
+	s.Join(coinT).On(
 		s.C(gooduserent.FieldPoolCoinTypeID),
 		coinT.C(coin.FieldEntID),
 	).OnP(
 		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
-	).LeftJoin(poolT).On(
+	).Join(poolT).On(
 		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldEntID),
 	).OnP(

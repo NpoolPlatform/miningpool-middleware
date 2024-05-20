@@ -59,7 +59,12 @@ func (h *queryHandler) queryFractionRules(ctx context.Context, cli *ent.Client) 
 		return err
 	}
 
-	total, err := stm.Count(ctx)
+	stmCount, err := fractionrulecrud.SetQueryConds(cli.FractionRule.Query(), h.Conds)
+	if err != nil {
+		return err
+	}
+	stmCount.Modify(h.queryJoinCoinAndPool)
+	total, err := stmCount.Count(ctx)
 	if err != nil {
 		return err
 	}

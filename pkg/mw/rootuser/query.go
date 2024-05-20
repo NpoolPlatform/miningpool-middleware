@@ -59,7 +59,12 @@ func (h *queryHandler) queryRootUsers(ctx context.Context, cli *ent.Client) erro
 		return err
 	}
 
-	total, err := stm.Count(ctx)
+	stmCount, err := rootusercrud.SetQueryConds(cli.RootUser.Query(), h.Conds)
+	if err != nil {
+		return err
+	}
+	stmCount.Modify(h.queryJoinPool)
+	total, err := stmCount.Count(ctx)
 	if err != nil {
 		return err
 	}

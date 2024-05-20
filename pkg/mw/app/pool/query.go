@@ -70,7 +70,14 @@ func (h *queryHandler) queryPools(ctx context.Context, cli *ent.Client) error {
 		return err
 	}
 
-	total, err := stm.Count(ctx)
+	stmCount, err := apppoolcrud.SetQueryConds(cli.AppPool.Query(), h.Conds)
+	if err != nil {
+		return err
+	}
+	stmCount.Modify(
+		h.queryJoinPool,
+	)
+	total, err := stmCount.Count(ctx)
 	if err != nil {
 		return err
 	}

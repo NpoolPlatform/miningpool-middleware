@@ -65,7 +65,12 @@ func (h *queryHandler) queryOrderUsers(ctx context.Context, cli *ent.Client) err
 		return err
 	}
 
-	total, err := stm.Count(ctx)
+	stmCount, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
+	if err != nil {
+		return err
+	}
+	stmCount.Modify(h.queryJoinCoinAndPool)
+	total, err := stmCount.Count(ctx)
 	if err != nil {
 		return err
 	}

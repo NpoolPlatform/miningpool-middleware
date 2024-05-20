@@ -150,7 +150,7 @@ func WithFeeRatio(feeratio *string, must bool) func(context.Context, *Handler) e
 			return err
 		}
 
-		if _feeratio.Sign() <= 0 {
+		if _feeratio.Sign() <= 0 || _feeratio.GreaterThan(decimal.NewFromInt(1)) {
 			return fmt.Errorf("invalid feeratio")
 		}
 

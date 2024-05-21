@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
@@ -90,6 +91,12 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 	if h.AuthTokenPlain == nil {
 		h.AuthTokenPlain = &authInfo.AuthTokenPlain
 	}
+	logger.Sugar().Error("ssssss1", *h.AuthToken)
+	logger.Sugar().Error("ssssss1", *h.AuthTokenPlain)
+	logger.Sugar().Error("ssssss1", *h.AuthTokenSalt)
+	logger.Sugar().Error("ssssss1", authInfo.AuthToken)
+	logger.Sugar().Error("ssssss1", authInfo.AuthTokenPlain)
+	logger.Sugar().Error("ssssss1", authInfo.AuthTokenSalt)
 	if *h.AuthTokenPlain == authInfo.AuthToken && (h.PoolID == nil || h.PoolID.String() == poolID) {
 		return nil
 	}

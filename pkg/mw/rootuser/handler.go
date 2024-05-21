@@ -124,6 +124,9 @@ func WithEmail(email *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
+// authtoken that passed in will be authtokenplain
+// then h.authtokenplain is encrypted into h.authtoken with h.authtokensalt
+// and will store h.authtoken and authtokensalt in db
 func WithAuthToken(authtoken *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if authtoken == nil {

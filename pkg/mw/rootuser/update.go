@@ -81,8 +81,6 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 
 	defaultCoinType := basetypes.CoinType_CoinTypeBitCoin
 	miningtype := info.MiningpoolType
-	authed := false
-	h.Authed = &authed
 
 	authInfo, err := h.GetAuthToken(ctx)
 	if err != nil {
@@ -108,7 +106,7 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 	if err != nil {
 		return fmt.Errorf("have no permission to opreate pool,err: %v", err)
 	}
-	authed = true
+	authed := true
 	h.Authed = &authed
 	return nil
 }

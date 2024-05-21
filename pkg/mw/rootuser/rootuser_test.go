@@ -36,7 +36,7 @@ var ret = &npool.RootUser{
 	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
 	MiningpoolType: basetype.MiningpoolType_F2Pool,
-	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
+	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",
 }

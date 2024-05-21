@@ -22,7 +22,7 @@ var rootuserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	Email:          "gggo@go.go",
-	AuthToken:      "7ecdq1fosdsfcruypom2otsn8hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
+	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",
 }

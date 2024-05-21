@@ -57,6 +57,7 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 }
 
 func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser) error {
+	h.Authed = nil
 	if h.AuthTokenPlain == nil && h.PoolID == nil {
 		return nil
 	}

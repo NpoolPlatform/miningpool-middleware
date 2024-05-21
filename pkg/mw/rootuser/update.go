@@ -97,7 +97,6 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 		h.AuthToken = nil
 		h.AuthTokenPlain = nil
 		h.AuthTokenSalt = nil
-		h.Authed = nil
 		return nil
 	}
 

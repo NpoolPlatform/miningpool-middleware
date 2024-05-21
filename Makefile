@@ -39,7 +39,7 @@ verify: go.mod verify-build verify-golangci-lint verify-go-mod #verify-shellchec
 	${REPO_ROOT}/hack/verify.sh
 
 verify-build: ## Builds the project for a chosen set of platforms
-	${REPO_ROOT}/hack/verify-build.sh ...
+	bash -x ${REPO_ROOT}/hack/verify-build.sh ...
 
 verify-go-mod: ## Runs the go module linter
 	${REPO_ROOT}/hack/verify-go-mod.sh
@@ -90,7 +90,7 @@ after-test:
 	${REPO_ROOT}/hack/after-test.sh
 
 test-go-unit: ## Runs Golang unit tests
-	${REPO_ROOT}/hack/test-go.sh
+	all_proxy=${all_proxy} ${REPO_ROOT}/hack/test-go.sh
 
 
 ##@ Helpers

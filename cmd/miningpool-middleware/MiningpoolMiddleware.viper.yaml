@@ -1,0 +1,11 @@
+---
+config:
+  hostname: "miningpool-middleware.npool.top"
+  http_port: 50850
+  grpc_port: 50851
+  prometheus_port: 50852
+  appid: "89089012783789789719823798127398"
+  serviceid: "c1d13556-ebe6-11ee-8380-f7901e2147d8"
+  logdir: "./"
+  log_level: "info"
+  apolloAccessKey: "0147fb70b815403790e8634b899fac07"

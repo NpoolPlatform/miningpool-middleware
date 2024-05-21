@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: f2pool-proxy-environment
+  namespace: kube-system
+data:
+  environment.f2pool_proxy: ""

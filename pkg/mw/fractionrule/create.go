@@ -2,8 +2,8 @@ package fractionrule
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 
@@ -18,14 +18,14 @@ func (h *Handler) CreateFractionRule(ctx context.Context) error {
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genCreateSQL()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("fail create fractionrule: %v", err)
+			return wlog.Errorf("fail create fractionrule: %v", err)
 		}
 		return nil
 	})

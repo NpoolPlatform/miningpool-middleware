@@ -2,8 +2,8 @@ package fraction
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 
@@ -19,7 +19,7 @@ type updateHandler struct {
 //nolint:gocyclo
 func (h *updateHandler) validateState(info *ent.Fraction) error {
 	if info.WithdrawState == basetypes.WithdrawState_DefaultWithdrawState.String() {
-		return fmt.Errorf("invalid withdrawstate")
+		return wlog.Errorf("invalid withdrawstate")
 	}
 	return nil
 }
@@ -27,10 +27,10 @@ func (h *updateHandler) validateState(info *ent.Fraction) error {
 func (h *Handler) UpdateFraction(ctx context.Context) error {
 	info, err := h.GetFraction(ctx)
 	if err != nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 	if info == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 
 	h.ID = &info.ID
@@ -48,11 +48,11 @@ func (h *Handler) UpdateFraction(ctx context.Context) error {
 			).
 			Only(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if err := handler.validateState(info); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		stm, err := fractioncrud.UpdateSet(
@@ -68,10 +68,10 @@ func (h *Handler) UpdateFraction(ctx context.Context) error {
 			},
 		)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if _, err := stm.Save(_ctx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

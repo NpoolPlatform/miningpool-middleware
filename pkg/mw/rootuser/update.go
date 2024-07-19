@@ -2,8 +2,8 @@ package rootuser
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
@@ -17,20 +17,20 @@ import (
 func (h *Handler) UpdateRootUser(ctx context.Context) error {
 	info, err := h.GetRootUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if info == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 
 	poolID, err := uuid.Parse(info.PoolID)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	err = h.checkUpdateAuthed(ctx, info)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	sqlH := h.newSQLHandler()
@@ -41,16 +41,16 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("failed to update rootuser: %v", err)
+			return wlog.Errorf("failed to update rootuser: %v", err)
 		}
 		return nil
 	})
@@ -69,14 +69,14 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 
 	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	info, err := poolH.GetPool(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if info == nil {
-		return fmt.Errorf("invalid poolid")
+		return wlog.Errorf("invalid poolid")
 	}
 
 	defaultCoinType := basetypes.CoinType_CoinTypeBitCoin
@@ -84,7 +84,7 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 
 	authInfo, err := h.GetAuthToken(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if h.AuthTokenPlain == nil {
 		h.AuthTokenPlain = &authInfo.AuthTokenPlain
@@ -100,11 +100,11 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 
 	mgr, err := pools.NewPoolManager(miningtype, defaultCoinType, *h.AuthTokenPlain)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	err = mgr.CheckAuth(ctx)
 	if err != nil {
-		return fmt.Errorf("have no permission to opreate pool,err: %v", err)
+		return wlog.Errorf("have no permission to opreate pool,err: %v", err)
 	}
 	authed := true
 	h.Authed = &authed

@@ -2,8 +2,8 @@ package orderuser
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -17,11 +17,11 @@ import (
 func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 	info, err := h.GetOrderUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if info == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 
 	updateH := updateInPoolHandle{
@@ -30,12 +30,12 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 
 	err = updateH.handleUpdateReq(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	gooduserID, err := uuid.Parse(info.GoodUserID)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	sqlH := h.newSQLHandler()
@@ -45,16 +45,16 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("failed to update orderuser: %v", err)
+			return wlog.Errorf("failed to update orderuser: %v", err)
 		}
 		return nil
 	})
@@ -79,23 +79,23 @@ type updateInPoolHandle struct {
 func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 	err := h.getBaseInfo(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	mgr, err := pools.NewPoolManager(h.baseInfo.MiningpoolType, h.baseInfo.CoinType, h.baseInfo.AuthToken)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if h.Proportion != nil {
 		err = mgr.SetRevenueProportion(ctx, h.baseInfo.Distributor, h.baseInfo.Recipient, h.Proportion.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 
 	if h.RevenueAddress != nil {
 		err = mgr.SetRevenueAddress(ctx, h.baseInfo.Recipient, *h.RevenueAddress)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if h.AutoPay == nil {
 			autopay := true
@@ -107,7 +107,7 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 		*h.AutoPay &&
 		h.RevenueAddress == nil &&
 		h.baseInfo.RevenueAddress == "" {
-		return fmt.Errorf("cannot set autopay to true without an revenue address")
+		return wlog.Errorf("cannot set autopay to true without an revenue address")
 	}
 
 	if h.AutoPay != nil {
@@ -120,7 +120,7 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 			paused, err = mgr.PausePayment(ctx, h.baseInfo.Recipient)
 		}
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !paused {
 			autoPay = false
@@ -135,37 +135,37 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 	orderUser, err := h.GetOrderUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if orderUser == nil {
-		err = fmt.Errorf("have no record of orderuser")
-		return err
+		err = wlog.Errorf("have no record of orderuser")
+		return wlog.WrapError(err)
 	}
 
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&orderUser.GoodUserID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	goodUser, err := gooduserH.GetGoodUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if goodUser == nil {
-		err = fmt.Errorf("have no record of gooduser with entid %v", orderUser.GoodUserID)
-		return err
+		err = wlog.Errorf("have no record of gooduser with entid %v", orderUser.GoodUserID)
+		return wlog.WrapError(err)
 	}
 
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&goodUser.RootUserID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	rootUser, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if rootUser == nil {
-		err = fmt.Errorf("have no record of rootuser with entid %v", goodUser.RootUserID)
-		return err
+		err = wlog.Errorf("have no record of rootuser with entid %v", goodUser.RootUserID)
+		return wlog.WrapError(err)
 	}
 
 	h.baseInfo = &baseInfo{

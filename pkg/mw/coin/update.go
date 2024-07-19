@@ -2,8 +2,8 @@ package coin
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/google/uuid"
@@ -12,16 +12,16 @@ import (
 func (h *Handler) UpdateCoin(ctx context.Context) error {
 	info, err := h.GetCoin(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if info == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 
 	poolID, err := uuid.Parse(info.PoolID)
 	if err != nil {
-		return fmt.Errorf("invalid poolid")
+		return wlog.Errorf("invalid poolid")
 	}
 
 	sqlH := h.newSQLHandler()
@@ -31,15 +31,15 @@ func (h *Handler) UpdateCoin(ctx context.Context) error {
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("failed to update pool: %v", err)
+			return wlog.Errorf("failed to update pool: %v", err)
 		}
 		return nil
 	})

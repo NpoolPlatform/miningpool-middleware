@@ -2,8 +2,8 @@ package fraction
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
@@ -37,7 +37,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -50,13 +50,13 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
@@ -67,13 +67,13 @@ func WithAppID(appid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if appid == nil {
 			if must {
-				return fmt.Errorf("invalid appid")
+				return wlog.Errorf("invalid appid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*appid)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.AppID = &_id
 		return nil
@@ -84,13 +84,13 @@ func WithUserID(userid *string, must bool) func(context.Context, *Handler) error
 	return func(ctx context.Context, h *Handler) error {
 		if userid == nil {
 			if must {
-				return fmt.Errorf("invalid userid")
+				return wlog.Errorf("invalid userid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*userid)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.UserID = &_id
 		return nil
@@ -101,22 +101,22 @@ func WithOrderUserID(orderuserid *string, must bool) func(context.Context, *Hand
 	return func(ctx context.Context, h *Handler) error {
 		if orderuserid == nil {
 			if must {
-				return fmt.Errorf("invalid orderuserid")
+				return wlog.Errorf("invalid orderuserid")
 			}
 			return nil
 		}
 
 		ouH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(orderuserid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exists, err := ouH.ExistOrderUser(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if !exists {
-			return fmt.Errorf("invalid orderuserid")
+			return wlog.Errorf("invalid orderuserid")
 		}
 
 		h.OrderUserID = ouH.EntID
@@ -128,12 +128,12 @@ func WithWithdrawState(withdrawstate *basetypes.WithdrawState, must bool) func(c
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawstate == nil {
 			if must {
-				return fmt.Errorf("invalid withdrawstate")
+				return wlog.Errorf("invalid withdrawstate")
 			}
 			return nil
 		}
 		if *withdrawstate == basetypes.WithdrawState_DefaultWithdrawState {
-			return fmt.Errorf("invalid withdrawstate,not allow be default type")
+			return wlog.Errorf("invalid withdrawstate,not allow be default type")
 		}
 		h.WithdrawState = withdrawstate
 		return nil
@@ -144,7 +144,7 @@ func WithWithdrawAt(withdrawtime *uint32, must bool) func(context.Context, *Hand
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawtime == nil {
 			if must {
-				return fmt.Errorf("invalid withdrawtime")
+				return wlog.Errorf("invalid withdrawtime")
 			}
 			return nil
 		}
@@ -157,7 +157,7 @@ func WithPromisePayAt(promisepayat *uint32, must bool) func(context.Context, *Ha
 	return func(ctx context.Context, h *Handler) error {
 		if promisepayat == nil {
 			if must {
-				return fmt.Errorf("invalid promisepayat")
+				return wlog.Errorf("invalid promisepayat")
 			}
 			return nil
 		}
@@ -170,7 +170,7 @@ func WithMsg(msg *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if msg == nil {
 			if must {
-				return fmt.Errorf("invalid msg")
+				return wlog.Errorf("invalid msg")
 			}
 			return nil
 		}
@@ -195,7 +195,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -207,7 +207,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}
@@ -219,7 +219,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.AppID != nil {
 			id, err := uuid.Parse(conds.GetAppID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.AppID = &cruder.Cond{
 				Op:  conds.GetAppID().GetOp(),
@@ -229,7 +229,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.UserID != nil {
 			id, err := uuid.Parse(conds.GetUserID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.UserID = &cruder.Cond{
 				Op:  conds.GetUserID().GetOp(),
@@ -239,7 +239,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.OrderUserID != nil {
 			id, err := uuid.Parse(conds.GetOrderUserID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.OrderUserID = &cruder.Cond{
 				Op:  conds.GetOrderUserID().GetOp(),

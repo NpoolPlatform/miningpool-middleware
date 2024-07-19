@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
 	"github.com/google/uuid"
 )
@@ -32,21 +33,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldEntID] = string(strBytes)
 	}
 	if h.PoolCoinTypeID != nil {
 		strBytes, err := json.Marshal(h.PoolCoinTypeID.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldPoolCoinTypeID] = string(strBytes)
 		h.BondPoolCoinTypeID = h.PoolCoinTypeID
@@ -54,31 +55,31 @@ func (h *sqlHandler) baseKeys() error {
 	if h.WithdrawInterval != nil {
 		strBytes, err := json.Marshal(*h.WithdrawInterval)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldWithdrawInterval] = string(strBytes)
 	}
 	if h.MinAmount != nil {
 		strBytes, err := json.Marshal(*h.MinAmount)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldMinAmount] = string(strBytes)
 	}
 	if h.WithdrawRate != nil {
 		strBytes, err := json.Marshal(*h.WithdrawRate)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[fractionrule.FieldWithdrawRate] = string(strBytes)
 	}
 
 	if h.BondPoolCoinTypeID == nil {
-		return fmt.Errorf("please give poolcointypeid")
+		return wlog.Errorf("please give poolcointypeid")
 	}
 	strBytes, err := json.Marshal(h.BondPoolCoinTypeID.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[fractionrule.FieldPoolCoinTypeID] = string(strBytes)
 
@@ -89,14 +90,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[fractionrule.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[fractionrule.FieldEntID] = string(strBytes)
 	}
@@ -152,7 +153,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, fractionrule.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -168,7 +169,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

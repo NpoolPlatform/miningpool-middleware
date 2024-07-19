@@ -3,6 +3,7 @@ package fractionrule
 import (
 	"context"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	fractionrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -23,7 +24,7 @@ func (h *Handler) ExistFractionRule(ctx context.Context) (bool, error) {
 			).
 			Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})
@@ -38,11 +39,11 @@ func (h *Handler) ExistFractionRuleConds(ctx context.Context) (bool, error) {
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := fractionrulecrud.SetQueryConds(cli.FractionRule.Query(), h.Conds)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err = stm.Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

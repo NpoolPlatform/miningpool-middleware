@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/google/uuid"
 )
@@ -32,21 +33,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[apppool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[apppool.FieldEntID] = string(strBytes)
 	}
 	if h.AppID != nil {
 		strBytes, err := json.Marshal(*h.AppID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[apppool.FieldAppID] = string(strBytes)
 		h.BondAppID = h.AppID
@@ -54,27 +55,27 @@ func (h *sqlHandler) baseKeys() error {
 	if h.PoolID != nil {
 		strBytes, err := json.Marshal(*h.PoolID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[apppool.FieldPoolID] = string(strBytes)
 		h.BondPoolID = h.PoolID
 	}
 
 	if h.BondAppID == nil {
-		return fmt.Errorf("please give appid")
+		return wlog.Errorf("please give appid")
 	}
 	strBytes, err := json.Marshal(*h.BondAppID)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[apppool.FieldAppID] = string(strBytes)
 
 	if h.BondPoolID == nil {
-		return fmt.Errorf("please give poolid")
+		return wlog.Errorf("please give poolid")
 	}
 	strBytes, err = json.Marshal(*h.BondPoolID)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[apppool.FieldPoolID] = string(strBytes)
 	return nil
@@ -84,14 +85,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[apppool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[apppool.FieldEntID] = string(strBytes)
 	}
@@ -146,7 +147,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, apppool.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -162,7 +163,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

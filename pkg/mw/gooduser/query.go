@@ -2,9 +2,9 @@ package gooduser
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
@@ -40,7 +40,7 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 
 func (h *queryHandler) queryGoodUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return wlog.Errorf("invalid id")
 	}
 	stm := cli.GoodUser.Query().Where(gooduserent.DeletedAt(0))
 	if h.ID != nil {
@@ -56,17 +56,17 @@ func (h *queryHandler) queryGoodUser(cli *ent.Client) error {
 func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) error {
 	stm, err := goodusercrud.SetQueryConds(cli.GoodUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	stmCount, err := goodusercrud.SetQueryConds(cli.GoodUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	stmCount.Modify(h.queryJoinCoinAndPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -117,7 +117,7 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryGoodUser(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -131,7 +131,7 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -145,7 +145,7 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryGoodUsers(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.

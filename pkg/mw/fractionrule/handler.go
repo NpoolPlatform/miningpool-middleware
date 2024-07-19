@@ -2,8 +2,8 @@ package fractionrule
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	fractionrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
@@ -42,7 +42,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -55,13 +55,13 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
@@ -72,22 +72,22 @@ func WithPoolCoinTypeID(poolcointypeid *string, must bool) func(context.Context,
 	return func(ctx context.Context, h *Handler) error {
 		if poolcointypeid == nil {
 			if must {
-				return fmt.Errorf("invalid poolcointypeid")
+				return wlog.Errorf("invalid poolcointypeid")
 			}
 			return nil
 		}
 
 		coinH, err := coin.NewHandler(ctx, coin.WithEntID(poolcointypeid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		exist, err := coinH.ExistCoin(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !exist {
-			return fmt.Errorf("invalid poolcointypeid")
+			return wlog.Errorf("invalid poolcointypeid")
 		}
 		h.PoolCoinTypeID = coinH.EntID
 		return nil
@@ -98,7 +98,7 @@ func WithWithdrawInterval(withdrawinterval *uint32, must bool) func(context.Cont
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawinterval == nil {
 			if must {
-				return fmt.Errorf("invalid withdrawinterval")
+				return wlog.Errorf("invalid withdrawinterval")
 			}
 			return nil
 		}
@@ -111,16 +111,16 @@ func WithMinAmount(minamount *string, must bool) func(context.Context, *Handler)
 	return func(ctx context.Context, h *Handler) error {
 		if minamount == nil {
 			if must {
-				return fmt.Errorf("invalid minamount")
+				return wlog.Errorf("invalid minamount")
 			}
 			return nil
 		}
 		_minamount, err := decimal.NewFromString(*minamount)
 		if err != nil {
-			return fmt.Errorf("invalid minamount,err: %v", err)
+			return wlog.Errorf("invalid minamount,err: %v", err)
 		}
 		if _minamount.Sign() <= 0 {
-			return fmt.Errorf("invalid minamount")
+			return wlog.Errorf("invalid minamount")
 		}
 		h.MinAmount = &_minamount
 		return nil
@@ -131,16 +131,16 @@ func WithWithdrawRate(withdrawrate *string, must bool) func(context.Context, *Ha
 	return func(ctx context.Context, h *Handler) error {
 		if withdrawrate == nil {
 			if must {
-				return fmt.Errorf("invalid withdrawrate")
+				return wlog.Errorf("invalid withdrawrate")
 			}
 			return nil
 		}
 		_withdrawrate, err := decimal.NewFromString(*withdrawrate)
 		if err != nil {
-			return fmt.Errorf("invalid withdrawrate,err: %v", err)
+			return wlog.Errorf("invalid withdrawrate,err: %v", err)
 		}
 		if _withdrawrate.Sign() < 0 || _withdrawrate.GreaterThan(decimal.NewFromInt(1)) {
-			return fmt.Errorf("invalid withdrawrate")
+			return wlog.Errorf("invalid withdrawrate")
 		}
 		h.WithdrawRate = &_withdrawrate
 		return nil
@@ -163,7 +163,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -175,7 +175,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}
@@ -187,7 +187,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.PoolCoinTypeID != nil {
 			id, err := uuid.Parse(conds.GetPoolCoinTypeID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.PoolCoinTypeID = &cruder.Cond{
 				Op:  conds.GetPoolCoinTypeID().GetOp(),

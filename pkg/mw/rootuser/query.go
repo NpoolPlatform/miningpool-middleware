@@ -2,9 +2,9 @@ package rootuser
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
@@ -40,7 +40,7 @@ func (h *queryHandler) selectRootUser(stm *ent.RootUserQuery) {
 
 func (h *queryHandler) queryRootUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return wlog.Errorf("invalid id")
 	}
 	stm := cli.RootUser.Query().Where(rootuserent.DeletedAt(0))
 	if h.ID != nil {
@@ -56,17 +56,17 @@ func (h *queryHandler) queryRootUser(cli *ent.Client) error {
 func (h *queryHandler) queryRootUsers(ctx context.Context, cli *ent.Client) error {
 	stm, err := rootusercrud.SetQueryConds(cli.RootUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	stmCount, err := rootusercrud.SetQueryConds(cli.RootUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	stmCount.Modify(h.queryJoinPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -109,7 +109,7 @@ func (h *Handler) GetRootUser(ctx context.Context) (*npool.RootUser, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryRootUser(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -123,7 +123,7 @@ func (h *Handler) GetRootUser(ctx context.Context) (*npool.RootUser, error) {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -137,7 +137,7 @@ func (h *Handler) GetRootUsers(ctx context.Context) ([]*npool.RootUser, uint32, 
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryRootUsers(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.

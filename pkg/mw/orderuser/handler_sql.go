@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -34,7 +35,7 @@ func (h *sqlHandler) baseKeysDefault() error {
 	if h.EntID == nil {
 		entID, err := uuid.NewUUID()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &entID
 	}
@@ -49,35 +50,35 @@ func (h *sqlHandler) baseKeysFiled() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldEntID] = string(strBytes)
 	}
 	if h.AppID != nil {
 		strBytes, err := json.Marshal(*h.AppID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldAppID] = string(strBytes)
 	}
 	if h.UserID != nil {
 		strBytes, err := json.Marshal(*h.UserID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldUserID] = string(strBytes)
 	}
 	if h.GoodUserID != nil {
 		strBytes, err := json.Marshal(*h.GoodUserID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldGoodUserID] = string(strBytes)
 		h.BondGoodUserID = h.GoodUserID
@@ -85,7 +86,7 @@ func (h *sqlHandler) baseKeysFiled() error {
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldName] = string(strBytes)
 		h.BondName = h.Name
@@ -94,47 +95,47 @@ func (h *sqlHandler) baseKeysFiled() error {
 	if h.Proportion != nil {
 		strBytes, err := json.Marshal(*h.Proportion)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldProportion] = string(strBytes)
 	}
 	if h.RevenueAddress != nil {
 		strBytes, err := json.Marshal(*h.RevenueAddress)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldRevenueAddress] = string(strBytes)
 	}
 	if h.ReadPageLink != nil {
 		strBytes, err := json.Marshal(*h.ReadPageLink)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldReadPageLink] = string(strBytes)
 	}
 	if h.AutoPay != nil {
 		strBytes, err := json.Marshal(*h.AutoPay)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldAutoPay] = string(strBytes)
 	}
 
 	if h.BondGoodUserID == nil {
-		return fmt.Errorf("please give gooduserid")
+		return wlog.Errorf("please give gooduserid")
 	}
 	strBytes, err := json.Marshal(h.BondGoodUserID.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[orderuser.FieldGoodUserID] = string(strBytes)
 
 	if h.BondName == nil {
-		return fmt.Errorf("please give name")
+		return wlog.Errorf("please give name")
 	}
 	strBytes, err = json.Marshal(*h.BondName)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[orderuser.FieldName] = string(strBytes)
 	return nil
@@ -144,14 +145,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[orderuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[orderuser.FieldEntID] = string(strBytes)
 	}
@@ -214,7 +215,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, orderuser.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -230,7 +231,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

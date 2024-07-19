@@ -2,9 +2,9 @@ package orderuser
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
@@ -46,7 +46,7 @@ func (h *queryHandler) selectOrderUser(stm *ent.OrderUserQuery) {
 
 func (h *queryHandler) queryOrderUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 	stm := cli.OrderUser.Query().Where(orderuserent.DeletedAt(0))
 	if h.ID != nil {
@@ -62,17 +62,17 @@ func (h *queryHandler) queryOrderUser(cli *ent.Client) error {
 func (h *queryHandler) queryOrderUsers(ctx context.Context, cli *ent.Client) error {
 	stm, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	stmCount, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	stmCount.Modify(h.queryJoinCoinAndPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -136,7 +136,7 @@ func (h *Handler) GetOrderUser(ctx context.Context) (*npool.OrderUser, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryOrderUser(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -150,7 +150,7 @@ func (h *Handler) GetOrderUser(ctx context.Context) (*npool.OrderUser, error) {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -164,7 +164,7 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryOrderUsers(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.

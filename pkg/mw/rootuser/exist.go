@@ -2,8 +2,8 @@ package rootuser
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	rootusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -12,7 +12,7 @@ import (
 
 func (h *Handler) ExistRootUser(ctx context.Context) (bool, error) {
 	if h.EntID == nil {
-		return false, fmt.Errorf("invalid entid")
+		return false, wlog.Errorf("invalid entid")
 	}
 	exist := false
 	var err error
@@ -27,7 +27,7 @@ func (h *Handler) ExistRootUser(ctx context.Context) (bool, error) {
 			).
 			Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})
@@ -42,11 +42,11 @@ func (h *Handler) ExistRootUserConds(ctx context.Context) (bool, error) {
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := rootusercrud.SetQueryConds(cli.RootUser.Query(), h.Conds)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err = stm.Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

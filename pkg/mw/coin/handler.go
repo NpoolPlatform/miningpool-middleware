@@ -2,8 +2,8 @@ package coin
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
@@ -38,7 +38,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -51,13 +51,13 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
@@ -68,12 +68,12 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 	return func(ctx context.Context, h *Handler) error {
 		if cointype == nil {
 			if must {
-				return fmt.Errorf("invalid cointype")
+				return wlog.Errorf("invalid cointype")
 			}
 			return nil
 		}
 		if *cointype == basetypes.CoinType_DefaultCoinType {
-			return fmt.Errorf("invalid cointype,not allow be default type")
+			return wlog.Errorf("invalid cointype,not allow be default type")
 		}
 		h.CoinType = cointype
 		return nil
@@ -84,13 +84,13 @@ func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handle
 	return func(ctx context.Context, h *Handler) error {
 		if cointypeid == nil {
 			if must {
-				return fmt.Errorf("invalid cointypeid")
+				return wlog.Errorf("invalid cointypeid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*cointypeid)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.CoinTypeID = &_id
 		return nil
@@ -101,20 +101,20 @@ func WithPoolID(poolid *string, must bool) func(context.Context, *Handler) error
 	return func(ctx context.Context, h *Handler) error {
 		if poolid == nil {
 			if must {
-				return fmt.Errorf("invalid poolid")
+				return wlog.Errorf("invalid poolid")
 			}
 			return nil
 		}
 		poolH, err := pool.NewHandler(ctx, pool.WithEntID(poolid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err := poolH.ExistPool(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !exist {
-			return fmt.Errorf("invalid poolid")
+			return wlog.Errorf("invalid poolid")
 		}
 		h.PoolID = poolH.EntID
 		return nil
@@ -125,17 +125,17 @@ func WithFeeRatio(feeratio *string, must bool) func(context.Context, *Handler) e
 	return func(ctx context.Context, h *Handler) error {
 		if feeratio == nil {
 			if must {
-				return fmt.Errorf("invalid feeratio")
+				return wlog.Errorf("invalid feeratio")
 			}
 			return nil
 		}
 		_feeratio, err := decimal.NewFromString(*feeratio)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		if _feeratio.Sign() <= 0 || _feeratio.GreaterThan(decimal.NewFromInt(1)) {
-			return fmt.Errorf("invalid feeratio")
+			return wlog.Errorf("invalid feeratio")
 		}
 
 		h.FeeRatio = &_feeratio
@@ -147,7 +147,7 @@ func WithFixedRevenueAble(fixedrevenueable *bool, must bool) func(context.Contex
 	return func(ctx context.Context, h *Handler) error {
 		if fixedrevenueable == nil {
 			if must {
-				return fmt.Errorf("invalid fixedrevenueable")
+				return wlog.Errorf("invalid fixedrevenueable")
 			}
 			return nil
 		}
@@ -160,16 +160,16 @@ func WithLeastTransferAmount(leastTransferAmount *string, must bool) func(contex
 	return func(ctx context.Context, h *Handler) error {
 		if leastTransferAmount == nil {
 			if must {
-				return fmt.Errorf("invalid leasttransferamount")
+				return wlog.Errorf("invalid leasttransferamount")
 			}
 			return nil
 		}
 		_leastTransferAmount, err := decimal.NewFromString(*leastTransferAmount)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if _leastTransferAmount.Sign() <= 0 {
-			return fmt.Errorf("invalid leasttransferamount")
+			return wlog.Errorf("invalid leasttransferamount")
 		}
 		h.LeastTransferAmount = &_leastTransferAmount
 		return nil
@@ -180,12 +180,12 @@ func WithBenefitIntervalSeconds(benefitintervalseconds *uint32, must bool) func(
 	return func(ctx context.Context, h *Handler) error {
 		if benefitintervalseconds == nil {
 			if must {
-				return fmt.Errorf("invalid benefitintervalseconds")
+				return wlog.Errorf("invalid benefitintervalseconds")
 			}
 			return nil
 		}
 		if *benefitintervalseconds == 0 {
-			return fmt.Errorf("invalid benefitintervalseconds")
+			return wlog.Errorf("invalid benefitintervalseconds")
 		}
 		h.BenefitIntervalSeconds = benefitintervalseconds
 		return nil
@@ -196,7 +196,7 @@ func WithRemark(remark *string, must bool) func(context.Context, *Handler) error
 	return func(ctx context.Context, h *Handler) error {
 		if remark == nil {
 			if must {
-				return fmt.Errorf("invalid remark")
+				return wlog.Errorf("invalid remark")
 			}
 			return nil
 		}
@@ -221,7 +221,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -231,7 +231,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.PoolID != nil {
 			id, err := uuid.Parse(conds.GetPoolID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.PoolID = &cruder.Cond{
 				Op:  conds.GetPoolID().GetOp(),
@@ -241,7 +241,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.CoinTypeID != nil {
 			id, err := uuid.Parse(conds.GetCoinTypeID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.CoinTypeID = &cruder.Cond{
 				Op:  conds.GetCoinTypeID().GetOp(),
@@ -253,7 +253,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}

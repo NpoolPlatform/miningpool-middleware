@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -19,11 +20,11 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 	now := uint32(time.Now().Unix())
 	updateOne, err := crud.UpdateSet(tx.OrderUser.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	_, err = updateOne.Save(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	return nil
@@ -32,7 +33,7 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 func (h *Handler) DeleteOrderUser(ctx context.Context) error {
 	info, err := h.GetOrderUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if info == nil {
@@ -47,12 +48,12 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) error {
 		WithProportion(&zeroProportion, true),
 	)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	err = updateH.UpdateOrderUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	handler := &deleteHandler{
@@ -61,7 +62,7 @@ func (h *Handler) DeleteOrderUser(ctx context.Context) error {
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteOrderUserBase(_ctx, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

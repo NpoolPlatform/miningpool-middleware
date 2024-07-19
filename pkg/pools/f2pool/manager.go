@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	miningpoolbase "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetype "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
@@ -58,7 +59,7 @@ func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error)
 	if k, ok := CoinType2Currency[coinType]; ok {
 		currency = k
 	} else {
-		return nil, fmt.Errorf("have no pool manager for %v-%v", MiningPoolType, coinType)
+		return nil, wlog.Errorf("have no pool manager for %v-%v", MiningPoolType, coinType)
 	}
 	mgr := &Manager{
 		currency:  currency,
@@ -78,11 +79,11 @@ func (mgr *Manager) AddMiningUser(ctx context.Context) (userName, readPageLink s
 	for i := 0; i < MaxRetries; i++ {
 		userName, err := RandomF2PoolUser(MiningUserLen)
 		if err != nil {
-			return "", "", err
+			return "", "", wlog.WrapError(err)
 		}
 		resp, err = mgr.cli.MiningUserAdd(ctx, &types.MiningUserAddReq{MiningUserName: userName})
 		if err != nil && !strings.Contains(err.Error(), "mining user name already exists") {
-			return "", "", err
+			return "", "", wlog.WrapError(err)
 		}
 
 		if err == nil {
@@ -91,7 +92,7 @@ func (mgr *Manager) AddMiningUser(ctx context.Context) (userName, readPageLink s
 	}
 
 	if resp == nil {
-		return "", "", fmt.Errorf("failed to add mining user,have nil response")
+		return "", "", wlog.Errorf("failed to add mining user,have nil response")
 	}
 
 	userName = resp.MiningUserName
@@ -106,20 +107,20 @@ func (mgr *Manager) AddMiningUser(ctx context.Context) (userName, readPageLink s
 func (mgr *Manager) ExistMiningUser(ctx context.Context, name string) (bool, error) {
 	_, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return true, nil
 }
 
 // not implement
 func (mgr *Manager) DeleteMiningUser(ctx context.Context, name string) error {
-	return fmt.Errorf("f2pool has not yet implemented this method")
+	return wlog.Errorf("f2pool has not yet implemented this method")
 }
 
 func (mgr *Manager) AddReadPageLink(ctx context.Context, name string) (string, error) {
 	pageName, err := RandomF2PoolUser(MiningUserPageNameLen)
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 
 	addResp, err := mgr.cli.MiningUserReadOnlyPageAdd(ctx, &types.MiningUserReadOnlyPageAddReq{
@@ -128,11 +129,11 @@ func (mgr *Manager) AddReadPageLink(ctx context.Context, name string) (string, e
 		Permissions:    DefaultPermissions,
 	})
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 
 	if addResp == nil {
-		return "", fmt.Errorf("failed to add read page link,have nil response")
+		return "", wlog.Errorf("failed to add read page link,have nil response")
 	}
 
 	return getReadPageLink(addResp.Page.Key, addResp.MiningUserName), nil
@@ -141,18 +142,18 @@ func (mgr *Manager) AddReadPageLink(ctx context.Context, name string) (string, e
 func (mgr *Manager) GetReadPageLink(ctx context.Context, name string) (string, error) {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
-		return "", fmt.Errorf("have no user name %v or %v", name, err)
+		return "", wlog.Errorf("have no user name %v or %v", name, err)
 	}
 
 	if getResp == nil {
-		return "", fmt.Errorf("have no user name %v", name)
+		return "", wlog.Errorf("have no user name %v", name)
 	}
 
 	if len(getResp.Pages) > 0 {
 		return getReadPageLink(getResp.Pages[0].Key, getResp.MiningUserName), nil
 	}
 
-	return "", fmt.Errorf("have no read page link")
+	return "", wlog.Errorf("have no read page link")
 }
 
 // not implement
@@ -160,11 +161,11 @@ func (mgr *Manager) GetReadPageLink(ctx context.Context, name string) (string, e
 func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 	getResp, err := mgr.cli.MiningUserGet(ctx, &types.MiningUserGetReq{MiningUserName: name})
 	if err != nil {
-		return fmt.Errorf("have no user name %v or %v", name, err)
+		return wlog.Errorf("have no user name %v or %v", name, err)
 	}
 
 	if getResp == nil {
-		return fmt.Errorf("have no user name %v", name)
+		return wlog.Errorf("have no user name %v", name)
 	}
 
 	if len(getResp.Pages) == 0 {
@@ -178,7 +179,7 @@ func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 		})
 
 		if err != nil {
-			return fmt.Errorf("failed to delete read page link of %v, error: %v", name, err)
+			return wlog.Errorf("failed to delete read page link of %v, error: %v", name, err)
 		}
 	}
 
@@ -189,13 +190,13 @@ func (mgr *Manager) DeleteReadPageLink(ctx context.Context, name string) error {
 func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recipient, proportion string) error {
 	proportionDec, err := decimal.NewFromString(proportion)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if proportionDec.Cmp(MinProportion) < 0 || proportionDec.Cmp(MaxProportion) > 0 {
-		return fmt.Errorf("wront proportion, please input[%v,%v]", MinProportion, MaxProportion)
+		return wlog.Errorf("wront proportion, please input[%v,%v]", MinProportion, MaxProportion)
 	}
 	if proportionDec.Truncate(ProportionExp).StringFixed(ProportionExp) != proportionDec.RoundCeil(ProportionExp).StringFixed(ProportionExp) {
-		return fmt.Errorf("wront proportion precision, please enter %v decimal places", ProportionExp)
+		return wlog.Errorf("wront proportion precision, please enter %v decimal places", ProportionExp)
 	}
 	proportionDec = proportionDec.Truncate(ProportionExp)
 	infoResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
@@ -231,11 +232,11 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 		Proportion:  _proportion,
 	})
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if addResp == nil {
-		return fmt.Errorf("failed to add revenue proportion,have nil response")
+		return wlog.Errorf("failed to add revenue proportion,have nil response")
 	}
 	return nil
 }
@@ -247,11 +248,11 @@ func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor, recip
 		Currency:    mgr.currency,
 	})
 	if err != nil {
-		return 0, err
+		return 0, wlog.WrapError(err)
 	}
 
 	if getResp == nil {
-		return 0, fmt.Errorf("failed to get revenue proportion info,have nil response")
+		return 0, wlog.Errorf("failed to get revenue proportion info,have nil response")
 	}
 
 	for _, v := range getResp.Data {
@@ -279,11 +280,11 @@ func (mgr *Manager) SetRevenueAddress(ctx context.Context, name, address string)
 		},
 	})
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if setResp == nil {
-		return fmt.Errorf("failed to set revenue address,have nil response")
+		return wlog.Errorf("failed to set revenue address,have nil response")
 	}
 	return nil
 }
@@ -293,11 +294,11 @@ func (mgr *Manager) GetRevenueAddress(ctx context.Context, name string) (string,
 		MiningUserName: name,
 	})
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 
 	if getResp == nil {
-		return "", fmt.Errorf("failed to get revenue address,have nil response")
+		return "", wlog.Errorf("failed to get revenue address,have nil response")
 	}
 
 	for _, v := range getResp.Wallets {
@@ -315,11 +316,11 @@ func (mgr *Manager) PausePayment(ctx context.Context, name string) (bool, error)
 		Currency:        mgr.currency,
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 
 	if pauseResp == nil {
-		return false, fmt.Errorf("failed to pause payment,have nil response")
+		return false, wlog.Errorf("failed to pause payment,have nil response")
 	}
 
 	for k, v := range pauseResp.Results {
@@ -337,11 +338,11 @@ func (mgr *Manager) ResumePayment(ctx context.Context, name string) (bool, error
 		Currency:        mgr.currency,
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 
 	if resumeResp == nil {
-		return false, fmt.Errorf("failed to resume payment,have nil response")
+		return false, wlog.Errorf("failed to resume payment,have nil response")
 	}
 
 	for k, v := range resumeResp.Results {
@@ -359,11 +360,11 @@ func (mgr *Manager) WithdrawPraction(ctx context.Context, name string) (int64, e
 		Currency:       mgr.currency,
 	})
 	if err != nil {
-		return 0, err
+		return 0, wlog.WrapError(err)
 	}
 
 	if resumeResp == nil {
-		return 0, fmt.Errorf("failed to resume payment,have nil response")
+		return 0, wlog.Errorf("failed to resume payment,have nil response")
 	}
 
 	return resumeResp.PaidTime, nil
@@ -379,13 +380,13 @@ func RandomF2PoolUser(n int) (string, error) {
 	startLetters := []rune("abcdefghijklmnopqretuvwxyz")
 	randn, err := rand.Int(rand.Reader, big.NewInt(int64(len(startLetters))))
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	target := string(startLetters[randn.Int64()])
 	for {
 		randn, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
 		if err != nil {
-			return "", err
+			return "", wlog.WrapError(err)
 		}
 		if len(target) >= n {
 			return strings.ToLower(target[:n]), nil

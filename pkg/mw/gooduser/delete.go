@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -19,11 +20,11 @@ func (h *deleteHandler) deleteGoodUserBase(ctx context.Context, tx *ent.Tx) erro
 	now := uint32(time.Now().Unix())
 	updateOne, err := crud.UpdateSet(tx.GoodUser.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	_, err = updateOne.Save(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -31,7 +32,7 @@ func (h *deleteHandler) deleteGoodUserBase(ctx context.Context, tx *ent.Tx) erro
 func (h *Handler) DeleteGoodUser(ctx context.Context) error {
 	info, err := h.GetGoodUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if info == nil {
@@ -45,7 +46,7 @@ func (h *Handler) DeleteGoodUser(ctx context.Context) error {
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteGoodUserBase(_ctx, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

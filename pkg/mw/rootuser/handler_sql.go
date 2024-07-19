@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/google/uuid"
 )
@@ -34,21 +35,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldEntID] = string(strBytes)
 	}
 	if h.PoolID != nil {
 		strBytes, err := json.Marshal(h.PoolID.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldPoolID] = string(strBytes)
 		h.BondPoolID = h.PoolID
@@ -56,7 +57,7 @@ func (h *sqlHandler) baseKeys() error {
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldName] = string(strBytes)
 		h.BondName = h.Name
@@ -64,7 +65,7 @@ func (h *sqlHandler) baseKeys() error {
 	if h.Email != nil {
 		strBytes, err := json.Marshal(*h.Email)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldEmail] = string(strBytes)
 		h.BondEmail = h.Email
@@ -72,56 +73,56 @@ func (h *sqlHandler) baseKeys() error {
 	if h.AuthToken != nil {
 		strBytes, err := json.Marshal(*h.AuthToken)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldAuthToken] = string(strBytes)
 	}
 	if h.AuthTokenSalt != nil {
 		strBytes, err := json.Marshal(*h.AuthTokenSalt)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldAuthTokenSalt] = string(strBytes)
 	}
 	if h.Authed != nil {
 		strBytes, err := json.Marshal(*h.Authed)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldAuthed] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[rootuser.FieldRemark] = string(strBytes)
 	}
 
 	if h.BondPoolID == nil {
-		return fmt.Errorf("please give miningpooltype")
+		return wlog.Errorf("please give miningpooltype")
 	}
 	strBytes, err := json.Marshal(h.BondPoolID.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[rootuser.FieldPoolID] = string(strBytes)
 
 	if h.BondName == nil {
-		return fmt.Errorf("please give name")
+		return wlog.Errorf("please give name")
 	}
 	strBytes, err = json.Marshal(*h.BondName)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[rootuser.FieldName] = string(strBytes)
 
 	if h.BondEmail == nil {
-		return fmt.Errorf("please give email")
+		return wlog.Errorf("please give email")
 	}
 	strBytes, err = json.Marshal(*h.BondEmail)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[rootuser.FieldEmail] = string(strBytes)
 	return nil
@@ -131,14 +132,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[rootuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[rootuser.FieldEntID] = string(strBytes)
 	}
@@ -192,7 +193,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, rootuser.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -208,7 +209,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

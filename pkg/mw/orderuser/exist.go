@@ -44,17 +44,17 @@ func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
 	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		err := existH.existJoinCoinAndAppPool()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		rows, err := cli.QueryContext(ctx, existH.checkAppAuthSQL)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		defer rows.Close()
 
 		if err := rows.Err(); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		exist = false
@@ -84,7 +84,7 @@ func (h *Handler) ExistOrderUser(ctx context.Context) (bool, error) {
 			).
 			Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})
@@ -99,11 +99,11 @@ func (h *Handler) ExistOrderUserConds(ctx context.Context) (bool, error) {
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err = stm.Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

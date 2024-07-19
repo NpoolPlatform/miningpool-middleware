@@ -2,8 +2,8 @@ package gooduser
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
@@ -37,7 +37,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -50,13 +50,13 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
@@ -67,22 +67,22 @@ func WithPoolCoinTypeID(poolcointypeid *string, must bool) func(context.Context,
 	return func(ctx context.Context, h *Handler) error {
 		if poolcointypeid == nil {
 			if must {
-				return fmt.Errorf("invalid poolcointypeid")
+				return wlog.Errorf("invalid poolcointypeid")
 			}
 			return nil
 		}
 
 		coinH, err := coin.NewHandler(ctx, coin.WithEntID(poolcointypeid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		exist, err := coinH.ExistCoin(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !exist {
-			return fmt.Errorf("invalid poolcointypeid")
+			return wlog.Errorf("invalid poolcointypeid")
 		}
 		h.PoolCoinTypeID = coinH.EntID
 		return nil
@@ -93,20 +93,20 @@ func WithRootUserID(rootuserid *string, must bool) func(context.Context, *Handle
 	return func(ctx context.Context, h *Handler) error {
 		if rootuserid == nil {
 			if must {
-				return fmt.Errorf("invalid rootuserid")
+				return wlog.Errorf("invalid rootuserid")
 			}
 			return nil
 		}
 		rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(rootuserid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err := rootuserH.ExistRootUser(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !exist {
-			return fmt.Errorf("invalid rootuserid")
+			return wlog.Errorf("invalid rootuserid")
 		}
 		h.RootUserID = rootuserH.EntID
 		return nil
@@ -117,7 +117,7 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if name == nil {
 			if must {
-				return fmt.Errorf("invalid name")
+				return wlog.Errorf("invalid name")
 			}
 			return nil
 		}
@@ -130,7 +130,7 @@ func WithReadPageLink(readpagelink *string, must bool) func(context.Context, *Ha
 	return func(ctx context.Context, h *Handler) error {
 		if readpagelink == nil {
 			if must {
-				return fmt.Errorf("invalid readpagelink")
+				return wlog.Errorf("invalid readpagelink")
 			}
 			return nil
 		}
@@ -155,7 +155,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -167,7 +167,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}
@@ -179,7 +179,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.RootUserID != nil {
 			id, err := uuid.Parse(conds.GetRootUserID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.RootUserID = &cruder.Cond{
 				Op:  conds.GetRootUserID().GetOp(),
@@ -189,7 +189,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.PoolCoinTypeID != nil {
 			id, err := uuid.Parse(conds.GetPoolCoinTypeID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.PoolCoinTypeID = &cruder.Cond{
 				Op:  conds.GetPoolCoinTypeID().GetOp(),

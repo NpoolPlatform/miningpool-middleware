@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 )
@@ -32,21 +33,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldEntID] = string(strBytes)
 	}
 	if h.MiningpoolType != nil {
 		strBytes, err := json.Marshal(h.MiningpoolType.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldMiningpoolType] = string(strBytes)
 		h.BondMiningpoolType = h.MiningpoolType
@@ -54,38 +55,38 @@ func (h *sqlHandler) baseKeys() error {
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldName] = string(strBytes)
 	}
 	if h.Site != nil {
 		strBytes, err := json.Marshal(*h.Site)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldSite] = string(strBytes)
 	}
 	if h.Logo != nil {
 		strBytes, err := json.Marshal(*h.Logo)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldLogo] = string(strBytes)
 	}
 	if h.Description != nil {
 		strBytes, err := json.Marshal(*h.Description)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldDescription] = string(strBytes)
 	}
 
 	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
+		return wlog.Errorf("please give miningpooltype")
 	}
 	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[pool.FieldMiningpoolType] = string(strBytes)
 	return nil
@@ -95,14 +96,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[pool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[pool.FieldEntID] = string(strBytes)
 	}
@@ -157,7 +158,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, pool.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -173,7 +174,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

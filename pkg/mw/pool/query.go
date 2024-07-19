@@ -2,8 +2,8 @@ package pool
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 
@@ -37,7 +37,7 @@ func (h *queryHandler) selectPool(stm *ent.PoolQuery) {
 
 func (h *queryHandler) queryPool(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return wlog.Errorf("invalid id")
 	}
 	stm := cli.Pool.Query().Where(poolent.DeletedAt(0))
 	if h.ID != nil {
@@ -53,12 +53,12 @@ func (h *queryHandler) queryPool(cli *ent.Client) error {
 func (h *queryHandler) queryPools(ctx context.Context, cli *ent.Client) error {
 	stm, err := poolcrud.SetQueryConds(cli.Pool.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	total, err := stm.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -83,7 +83,7 @@ func (h *Handler) GetPool(ctx context.Context) (*npool.Pool, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryPool(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		const singleRowLimit = 2
@@ -97,7 +97,7 @@ func (h *Handler) GetPool(ctx context.Context) (*npool.Pool, error) {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -111,7 +111,7 @@ func (h *Handler) GetPools(ctx context.Context) ([]*npool.Pool, uint32, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryPools(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.stm.
 			Offset(int(h.Offset)).

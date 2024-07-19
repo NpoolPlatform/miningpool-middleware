@@ -1,8 +1,7 @@
 package pool
 
 import (
-	"fmt"
-
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -78,78 +77,78 @@ type Conds struct {
 
 func SetQueryConds(q *ent.PoolQuery, conds *Conds) (*ent.PoolQuery, error) { //nolint
 	if conds == nil {
-		return nil, fmt.Errorf("have no any conds")
+		return nil, wlog.Errorf("have no any conds")
 	}
 	if conds.ID != nil {
 		id, ok := conds.ID.Val.(uint32)
 		if !ok {
-			return nil, fmt.Errorf("invalid id")
+			return nil, wlog.Errorf("invalid id")
 		}
 		switch conds.ID.Op {
 		case cruder.EQ:
 			q.Where(poolent.ID(id))
 		default:
-			return nil, fmt.Errorf("invalid id field")
+			return nil, wlog.Errorf("invalid id field")
 		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entid")
+			return nil, wlog.Errorf("invalid entid")
 		}
 		switch conds.EntID.Op {
 		case cruder.EQ:
 			q.Where(poolent.EntID(id))
 		default:
-			return nil, fmt.Errorf("invalid entid field")
+			return nil, wlog.Errorf("invalid entid field")
 		}
 	}
 	if conds.EntIDs != nil {
 		ids, ok := conds.EntIDs.Val.([]uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entids")
+			return nil, wlog.Errorf("invalid entids")
 		}
 		switch conds.EntIDs.Op {
 		case cruder.IN:
 			q.Where(poolent.EntIDIn(ids...))
 		default:
-			return nil, fmt.Errorf("invalid entids field")
+			return nil, wlog.Errorf("invalid entids field")
 		}
 	}
 	if conds.MiningpoolType != nil {
 		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
 		if !ok {
-			return nil, fmt.Errorf("invalid miningpooltype")
+			return nil, wlog.Errorf("invalid miningpooltype")
 		}
 		switch conds.MiningpoolType.Op {
 		case cruder.EQ:
 			q.Where(poolent.MiningpoolType(miningpooltype.String()))
 		default:
-			return nil, fmt.Errorf("invalid miningpooltype field")
+			return nil, wlog.Errorf("invalid miningpooltype field")
 		}
 	}
 	if conds.Name != nil {
 		name, ok := conds.Name.Val.(string)
 		if !ok {
-			return nil, fmt.Errorf("invalid name")
+			return nil, wlog.Errorf("invalid name")
 		}
 		switch conds.Name.Op {
 		case cruder.EQ:
 			q.Where(poolent.Name(name))
 		default:
-			return nil, fmt.Errorf("invalid name field")
+			return nil, wlog.Errorf("invalid name field")
 		}
 	}
 	if conds.Description != nil {
 		description, ok := conds.Description.Val.(string)
 		if !ok {
-			return nil, fmt.Errorf("invalid description")
+			return nil, wlog.Errorf("invalid description")
 		}
 		switch conds.Description.Op {
 		case cruder.EQ:
 			q.Where(poolent.Description(description))
 		default:
-			return nil, fmt.Errorf("invalid description field")
+			return nil, wlog.Errorf("invalid description field")
 		}
 	}
 	return q, nil

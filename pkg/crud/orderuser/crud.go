@@ -1,8 +1,7 @@
 package orderuser
 
 import (
-	"fmt"
-
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
@@ -101,114 +100,114 @@ type Conds struct {
 
 func SetQueryConds(q *ent.OrderUserQuery, conds *Conds) (*ent.OrderUserQuery, error) { //nolint
 	if conds == nil {
-		return nil, fmt.Errorf("have no any conds")
+		return nil, wlog.Errorf("have no any conds")
 	}
 	if conds.ID != nil {
 		id, ok := conds.ID.Val.(uint32)
 		if !ok {
-			return nil, fmt.Errorf("invalid id")
+			return nil, wlog.Errorf("invalid id")
 		}
 		switch conds.ID.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.ID(id))
 		default:
-			return nil, fmt.Errorf("invalid id field")
+			return nil, wlog.Errorf("invalid id field")
 		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entid")
+			return nil, wlog.Errorf("invalid entid")
 		}
 		switch conds.EntID.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.EntID(id))
 		default:
-			return nil, fmt.Errorf("invalid entid field")
+			return nil, wlog.Errorf("invalid entid field")
 		}
 	}
 	if conds.EntIDs != nil {
 		ids, ok := conds.EntIDs.Val.([]uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entids")
+			return nil, wlog.Errorf("invalid entids")
 		}
 		switch conds.EntIDs.Op {
 		case cruder.IN:
 			q.Where(orderuserent.EntIDIn(ids...))
 		default:
-			return nil, fmt.Errorf("invalid entids field")
+			return nil, wlog.Errorf("invalid entids field")
 		}
 	}
 	if conds.Name != nil {
 		name, ok := conds.Name.Val.(string)
 		if !ok {
-			return nil, fmt.Errorf("invalid name")
+			return nil, wlog.Errorf("invalid name")
 		}
 		switch conds.Name.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.Name(name))
 		default:
-			return nil, fmt.Errorf("invalid name field")
+			return nil, wlog.Errorf("invalid name field")
 		}
 	}
 	if conds.GoodUserID != nil {
 		id, ok := conds.GoodUserID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid gooduserid")
+			return nil, wlog.Errorf("invalid gooduserid")
 		}
 		switch conds.GoodUserID.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.GoodUserID(id))
 		default:
-			return nil, fmt.Errorf("invalid gooduserid field")
+			return nil, wlog.Errorf("invalid gooduserid field")
 		}
 	}
 	if conds.AppID != nil {
 		id, ok := conds.AppID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid appid")
+			return nil, wlog.Errorf("invalid appid")
 		}
 		switch conds.AppID.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.AppID(id))
 		default:
-			return nil, fmt.Errorf("invalid appid field")
+			return nil, wlog.Errorf("invalid appid field")
 		}
 	}
 	if conds.UserID != nil {
 		id, ok := conds.UserID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid userid")
+			return nil, wlog.Errorf("invalid userid")
 		}
 		switch conds.UserID.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.UserID(id))
 		default:
-			return nil, fmt.Errorf("invalid userid field")
+			return nil, wlog.Errorf("invalid userid field")
 		}
 	}
 	if conds.RevenueAddress != nil {
 		revenueaddress, ok := conds.RevenueAddress.Val.(string)
 		if !ok {
-			return nil, fmt.Errorf("invalid revenueaddress")
+			return nil, wlog.Errorf("invalid revenueaddress")
 		}
 		switch conds.RevenueAddress.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.RevenueAddress(revenueaddress))
 		default:
-			return nil, fmt.Errorf("invalid revenueaddress field")
+			return nil, wlog.Errorf("invalid revenueaddress field")
 		}
 	}
 	if conds.AutoPay != nil {
 		autopay, ok := conds.AutoPay.Val.(bool)
 		if !ok {
-			return nil, fmt.Errorf("invalid autopay")
+			return nil, wlog.Errorf("invalid autopay")
 		}
 		switch conds.AutoPay.Op {
 		case cruder.EQ:
 			q.Where(orderuserent.AutoPay(autopay))
 		default:
-			return nil, fmt.Errorf("invalid autopay field")
+			return nil, wlog.Errorf("invalid autopay field")
 		}
 	}
 	return q, nil

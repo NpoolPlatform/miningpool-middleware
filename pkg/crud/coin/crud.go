@@ -1,8 +1,7 @@
 package coin
 
 import (
-	"fmt"
-
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -101,90 +100,90 @@ type Conds struct {
 
 func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //nolint
 	if conds == nil {
-		return nil, fmt.Errorf("have no any conds")
+		return nil, wlog.Errorf("have no any conds")
 	}
 	if conds.ID != nil {
 		id, ok := conds.ID.Val.(uint32)
 		if !ok {
-			return nil, fmt.Errorf("invalid id")
+			return nil, wlog.Errorf("invalid id")
 		}
 		switch conds.ID.Op {
 		case cruder.EQ:
 			q.Where(coinent.ID(id))
 		default:
-			return nil, fmt.Errorf("invalid id field")
+			return nil, wlog.Errorf("invalid id field")
 		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entid")
+			return nil, wlog.Errorf("invalid entid")
 		}
 		switch conds.EntID.Op {
 		case cruder.EQ:
 			q.Where(coinent.EntID(id))
 		default:
-			return nil, fmt.Errorf("invalid entid field")
+			return nil, wlog.Errorf("invalid entid field")
 		}
 	}
 	if conds.EntIDs != nil {
 		ids, ok := conds.EntIDs.Val.([]uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entids")
+			return nil, wlog.Errorf("invalid entids")
 		}
 		switch conds.EntIDs.Op {
 		case cruder.IN:
 			q.Where(coinent.EntIDIn(ids...))
 		default:
-			return nil, fmt.Errorf("invalid entids field")
+			return nil, wlog.Errorf("invalid entids field")
 		}
 	}
 	if conds.PoolID != nil {
 		poolid, ok := conds.PoolID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid poolid")
+			return nil, wlog.Errorf("invalid poolid")
 		}
 		switch conds.PoolID.Op {
 		case cruder.EQ:
 			q.Where(coinent.PoolID(poolid))
 		default:
-			return nil, fmt.Errorf("invalid poolid field")
+			return nil, wlog.Errorf("invalid poolid field")
 		}
 	}
 	if conds.CoinTypeID != nil {
 		cointypeid, ok := conds.CoinTypeID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid cointypeid")
+			return nil, wlog.Errorf("invalid cointypeid")
 		}
 		switch conds.CoinTypeID.Op {
 		case cruder.EQ:
 			q.Where(coinent.CoinTypeID(cointypeid))
 		default:
-			return nil, fmt.Errorf("invalid cointypeid field")
+			return nil, wlog.Errorf("invalid cointypeid field")
 		}
 	}
 	if conds.CoinType != nil {
 		cointype, ok := conds.CoinType.Val.(basetypes.CoinType)
 		if !ok {
-			return nil, fmt.Errorf("invalid cointype")
+			return nil, wlog.Errorf("invalid cointype")
 		}
 		switch conds.CoinType.Op {
 		case cruder.EQ:
 			q.Where(coinent.CoinType(cointype.String()))
 		default:
-			return nil, fmt.Errorf("invalid cointype field")
+			return nil, wlog.Errorf("invalid cointype field")
 		}
 	}
 	if conds.FixedRevenueAble != nil {
 		fixedrevenueable, ok := conds.FixedRevenueAble.Val.(bool)
 		if !ok {
-			return nil, fmt.Errorf("invalid fixedrevenueable")
+			return nil, wlog.Errorf("invalid fixedrevenueable")
 		}
 		switch conds.FixedRevenueAble.Op {
 		case cruder.EQ:
 			q.Where(coinent.FixedRevenueAble(fixedrevenueable))
 		default:
-			return nil, fmt.Errorf("invalid fixedrevenueable field")
+			return nil, wlog.Errorf("invalid fixedrevenueable field")
 		}
 	}
 	return q, nil

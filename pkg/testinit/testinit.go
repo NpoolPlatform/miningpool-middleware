@@ -10,6 +10,7 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/app"
 	"github.com/NpoolPlatform/go-service-framework/pkg/config"
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -26,7 +27,7 @@ import (
 func Init() error {
 	_, myPath, _, ok := runtime.Caller(0)
 	if !ok {
-		return fmt.Errorf("cannot get source file path")
+		return wlog.Errorf("cannot get source file path")
 	}
 
 	appName := path.Base(path.Dir(path.Dir(path.Dir(myPath))))
@@ -45,14 +46,14 @@ func Init() error {
 		redisconst.RedisServiceName,
 	)
 	if err != nil {
-		return fmt.Errorf("cannot init app stub: %v", err)
+		return wlog.Errorf("cannot init app stub: %v", err)
 	}
 	if err := migrator.Migrate(context.Background()); err != nil {
-		return fmt.Errorf("fail migrate db: %v", err)
+		return wlog.Errorf("fail migrate db: %v", err)
 	}
 	err = db.Init()
 	if err != nil {
-		return fmt.Errorf("cannot init database: %v", err)
+		return wlog.Errorf("cannot init database: %v", err)
 	}
 
 	gport := config.GetIntValueWithNameSpace("", config.KeyGRPCPort)

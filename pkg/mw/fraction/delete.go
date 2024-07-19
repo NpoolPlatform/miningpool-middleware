@@ -5,6 +5,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -19,11 +20,11 @@ func (h *deleteHandler) deleteFractionBase(ctx context.Context, tx *ent.Tx) erro
 	now := uint32(time.Now().Unix())
 	updateOne, err := crud.UpdateSet(tx.Fraction.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	_, err = updateOne.Save(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -31,7 +32,7 @@ func (h *deleteHandler) deleteFractionBase(ctx context.Context, tx *ent.Tx) erro
 func (h *Handler) DeleteFraction(ctx context.Context) error {
 	info, err := h.GetFraction(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if info == nil {
@@ -45,7 +46,7 @@ func (h *Handler) DeleteFraction(ctx context.Context) error {
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		if err := handler.deleteFractionBase(_ctx, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})

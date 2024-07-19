@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/google/uuid"
@@ -34,21 +35,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldEntID] = string(strBytes)
 	}
 	if h.PoolID != nil {
 		strBytes, err := json.Marshal(h.PoolID.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldPoolID] = string(strBytes)
 		h.BondPoolID = h.PoolID
@@ -56,14 +57,14 @@ func (h *sqlHandler) baseKeys() error {
 	if h.CoinTypeID != nil {
 		strBytes, err := json.Marshal(h.CoinTypeID.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldCoinTypeID] = string(strBytes)
 	}
 	if h.CoinType != nil {
 		strBytes, err := json.Marshal(h.CoinType.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldCoinType] = string(strBytes)
 		h.BondCoinType = h.CoinType
@@ -71,54 +72,54 @@ func (h *sqlHandler) baseKeys() error {
 	if h.FeeRatio != nil {
 		strBytes, err := json.Marshal(h.FeeRatio.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldFeeRatio] = string(strBytes)
 	}
 	if h.FixedRevenueAble != nil {
 		strBytes, err := json.Marshal(*h.FixedRevenueAble)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldFixedRevenueAble] = string(strBytes)
 	}
 	if h.LeastTransferAmount != nil {
 		strBytes, err := json.Marshal(*h.LeastTransferAmount)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldLeastTransferAmount] = string(strBytes)
 	}
 	if h.BenefitIntervalSeconds != nil {
 		strBytes, err := json.Marshal(*h.BenefitIntervalSeconds)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldBenefitIntervalSeconds] = string(strBytes)
 	}
 	if h.Remark != nil {
 		strBytes, err := json.Marshal(*h.Remark)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldRemark] = string(strBytes)
 	}
 
 	if h.BondPoolID == nil {
-		return fmt.Errorf("please give poolid")
+		return wlog.Errorf("please give poolid")
 	}
 	strBytes, err := json.Marshal(h.BondPoolID.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[coin.FieldPoolID] = string(strBytes)
 
 	if h.BondCoinType == nil {
-		return fmt.Errorf("please give cointype")
+		return wlog.Errorf("please give cointype")
 	}
 	strBytes, err = json.Marshal(h.BondCoinType.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[coin.FieldCoinType] = string(strBytes)
 	return nil
@@ -128,14 +129,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[coin.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[coin.FieldEntID] = string(strBytes)
 	}
@@ -189,7 +190,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, coin.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -205,7 +206,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		return "", err
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

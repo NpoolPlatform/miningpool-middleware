@@ -2,9 +2,9 @@ package fraction
 
 import (
 	"context"
-	"fmt"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
@@ -21,39 +21,39 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 	orderUserID := h.OrderUserID.String()
 	orderuserH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(&orderUserID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	orderUser, err := orderuserH.GetOrderUser(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if orderUser == nil {
-		return fmt.Errorf("have no orderuser,entid: %v", orderUserID)
+		return wlog.Errorf("have no orderuser,entid: %v", orderUserID)
 	}
 
 	if h.AppID == nil || h.AppID.String() != orderUser.AppID {
-		return fmt.Errorf("invalid appid")
+		return wlog.Errorf("invalid appid")
 	}
 
 	if h.UserID == nil || h.UserID.String() != orderUser.UserID {
-		return fmt.Errorf("invalid userid")
+		return wlog.Errorf("invalid userid")
 	}
 
 	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	rootUser, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if rootUser == nil {
-		return fmt.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
+		return wlog.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
 	}
 
 	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, orderUser.CoinType, rootUser.AuthTokenPlain)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	withdrawTime := uint32(time.Now().Unix())
 	h.WithdrawAt = &withdrawTime
@@ -80,7 +80,7 @@ func (h *Handler) CreateFraction(ctx context.Context) error {
 
 	err := h.fractionInPool(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	return db.WithClient(ctx, func(ctx context.Context, cli *ent.Client) error {
@@ -98,7 +98,7 @@ func (h *Handler) CreateFraction(ctx context.Context) error {
 			},
 		).Save(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.ID = &info.ID
 		return nil

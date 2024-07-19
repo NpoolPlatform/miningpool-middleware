@@ -65,6 +65,17 @@ func (h *Handler) checkCreateAuthed(ctx context.Context) error {
 		err = fmt.Errorf("have no permission to opreate pool, miningpool: %v, username: %v , err: %v", h.PoolID, *h.Name, err)
 		return err
 	}
+
+	exist, err := mgr.ExistMiningUser(ctx, info.Name)
+	if err != nil {
+		err = fmt.Errorf("failed to queary in %v,which called %v, err: %v", info.MiningpoolType, *h.Name, err)
+		return err
+	}
+
+	if !exist {
+		return fmt.Errorf("have no username in %v,which called %v", info.MiningpoolType, *h.Name)
+	}
+
 	authed := true
 	h.Authed = &authed
 	return nil

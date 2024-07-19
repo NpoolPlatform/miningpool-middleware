@@ -75,13 +75,6 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[coin.FieldFeeRatio] = string(strBytes)
 	}
-	if h.RevenueType != nil {
-		strBytes, err := json.Marshal(h.RevenueType.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[coin.FieldRevenueType] = string(strBytes)
-	}
 	if h.FixedRevenueAble != nil {
 		strBytes, err := json.Marshal(*h.FixedRevenueAble)
 		if err != nil {

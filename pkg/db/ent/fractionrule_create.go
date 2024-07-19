@@ -401,7 +401,6 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (frc *FractionRuleCreate) OnConflict(opts ...sql.ConflictOption) *FractionRuleUpsertOne {
 	frc.conflict = opts
 	return &FractionRuleUpsertOne{
@@ -415,7 +414,6 @@ func (frc *FractionRuleCreate) OnConflict(opts ...sql.ConflictOption) *FractionR
 //	client.FractionRule.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (frc *FractionRuleCreate) OnConflictColumns(columns ...string) *FractionRuleUpsertOne {
 	frc.conflict = append(frc.conflict, sql.ConflictColumns(columns...))
 	return &FractionRuleUpsertOne{
@@ -591,7 +589,6 @@ func (u *FractionRuleUpsert) ClearWithdrawRate() *FractionRuleUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *FractionRuleUpsertOne) UpdateNewValues() *FractionRuleUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -605,10 +602,9 @@ func (u *FractionRuleUpsertOne) UpdateNewValues() *FractionRuleUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.FractionRule.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.FractionRule.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *FractionRuleUpsertOne) Ignore() *FractionRuleUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -932,7 +928,6 @@ func (frcb *FractionRuleCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (frcb *FractionRuleCreateBulk) OnConflict(opts ...sql.ConflictOption) *FractionRuleUpsertBulk {
 	frcb.conflict = opts
 	return &FractionRuleUpsertBulk{
@@ -946,7 +941,6 @@ func (frcb *FractionRuleCreateBulk) OnConflict(opts ...sql.ConflictOption) *Frac
 //	client.FractionRule.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (frcb *FractionRuleCreateBulk) OnConflictColumns(columns ...string) *FractionRuleUpsertBulk {
 	frcb.conflict = append(frcb.conflict, sql.ConflictColumns(columns...))
 	return &FractionRuleUpsertBulk{
@@ -971,7 +965,6 @@ type FractionRuleUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *FractionRuleUpsertBulk) UpdateNewValues() *FractionRuleUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -991,7 +984,6 @@ func (u *FractionRuleUpsertBulk) UpdateNewValues() *FractionRuleUpsertBulk {
 //	client.FractionRule.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *FractionRuleUpsertBulk) Ignore() *FractionRuleUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

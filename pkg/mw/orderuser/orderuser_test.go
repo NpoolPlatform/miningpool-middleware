@@ -89,8 +89,6 @@ func create(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueTypeStr = info.RevenueTypeStr
-		ret.RevenueType = info.RevenueType
 		ret.Proportion = info.Proportion
 		ret.RootUserID = info.RootUserID
 		ret.ID = info.ID

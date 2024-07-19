@@ -423,7 +423,6 @@ func (pc *PoolCreate) createSpec() (*Pool, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (pc *PoolCreate) OnConflict(opts ...sql.ConflictOption) *PoolUpsertOne {
 	pc.conflict = opts
 	return &PoolUpsertOne{
@@ -437,7 +436,6 @@ func (pc *PoolCreate) OnConflict(opts ...sql.ConflictOption) *PoolUpsertOne {
 //	client.Pool.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (pc *PoolCreate) OnConflictColumns(columns ...string) *PoolUpsertOne {
 	pc.conflict = append(pc.conflict, sql.ConflictColumns(columns...))
 	return &PoolUpsertOne{
@@ -625,7 +623,6 @@ func (u *PoolUpsert) ClearDescription() *PoolUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *PoolUpsertOne) UpdateNewValues() *PoolUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -639,10 +636,9 @@ func (u *PoolUpsertOne) UpdateNewValues() *PoolUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Pool.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Pool.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *PoolUpsertOne) Ignore() *PoolUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -980,7 +976,6 @@ func (pcb *PoolCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (pcb *PoolCreateBulk) OnConflict(opts ...sql.ConflictOption) *PoolUpsertBulk {
 	pcb.conflict = opts
 	return &PoolUpsertBulk{
@@ -994,7 +989,6 @@ func (pcb *PoolCreateBulk) OnConflict(opts ...sql.ConflictOption) *PoolUpsertBul
 //	client.Pool.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (pcb *PoolCreateBulk) OnConflictColumns(columns ...string) *PoolUpsertBulk {
 	pcb.conflict = append(pcb.conflict, sql.ConflictColumns(columns...))
 	return &PoolUpsertBulk{
@@ -1019,7 +1013,6 @@ type PoolUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *PoolUpsertBulk) UpdateNewValues() *PoolUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1039,7 +1032,6 @@ func (u *PoolUpsertBulk) UpdateNewValues() *PoolUpsertBulk {
 //	client.Pool.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *PoolUpsertBulk) Ignore() *PoolUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

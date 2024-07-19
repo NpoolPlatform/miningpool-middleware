@@ -38,7 +38,6 @@ var (
 		{
 			MiningpoolType:         mpbasetype.MiningpoolType_F2Pool,
 			CoinType:               basetypes.CoinType_CoinTypeBitCoin,
-			RevenueType:            mpbasetype.RevenueType_FPPS,
 			FeeRatio:               f2pool.CoinType2FeeRatio[basetypes.CoinType_CoinTypeBitCoin],
 			FixedRevenueAble:       false,
 			LeastTransferAmount:    f2pool.CoinType2LeastTransferAmount[basetypes.CoinType_CoinTypeBitCoin],
@@ -164,7 +163,6 @@ func registeCoinInfo(ctx context.Context) {
 			coin.WithEntID(&info.EntID, true),
 			coin.WithPoolID(&poolInfos[0].EntID, true),
 			coin.WithCoinType(&info.CoinType, true),
-			coin.WithRevenueType(&info.RevenueType, true),
 			coin.WithFeeRatio(&info.FeeRatio, true),
 			coin.WithFixedRevenueAble(&info.FixedRevenueAble, true),
 			coin.WithLeastTransferAmount(&info.LeastTransferAmount, true),

@@ -264,7 +264,6 @@ func (ruq *RootUserQuery) Clone() *RootUserQuery {
 //		GroupBy(rootuser.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (ruq *RootUserQuery) GroupBy(field string, fields ...string) *RootUserGroupBy {
 	grbuild := &RootUserGroupBy{config: ruq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -291,7 +290,6 @@ func (ruq *RootUserQuery) GroupBy(field string, fields ...string) *RootUserGroup
 //	client.RootUser.Query().
 //		Select(rootuser.FieldCreatedAt).
 //		Scan(ctx, &v)
-//
 func (ruq *RootUserQuery) Select(fields ...string) *RootUserSelect {
 	ruq.fields = append(ruq.fields, fields...)
 	selbuild := &RootUserSelect{RootUserQuery: ruq}

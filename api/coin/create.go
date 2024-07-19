@@ -31,7 +31,6 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 		coin.WithPoolID(req.PoolID, true),
 		coin.WithCoinTypeID(req.CoinTypeID, true),
 		coin.WithCoinType(req.CoinType, true),
-		coin.WithRevenueType(req.RevenueType, true),
 		coin.WithFeeRatio(req.FeeRatio, true),
 		coin.WithFixedRevenueAble(req.FixedRevenueAble, true),
 		coin.WithLeastTransferAmount(req.LeastTransferAmount, true),

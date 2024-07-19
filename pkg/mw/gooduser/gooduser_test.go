@@ -91,8 +91,6 @@ func create(t *testing.T) {
 		ret.PoolID = info.PoolID
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueTypeStr = info.RevenueTypeStr
-		ret.RevenueType = info.RevenueType
 		ret.FeeRatio = info.FeeRatio
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -115,7 +113,6 @@ func update(t *testing.T) {
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.RevenueTypeStr = info.RevenueTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
@@ -141,7 +138,6 @@ func deleteRow(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
 		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		ret.RevenueTypeStr = infos[0].RevenueTypeStr
 		ret.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], ret)
 	}

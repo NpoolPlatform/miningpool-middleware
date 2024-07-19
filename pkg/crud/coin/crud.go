@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	coinent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
@@ -19,7 +18,6 @@ type Req struct {
 	PoolID                 *uuid.UUID
 	CoinTypeID             *uuid.UUID
 	CoinType               *basetypes.CoinType
-	RevenueType            *mpbasetypes.RevenueType
 	FeeRatio               *decimal.Decimal
 	FixedRevenueAble       *bool
 	LeastTransferAmount    *decimal.Decimal
@@ -39,9 +37,6 @@ func CreateSet(c *ent.CoinCreate, req *Req) *ent.CoinCreate {
 		c.SetCoinTypeID(*req.CoinTypeID)
 	}
 	if req.CoinType != nil {
-		c.SetCoinType(req.CoinType.String())
-	}
-	if req.RevenueType != nil {
 		c.SetCoinType(req.CoinType.String())
 	}
 	if req.FeeRatio != nil {
@@ -72,9 +67,6 @@ func UpdateSet(u *ent.CoinUpdateOne, req *Req) (*ent.CoinUpdateOne, error) {
 	if req.CoinType != nil {
 		u = u.SetCoinType(req.CoinType.String())
 	}
-	if req.RevenueType != nil {
-		u = u.SetRevenueType(req.RevenueType.String())
-	}
 	if req.FeeRatio != nil {
 		u = u.SetFeeRatio(*req.FeeRatio)
 	}
@@ -103,7 +95,6 @@ type Conds struct {
 	CoinTypeID       *cruder.Cond
 	CoinType         *cruder.Cond
 	MiningpoolType   *cruder.Cond
-	RevenueType      *cruder.Cond
 	FixedRevenueAble *cruder.Cond
 	EntIDs           *cruder.Cond
 }
@@ -182,18 +173,6 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			q.Where(coinent.CoinType(cointype.String()))
 		default:
 			return nil, fmt.Errorf("invalid cointype field")
-		}
-	}
-	if conds.RevenueType != nil {
-		revenuetype, ok := conds.RevenueType.Val.(mpbasetypes.RevenueType)
-		if !ok {
-			return nil, fmt.Errorf("invalid revenuetype")
-		}
-		switch conds.RevenueType.Op {
-		case cruder.EQ:
-			q.Where(coinent.RevenueType(revenuetype.String()))
-		default:
-			return nil, fmt.Errorf("invalid revenuetype field")
 		}
 	}
 	if conds.FixedRevenueAble != nil {

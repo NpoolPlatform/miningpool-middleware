@@ -41,7 +41,6 @@ var (
 		{Name: "pool_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "revenue_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "fee_ratio", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "fixed_revenue_able", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "least_transfer_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},

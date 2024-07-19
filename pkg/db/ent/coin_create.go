@@ -121,20 +121,6 @@ func (cc *CoinCreate) SetNillableCoinType(s *string) *CoinCreate {
 	return cc
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cc *CoinCreate) SetRevenueType(s string) *CoinCreate {
-	cc.mutation.SetRevenueType(s)
-	return cc
-}
-
-// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableRevenueType(s *string) *CoinCreate {
-	if s != nil {
-		cc.SetRevenueType(*s)
-	}
-	return cc
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (cc *CoinCreate) SetFeeRatio(d decimal.Decimal) *CoinCreate {
 	cc.mutation.SetFeeRatio(d)
@@ -336,10 +322,6 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultCoinType
 		cc.mutation.SetCoinType(v)
 	}
-	if _, ok := cc.mutation.RevenueType(); !ok {
-		v := coin.DefaultRevenueType
-		cc.mutation.SetRevenueType(v)
-	}
 	if _, ok := cc.mutation.FeeRatio(); !ok {
 		v := coin.DefaultFeeRatio
 		cc.mutation.SetFeeRatio(v)
@@ -467,14 +449,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 		})
 		_node.CoinType = value
 	}
-	if value, ok := cc.mutation.RevenueType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldRevenueType,
-		})
-		_node.RevenueType = value
-	}
 	if value, ok := cc.mutation.FeeRatio(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -534,7 +508,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 	cc.conflict = opts
 	return &CoinUpsertOne{
@@ -548,7 +521,6 @@ func (cc *CoinCreate) OnConflict(opts ...sql.ConflictOption) *CoinUpsertOne {
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (cc *CoinCreate) OnConflictColumns(columns ...string) *CoinUpsertOne {
 	cc.conflict = append(cc.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertOne{
@@ -689,24 +661,6 @@ func (u *CoinUpsert) ClearCoinType() *CoinUpsert {
 	return u
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsert) SetRevenueType(v string) *CoinUpsert {
-	u.Set(coin.FieldRevenueType, v)
-	return u
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateRevenueType() *CoinUpsert {
-	u.SetExcluded(coin.FieldRevenueType)
-	return u
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsert) ClearRevenueType() *CoinUpsert {
-	u.SetNull(coin.FieldRevenueType)
-	return u
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (u *CoinUpsert) SetFeeRatio(v decimal.Decimal) *CoinUpsert {
 	u.Set(coin.FieldFeeRatio, v)
@@ -814,7 +768,6 @@ func (u *CoinUpsert) ClearRemark() *CoinUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -828,10 +781,9 @@ func (u *CoinUpsertOne) UpdateNewValues() *CoinUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.Coin.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.Coin.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *CoinUpsertOne) Ignore() *CoinUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -990,27 +942,6 @@ func (u *CoinUpsertOne) UpdateCoinType() *CoinUpsertOne {
 func (u *CoinUpsertOne) ClearCoinType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearCoinType()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertOne) SetRevenueType(v string) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateRevenueType() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsertOne) ClearRevenueType() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueType()
 	})
 }
 
@@ -1260,7 +1191,6 @@ func (ccb *CoinCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBulk {
 	ccb.conflict = opts
 	return &CoinUpsertBulk{
@@ -1274,7 +1204,6 @@ func (ccb *CoinCreateBulk) OnConflict(opts ...sql.ConflictOption) *CoinUpsertBul
 //	client.Coin.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (ccb *CoinCreateBulk) OnConflictColumns(columns ...string) *CoinUpsertBulk {
 	ccb.conflict = append(ccb.conflict, sql.ConflictColumns(columns...))
 	return &CoinUpsertBulk{
@@ -1299,7 +1228,6 @@ type CoinUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1319,7 +1247,6 @@ func (u *CoinUpsertBulk) UpdateNewValues() *CoinUpsertBulk {
 //	client.Coin.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *CoinUpsertBulk) Ignore() *CoinUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1478,27 +1405,6 @@ func (u *CoinUpsertBulk) UpdateCoinType() *CoinUpsertBulk {
 func (u *CoinUpsertBulk) ClearCoinType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearCoinType()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertBulk) SetRevenueType(v string) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateRevenueType() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsertBulk) ClearRevenueType() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueType()
 	})
 }
 

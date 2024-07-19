@@ -80,22 +80,6 @@ func WithCoinType(cointype *basetypes.CoinType, must bool) func(context.Context,
 	}
 }
 
-func WithRevenueType(revenuetype *mpbasetypes.RevenueType, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if revenuetype == nil {
-			if must {
-				return fmt.Errorf("invalid revenuetype")
-			}
-			return nil
-		}
-		if *revenuetype == mpbasetypes.RevenueType_DefaultRevenueType {
-			return fmt.Errorf("invalid revenuetype,not allow be default type")
-		}
-		h.RevenueType = revenuetype
-		return nil
-	}
-}
-
 func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if cointypeid == nil {
@@ -288,12 +272,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.MiningpoolType = &cruder.Cond{
 				Op:  conds.GetMiningpoolType().GetOp(),
 				Val: mpbasetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
-			}
-		}
-		if conds.RevenueType != nil {
-			h.Conds.RevenueType = &cruder.Cond{
-				Op:  conds.GetRevenueType().GetOp(),
-				Val: mpbasetypes.RevenueType(conds.GetRevenueType().GetValue()),
 			}
 		}
 		if conds.FixedRevenueAble != nil {

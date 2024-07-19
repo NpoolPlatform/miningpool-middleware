@@ -478,7 +478,6 @@ func (ruc *RootUserCreate) createSpec() (*RootUser, *sqlgraph.CreateSpec) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (ruc *RootUserCreate) OnConflict(opts ...sql.ConflictOption) *RootUserUpsertOne {
 	ruc.conflict = opts
 	return &RootUserUpsertOne{
@@ -492,7 +491,6 @@ func (ruc *RootUserCreate) OnConflict(opts ...sql.ConflictOption) *RootUserUpser
 //	client.RootUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (ruc *RootUserCreate) OnConflictColumns(columns ...string) *RootUserUpsertOne {
 	ruc.conflict = append(ruc.conflict, sql.ConflictColumns(columns...))
 	return &RootUserUpsertOne{
@@ -716,7 +714,6 @@ func (u *RootUserUpsert) ClearRemark() *RootUserUpsert {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *RootUserUpsertOne) UpdateNewValues() *RootUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -730,10 +727,9 @@ func (u *RootUserUpsertOne) UpdateNewValues() *RootUserUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.RootUser.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.RootUser.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *RootUserUpsertOne) Ignore() *RootUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -1113,7 +1109,6 @@ func (rucb *RootUserCreateBulk) ExecX(ctx context.Context) {
 //			SetCreatedAt(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (rucb *RootUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *RootUserUpsertBulk {
 	rucb.conflict = opts
 	return &RootUserUpsertBulk{
@@ -1127,7 +1122,6 @@ func (rucb *RootUserCreateBulk) OnConflict(opts ...sql.ConflictOption) *RootUser
 //	client.RootUser.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (rucb *RootUserCreateBulk) OnConflictColumns(columns ...string) *RootUserUpsertBulk {
 	rucb.conflict = append(rucb.conflict, sql.ConflictColumns(columns...))
 	return &RootUserUpsertBulk{
@@ -1152,7 +1146,6 @@ type RootUserUpsertBulk struct {
 //			}),
 //		).
 //		Exec(ctx)
-//
 func (u *RootUserUpsertBulk) UpdateNewValues() *RootUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
@@ -1172,7 +1165,6 @@ func (u *RootUserUpsertBulk) UpdateNewValues() *RootUserUpsertBulk {
 //	client.RootUser.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *RootUserUpsertBulk) Ignore() *RootUserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

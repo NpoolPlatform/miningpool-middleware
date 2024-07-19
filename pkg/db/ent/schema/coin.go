@@ -40,8 +40,6 @@ func (Coin) Fields() []ent.Field {
 		field.
 			String("coin_type").Optional().Default(""),
 		field.
-			String("revenue_type").Optional().Default(""),
-		field.
 			Other("fee_ratio", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",

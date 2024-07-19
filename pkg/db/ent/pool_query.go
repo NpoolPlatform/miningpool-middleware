@@ -264,7 +264,6 @@ func (pq *PoolQuery) Clone() *PoolQuery {
 //		GroupBy(pool.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (pq *PoolQuery) GroupBy(field string, fields ...string) *PoolGroupBy {
 	grbuild := &PoolGroupBy{config: pq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -291,7 +290,6 @@ func (pq *PoolQuery) GroupBy(field string, fields ...string) *PoolGroupBy {
 //	client.Pool.Query().
 //		Select(pool.FieldCreatedAt).
 //		Scan(ctx, &v)
-//
 func (pq *PoolQuery) Select(fields ...string) *PoolSelect {
 	pq.fields = append(pq.fields, fields...)
 	selbuild := &PoolSelect{PoolQuery: pq}

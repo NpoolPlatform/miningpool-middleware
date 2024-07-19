@@ -106,7 +106,6 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		coin.FieldCoinType,
-		coin.FieldRevenueType,
 		pool.FieldMiningpoolType,
 		gooduser.FieldRootUserID,
 	)
@@ -127,7 +126,6 @@ func (h *queryHandler) formalize() {
 		}()
 		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
 	}
 }
 

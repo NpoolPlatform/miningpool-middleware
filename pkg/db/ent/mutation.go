@@ -788,7 +788,6 @@ type CoinMutation struct {
 	pool_id                     *uuid.UUID
 	coin_type_id                *uuid.UUID
 	coin_type                   *string
-	revenue_type                *string
 	fee_ratio                   *decimal.Decimal
 	fixed_revenue_able          *bool
 	least_transfer_amount       *decimal.Decimal
@@ -820,8 +819,8 @@ func newCoinMutation(c config, op Op, opts ...coinOption) *CoinMutation {
 	return m
 }
 
-// withPoolCoinTypeID sets the ID field of the mutation.
-func withPoolCoinTypeID(id uint32) coinOption {
+// withCoinID sets the ID field of the mutation.
+func withCoinID(id uint32) coinOption {
 	return func(m *CoinMutation) {
 		var (
 			err   error
@@ -1256,55 +1255,6 @@ func (m *CoinMutation) ResetCoinType() {
 	delete(m.clearedFields, coin.FieldCoinType)
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (m *CoinMutation) SetRevenueType(s string) {
-	m.revenue_type = &s
-}
-
-// RevenueType returns the value of the "revenue_type" field in the mutation.
-func (m *CoinMutation) RevenueType() (r string, exists bool) {
-	v := m.revenue_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueType returns the old "revenue_type" field's value of the Coin entity.
-// If the Coin object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldRevenueType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
-	}
-	return oldValue.RevenueType, nil
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (m *CoinMutation) ClearRevenueType() {
-	m.revenue_type = nil
-	m.clearedFields[coin.FieldRevenueType] = struct{}{}
-}
-
-// RevenueTypeCleared returns if the "revenue_type" field was cleared in this mutation.
-func (m *CoinMutation) RevenueTypeCleared() bool {
-	_, ok := m.clearedFields[coin.FieldRevenueType]
-	return ok
-}
-
-// ResetRevenueType resets all changes to the "revenue_type" field.
-func (m *CoinMutation) ResetRevenueType() {
-	m.revenue_type = nil
-	delete(m.clearedFields, coin.FieldRevenueType)
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (m *CoinMutation) SetFeeRatio(d decimal.Decimal) {
 	m.fee_ratio = &d
@@ -1590,7 +1540,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -1611,9 +1561,6 @@ func (m *CoinMutation) Fields() []string {
 	}
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
-	}
-	if m.revenue_type != nil {
-		fields = append(fields, coin.FieldRevenueType)
 	}
 	if m.fee_ratio != nil {
 		fields = append(fields, coin.FieldFeeRatio)
@@ -1652,8 +1599,6 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.CoinTypeID()
 	case coin.FieldCoinType:
 		return m.CoinType()
-	case coin.FieldRevenueType:
-		return m.RevenueType()
 	case coin.FieldFeeRatio:
 		return m.FeeRatio()
 	case coin.FieldFixedRevenueAble:
@@ -1687,8 +1632,6 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCoinTypeID(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
-	case coin.FieldRevenueType:
-		return m.OldRevenueType(ctx)
 	case coin.FieldFeeRatio:
 		return m.OldFeeRatio(ctx)
 	case coin.FieldFixedRevenueAble:
@@ -1756,13 +1699,6 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCoinType(v)
-		return nil
-	case coin.FieldRevenueType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueType(v)
 		return nil
 	case coin.FieldFeeRatio:
 		v, ok := value.(decimal.Decimal)
@@ -1889,9 +1825,6 @@ func (m *CoinMutation) ClearedFields() []string {
 	if m.FieldCleared(coin.FieldCoinType) {
 		fields = append(fields, coin.FieldCoinType)
 	}
-	if m.FieldCleared(coin.FieldRevenueType) {
-		fields = append(fields, coin.FieldRevenueType)
-	}
 	if m.FieldCleared(coin.FieldFeeRatio) {
 		fields = append(fields, coin.FieldFeeRatio)
 	}
@@ -1929,9 +1862,6 @@ func (m *CoinMutation) ClearField(name string) error {
 		return nil
 	case coin.FieldCoinType:
 		m.ClearCoinType()
-		return nil
-	case coin.FieldRevenueType:
-		m.ClearRevenueType()
 		return nil
 	case coin.FieldFeeRatio:
 		m.ClearFeeRatio()
@@ -1976,9 +1906,6 @@ func (m *CoinMutation) ResetField(name string) error {
 		return nil
 	case coin.FieldCoinType:
 		m.ResetCoinType()
-		return nil
-	case coin.FieldRevenueType:
-		m.ResetRevenueType()
 		return nil
 	case coin.FieldFeeRatio:
 		m.ResetFeeRatio()

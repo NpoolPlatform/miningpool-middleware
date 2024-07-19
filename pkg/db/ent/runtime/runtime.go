@@ -113,28 +113,24 @@ func init() {
 	coinDescCoinType := coinFields[2].Descriptor()
 	// coin.DefaultCoinType holds the default value on creation for the coin_type field.
 	coin.DefaultCoinType = coinDescCoinType.Default.(string)
-	// coinDescRevenueType is the schema descriptor for revenue_type field.
-	coinDescRevenueType := coinFields[3].Descriptor()
-	// coin.DefaultRevenueType holds the default value on creation for the revenue_type field.
-	coin.DefaultRevenueType = coinDescRevenueType.Default.(string)
 	// coinDescFeeRatio is the schema descriptor for fee_ratio field.
-	coinDescFeeRatio := coinFields[4].Descriptor()
+	coinDescFeeRatio := coinFields[3].Descriptor()
 	// coin.DefaultFeeRatio holds the default value on creation for the fee_ratio field.
 	coin.DefaultFeeRatio = coinDescFeeRatio.Default.(decimal.Decimal)
 	// coinDescFixedRevenueAble is the schema descriptor for fixed_revenue_able field.
-	coinDescFixedRevenueAble := coinFields[5].Descriptor()
+	coinDescFixedRevenueAble := coinFields[4].Descriptor()
 	// coin.DefaultFixedRevenueAble holds the default value on creation for the fixed_revenue_able field.
 	coin.DefaultFixedRevenueAble = coinDescFixedRevenueAble.Default.(bool)
 	// coinDescLeastTransferAmount is the schema descriptor for least_transfer_amount field.
-	coinDescLeastTransferAmount := coinFields[6].Descriptor()
+	coinDescLeastTransferAmount := coinFields[5].Descriptor()
 	// coin.DefaultLeastTransferAmount holds the default value on creation for the least_transfer_amount field.
 	coin.DefaultLeastTransferAmount = coinDescLeastTransferAmount.Default.(decimal.Decimal)
 	// coinDescBenefitIntervalSeconds is the schema descriptor for benefit_interval_seconds field.
-	coinDescBenefitIntervalSeconds := coinFields[7].Descriptor()
+	coinDescBenefitIntervalSeconds := coinFields[6].Descriptor()
 	// coin.DefaultBenefitIntervalSeconds holds the default value on creation for the benefit_interval_seconds field.
 	coin.DefaultBenefitIntervalSeconds = coinDescBenefitIntervalSeconds.Default.(uint32)
 	// coinDescRemark is the schema descriptor for remark field.
-	coinDescRemark := coinFields[8].Descriptor()
+	coinDescRemark := coinFields[7].Descriptor()
 	// coin.DefaultRemark holds the default value on creation for the remark field.
 	coin.DefaultRemark = coinDescRemark.Default.(string)
 	fractionMixin := schema.Fraction{}.Mixin()

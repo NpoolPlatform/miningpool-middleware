@@ -58,7 +58,6 @@ var schemaGraph = func() *sqlgraph.Schema {
 			coin.FieldPoolID:                 {Type: field.TypeUUID, Column: coin.FieldPoolID},
 			coin.FieldCoinTypeID:             {Type: field.TypeUUID, Column: coin.FieldCoinTypeID},
 			coin.FieldCoinType:               {Type: field.TypeString, Column: coin.FieldCoinType},
-			coin.FieldRevenueType:            {Type: field.TypeString, Column: coin.FieldRevenueType},
 			coin.FieldFeeRatio:               {Type: field.TypeOther, Column: coin.FieldFeeRatio},
 			coin.FieldFixedRevenueAble:       {Type: field.TypeBool, Column: coin.FieldFixedRevenueAble},
 			coin.FieldLeastTransferAmount:    {Type: field.TypeOther, Column: coin.FieldLeastTransferAmount},
@@ -355,11 +354,6 @@ func (f *CoinFilter) WhereCoinTypeID(p entql.ValueP) {
 // WhereCoinType applies the entql string predicate on the coin_type field.
 func (f *CoinFilter) WhereCoinType(p entql.StringP) {
 	f.Where(p.Field(coin.FieldCoinType))
-}
-
-// WhereRevenueType applies the entql string predicate on the revenue_type field.
-func (f *CoinFilter) WhereRevenueType(p entql.StringP) {
-	f.Where(p.Field(coin.FieldRevenueType))
 }
 
 // WhereFeeRatio applies the entql other predicate on the fee_ratio field.

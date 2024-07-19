@@ -147,7 +147,7 @@ func (h *Handler) GetAuthToken(ctx context.Context) (*TokenInfo, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
 	if len(handler.infos) == 0 {
 		return nil, nil
@@ -158,7 +158,7 @@ func (h *Handler) GetAuthToken(ctx context.Context) (*TokenInfo, error) {
 
 	err = handler.decryptToken()
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
 
 	handler.formate()
@@ -181,12 +181,12 @@ func (h *Handler) GetAuthTokens(ctx context.Context) ([]*TokenInfo, uint32, erro
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	err = handler.decryptToken()
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	handler.formate()

@@ -125,7 +125,7 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
 	if len(handler.infos) == 0 {
 		return nil, nil
@@ -155,7 +155,7 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	handler.formalize()

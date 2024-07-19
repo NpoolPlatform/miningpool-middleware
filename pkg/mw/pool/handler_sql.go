@@ -114,7 +114,7 @@ func (h *sqlHandler) idKeys() error {
 func (h *sqlHandler) genCreateSQL() (string, error) {
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, pool.FieldID)
 
@@ -152,7 +152,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, pool.FieldID)
 	delete(h.baseVals, pool.FieldEntID)
@@ -171,7 +171,7 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 
 	err = h.idKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	if len(h.idVals) == 0 {
 		return "", wlog.Errorf("have neither id and ent_id")

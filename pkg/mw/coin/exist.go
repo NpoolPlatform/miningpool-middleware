@@ -29,7 +29,7 @@ func (h *Handler) ExistCoin(ctx context.Context) (bool, error) {
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }
@@ -48,7 +48,7 @@ func (h *Handler) ExistCoinConds(ctx context.Context) (bool, error) {
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }

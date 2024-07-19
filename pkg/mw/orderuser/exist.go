@@ -65,7 +65,7 @@ func (h *Handler) checkAppAuth(ctx context.Context) (bool, error) {
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }
@@ -89,7 +89,7 @@ func (h *Handler) ExistOrderUser(ctx context.Context) (bool, error) {
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }
@@ -108,7 +108,7 @@ func (h *Handler) ExistOrderUserConds(ctx context.Context) (bool, error) {
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }

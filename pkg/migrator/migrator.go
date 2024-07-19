@@ -198,7 +198,7 @@ func setEntIDUnique(ctx context.Context, dbName, table string, tx *sql.DB) error
 		fmt.Sprintf("alter table %v.%v change column ent_id ent_id char(36) unique", dbName, table),
 	)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -215,7 +215,7 @@ func id2EntID(ctx context.Context, dbName, table string, tx *sql.DB) error {
 		fmt.Sprintf("alter table %v.%v change column id ent_id char(36) unique", dbName, table),
 	)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -232,7 +232,7 @@ func addIDColumn(ctx context.Context, dbName, table string, tx *sql.DB) error {
 		fmt.Sprintf("alter table %v.%v add id int unsigned not null auto_increment, add primary key(id)", dbName, table),
 	)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -271,7 +271,7 @@ func addEntIDColumn(ctx context.Context, dbName, table string, tx *sql.DB) error
 		fmt.Sprintf("alter table %v.%v add ent_id char(36) not null", dbName, table),
 	)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	return nil
 }
@@ -285,59 +285,59 @@ func migrateEntID(ctx context.Context, dbName, table string, tx *sql.DB) error {
 
 	idExist, idInt, idUnsigned, err := existIDInt(ctx, dbName, table, tx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if idInt && !idUnsigned {
 		if err := setIDUnsigned(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 
 	entIDExist, entIDUnique, err := existEntIDUnique(ctx, dbName, table, tx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	if entIDExist && idInt {
 		if err := setEmptyEntID(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !entIDUnique {
 			if err := setEntIDUnique(ctx, dbName, table, tx); err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 		}
 		return nil
 	}
 	if idExist && !idInt {
 		if err := id2EntID(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 	if !idInt {
 		if err := dropPrimaryKey(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if err := addIDColumn(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 
 	entIDExist, _, err = existEntIDUnique(ctx, dbName, table, tx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if !entIDExist {
 		if err := addEntIDColumn(ctx, dbName, table, tx); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 	if err := setEmptyEntID(ctx, dbName, table, tx); err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if err := setEntIDUnique(ctx, dbName, table, tx); err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	logger.Sugar().Infow(
 		"migrateEntID",
@@ -355,7 +355,7 @@ func Migrate(ctx context.Context) error {
 	logger.Sugar().Infow("Migrate", "Start", "...")
 	err = redis2.TryLock(lockKey(), 0)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	defer func(err *error) {
 		_ = redis2.Unlock(lockKey())
@@ -364,7 +364,7 @@ func Migrate(ctx context.Context) error {
 
 	conn, err = open(servicename.ServiceDomain)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -375,7 +375,7 @@ func Migrate(ctx context.Context) error {
 	dbname := config.GetStringValueWithNameSpace(servicename.ServiceDomain, keyDBName)
 	_tables, err := tables(ctx, dbname, conn)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	logger.Sugar().Infow(
@@ -384,7 +384,7 @@ func Migrate(ctx context.Context) error {
 	)
 	for _, table := range _tables {
 		if err = migrateEntID(ctx, dbname, table, conn); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 
@@ -394,7 +394,7 @@ func Migrate(ctx context.Context) error {
 	)
 	for _, table := range _tables {
 		if err = migrateEntID(ctx, dbname, table, conn); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 	}
 	return nil

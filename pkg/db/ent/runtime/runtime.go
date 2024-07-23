@@ -345,22 +345,10 @@ func init() {
 	orderuserDescName := orderuserFields[3].Descriptor()
 	// orderuser.DefaultName holds the default value on creation for the name field.
 	orderuser.DefaultName = orderuserDescName.Default.(string)
-	// orderuserDescProportion is the schema descriptor for proportion field.
-	orderuserDescProportion := orderuserFields[4].Descriptor()
-	// orderuser.DefaultProportion holds the default value on creation for the proportion field.
-	orderuser.DefaultProportion = orderuserDescProportion.Default.(decimal.Decimal)
-	// orderuserDescRevenueAddress is the schema descriptor for revenue_address field.
-	orderuserDescRevenueAddress := orderuserFields[5].Descriptor()
-	// orderuser.DefaultRevenueAddress holds the default value on creation for the revenue_address field.
-	orderuser.DefaultRevenueAddress = orderuserDescRevenueAddress.Default.(string)
 	// orderuserDescReadPageLink is the schema descriptor for read_page_link field.
-	orderuserDescReadPageLink := orderuserFields[6].Descriptor()
+	orderuserDescReadPageLink := orderuserFields[4].Descriptor()
 	// orderuser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	orderuser.DefaultReadPageLink = orderuserDescReadPageLink.Default.(string)
-	// orderuserDescAutoPay is the schema descriptor for auto_pay field.
-	orderuserDescAutoPay := orderuserFields[7].Descriptor()
-	// orderuser.DefaultAutoPay holds the default value on creation for the auto_pay field.
-	orderuser.DefaultAutoPay = orderuserDescAutoPay.Default.(bool)
 	poolMixin := schema.Pool{}.Mixin()
 	pool.Policy = privacy.NewPolicies(poolMixin[0], schema.Pool{})
 	pool.Hooks[0] = func(next ent.Mutator) ent.Mutator {

@@ -24,17 +24,13 @@ var orderuserRet = &npool.OrderUser{
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       v1.CoinType_CoinTypeBitCoin,
-	RevenueAddress: "sssss",
-	AutoPay:        false,
 }
 
 var orderuserReq = &npool.OrderUserReq{
-	EntID:          &orderuserRet.EntID,
-	GoodUserID:     &orderuserRet.GoodUserID,
-	AppID:          &orderuserRet.AppID,
-	UserID:         &orderuserRet.UserID,
-	RevenueAddress: &orderuserRet.RevenueAddress,
-	AutoPay:        &orderuserRet.AutoPay,
+	EntID:      &orderuserRet.EntID,
+	GoodUserID: &orderuserRet.GoodUserID,
+	AppID:      &orderuserRet.AppID,
+	UserID:     &orderuserRet.UserID,
 }
 
 func createOrderUser(t *testing.T) {
@@ -75,7 +71,6 @@ func createOrderUser(t *testing.T) {
 		orderuserRet.CreatedAt = info.CreatedAt
 		orderuserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		orderuserRet.CoinTypeStr = info.CoinTypeStr
-		orderuserRet.Proportion = info.Proportion
 		orderuserRet.RootUserID = info.RootUserID
 		orderuserRet.ID = info.ID
 		orderuserRet.EntID = info.EntID

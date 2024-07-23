@@ -17,10 +17,13 @@ import (
 
 type Handler struct {
 	orderusercrud.Req
-	Reqs   []*orderusercrud.Req
-	Conds  *orderusercrud.Conds
-	Offset int32
-	Limit  int32
+	Proportion     *decimal.Decimal
+	RevenueAddress *string
+	AutoPay        *bool
+	Reqs           []*orderusercrud.Req
+	Conds          *orderusercrud.Conds
+	Offset         int32
+	Limit          int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {
@@ -261,12 +264,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			h.Conds.UserID = &cruder.Cond{
 				Op:  conds.GetUserID().GetOp(),
 				Val: id,
-			}
-		}
-		if conds.AutoPay != nil {
-			h.Conds.AutoPay = &cruder.Cond{
-				Op:  conds.GetAutoPay().GetOp(),
-				Val: conds.GetAutoPay().GetValue(),
 			}
 		}
 		return nil

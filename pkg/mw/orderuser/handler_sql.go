@@ -9,7 +9,6 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 type sqlHandler struct {
@@ -38,9 +37,6 @@ func (h *sqlHandler) baseKeysDefault() error {
 			return wlog.WrapError(err)
 		}
 		h.EntID = &entID
-	}
-	if h.Proportion == nil {
-		h.Proportion = &decimal.Decimal{}
 	}
 	return nil
 }
@@ -91,21 +87,6 @@ func (h *sqlHandler) baseKeysFiled() error {
 		h.baseVals[orderuser.FieldName] = string(strBytes)
 		h.BondName = h.Name
 	}
-
-	if h.Proportion != nil {
-		strBytes, err := json.Marshal(*h.Proportion)
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		h.baseVals[orderuser.FieldProportion] = string(strBytes)
-	}
-	if h.RevenueAddress != nil {
-		strBytes, err := json.Marshal(*h.RevenueAddress)
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		h.baseVals[orderuser.FieldRevenueAddress] = string(strBytes)
-	}
 	if h.ReadPageLink != nil {
 		strBytes, err := json.Marshal(*h.ReadPageLink)
 		if err != nil {
@@ -113,14 +94,6 @@ func (h *sqlHandler) baseKeysFiled() error {
 		}
 		h.baseVals[orderuser.FieldReadPageLink] = string(strBytes)
 	}
-	if h.AutoPay != nil {
-		strBytes, err := json.Marshal(*h.AutoPay)
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		h.baseVals[orderuser.FieldAutoPay] = string(strBytes)
-	}
-
 	if h.BondGoodUserID == nil {
 		return wlog.Errorf("please give gooduserid")
 	}

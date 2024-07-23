@@ -47,12 +47,10 @@ func createOrderUser(t *testing.T) {
 		orderserRet.CreatedAt = info.CreatedAt
 		orderserRet.Name = info.Name
 		orderserRet.ReadPageLink = info.ReadPageLink
-		orderserRet.AutoPay = info.AutoPay
 		orderserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		orderserRet.CoinTypeStr = info.CoinTypeStr
 		orderserRet.RootUserID = info.RootUserID
 		orderserRet.UpdatedAt = info.UpdatedAt
-		orderserRet.Proportion = info.Proportion
 		orderserRet.ID = info.ID
 		orderserRet.EntID = info.EntID
 		assert.Equal(t, orderserRet, info)

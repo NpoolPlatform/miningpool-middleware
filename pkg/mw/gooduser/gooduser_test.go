@@ -66,14 +66,10 @@ func create(t *testing.T) {
 		return
 	}
 
-	ret.PoolCoinTypeID = coinInfos[0].EntID
-	req.PoolCoinTypeID = &coinInfos[0].EntID
-
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithRootUserID(req.RootUserID, true),
-		WithPoolCoinTypeID(req.PoolCoinTypeID, true),
 	)
 	if !assert.Nil(t, err) {
 		return

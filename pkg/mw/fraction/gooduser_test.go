@@ -19,16 +19,14 @@ import (
 
 var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
-	PoolCoinTypeID: uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
 	CoinType:       v1.CoinType_CoinTypeBitCoin,
 }
 
 var gooduserReq = &npool.GoodUserReq{
-	EntID:          &gooduserRet.EntID,
-	RootUserID:     &gooduserRet.RootUserID,
-	PoolCoinTypeID: &gooduserRet.PoolCoinTypeID,
+	EntID:      &gooduserRet.EntID,
+	RootUserID: &gooduserRet.RootUserID,
 }
 
 func createGoodUser(t *testing.T) {
@@ -55,13 +53,9 @@ func createGoodUser(t *testing.T) {
 		return
 	}
 
-	gooduserRet.PoolCoinTypeID = coinInfos[0].EntID
-	gooduserReq.PoolCoinTypeID = &coinInfos[0].EntID
-
 	handler, err := gooduser.NewHandler(
 		context.Background(),
 		gooduser.WithEntID(gooduserReq.EntID, true),
-		gooduser.WithPoolCoinTypeID(gooduserReq.PoolCoinTypeID, true),
 		gooduser.WithRootUserID(gooduserReq.RootUserID, true),
 	)
 	if !assert.Nil(t, err) {

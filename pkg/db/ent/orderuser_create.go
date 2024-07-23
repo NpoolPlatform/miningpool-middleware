@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 // OrderUserCreate is the builder for creating a OrderUser entity.
@@ -135,34 +134,6 @@ func (ouc *OrderUserCreate) SetNillableName(s *string) *OrderUserCreate {
 	return ouc
 }
 
-// SetProportion sets the "proportion" field.
-func (ouc *OrderUserCreate) SetProportion(d decimal.Decimal) *OrderUserCreate {
-	ouc.mutation.SetProportion(d)
-	return ouc
-}
-
-// SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableProportion(d *decimal.Decimal) *OrderUserCreate {
-	if d != nil {
-		ouc.SetProportion(*d)
-	}
-	return ouc
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (ouc *OrderUserCreate) SetRevenueAddress(s string) *OrderUserCreate {
-	ouc.mutation.SetRevenueAddress(s)
-	return ouc
-}
-
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableRevenueAddress(s *string) *OrderUserCreate {
-	if s != nil {
-		ouc.SetRevenueAddress(*s)
-	}
-	return ouc
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (ouc *OrderUserCreate) SetReadPageLink(s string) *OrderUserCreate {
 	ouc.mutation.SetReadPageLink(s)
@@ -173,20 +144,6 @@ func (ouc *OrderUserCreate) SetReadPageLink(s string) *OrderUserCreate {
 func (ouc *OrderUserCreate) SetNillableReadPageLink(s *string) *OrderUserCreate {
 	if s != nil {
 		ouc.SetReadPageLink(*s)
-	}
-	return ouc
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (ouc *OrderUserCreate) SetAutoPay(b bool) *OrderUserCreate {
-	ouc.mutation.SetAutoPay(b)
-	return ouc
-}
-
-// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
-func (ouc *OrderUserCreate) SetNillableAutoPay(b *bool) *OrderUserCreate {
-	if b != nil {
-		ouc.SetAutoPay(*b)
 	}
 	return ouc
 }
@@ -329,21 +286,9 @@ func (ouc *OrderUserCreate) defaults() error {
 		v := orderuser.DefaultName
 		ouc.mutation.SetName(v)
 	}
-	if _, ok := ouc.mutation.Proportion(); !ok {
-		v := orderuser.DefaultProportion
-		ouc.mutation.SetProportion(v)
-	}
-	if _, ok := ouc.mutation.RevenueAddress(); !ok {
-		v := orderuser.DefaultRevenueAddress
-		ouc.mutation.SetRevenueAddress(v)
-	}
 	if _, ok := ouc.mutation.ReadPageLink(); !ok {
 		v := orderuser.DefaultReadPageLink
 		ouc.mutation.SetReadPageLink(v)
-	}
-	if _, ok := ouc.mutation.AutoPay(); !ok {
-		v := orderuser.DefaultAutoPay
-		ouc.mutation.SetAutoPay(v)
 	}
 	return nil
 }
@@ -460,22 +405,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 		})
 		_node.Name = value
 	}
-	if value, ok := ouc.mutation.Proportion(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: orderuser.FieldProportion,
-		})
-		_node.Proportion = value
-	}
-	if value, ok := ouc.mutation.RevenueAddress(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldRevenueAddress,
-		})
-		_node.RevenueAddress = value
-	}
 	if value, ok := ouc.mutation.ReadPageLink(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -483,14 +412,6 @@ func (ouc *OrderUserCreate) createSpec() (*OrderUser, *sqlgraph.CreateSpec) {
 			Column: orderuser.FieldReadPageLink,
 		})
 		_node.ReadPageLink = value
-	}
-	if value, ok := ouc.mutation.AutoPay(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderuser.FieldAutoPay,
-		})
-		_node.AutoPay = value
 	}
 	return _node, _spec
 }
@@ -682,42 +603,6 @@ func (u *OrderUserUpsert) ClearName() *OrderUserUpsert {
 	return u
 }
 
-// SetProportion sets the "proportion" field.
-func (u *OrderUserUpsert) SetProportion(v decimal.Decimal) *OrderUserUpsert {
-	u.Set(orderuser.FieldProportion, v)
-	return u
-}
-
-// UpdateProportion sets the "proportion" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateProportion() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldProportion)
-	return u
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (u *OrderUserUpsert) ClearProportion() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldProportion)
-	return u
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (u *OrderUserUpsert) SetRevenueAddress(v string) *OrderUserUpsert {
-	u.Set(orderuser.FieldRevenueAddress, v)
-	return u
-}
-
-// UpdateRevenueAddress sets the "revenue_address" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateRevenueAddress() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldRevenueAddress)
-	return u
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsert) ClearRevenueAddress() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldRevenueAddress)
-	return u
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (u *OrderUserUpsert) SetReadPageLink(v string) *OrderUserUpsert {
 	u.Set(orderuser.FieldReadPageLink, v)
@@ -733,24 +618,6 @@ func (u *OrderUserUpsert) UpdateReadPageLink() *OrderUserUpsert {
 // ClearReadPageLink clears the value of the "read_page_link" field.
 func (u *OrderUserUpsert) ClearReadPageLink() *OrderUserUpsert {
 	u.SetNull(orderuser.FieldReadPageLink)
-	return u
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (u *OrderUserUpsert) SetAutoPay(v bool) *OrderUserUpsert {
-	u.Set(orderuser.FieldAutoPay, v)
-	return u
-}
-
-// UpdateAutoPay sets the "auto_pay" field to the value that was provided on create.
-func (u *OrderUserUpsert) UpdateAutoPay() *OrderUserUpsert {
-	u.SetExcluded(orderuser.FieldAutoPay)
-	return u
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (u *OrderUserUpsert) ClearAutoPay() *OrderUserUpsert {
-	u.SetNull(orderuser.FieldAutoPay)
 	return u
 }
 
@@ -963,48 +830,6 @@ func (u *OrderUserUpsertOne) ClearName() *OrderUserUpsertOne {
 	})
 }
 
-// SetProportion sets the "proportion" field.
-func (u *OrderUserUpsertOne) SetProportion(v decimal.Decimal) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetProportion(v)
-	})
-}
-
-// UpdateProportion sets the "proportion" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateProportion() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateProportion()
-	})
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (u *OrderUserUpsertOne) ClearProportion() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearProportion()
-	})
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (u *OrderUserUpsertOne) SetRevenueAddress(v string) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetRevenueAddress(v)
-	})
-}
-
-// UpdateRevenueAddress sets the "revenue_address" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateRevenueAddress() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateRevenueAddress()
-	})
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsertOne) ClearRevenueAddress() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRevenueAddress()
-	})
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (u *OrderUserUpsertOne) SetReadPageLink(v string) *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1023,27 +848,6 @@ func (u *OrderUserUpsertOne) UpdateReadPageLink() *OrderUserUpsertOne {
 func (u *OrderUserUpsertOne) ClearReadPageLink() *OrderUserUpsertOne {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.ClearReadPageLink()
-	})
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (u *OrderUserUpsertOne) SetAutoPay(v bool) *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetAutoPay(v)
-	})
-}
-
-// UpdateAutoPay sets the "auto_pay" field to the value that was provided on create.
-func (u *OrderUserUpsertOne) UpdateAutoPay() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateAutoPay()
-	})
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (u *OrderUserUpsertOne) ClearAutoPay() *OrderUserUpsertOne {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearAutoPay()
 	})
 }
 
@@ -1419,48 +1223,6 @@ func (u *OrderUserUpsertBulk) ClearName() *OrderUserUpsertBulk {
 	})
 }
 
-// SetProportion sets the "proportion" field.
-func (u *OrderUserUpsertBulk) SetProportion(v decimal.Decimal) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetProportion(v)
-	})
-}
-
-// UpdateProportion sets the "proportion" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateProportion() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateProportion()
-	})
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (u *OrderUserUpsertBulk) ClearProportion() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearProportion()
-	})
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (u *OrderUserUpsertBulk) SetRevenueAddress(v string) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetRevenueAddress(v)
-	})
-}
-
-// UpdateRevenueAddress sets the "revenue_address" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateRevenueAddress() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateRevenueAddress()
-	})
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (u *OrderUserUpsertBulk) ClearRevenueAddress() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearRevenueAddress()
-	})
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (u *OrderUserUpsertBulk) SetReadPageLink(v string) *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
@@ -1479,27 +1241,6 @@ func (u *OrderUserUpsertBulk) UpdateReadPageLink() *OrderUserUpsertBulk {
 func (u *OrderUserUpsertBulk) ClearReadPageLink() *OrderUserUpsertBulk {
 	return u.Update(func(s *OrderUserUpsert) {
 		s.ClearReadPageLink()
-	})
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (u *OrderUserUpsertBulk) SetAutoPay(v bool) *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.SetAutoPay(v)
-	})
-}
-
-// UpdateAutoPay sets the "auto_pay" field to the value that was provided on create.
-func (u *OrderUserUpsertBulk) UpdateAutoPay() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.UpdateAutoPay()
-	})
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (u *OrderUserUpsertBulk) ClearAutoPay() *OrderUserUpsertBulk {
-	return u.Update(func(s *OrderUserUpsert) {
-		s.ClearAutoPay()
 	})
 }
 

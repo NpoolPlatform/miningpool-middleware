@@ -186,16 +186,6 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
-		if conds.PoolCoinTypeID != nil {
-			id, err := uuid.Parse(conds.GetPoolCoinTypeID().GetValue())
-			if err != nil {
-				return wlog.WrapError(err)
-			}
-			h.Conds.PoolCoinTypeID = &cruder.Cond{
-				Op:  conds.GetPoolCoinTypeID().GetOp(),
-				Val: id,
-			}
-		}
 		if conds.Name != nil {
 			h.Conds.Name = &cruder.Cond{
 				Op:  conds.GetName().GetOp(),

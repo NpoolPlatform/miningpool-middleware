@@ -14,7 +14,6 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -38,17 +37,13 @@ var ret = &npool.OrderUser{
 	UserID:         uuid.NewString(),
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
 	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
-	RevenueAddress: "sssss",
-	AutoPay:        false,
 }
 
 var req = &npool.OrderUserReq{
-	EntID:          &ret.EntID,
-	GoodUserID:     &ret.GoodUserID,
-	AppID:          &ret.AppID,
-	UserID:         &ret.UserID,
-	RevenueAddress: &ret.RevenueAddress,
-	AutoPay:        &ret.AutoPay,
+	EntID:      &ret.EntID,
+	GoodUserID: &ret.GoodUserID,
+	AppID:      &ret.AppID,
+	UserID:     &ret.UserID,
 }
 
 func create(t *testing.T) {
@@ -89,7 +84,6 @@ func create(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
-		ret.Proportion = info.Proportion
 		ret.RootUserID = info.RootUserID
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -102,12 +96,10 @@ func create(t *testing.T) {
 func update(t *testing.T) {
 	ret.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
 	ret.CoinType = basetypes.CoinType_CoinTypeBitCoin
-	ret.Proportion = decimal.NewFromFloat(66).String()
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithProportion(&ret.Proportion, false),
 		WithRevenueAddress(nil, false),
 	)
 	assert.Nil(t, err)

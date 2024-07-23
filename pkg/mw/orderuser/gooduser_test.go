@@ -51,13 +51,9 @@ func createGoodUser(t *testing.T) {
 		return
 	}
 
-	gooduserRet.PoolCoinTypeID = coinInfos[0].EntID
-	gooduserReq.PoolCoinTypeID = &coinInfos[0].EntID
-
 	handler, err := gooduser.NewHandler(
 		context.Background(),
 		gooduser.WithEntID(gooduserReq.EntID, true),
-		gooduser.WithPoolCoinTypeID(gooduserReq.PoolCoinTypeID, true),
 		gooduser.WithRootUserID(gooduserReq.RootUserID, true),
 	)
 	if !assert.Nil(t, err) {

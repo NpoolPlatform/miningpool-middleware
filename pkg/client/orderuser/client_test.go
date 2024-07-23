@@ -62,13 +62,11 @@ func createOrderUser(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
-		ret.AutoPay = info.AutoPay
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
 		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RootUserID = info.RootUserID
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
-		ret.Proportion = info.Proportion
 		ret.EntID = info.EntID
 		assert.Equal(t, ret, info)
 	}
@@ -79,8 +77,8 @@ func updateOrderUser(t *testing.T) {
 	dec, err := decimal.NewFromString("50.1")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.String()
-	req.Proportion = &ret.Proportion
+	proportion := dec.String()
+	req.Proportion = &proportion
 	err = UpdateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
@@ -93,12 +91,11 @@ func updateOrderUser(t *testing.T) {
 	dec, err = decimal.NewFromString("99")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.String()
-	req.Proportion = &ret.Proportion
+	proportion = dec.String()
+	req.Proportion = &proportion
 	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:         req.ID,
-		EntID:      &ret.EntID,
-		Proportion: &ret.Proportion,
+		ID:    req.ID,
+		EntID: &ret.EntID,
 	})
 	assert.Nil(t, err)
 	info, err = GetOrderUser(context.Background(), *req.EntID)
@@ -107,28 +104,9 @@ func updateOrderUser(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.RevenueAddress = "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
-	req.RevenueAddress = &ret.RevenueAddress
 	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:             req.ID,
-		EntID:          &ret.EntID,
-		RevenueAddress: &ret.RevenueAddress,
-	})
-	assert.Nil(t, err)
-
-	info, err = GetOrderUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		ret.AutoPay = info.AutoPay
-		assert.Equal(t, info, ret)
-	}
-
-	ret.AutoPay = true
-	req.AutoPay = &ret.AutoPay
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:      req.ID,
-		EntID:   &ret.EntID,
-		AutoPay: &ret.AutoPay,
+		ID:    req.ID,
+		EntID: &ret.EntID,
 	})
 	assert.Nil(t, err)
 
@@ -138,12 +116,21 @@ func updateOrderUser(t *testing.T) {
 		assert.Equal(t, info, ret)
 	}
 
-	ret.AutoPay = false
-	req.AutoPay = &ret.AutoPay
 	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:      req.ID,
-		EntID:   &ret.EntID,
-		AutoPay: &ret.AutoPay,
+		ID:    req.ID,
+		EntID: &ret.EntID,
+	})
+	assert.Nil(t, err)
+
+	info, err = GetOrderUser(context.Background(), *req.EntID)
+	if assert.Nil(t, err) {
+		ret.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, ret)
+	}
+
+	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
+		ID:    req.ID,
+		EntID: &ret.EntID,
 	})
 	assert.Nil(t, err)
 

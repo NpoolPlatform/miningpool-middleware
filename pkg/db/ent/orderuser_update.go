@@ -13,7 +13,6 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 // OrderUserUpdate is the builder for updating OrderUser entities.
@@ -179,46 +178,6 @@ func (ouu *OrderUserUpdate) ClearName() *OrderUserUpdate {
 	return ouu
 }
 
-// SetProportion sets the "proportion" field.
-func (ouu *OrderUserUpdate) SetProportion(d decimal.Decimal) *OrderUserUpdate {
-	ouu.mutation.SetProportion(d)
-	return ouu
-}
-
-// SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableProportion(d *decimal.Decimal) *OrderUserUpdate {
-	if d != nil {
-		ouu.SetProportion(*d)
-	}
-	return ouu
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (ouu *OrderUserUpdate) ClearProportion() *OrderUserUpdate {
-	ouu.mutation.ClearProportion()
-	return ouu
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (ouu *OrderUserUpdate) SetRevenueAddress(s string) *OrderUserUpdate {
-	ouu.mutation.SetRevenueAddress(s)
-	return ouu
-}
-
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableRevenueAddress(s *string) *OrderUserUpdate {
-	if s != nil {
-		ouu.SetRevenueAddress(*s)
-	}
-	return ouu
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (ouu *OrderUserUpdate) ClearRevenueAddress() *OrderUserUpdate {
-	ouu.mutation.ClearRevenueAddress()
-	return ouu
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (ouu *OrderUserUpdate) SetReadPageLink(s string) *OrderUserUpdate {
 	ouu.mutation.SetReadPageLink(s)
@@ -236,26 +195,6 @@ func (ouu *OrderUserUpdate) SetNillableReadPageLink(s *string) *OrderUserUpdate 
 // ClearReadPageLink clears the value of the "read_page_link" field.
 func (ouu *OrderUserUpdate) ClearReadPageLink() *OrderUserUpdate {
 	ouu.mutation.ClearReadPageLink()
-	return ouu
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (ouu *OrderUserUpdate) SetAutoPay(b bool) *OrderUserUpdate {
-	ouu.mutation.SetAutoPay(b)
-	return ouu
-}
-
-// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
-func (ouu *OrderUserUpdate) SetNillableAutoPay(b *bool) *OrderUserUpdate {
-	if b != nil {
-		ouu.SetAutoPay(*b)
-	}
-	return ouu
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (ouu *OrderUserUpdate) ClearAutoPay() *OrderUserUpdate {
-	ouu.mutation.ClearAutoPay()
 	return ouu
 }
 
@@ -458,32 +397,6 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: orderuser.FieldName,
 		})
 	}
-	if value, ok := ouu.mutation.Proportion(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if ouu.mutation.ProportionCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if value, ok := ouu.mutation.RevenueAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if ouu.mutation.RevenueAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
 	if value, ok := ouu.mutation.ReadPageLink(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -495,19 +408,6 @@ func (ouu *OrderUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: orderuser.FieldReadPageLink,
-		})
-	}
-	if value, ok := ouu.mutation.AutoPay(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderuser.FieldAutoPay,
-		})
-	}
-	if ouu.mutation.AutoPayCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: orderuser.FieldAutoPay,
 		})
 	}
 	_spec.Modifiers = ouu.modifiers
@@ -680,46 +580,6 @@ func (ouuo *OrderUserUpdateOne) ClearName() *OrderUserUpdateOne {
 	return ouuo
 }
 
-// SetProportion sets the "proportion" field.
-func (ouuo *OrderUserUpdateOne) SetProportion(d decimal.Decimal) *OrderUserUpdateOne {
-	ouuo.mutation.SetProportion(d)
-	return ouuo
-}
-
-// SetNillableProportion sets the "proportion" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableProportion(d *decimal.Decimal) *OrderUserUpdateOne {
-	if d != nil {
-		ouuo.SetProportion(*d)
-	}
-	return ouuo
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (ouuo *OrderUserUpdateOne) ClearProportion() *OrderUserUpdateOne {
-	ouuo.mutation.ClearProportion()
-	return ouuo
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (ouuo *OrderUserUpdateOne) SetRevenueAddress(s string) *OrderUserUpdateOne {
-	ouuo.mutation.SetRevenueAddress(s)
-	return ouuo
-}
-
-// SetNillableRevenueAddress sets the "revenue_address" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableRevenueAddress(s *string) *OrderUserUpdateOne {
-	if s != nil {
-		ouuo.SetRevenueAddress(*s)
-	}
-	return ouuo
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (ouuo *OrderUserUpdateOne) ClearRevenueAddress() *OrderUserUpdateOne {
-	ouuo.mutation.ClearRevenueAddress()
-	return ouuo
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (ouuo *OrderUserUpdateOne) SetReadPageLink(s string) *OrderUserUpdateOne {
 	ouuo.mutation.SetReadPageLink(s)
@@ -737,26 +597,6 @@ func (ouuo *OrderUserUpdateOne) SetNillableReadPageLink(s *string) *OrderUserUpd
 // ClearReadPageLink clears the value of the "read_page_link" field.
 func (ouuo *OrderUserUpdateOne) ClearReadPageLink() *OrderUserUpdateOne {
 	ouuo.mutation.ClearReadPageLink()
-	return ouuo
-}
-
-// SetAutoPay sets the "auto_pay" field.
-func (ouuo *OrderUserUpdateOne) SetAutoPay(b bool) *OrderUserUpdateOne {
-	ouuo.mutation.SetAutoPay(b)
-	return ouuo
-}
-
-// SetNillableAutoPay sets the "auto_pay" field if the given value is not nil.
-func (ouuo *OrderUserUpdateOne) SetNillableAutoPay(b *bool) *OrderUserUpdateOne {
-	if b != nil {
-		ouuo.SetAutoPay(*b)
-	}
-	return ouuo
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (ouuo *OrderUserUpdateOne) ClearAutoPay() *OrderUserUpdateOne {
-	ouuo.mutation.ClearAutoPay()
 	return ouuo
 }
 
@@ -989,32 +829,6 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 			Column: orderuser.FieldName,
 		})
 	}
-	if value, ok := ouuo.mutation.Proportion(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Value:  value,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if ouuo.mutation.ProportionCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeOther,
-			Column: orderuser.FieldProportion,
-		})
-	}
-	if value, ok := ouuo.mutation.RevenueAddress(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
-	if ouuo.mutation.RevenueAddressCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: orderuser.FieldRevenueAddress,
-		})
-	}
 	if value, ok := ouuo.mutation.ReadPageLink(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -1026,19 +840,6 @@ func (ouuo *OrderUserUpdateOne) sqlSave(ctx context.Context) (_node *OrderUser, 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: orderuser.FieldReadPageLink,
-		})
-	}
-	if value, ok := ouuo.mutation.AutoPay(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Value:  value,
-			Column: orderuser.FieldAutoPay,
-		})
-	}
-	if ouuo.mutation.AutoPayCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: orderuser.FieldAutoPay,
 		})
 	}
 	_spec.Modifiers = ouuo.modifiers

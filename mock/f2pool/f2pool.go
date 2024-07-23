@@ -55,10 +55,16 @@ var (
 	proportions  map[string]float64
 	revenueAddrs map[string]map[string]string
 	defaultPage  types.ReadOnlyPage
+
+	knownUsers = []string{"Bob123", "Lily123", "Hasiky123"}
 )
 
 func init() {
 	users = make(map[string]struct{})
+	for _, k := range knownUsers {
+		users[k] = struct{}{}
+	}
+
 	proportions = make(map[string]float64)
 	revenueAddrs = make(map[string]map[string]string)
 	defaultPage = types.ReadOnlyPage{
@@ -72,6 +78,7 @@ func mockMiningUserGet() {
 	req := &types.MiningUserGetReq{}
 	httpHandler(types.MiningUserGet, req, func() (interface{}, error) {
 		if _, ok := users[req.MiningUserName]; !ok {
+			fmt.Println("error sssssssssdfasdf", req.MiningUserName)
 			return nil, fmt.Errorf("have no user")
 		}
 
@@ -279,5 +286,4 @@ func Init(httpPort uint16) {
 	httpServer := fmt.Sprintf(":%v", httpPort)
 	fmt.Printf("start mock f2pool server,address: %v\n", httpServer)
 	http.ListenAndServe(httpServer, nil)
-
 }

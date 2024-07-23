@@ -66,7 +66,7 @@ func (h *Handler) checkCreateAuthed(ctx context.Context) error {
 		return wlog.WrapError(err)
 	}
 
-	exist, err := mgr.ExistMiningUser(ctx, info.Name)
+	exist, err := mgr.ExistMiningUser(ctx, *h.Name)
 	if err != nil {
 		err = wlog.Errorf("failed to queary in %v,which called %v, err: %v", info.MiningpoolType, *h.Name, err)
 		return wlog.WrapError(err)

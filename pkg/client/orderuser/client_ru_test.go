@@ -7,7 +7,6 @@ import (
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	rootuserclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/rootuser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -24,6 +23,7 @@ var rootUserRet = &npool.RootUser{
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
+	Name:           "Bob123",
 	Remark:         "sdfasdfasdf",
 }
 
@@ -32,6 +32,7 @@ var rootUserReq = &npool.RootUserReq{
 	Email:     &rootUserRet.Email,
 	AuthToken: &rootUserRet.AuthToken,
 	Authed:    &rootUserRet.Authed,
+	Name:      &rootUserRet.Name,
 	Remark:    &rootUserRet.Remark,
 }
 
@@ -47,12 +48,6 @@ func createRootUser(t *testing.T) {
 
 	rootUserRet.PoolID = poolInfos[0].EntID
 	rootUserReq.PoolID = &poolInfos[0].EntID
-
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	rootUserRet.Name = name
-	rootUserReq.Name = &name
 
 	err = rootuserclient.CreateRootUser(context.Background(), rootUserReq)
 	assert.Nil(t, err)

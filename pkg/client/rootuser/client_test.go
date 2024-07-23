@@ -9,7 +9,6 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
@@ -38,12 +37,14 @@ var ret = &npool.RootUser{
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
+	Name:           "Bob123",
 	Remark:         "sdfasdfasdf",
 }
 
 var req = &npool.RootUserReq{
 	EntID:     &ret.EntID,
 	Email:     &ret.Email,
+	Name:      &ret.Name,
 	AuthToken: &ret.AuthToken,
 	Authed:    &ret.Authed,
 	Remark:    &ret.Remark,
@@ -62,12 +63,6 @@ func createRootUser(t *testing.T) {
 	ret.PoolID = poolInfos[0].EntID
 	req.PoolID = &poolInfos[0].EntID
 
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
-
 	err = CreateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
@@ -84,15 +79,10 @@ func createRootUser(t *testing.T) {
 }
 
 func updateRootUser(t *testing.T) {
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
 	req.ID = &ret.ID
 	req.AuthToken = nil
 
-	err = UpdateRootUser(context.Background(), req)
+	err := UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)

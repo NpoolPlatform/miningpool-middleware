@@ -159,10 +159,7 @@ var (
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "proportion", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-		{Name: "revenue_address", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
-		{Name: "auto_pay", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// OrderUsersTable holds the schema information for the "order_users" table.
 	OrderUsersTable = &schema.Table{

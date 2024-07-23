@@ -12,7 +12,6 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -35,6 +34,7 @@ var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
 	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
+	Name:           "Bob123",
 	MiningpoolType: basetype.MiningpoolType_F2Pool,
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
@@ -43,6 +43,7 @@ var ret = &npool.RootUser{
 
 var req = &npool.RootUserReq{
 	EntID:     &ret.EntID,
+	Name:      &ret.Name,
 	PoolID:    &ret.PoolID,
 	Email:     &ret.Email,
 	AuthToken: &ret.AuthToken,
@@ -51,11 +52,6 @@ var req = &npool.RootUserReq{
 }
 
 func create(t *testing.T) {
-	name, err := f2pool.RandomF2PoolUser(8)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),

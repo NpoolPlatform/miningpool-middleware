@@ -142,18 +142,15 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "OrderUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			orderuser.FieldCreatedAt:      {Type: field.TypeUint32, Column: orderuser.FieldCreatedAt},
-			orderuser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: orderuser.FieldUpdatedAt},
-			orderuser.FieldDeletedAt:      {Type: field.TypeUint32, Column: orderuser.FieldDeletedAt},
-			orderuser.FieldEntID:          {Type: field.TypeUUID, Column: orderuser.FieldEntID},
-			orderuser.FieldGoodUserID:     {Type: field.TypeUUID, Column: orderuser.FieldGoodUserID},
-			orderuser.FieldUserID:         {Type: field.TypeUUID, Column: orderuser.FieldUserID},
-			orderuser.FieldAppID:          {Type: field.TypeUUID, Column: orderuser.FieldAppID},
-			orderuser.FieldName:           {Type: field.TypeString, Column: orderuser.FieldName},
-			orderuser.FieldProportion:     {Type: field.TypeOther, Column: orderuser.FieldProportion},
-			orderuser.FieldRevenueAddress: {Type: field.TypeString, Column: orderuser.FieldRevenueAddress},
-			orderuser.FieldReadPageLink:   {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
-			orderuser.FieldAutoPay:        {Type: field.TypeBool, Column: orderuser.FieldAutoPay},
+			orderuser.FieldCreatedAt:    {Type: field.TypeUint32, Column: orderuser.FieldCreatedAt},
+			orderuser.FieldUpdatedAt:    {Type: field.TypeUint32, Column: orderuser.FieldUpdatedAt},
+			orderuser.FieldDeletedAt:    {Type: field.TypeUint32, Column: orderuser.FieldDeletedAt},
+			orderuser.FieldEntID:        {Type: field.TypeUUID, Column: orderuser.FieldEntID},
+			orderuser.FieldGoodUserID:   {Type: field.TypeUUID, Column: orderuser.FieldGoodUserID},
+			orderuser.FieldUserID:       {Type: field.TypeUUID, Column: orderuser.FieldUserID},
+			orderuser.FieldAppID:        {Type: field.TypeUUID, Column: orderuser.FieldAppID},
+			orderuser.FieldName:         {Type: field.TypeString, Column: orderuser.FieldName},
+			orderuser.FieldReadPageLink: {Type: field.TypeString, Column: orderuser.FieldReadPageLink},
 		},
 	}
 	graph.Nodes[6] = &sqlgraph.Node{
@@ -716,24 +713,9 @@ func (f *OrderUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldName))
 }
 
-// WhereProportion applies the entql other predicate on the proportion field.
-func (f *OrderUserFilter) WhereProportion(p entql.OtherP) {
-	f.Where(p.Field(orderuser.FieldProportion))
-}
-
-// WhereRevenueAddress applies the entql string predicate on the revenue_address field.
-func (f *OrderUserFilter) WhereRevenueAddress(p entql.StringP) {
-	f.Where(p.Field(orderuser.FieldRevenueAddress))
-}
-
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.
 func (f *OrderUserFilter) WhereReadPageLink(p entql.StringP) {
 	f.Where(p.Field(orderuser.FieldReadPageLink))
-}
-
-// WhereAutoPay applies the entql bool predicate on the auto_pay field.
-func (f *OrderUserFilter) WhereAutoPay(p entql.BoolP) {
-	f.Where(p.Field(orderuser.FieldAutoPay))
 }
 
 // addPredicate implements the predicateAdder interface.

@@ -175,7 +175,6 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,
 		AuthToken:      rootUser.AuthTokenPlain,
-		RevenueAddress: orderUser.RevenueAddress,
 	}
 	return nil
 }

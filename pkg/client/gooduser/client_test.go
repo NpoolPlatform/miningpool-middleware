@@ -60,9 +60,6 @@ func createGoodUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, len(coinInfos))
 
-	ret.PoolCoinTypeID = coinInfos[0].EntID
-	req.PoolCoinTypeID = &coinInfos[0].EntID
-
 	err = CreateGoodUser(context.Background(), req)
 	assert.Nil(t, err)
 

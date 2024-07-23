@@ -4926,28 +4926,25 @@ func (m *GoodUserMutation) ResetEdge(name string) error {
 // OrderUserMutation represents an operation that mutates the OrderUser nodes in the graph.
 type OrderUserMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint32
-	created_at      *uint32
-	addcreated_at   *int32
-	updated_at      *uint32
-	addupdated_at   *int32
-	deleted_at      *uint32
-	adddeleted_at   *int32
-	ent_id          *uuid.UUID
-	good_user_id    *uuid.UUID
-	user_id         *uuid.UUID
-	app_id          *uuid.UUID
-	name            *string
-	proportion      *decimal.Decimal
-	revenue_address *string
-	read_page_link  *string
-	auto_pay        *bool
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*OrderUser, error)
-	predicates      []predicate.OrderUser
+	op             Op
+	typ            string
+	id             *uint32
+	created_at     *uint32
+	addcreated_at  *int32
+	updated_at     *uint32
+	addupdated_at  *int32
+	deleted_at     *uint32
+	adddeleted_at  *int32
+	ent_id         *uuid.UUID
+	good_user_id   *uuid.UUID
+	user_id        *uuid.UUID
+	app_id         *uuid.UUID
+	name           *string
+	read_page_link *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*OrderUser, error)
+	predicates     []predicate.OrderUser
 }
 
 var _ ent.Mutation = (*OrderUserMutation)(nil)
@@ -5454,104 +5451,6 @@ func (m *OrderUserMutation) ResetName() {
 	delete(m.clearedFields, orderuser.FieldName)
 }
 
-// SetProportion sets the "proportion" field.
-func (m *OrderUserMutation) SetProportion(d decimal.Decimal) {
-	m.proportion = &d
-}
-
-// Proportion returns the value of the "proportion" field in the mutation.
-func (m *OrderUserMutation) Proportion() (r decimal.Decimal, exists bool) {
-	v := m.proportion
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProportion returns the old "proportion" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldProportion(ctx context.Context) (v decimal.Decimal, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProportion is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProportion requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProportion: %w", err)
-	}
-	return oldValue.Proportion, nil
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (m *OrderUserMutation) ClearProportion() {
-	m.proportion = nil
-	m.clearedFields[orderuser.FieldProportion] = struct{}{}
-}
-
-// ProportionCleared returns if the "proportion" field was cleared in this mutation.
-func (m *OrderUserMutation) ProportionCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldProportion]
-	return ok
-}
-
-// ResetProportion resets all changes to the "proportion" field.
-func (m *OrderUserMutation) ResetProportion() {
-	m.proportion = nil
-	delete(m.clearedFields, orderuser.FieldProportion)
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (m *OrderUserMutation) SetRevenueAddress(s string) {
-	m.revenue_address = &s
-}
-
-// RevenueAddress returns the value of the "revenue_address" field in the mutation.
-func (m *OrderUserMutation) RevenueAddress() (r string, exists bool) {
-	v := m.revenue_address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueAddress returns the old "revenue_address" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldRevenueAddress(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueAddress is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueAddress requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueAddress: %w", err)
-	}
-	return oldValue.RevenueAddress, nil
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (m *OrderUserMutation) ClearRevenueAddress() {
-	m.revenue_address = nil
-	m.clearedFields[orderuser.FieldRevenueAddress] = struct{}{}
-}
-
-// RevenueAddressCleared returns if the "revenue_address" field was cleared in this mutation.
-func (m *OrderUserMutation) RevenueAddressCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldRevenueAddress]
-	return ok
-}
-
-// ResetRevenueAddress resets all changes to the "revenue_address" field.
-func (m *OrderUserMutation) ResetRevenueAddress() {
-	m.revenue_address = nil
-	delete(m.clearedFields, orderuser.FieldRevenueAddress)
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (m *OrderUserMutation) SetReadPageLink(s string) {
 	m.read_page_link = &s
@@ -5601,55 +5500,6 @@ func (m *OrderUserMutation) ResetReadPageLink() {
 	delete(m.clearedFields, orderuser.FieldReadPageLink)
 }
 
-// SetAutoPay sets the "auto_pay" field.
-func (m *OrderUserMutation) SetAutoPay(b bool) {
-	m.auto_pay = &b
-}
-
-// AutoPay returns the value of the "auto_pay" field in the mutation.
-func (m *OrderUserMutation) AutoPay() (r bool, exists bool) {
-	v := m.auto_pay
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAutoPay returns the old "auto_pay" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldAutoPay(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAutoPay is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAutoPay requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAutoPay: %w", err)
-	}
-	return oldValue.AutoPay, nil
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (m *OrderUserMutation) ClearAutoPay() {
-	m.auto_pay = nil
-	m.clearedFields[orderuser.FieldAutoPay] = struct{}{}
-}
-
-// AutoPayCleared returns if the "auto_pay" field was cleared in this mutation.
-func (m *OrderUserMutation) AutoPayCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldAutoPay]
-	return ok
-}
-
-// ResetAutoPay resets all changes to the "auto_pay" field.
-func (m *OrderUserMutation) ResetAutoPay() {
-	m.auto_pay = nil
-	delete(m.clearedFields, orderuser.FieldAutoPay)
-}
-
 // Where appends a list predicates to the OrderUserMutation builder.
 func (m *OrderUserMutation) Where(ps ...predicate.OrderUser) {
 	m.predicates = append(m.predicates, ps...)
@@ -5669,7 +5519,7 @@ func (m *OrderUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderUserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, orderuser.FieldCreatedAt)
 	}
@@ -5694,17 +5544,8 @@ func (m *OrderUserMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, orderuser.FieldName)
 	}
-	if m.proportion != nil {
-		fields = append(fields, orderuser.FieldProportion)
-	}
-	if m.revenue_address != nil {
-		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
 	if m.read_page_link != nil {
 		fields = append(fields, orderuser.FieldReadPageLink)
-	}
-	if m.auto_pay != nil {
-		fields = append(fields, orderuser.FieldAutoPay)
 	}
 	return fields
 }
@@ -5730,14 +5571,8 @@ func (m *OrderUserMutation) Field(name string) (ent.Value, bool) {
 		return m.AppID()
 	case orderuser.FieldName:
 		return m.Name()
-	case orderuser.FieldProportion:
-		return m.Proportion()
-	case orderuser.FieldRevenueAddress:
-		return m.RevenueAddress()
 	case orderuser.FieldReadPageLink:
 		return m.ReadPageLink()
-	case orderuser.FieldAutoPay:
-		return m.AutoPay()
 	}
 	return nil, false
 }
@@ -5763,14 +5598,8 @@ func (m *OrderUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldAppID(ctx)
 	case orderuser.FieldName:
 		return m.OldName(ctx)
-	case orderuser.FieldProportion:
-		return m.OldProportion(ctx)
-	case orderuser.FieldRevenueAddress:
-		return m.OldRevenueAddress(ctx)
 	case orderuser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
-	case orderuser.FieldAutoPay:
-		return m.OldAutoPay(ctx)
 	}
 	return nil, fmt.Errorf("unknown OrderUser field %s", name)
 }
@@ -5836,33 +5665,12 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case orderuser.FieldProportion:
-		v, ok := value.(decimal.Decimal)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProportion(v)
-		return nil
-	case orderuser.FieldRevenueAddress:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueAddress(v)
-		return nil
 	case orderuser.FieldReadPageLink:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReadPageLink(v)
-		return nil
-	case orderuser.FieldAutoPay:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAutoPay(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser field %s", name)
@@ -5945,17 +5753,8 @@ func (m *OrderUserMutation) ClearedFields() []string {
 	if m.FieldCleared(orderuser.FieldName) {
 		fields = append(fields, orderuser.FieldName)
 	}
-	if m.FieldCleared(orderuser.FieldProportion) {
-		fields = append(fields, orderuser.FieldProportion)
-	}
-	if m.FieldCleared(orderuser.FieldRevenueAddress) {
-		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
 	if m.FieldCleared(orderuser.FieldReadPageLink) {
 		fields = append(fields, orderuser.FieldReadPageLink)
-	}
-	if m.FieldCleared(orderuser.FieldAutoPay) {
-		fields = append(fields, orderuser.FieldAutoPay)
 	}
 	return fields
 }
@@ -5983,17 +5782,8 @@ func (m *OrderUserMutation) ClearField(name string) error {
 	case orderuser.FieldName:
 		m.ClearName()
 		return nil
-	case orderuser.FieldProportion:
-		m.ClearProportion()
-		return nil
-	case orderuser.FieldRevenueAddress:
-		m.ClearRevenueAddress()
-		return nil
 	case orderuser.FieldReadPageLink:
 		m.ClearReadPageLink()
-		return nil
-	case orderuser.FieldAutoPay:
-		m.ClearAutoPay()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser nullable field %s", name)
@@ -6027,17 +5817,8 @@ func (m *OrderUserMutation) ResetField(name string) error {
 	case orderuser.FieldName:
 		m.ResetName()
 		return nil
-	case orderuser.FieldProportion:
-		m.ResetProportion()
-		return nil
-	case orderuser.FieldRevenueAddress:
-		m.ResetRevenueAddress()
-		return nil
 	case orderuser.FieldReadPageLink:
 		m.ResetReadPageLink()
-		return nil
-	case orderuser.FieldAutoPay:
-		m.ResetAutoPay()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser field %s", name)

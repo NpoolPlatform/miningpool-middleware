@@ -89,13 +89,5 @@ func (h *Handler) newOrderUserInPool(ctx context.Context) error {
 	}
 	h.Name = &name
 	h.ReadPageLink = &pagelink
-
-	paused, err := mgr.PausePayment(ctx, name)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	autopay := !paused
-	h.AutoPay = &autopay
-
 	return nil
 }

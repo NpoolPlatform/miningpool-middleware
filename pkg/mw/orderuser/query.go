@@ -8,7 +8,6 @@ import (
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
-	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -35,10 +34,7 @@ func (h *queryHandler) selectOrderUser(stm *ent.OrderUserQuery) {
 		orderuserent.FieldGoodUserID,
 		orderuserent.FieldAppID,
 		orderuserent.FieldUserID,
-		orderuserent.FieldProportion,
-		orderuserent.FieldRevenueAddress,
 		orderuserent.FieldReadPageLink,
-		orderuserent.FieldAutoPay,
 		orderuserent.FieldCreatedAt,
 		orderuserent.FieldUpdatedAt,
 	)
@@ -117,13 +113,6 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.Proportion = func() string {
-			amount, err := decimal.NewFromString(info.Proportion)
-			if err != nil {
-				return decimal.Zero.String()
-			}
-			return amount.String()
-		}()
 		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}

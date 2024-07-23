@@ -5,23 +5,19 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
-	"github.com/shopspring/decimal"
 
 	"github.com/google/uuid"
 )
 
 type Req struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	GoodUserID     *uuid.UUID
-	AppID          *uuid.UUID
-	UserID         *uuid.UUID
-	Name           *string
-	Proportion     *decimal.Decimal
-	RevenueAddress *string
-	ReadPageLink   *string
-	AutoPay        *bool
-	DeletedAt      *uint32
+	ID           *uint32
+	EntID        *uuid.UUID
+	GoodUserID   *uuid.UUID
+	AppID        *uuid.UUID
+	UserID       *uuid.UUID
+	Name         *string
+	ReadPageLink *string
+	DeletedAt    *uint32
 }
 
 func CreateSet(c *ent.OrderUserCreate, req *Req) *ent.OrderUserCreate {
@@ -40,17 +36,8 @@ func CreateSet(c *ent.OrderUserCreate, req *Req) *ent.OrderUserCreate {
 	if req.UserID != nil {
 		c.SetUserID(*req.UserID)
 	}
-	if req.Proportion != nil {
-		c.SetProportion(*req.Proportion)
-	}
-	if req.RevenueAddress != nil {
-		c.SetRevenueAddress(*req.RevenueAddress)
-	}
 	if req.ReadPageLink != nil {
 		c.SetReadPageLink(*req.ReadPageLink)
-	}
-	if req.AutoPay != nil {
-		c.SetAutoPay(*req.AutoPay)
 	}
 	return c
 }
@@ -68,17 +55,8 @@ func UpdateSet(u *ent.OrderUserUpdateOne, req *Req) (*ent.OrderUserUpdateOne, er
 	if req.UserID != nil {
 		u = u.SetUserID(*req.UserID)
 	}
-	if req.Proportion != nil {
-		u = u.SetProportion(*req.Proportion)
-	}
-	if req.RevenueAddress != nil {
-		u = u.SetRevenueAddress(*req.RevenueAddress)
-	}
 	if req.ReadPageLink != nil {
 		u = u.SetReadPageLink(*req.ReadPageLink)
-	}
-	if req.AutoPay != nil {
-		u = u.SetAutoPay(*req.AutoPay)
 	}
 	if req.DeletedAt != nil {
 		u = u.SetDeletedAt(*req.DeletedAt)
@@ -184,30 +162,6 @@ func SetQueryConds(q *ent.OrderUserQuery, conds *Conds) (*ent.OrderUserQuery, er
 			q.Where(orderuserent.UserID(id))
 		default:
 			return nil, wlog.Errorf("invalid userid field")
-		}
-	}
-	if conds.RevenueAddress != nil {
-		revenueaddress, ok := conds.RevenueAddress.Val.(string)
-		if !ok {
-			return nil, wlog.Errorf("invalid revenueaddress")
-		}
-		switch conds.RevenueAddress.Op {
-		case cruder.EQ:
-			q.Where(orderuserent.RevenueAddress(revenueaddress))
-		default:
-			return nil, wlog.Errorf("invalid revenueaddress field")
-		}
-	}
-	if conds.AutoPay != nil {
-		autopay, ok := conds.AutoPay.Val.(bool)
-		if !ok {
-			return nil, wlog.Errorf("invalid autopay")
-		}
-		switch conds.AutoPay.Op {
-		case cruder.EQ:
-			q.Where(orderuserent.AutoPay(autopay))
-		default:
-			return nil, wlog.Errorf("invalid autopay field")
 		}
 	}
 	return q, nil

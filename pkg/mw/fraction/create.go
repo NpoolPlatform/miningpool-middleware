@@ -5,11 +5,17 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypesv1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+
+	coinpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -51,13 +57,36 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return wlog.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
 	}
 
-	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, orderUser.CoinType, rootUser.AuthTokenPlain)
+	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
+		PoolID: &basetypesv1.StringVal{
+			Op:    cruder.EQ,
+			Value: orderUser.MiningpoolType.String(),
+		},
+		CoinTypeIDs: &basetypesv1.StringSliceVal{
+			Op:    cruder.EQ,
+			Value: []string{h.CoinTypeID.String()},
+		},
+	}), coin.WithOffset(0), coin.WithLimit(1))
+	if err != nil {
+		return wlog.WrapError(err)
+	}
+
+	coinInfos, _, err := coinH.GetCoins(ctx)
+	if err != nil {
+		return wlog.WrapError(err)
+	}
+
+	if len(coinInfos) == 0 {
+		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID.String())
+	}
+
+	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, coinInfos[0].CoinType, rootUser.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 	withdrawTime := uint32(time.Now().Unix())
 	h.WithdrawAt = &withdrawTime
-	_PromisePayAt, err := mgr.WithdrawPraction(ctx, orderUser.Name)
+	_PromisePayAt, err := mgr.WithdrawFraction(ctx, orderUser.Name)
 	PromisePayAt := uint32(_PromisePayAt)
 	if err != nil {
 		errMsg := err.Error()

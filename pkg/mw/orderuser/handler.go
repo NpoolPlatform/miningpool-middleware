@@ -17,6 +17,7 @@ import (
 
 type Handler struct {
 	orderusercrud.Req
+	CoinTypeID     *string
 	Proportion     *decimal.Decimal
 	RevenueAddress *string
 	AutoPay        *bool
@@ -86,6 +87,13 @@ func WithGoodUserID(gooduserid *string, must bool) func(context.Context, *Handle
 			return wlog.Errorf("invalid gooduserid")
 		}
 		h.GoodUserID = guH.EntID
+		return nil
+	}
+}
+
+func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		h.CoinTypeID = cointypeid
 		return nil
 	}
 }

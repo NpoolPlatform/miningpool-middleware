@@ -238,14 +238,19 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: id,
 			}
 		}
-		if conds.CoinTypeID != nil {
-			id, err := uuid.Parse(conds.GetCoinTypeID().GetValue())
-			if err != nil {
-				return wlog.WrapError(err)
+		if conds.CoinTypeIDs != nil {
+			ids := []uuid.UUID{}
+			for _, id := range conds.GetCoinTypeIDs().GetValue() {
+				_id, err := uuid.Parse(id)
+				if err != nil {
+					return wlog.WrapError(err)
+				}
+				ids = append(ids, _id)
 			}
+
 			h.Conds.CoinTypeID = &cruder.Cond{
-				Op:  conds.GetCoinTypeID().GetOp(),
-				Val: id,
+				Op:  conds.GetCoinTypeIDs().GetOp(),
+				Val: ids,
 			}
 		}
 		if conds.EntIDs != nil {

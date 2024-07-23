@@ -10,8 +10,8 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	apppool "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/app/pool"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -36,7 +36,6 @@ var ret = &npool.OrderUser{
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var req = &npool.OrderUserReq{
@@ -83,7 +82,6 @@ func create(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RootUserID = info.RootUserID
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -95,7 +93,6 @@ func create(t *testing.T) {
 
 func update(t *testing.T) {
 	ret.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
-	ret.CoinType = basetypes.CoinType_CoinTypeBitCoin
 
 	handler, err := NewHandler(
 		context.Background(),
@@ -110,7 +107,6 @@ func update(t *testing.T) {
 	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
@@ -136,7 +132,6 @@ func deleteRow(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
 		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		ret.CoinTypeStr = infos[0].CoinTypeStr
 		ret.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], ret)
 	}
@@ -187,7 +182,7 @@ func TestOrderUser(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("create", createRootUser)
 	t.Run("create", createGoodUser)
 	t.Run("create", create)
@@ -195,5 +190,5 @@ func TestOrderUser(t *testing.T) {
 	t.Run("deleteRow", deleteRow)
 	t.Run("deleteRow", deleteGoodUser)
 	t.Run("deleteRow", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

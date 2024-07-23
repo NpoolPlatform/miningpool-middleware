@@ -22,7 +22,6 @@ var orderserRet = &npool.OrderUser{
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var orderuserReq = &npool.OrderUserReq{
@@ -48,7 +47,6 @@ func createOrderUser(t *testing.T) {
 		orderserRet.Name = info.Name
 		orderserRet.ReadPageLink = info.ReadPageLink
 		orderserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
-		orderserRet.CoinTypeStr = info.CoinTypeStr
 		orderserRet.RootUserID = info.RootUserID
 		orderserRet.UpdatedAt = info.UpdatedAt
 		orderserRet.ID = info.ID

@@ -43,6 +43,12 @@ func (Fraction) Fields() []ent.Field {
 				return uuid.Nil
 			}),
 		field.
+			UUID("coin_type_id", uuid.UUID{}).Optional().
+			Optional().
+			Default(func() uuid.UUID {
+				return uuid.Nil
+			}),
+		field.
 			String("withdraw_state").Optional().Default(""),
 		field.
 			Uint32("withdraw_at").Optional().Default(0),

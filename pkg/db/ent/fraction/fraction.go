@@ -26,6 +26,8 @@ const (
 	FieldUserID = "user_id"
 	// FieldOrderUserID holds the string denoting the order_user_id field in the database.
 	FieldOrderUserID = "order_user_id"
+	// FieldCoinTypeID holds the string denoting the coin_type_id field in the database.
+	FieldCoinTypeID = "coin_type_id"
 	// FieldWithdrawState holds the string denoting the withdraw_state field in the database.
 	FieldWithdrawState = "withdraw_state"
 	// FieldWithdrawAt holds the string denoting the withdraw_at field in the database.
@@ -48,6 +50,7 @@ var Columns = []string{
 	FieldAppID,
 	FieldUserID,
 	FieldOrderUserID,
+	FieldCoinTypeID,
 	FieldWithdrawState,
 	FieldWithdrawAt,
 	FieldPromisePayAt,
@@ -88,6 +91,8 @@ var (
 	DefaultUserID func() uuid.UUID
 	// DefaultOrderUserID holds the default value on creation for the "order_user_id" field.
 	DefaultOrderUserID func() uuid.UUID
+	// DefaultCoinTypeID holds the default value on creation for the "coin_type_id" field.
+	DefaultCoinTypeID func() uuid.UUID
 	// DefaultWithdrawState holds the default value on creation for the "withdraw_state" field.
 	DefaultWithdrawState string
 	// DefaultWithdrawAt holds the default value on creation for the "withdraw_at" field.

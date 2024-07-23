@@ -7,7 +7,6 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -17,10 +16,11 @@ import (
 
 type Handler struct {
 	goodusercrud.Req
-	Reqs   []*goodusercrud.Req
-	Conds  *goodusercrud.Conds
-	Offset int32
-	Limit  int32
+	CoinTypeIDs []string
+	Reqs        []*goodusercrud.Req
+	Conds       *goodusercrud.Conds
+	Offset      int32
+	Limit       int32
 }
 
 func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) error) (*Handler, error) {
@@ -59,32 +59,6 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
-		return nil
-	}
-}
-
-func WithPoolCoinTypeID(poolcointypeid *string, must bool) func(context.Context, *Handler) error {
-	return func(ctx context.Context, h *Handler) error {
-		if poolcointypeid == nil {
-			if must {
-				return wlog.Errorf("invalid poolcointypeid")
-			}
-			return nil
-		}
-
-		coinH, err := coin.NewHandler(ctx, coin.WithEntID(poolcointypeid, true))
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-
-		exist, err := coinH.ExistCoin(ctx)
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		if !exist {
-			return wlog.Errorf("invalid poolcointypeid")
-		}
-		h.PoolCoinTypeID = coinH.EntID
 		return nil
 	}
 }
@@ -135,6 +109,13 @@ func WithReadPageLink(readpagelink *string, must bool) func(context.Context, *Ha
 			return nil
 		}
 		h.ReadPageLink = readpagelink
+		return nil
+	}
+}
+
+func WithCoinTypeIDs(cointypeIDs []string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		h.CoinTypeIDs = cointypeIDs
 		return nil
 	}
 }

@@ -120,6 +120,20 @@ func (fc *FractionCreate) SetNillableOrderUserID(u *uuid.UUID) *FractionCreate {
 	return fc
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (fc *FractionCreate) SetCoinTypeID(u uuid.UUID) *FractionCreate {
+	fc.mutation.SetCoinTypeID(u)
+	return fc
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (fc *FractionCreate) SetNillableCoinTypeID(u *uuid.UUID) *FractionCreate {
+	if u != nil {
+		fc.SetCoinTypeID(*u)
+	}
+	return fc
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (fc *FractionCreate) SetWithdrawState(s string) *FractionCreate {
 	fc.mutation.SetWithdrawState(s)
@@ -310,6 +324,13 @@ func (fc *FractionCreate) defaults() error {
 		v := fraction.DefaultOrderUserID()
 		fc.mutation.SetOrderUserID(v)
 	}
+	if _, ok := fc.mutation.CoinTypeID(); !ok {
+		if fraction.DefaultCoinTypeID == nil {
+			return fmt.Errorf("ent: uninitialized fraction.DefaultCoinTypeID (forgotten import ent/runtime?)")
+		}
+		v := fraction.DefaultCoinTypeID()
+		fc.mutation.SetCoinTypeID(v)
+	}
 	if _, ok := fc.mutation.WithdrawState(); !ok {
 		v := fraction.DefaultWithdrawState
 		fc.mutation.SetWithdrawState(v)
@@ -432,6 +453,14 @@ func (fc *FractionCreate) createSpec() (*Fraction, *sqlgraph.CreateSpec) {
 			Column: fraction.FieldOrderUserID,
 		})
 		_node.OrderUserID = value
+	}
+	if value, ok := fc.mutation.CoinTypeID(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldCoinTypeID,
+		})
+		_node.CoinTypeID = value
 	}
 	if value, ok := fc.mutation.WithdrawState(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -634,6 +663,24 @@ func (u *FractionUpsert) UpdateOrderUserID() *FractionUpsert {
 // ClearOrderUserID clears the value of the "order_user_id" field.
 func (u *FractionUpsert) ClearOrderUserID() *FractionUpsert {
 	u.SetNull(fraction.FieldOrderUserID)
+	return u
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *FractionUpsert) SetCoinTypeID(v uuid.UUID) *FractionUpsert {
+	u.Set(fraction.FieldCoinTypeID, v)
+	return u
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *FractionUpsert) UpdateCoinTypeID() *FractionUpsert {
+	u.SetExcluded(fraction.FieldCoinTypeID)
+	return u
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *FractionUpsert) ClearCoinTypeID() *FractionUpsert {
+	u.SetNull(fraction.FieldCoinTypeID)
 	return u
 }
 
@@ -906,6 +953,27 @@ func (u *FractionUpsertOne) UpdateOrderUserID() *FractionUpsertOne {
 func (u *FractionUpsertOne) ClearOrderUserID() *FractionUpsertOne {
 	return u.Update(func(s *FractionUpsert) {
 		s.ClearOrderUserID()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *FractionUpsertOne) SetCoinTypeID(v uuid.UUID) *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *FractionUpsertOne) UpdateCoinTypeID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *FractionUpsertOne) ClearCoinTypeID() *FractionUpsertOne {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 
@@ -1355,6 +1423,27 @@ func (u *FractionUpsertBulk) UpdateOrderUserID() *FractionUpsertBulk {
 func (u *FractionUpsertBulk) ClearOrderUserID() *FractionUpsertBulk {
 	return u.Update(func(s *FractionUpsert) {
 		s.ClearOrderUserID()
+	})
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (u *FractionUpsertBulk) SetCoinTypeID(v uuid.UUID) *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.SetCoinTypeID(v)
+	})
+}
+
+// UpdateCoinTypeID sets the "coin_type_id" field to the value that was provided on create.
+func (u *FractionUpsertBulk) UpdateCoinTypeID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.UpdateCoinTypeID()
+	})
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (u *FractionUpsertBulk) ClearCoinTypeID() *FractionUpsertBulk {
+	return u.Update(func(s *FractionUpsert) {
+		s.ClearCoinTypeID()
 	})
 }
 

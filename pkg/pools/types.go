@@ -24,6 +24,6 @@ type PoolManager interface {
 	PausePayment(ctx context.Context, userName string) (bool, error)
 	ResumePayment(ctx context.Context, userName string) (bool, error)
 
-	// withdraw praction
-	WithdrawPraction(ctx context.Context, userName string) (int64, error)
+	// withdraw Fraction
+	WithdrawFraction(ctx context.Context, userName string) (int64, error)
 }

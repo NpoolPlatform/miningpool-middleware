@@ -6,10 +6,33 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/google/uuid"
 )
 
+func (h *Handler) _checkCreateCoinInfo(ctx context.Context) error {
+	poolID := h.PoolID.String()
+	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
+	if err != nil {
+		wlog.WrapError(err)
+	}
+
+	poolInfo, err := poolH.GetPool(ctx)
+	if err != nil {
+		wlog.WrapError(err)
+	}
+
+	// check if the miningpool and cointype is supported
+	_, err = pools.NewPoolManager(poolInfo.MiningpoolType, *h.CoinType, "")
+	return wlog.WrapError(err)
+}
+
 func (h *Handler) CreateCoin(ctx context.Context) error {
+	if err := h._checkCreateCoinInfo(ctx); err != nil {
+		return err
+	}
+
 	if h.EntID == nil {
 		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}

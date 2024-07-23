@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -126,12 +126,12 @@ func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("getGoodUser", getGoodUser)
 	t.Run("getGoodUsers", getGoodUsers)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

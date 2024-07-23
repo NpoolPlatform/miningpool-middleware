@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
@@ -37,7 +37,6 @@ var ret = &npool.OrderUser{
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var req = &npool.OrderUserReq{
@@ -63,7 +62,6 @@ func createOrderUser(t *testing.T) {
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
 		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
 		ret.RootUserID = info.RootUserID
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
@@ -189,7 +187,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
@@ -199,5 +197,5 @@ func TestClient(t *testing.T) {
 	t.Run("deleteOrderUser", deleteOrderUser)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

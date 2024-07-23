@@ -70,6 +70,7 @@ var (
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "order_user_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_state", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "withdraw_at", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "promise_pay_at", Type: field.TypeUint32, Nullable: true, Default: 0},

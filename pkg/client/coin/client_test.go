@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"github.com/stretchr/testify/assert"
@@ -70,7 +70,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createCoin", createCoin)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

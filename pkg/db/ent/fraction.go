@@ -30,6 +30,8 @@ type Fraction struct {
 	UserID uuid.UUID `json:"user_id,omitempty"`
 	// OrderUserID holds the value of the "order_user_id" field.
 	OrderUserID uuid.UUID `json:"order_user_id,omitempty"`
+	// CoinTypeID holds the value of the "coin_type_id" field.
+	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// WithdrawState holds the value of the "withdraw_state" field.
 	WithdrawState string `json:"withdraw_state,omitempty"`
 	// WithdrawAt holds the value of the "withdraw_at" field.
@@ -49,7 +51,7 @@ func (*Fraction) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case fraction.FieldWithdrawState, fraction.FieldMsg:
 			values[i] = new(sql.NullString)
-		case fraction.FieldEntID, fraction.FieldAppID, fraction.FieldUserID, fraction.FieldOrderUserID:
+		case fraction.FieldEntID, fraction.FieldAppID, fraction.FieldUserID, fraction.FieldOrderUserID, fraction.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Fraction", columns[i])
@@ -113,6 +115,12 @@ func (f *Fraction) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field order_user_id", values[i])
 			} else if value != nil {
 				f.OrderUserID = *value
+			}
+		case fraction.FieldCoinTypeID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field coin_type_id", values[i])
+			} else if value != nil {
+				f.CoinTypeID = *value
 			}
 		case fraction.FieldWithdrawState:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -186,6 +194,9 @@ func (f *Fraction) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("order_user_id=")
 	builder.WriteString(fmt.Sprintf("%v", f.OrderUserID))
+	builder.WriteString(", ")
+	builder.WriteString("coin_type_id=")
+	builder.WriteString(fmt.Sprintf("%v", f.CoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_state=")
 	builder.WriteString(f.WithdrawState)

@@ -4,6 +4,9 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	coinpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
@@ -74,20 +77,34 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return wlog.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
-	coinID := h.PoolCoinTypeID.String()
-	coinH, err := coin.NewHandler(ctx, coin.WithEntID(&coinID, true))
+	coinH, err := coin.NewHandler(ctx,
+		coin.WithConds(&coinpb.Conds{
+			CoinTypeIDs: &v1.StringSliceVal{
+				Op:    cruder.EQ,
+				Value: h.CoinTypeIDs,
+			},
+			PoolID: &v1.StringVal{
+				Op:    cruder.EQ,
+				Value: ruInfo.PoolID,
+			},
+		}),
+		coin.WithLimit(1),
+		coin.WithOffset(0))
 	if err != nil {
 		return wlog.WrapError(err)
-	}
-	coinInfo, err := coinH.GetCoin(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	if ruInfo.PoolID != coinInfo.PoolID {
-		return wlog.Errorf("pool not match between poolcointypeid and poolid")
 	}
 
-	mgr, err := pools.NewPoolManager(coinInfo.MiningpoolType, coinInfo.CoinType, rootuserToken.AuthTokenPlain)
+	// check if cointypes is suppored by the miningpool
+	coinInfos, total, err := coinH.GetCoins(ctx)
+	if err != nil {
+		return wlog.WrapError(err)
+	}
+
+	if total == 0 {
+		return wlog.Errorf("cannot support all cointype in cointypeids")
+	}
+
+	mgr, err := pools.NewPoolManager(ruInfo.MiningpoolType, coinInfos[0].CoinType, rootuserToken.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

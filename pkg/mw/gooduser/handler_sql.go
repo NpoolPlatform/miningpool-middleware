@@ -8,16 +8,14 @@ import (
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
-	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondPoolCoinTypeID *uuid.UUID
-	BondName           *string
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondName *string
+	bondVals map[string]string
+	baseVals map[string]string
+	idVals   map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -45,14 +43,6 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[gooduser.FieldEntID] = string(strBytes)
 	}
-	if h.PoolCoinTypeID != nil {
-		strBytes, err := json.Marshal(h.PoolCoinTypeID.String())
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		h.baseVals[gooduser.FieldPoolCoinTypeID] = string(strBytes)
-		h.BondPoolCoinTypeID = h.PoolCoinTypeID
-	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
@@ -76,19 +66,10 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[gooduser.FieldReadPageLink] = string(strBytes)
 	}
 
-	if h.BondPoolCoinTypeID == nil {
-		return wlog.Errorf("please give poolcointypeid")
-	}
-	strBytes, err := json.Marshal(h.BondPoolCoinTypeID.String())
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	h.bondVals[gooduser.FieldPoolCoinTypeID] = string(strBytes)
-
 	if h.BondName == nil {
 		return wlog.Errorf("please give name")
 	}
-	strBytes, err = json.Marshal(*h.BondName)
+	strBytes, err := json.Marshal(*h.BondName)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

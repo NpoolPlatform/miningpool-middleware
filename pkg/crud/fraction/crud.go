@@ -16,6 +16,7 @@ type Req struct {
 	AppID         *uuid.UUID
 	UserID        *uuid.UUID
 	OrderUserID   *uuid.UUID
+	CoinTypeID    *uuid.UUID
 	WithdrawState *basetypes.WithdrawState
 	WithdrawAt    *uint32
 	PromisePayAt  *uint32
@@ -35,6 +36,9 @@ func CreateSet(c *ent.FractionCreate, req *Req) *ent.FractionCreate {
 	}
 	if req.OrderUserID != nil {
 		c.SetOrderUserID(*req.OrderUserID)
+	}
+	if req.CoinTypeID != nil {
+		c.SetCoinTypeID(*req.CoinTypeID)
 	}
 	if req.WithdrawState != nil {
 		c.SetWithdrawState(req.WithdrawState.String())
@@ -61,6 +65,9 @@ func UpdateSet(u *ent.FractionUpdateOne, req *Req) (*ent.FractionUpdateOne, erro
 	if req.OrderUserID != nil {
 		u = u.SetOrderUserID(*req.OrderUserID)
 	}
+	if req.CoinTypeID != nil {
+		u = u.SetCoinTypeID(*req.CoinTypeID)
+	}
 	if req.WithdrawState != nil {
 		u = u.SetWithdrawState(req.WithdrawState.String())
 	}
@@ -85,6 +92,7 @@ type Conds struct {
 	AppID         *cruder.Cond
 	UserID        *cruder.Cond
 	OrderUserID   *cruder.Cond
+	CoinTypeID    *cruder.Cond
 	WithdrawState *cruder.Cond
 	EntIDs        *cruder.Cond
 }
@@ -163,6 +171,18 @@ func SetQueryConds(q *ent.FractionQuery, conds *Conds) (*ent.FractionQuery, erro
 			q.Where(fractionent.OrderUserID(orderuserid))
 		default:
 			return nil, wlog.Errorf("invalid orderuserid field")
+		}
+	}
+	if conds.CoinTypeID != nil {
+		cointypeid, ok := conds.CoinTypeID.Val.(uuid.UUID)
+		if !ok {
+			return nil, wlog.Errorf("invalid cointypeid")
+		}
+		switch conds.CoinTypeID.Op {
+		case cruder.EQ:
+			q.Where(fractionent.CoinTypeID(cointypeid))
+		default:
+			return nil, wlog.Errorf("invalid cointypeid field")
 		}
 	}
 	if conds.WithdrawState != nil {

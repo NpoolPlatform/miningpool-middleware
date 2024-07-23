@@ -1,4 +1,4 @@
-package pools
+package registetestinfo
 
 import (
 	"context"

@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -114,7 +113,6 @@ func (h *queryHandler) scan(ctx context.Context) error {
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
 		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }
 

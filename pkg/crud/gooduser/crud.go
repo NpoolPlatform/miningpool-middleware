@@ -10,21 +10,17 @@ import (
 )
 
 type Req struct {
-	ID             *uint32
-	EntID          *uuid.UUID
-	PoolCoinTypeID *uuid.UUID
-	RootUserID     *uuid.UUID
-	Name           *string
-	ReadPageLink   *string
-	DeletedAt      *uint32
+	ID           *uint32
+	EntID        *uuid.UUID
+	RootUserID   *uuid.UUID
+	Name         *string
+	ReadPageLink *string
+	DeletedAt    *uint32
 }
 
 func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
-	}
-	if req.PoolCoinTypeID != nil {
-		c.SetPoolCoinTypeID(*req.PoolCoinTypeID)
 	}
 	if req.RootUserID != nil {
 		c.SetRootUserID(*req.RootUserID)
@@ -39,9 +35,6 @@ func CreateSet(c *ent.GoodUserCreate, req *Req) *ent.GoodUserCreate {
 }
 
 func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, error) {
-	if req.PoolCoinTypeID != nil {
-		u = u.SetPoolCoinTypeID(*req.PoolCoinTypeID)
-	}
 	if req.RootUserID != nil {
 		u = u.SetRootUserID(*req.RootUserID)
 	}

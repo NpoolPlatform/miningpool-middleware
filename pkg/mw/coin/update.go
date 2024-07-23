@@ -24,8 +24,14 @@ func (h *Handler) UpdateCoin(ctx context.Context) error {
 		return wlog.Errorf("invalid poolid")
 	}
 
+	cointypeID, err := uuid.Parse(info.CoinTypeID)
+	if err != nil {
+		return wlog.Errorf("invalid cointypeid")
+	}
+
 	sqlH := h.newSQLHandler()
 	sqlH.BondPoolID = &poolID
+	sqlH.BondCoinTypeID = &cointypeID
 	sqlH.BondCoinType = &info.CoinType
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {

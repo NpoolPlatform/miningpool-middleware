@@ -83,6 +83,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fraction.FieldAppID:         {Type: field.TypeUUID, Column: fraction.FieldAppID},
 			fraction.FieldUserID:        {Type: field.TypeUUID, Column: fraction.FieldUserID},
 			fraction.FieldOrderUserID:   {Type: field.TypeUUID, Column: fraction.FieldOrderUserID},
+			fraction.FieldCoinTypeID:    {Type: field.TypeUUID, Column: fraction.FieldCoinTypeID},
 			fraction.FieldWithdrawState: {Type: field.TypeString, Column: fraction.FieldWithdrawState},
 			fraction.FieldWithdrawAt:    {Type: field.TypeUint32, Column: fraction.FieldWithdrawAt},
 			fraction.FieldPromisePayAt:  {Type: field.TypeUint32, Column: fraction.FieldPromisePayAt},
@@ -451,6 +452,11 @@ func (f *FractionFilter) WhereUserID(p entql.ValueP) {
 // WhereOrderUserID applies the entql [16]byte predicate on the order_user_id field.
 func (f *FractionFilter) WhereOrderUserID(p entql.ValueP) {
 	f.Where(p.Field(fraction.FieldOrderUserID))
+}
+
+// WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
+func (f *FractionFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fraction.FieldCoinTypeID))
 }
 
 // WhereWithdrawState applies the entql string predicate on the withdraw_state field.

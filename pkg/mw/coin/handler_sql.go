@@ -14,11 +14,12 @@ import (
 
 type sqlHandler struct {
 	*Handler
-	BondPoolID   *uuid.UUID
-	BondCoinType *basetypes.CoinType
-	bondVals     map[string]string
-	baseVals     map[string]string
-	idVals       map[string]string
+	BondPoolID     *uuid.UUID
+	BondCoinTypeID *uuid.UUID
+	BondCoinType   *basetypes.CoinType
+	bondVals       map[string]string
+	baseVals       map[string]string
+	idVals         map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -60,6 +61,7 @@ func (h *sqlHandler) baseKeys() error {
 			return wlog.WrapError(err)
 		}
 		h.baseVals[coin.FieldCoinTypeID] = string(strBytes)
+		h.BondCoinTypeID = h.CoinTypeID
 	}
 	if h.CoinType != nil {
 		strBytes, err := json.Marshal(h.CoinType.String())
@@ -113,6 +115,15 @@ func (h *sqlHandler) baseKeys() error {
 		return wlog.WrapError(err)
 	}
 	h.bondVals[coin.FieldPoolID] = string(strBytes)
+
+	if h.BondCoinTypeID == nil {
+		return wlog.Errorf("please give cointypeID")
+	}
+	strBytes, err = json.Marshal(h.BondCoinTypeID.String())
+	if err != nil {
+		return wlog.WrapError(err)
+	}
+	h.bondVals[coin.FieldCoinTypeID] = string(strBytes)
 
 	if h.BondCoinType == nil {
 		return wlog.Errorf("please give cointype")

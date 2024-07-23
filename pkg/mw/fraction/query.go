@@ -33,6 +33,7 @@ func (h *queryHandler) selectFraction(stm *ent.FractionQuery) {
 		fractionent.FieldAppID,
 		fractionent.FieldUserID,
 		fractionent.FieldOrderUserID,
+		fractionent.FieldCoinTypeID,
 		fractionent.FieldWithdrawState,
 		fractionent.FieldWithdrawAt,
 		fractionent.FieldPromisePayAt,

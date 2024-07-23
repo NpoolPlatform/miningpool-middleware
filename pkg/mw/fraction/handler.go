@@ -97,6 +97,23 @@ func WithUserID(userid *string, must bool) func(context.Context, *Handler) error
 	}
 }
 
+func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if cointypeid == nil {
+			if must {
+				return wlog.Errorf("invalid cointypeid")
+			}
+			return nil
+		}
+		_id, err := uuid.Parse(*cointypeid)
+		if err != nil {
+			return wlog.WrapError(err)
+		}
+		h.CoinTypeID = &_id
+		return nil
+	}
+}
+
 func WithOrderUserID(orderuserid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if orderuserid == nil {
@@ -243,6 +260,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			}
 			h.Conds.OrderUserID = &cruder.Cond{
 				Op:  conds.GetOrderUserID().GetOp(),
+				Val: id,
+			}
+		}
+		if conds.CoinTypeID != nil {
+			id, err := uuid.Parse(conds.GetCoinTypeID().GetValue())
+			if err != nil {
+				return wlog.WrapError(err)
+			}
+			h.Conds.CoinTypeID = &cruder.Cond{
+				Op:  conds.GetCoinTypeID().GetOp(),
 				Val: id,
 			}
 		}

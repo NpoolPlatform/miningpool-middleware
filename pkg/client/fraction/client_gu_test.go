@@ -35,10 +35,6 @@ var goodUserReq = &npool.GoodUserReq{
 
 func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmw.Conds{
-		CoinType: &basetypes.Uint32Val{
-			Op:    cruder.EQ,
-			Value: uint32(orderserRet.CoinType),
-		},
 		PoolID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: rootUserRet.PoolID,

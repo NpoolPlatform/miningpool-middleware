@@ -171,7 +171,6 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 	h.baseInfo = &baseInfo{
 		OrderUserID:    orderUser.ID,
 		MiningpoolType: orderUser.MiningpoolType,
-		CoinType:       orderUser.CoinType,
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,
 		AuthToken:      rootUser.AuthTokenPlain,

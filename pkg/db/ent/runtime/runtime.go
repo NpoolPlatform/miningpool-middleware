@@ -179,20 +179,24 @@ func init() {
 	fractionDescOrderUserID := fractionFields[2].Descriptor()
 	// fraction.DefaultOrderUserID holds the default value on creation for the order_user_id field.
 	fraction.DefaultOrderUserID = fractionDescOrderUserID.Default.(func() uuid.UUID)
+	// fractionDescCoinTypeID is the schema descriptor for coin_type_id field.
+	fractionDescCoinTypeID := fractionFields[3].Descriptor()
+	// fraction.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	fraction.DefaultCoinTypeID = fractionDescCoinTypeID.Default.(func() uuid.UUID)
 	// fractionDescWithdrawState is the schema descriptor for withdraw_state field.
-	fractionDescWithdrawState := fractionFields[3].Descriptor()
+	fractionDescWithdrawState := fractionFields[4].Descriptor()
 	// fraction.DefaultWithdrawState holds the default value on creation for the withdraw_state field.
 	fraction.DefaultWithdrawState = fractionDescWithdrawState.Default.(string)
 	// fractionDescWithdrawAt is the schema descriptor for withdraw_at field.
-	fractionDescWithdrawAt := fractionFields[4].Descriptor()
+	fractionDescWithdrawAt := fractionFields[5].Descriptor()
 	// fraction.DefaultWithdrawAt holds the default value on creation for the withdraw_at field.
 	fraction.DefaultWithdrawAt = fractionDescWithdrawAt.Default.(uint32)
 	// fractionDescPromisePayAt is the schema descriptor for promise_pay_at field.
-	fractionDescPromisePayAt := fractionFields[5].Descriptor()
+	fractionDescPromisePayAt := fractionFields[6].Descriptor()
 	// fraction.DefaultPromisePayAt holds the default value on creation for the promise_pay_at field.
 	fraction.DefaultPromisePayAt = fractionDescPromisePayAt.Default.(uint32)
 	// fractionDescMsg is the schema descriptor for msg field.
-	fractionDescMsg := fractionFields[6].Descriptor()
+	fractionDescMsg := fractionFields[7].Descriptor()
 	// fraction.DefaultMsg holds the default value on creation for the msg field.
 	fraction.DefaultMsg = fractionDescMsg.Default.(string)
 	fractionruleMixin := schema.FractionRule{}.Mixin()

@@ -23,7 +23,6 @@ var orderuserRet = &npool.OrderUser{
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
-	CoinType:       v1.CoinType_CoinTypeBitCoin,
 }
 
 var orderuserReq = &npool.OrderUserReq{
@@ -70,7 +69,6 @@ func createOrderUser(t *testing.T) {
 		orderuserRet.UpdatedAt = info.UpdatedAt
 		orderuserRet.CreatedAt = info.CreatedAt
 		orderuserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
-		orderuserRet.CoinTypeStr = info.CoinTypeStr
 		orderuserRet.RootUserID = info.RootUserID
 		orderuserRet.ID = info.ID
 		orderuserRet.EntID = info.EntID
@@ -100,7 +98,6 @@ func deleteOrderUser(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
 		orderuserRet.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		orderuserRet.CoinTypeStr = infos[0].CoinTypeStr
 		orderuserRet.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], orderuserRet)
 	}

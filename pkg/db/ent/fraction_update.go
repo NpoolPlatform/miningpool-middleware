@@ -158,6 +158,26 @@ func (fu *FractionUpdate) ClearOrderUserID() *FractionUpdate {
 	return fu
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (fu *FractionUpdate) SetCoinTypeID(u uuid.UUID) *FractionUpdate {
+	fu.mutation.SetCoinTypeID(u)
+	return fu
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (fu *FractionUpdate) SetNillableCoinTypeID(u *uuid.UUID) *FractionUpdate {
+	if u != nil {
+		fu.SetCoinTypeID(*u)
+	}
+	return fu
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (fu *FractionUpdate) ClearCoinTypeID() *FractionUpdate {
+	fu.mutation.ClearCoinTypeID()
+	return fu
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (fu *FractionUpdate) SetWithdrawState(s string) *FractionUpdate {
 	fu.mutation.SetWithdrawState(s)
@@ -438,6 +458,19 @@ func (fu *FractionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fraction.FieldOrderUserID,
 		})
 	}
+	if value, ok := fu.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldCoinTypeID,
+		})
+	}
+	if fu.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldCoinTypeID,
+		})
+	}
 	if value, ok := fu.mutation.WithdrawState(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -651,6 +684,26 @@ func (fuo *FractionUpdateOne) SetNillableOrderUserID(u *uuid.UUID) *FractionUpda
 // ClearOrderUserID clears the value of the "order_user_id" field.
 func (fuo *FractionUpdateOne) ClearOrderUserID() *FractionUpdateOne {
 	fuo.mutation.ClearOrderUserID()
+	return fuo
+}
+
+// SetCoinTypeID sets the "coin_type_id" field.
+func (fuo *FractionUpdateOne) SetCoinTypeID(u uuid.UUID) *FractionUpdateOne {
+	fuo.mutation.SetCoinTypeID(u)
+	return fuo
+}
+
+// SetNillableCoinTypeID sets the "coin_type_id" field if the given value is not nil.
+func (fuo *FractionUpdateOne) SetNillableCoinTypeID(u *uuid.UUID) *FractionUpdateOne {
+	if u != nil {
+		fuo.SetCoinTypeID(*u)
+	}
+	return fuo
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (fuo *FractionUpdateOne) ClearCoinTypeID() *FractionUpdateOne {
+	fuo.mutation.ClearCoinTypeID()
 	return fuo
 }
 
@@ -962,6 +1015,19 @@ func (fuo *FractionUpdateOne) sqlSave(ctx context.Context) (_node *Fraction, err
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUUID,
 			Column: fraction.FieldOrderUserID,
+		})
+	}
+	if value, ok := fuo.mutation.CoinTypeID(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Value:  value,
+			Column: fraction.FieldCoinTypeID,
+		})
+	}
+	if fuo.mutation.CoinTypeIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUUID,
+			Column: fraction.FieldCoinTypeID,
 		})
 	}
 	if value, ok := fuo.mutation.WithdrawState(); ok {

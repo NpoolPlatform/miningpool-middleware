@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"github.com/stretchr/testify/assert"
@@ -133,7 +133,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	// Here won't pass test due to we always test with localhost
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
@@ -146,5 +146,5 @@ func TestClient(t *testing.T) {
 	t.Run("deleteOrderUser", deleteOrderUser)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

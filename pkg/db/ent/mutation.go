@@ -1990,6 +1990,7 @@ type FractionMutation struct {
 	app_id            *uuid.UUID
 	user_id           *uuid.UUID
 	order_user_id     *uuid.UUID
+	coin_type_id      *uuid.UUID
 	withdraw_state    *string
 	withdraw_at       *uint32
 	addwithdraw_at    *int32
@@ -2457,6 +2458,55 @@ func (m *FractionMutation) ResetOrderUserID() {
 	delete(m.clearedFields, fraction.FieldOrderUserID)
 }
 
+// SetCoinTypeID sets the "coin_type_id" field.
+func (m *FractionMutation) SetCoinTypeID(u uuid.UUID) {
+	m.coin_type_id = &u
+}
+
+// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
+func (m *FractionMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.coin_type_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoinTypeID returns the old "coin_type_id" field's value of the Fraction entity.
+// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
+	}
+	return oldValue.CoinTypeID, nil
+}
+
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (m *FractionMutation) ClearCoinTypeID() {
+	m.coin_type_id = nil
+	m.clearedFields[fraction.FieldCoinTypeID] = struct{}{}
+}
+
+// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
+func (m *FractionMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[fraction.FieldCoinTypeID]
+	return ok
+}
+
+// ResetCoinTypeID resets all changes to the "coin_type_id" field.
+func (m *FractionMutation) ResetCoinTypeID() {
+	m.coin_type_id = nil
+	delete(m.clearedFields, fraction.FieldCoinTypeID)
+}
+
 // SetWithdrawState sets the "withdraw_state" field.
 func (m *FractionMutation) SetWithdrawState(s string) {
 	m.withdraw_state = &s
@@ -2714,7 +2764,7 @@ func (m *FractionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FractionMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, fraction.FieldCreatedAt)
 	}
@@ -2735,6 +2785,9 @@ func (m *FractionMutation) Fields() []string {
 	}
 	if m.order_user_id != nil {
 		fields = append(fields, fraction.FieldOrderUserID)
+	}
+	if m.coin_type_id != nil {
+		fields = append(fields, fraction.FieldCoinTypeID)
 	}
 	if m.withdraw_state != nil {
 		fields = append(fields, fraction.FieldWithdrawState)
@@ -2770,6 +2823,8 @@ func (m *FractionMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case fraction.FieldOrderUserID:
 		return m.OrderUserID()
+	case fraction.FieldCoinTypeID:
+		return m.CoinTypeID()
 	case fraction.FieldWithdrawState:
 		return m.WithdrawState()
 	case fraction.FieldWithdrawAt:
@@ -2801,6 +2856,8 @@ func (m *FractionMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldUserID(ctx)
 	case fraction.FieldOrderUserID:
 		return m.OldOrderUserID(ctx)
+	case fraction.FieldCoinTypeID:
+		return m.OldCoinTypeID(ctx)
 	case fraction.FieldWithdrawState:
 		return m.OldWithdrawState(ctx)
 	case fraction.FieldWithdrawAt:
@@ -2866,6 +2923,13 @@ func (m *FractionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOrderUserID(v)
+		return nil
+	case fraction.FieldCoinTypeID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinTypeID(v)
 		return nil
 	case fraction.FieldWithdrawState:
 		v, ok := value.(string)
@@ -2997,6 +3061,9 @@ func (m *FractionMutation) ClearedFields() []string {
 	if m.FieldCleared(fraction.FieldOrderUserID) {
 		fields = append(fields, fraction.FieldOrderUserID)
 	}
+	if m.FieldCleared(fraction.FieldCoinTypeID) {
+		fields = append(fields, fraction.FieldCoinTypeID)
+	}
 	if m.FieldCleared(fraction.FieldWithdrawState) {
 		fields = append(fields, fraction.FieldWithdrawState)
 	}
@@ -3031,6 +3098,9 @@ func (m *FractionMutation) ClearField(name string) error {
 		return nil
 	case fraction.FieldOrderUserID:
 		m.ClearOrderUserID()
+		return nil
+	case fraction.FieldCoinTypeID:
+		m.ClearCoinTypeID()
 		return nil
 	case fraction.FieldWithdrawState:
 		m.ClearWithdrawState()
@@ -3072,6 +3142,9 @@ func (m *FractionMutation) ResetField(name string) error {
 		return nil
 	case fraction.FieldOrderUserID:
 		m.ResetOrderUserID()
+		return nil
+	case fraction.FieldCoinTypeID:
+		m.ResetCoinTypeID()
 		return nil
 	case fraction.FieldWithdrawState:
 		m.ResetWithdrawState()

@@ -58,9 +58,9 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 	}
 
 	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
-		PoolID: &basetypesv1.StringVal{
+		MiningpoolType: &basetypesv1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: orderUser.MiningpoolType.String(),
+			Value: uint32(*orderUser.MiningpoolType.Enum()),
 		},
 		CoinTypeIDs: &basetypesv1.StringSliceVal{
 			Op:    cruder.EQ,
@@ -120,6 +120,7 @@ func (h *Handler) CreateFraction(ctx context.Context) error {
 				AppID:         h.AppID,
 				UserID:        h.UserID,
 				OrderUserID:   h.OrderUserID,
+				CoinTypeID:    h.CoinTypeID,
 				WithdrawState: h.WithdrawState,
 				WithdrawAt:    h.WithdrawAt,
 				PromisePayAt:  h.PromisePayAt,

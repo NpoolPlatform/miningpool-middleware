@@ -28,6 +28,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
+		orderuser.WithCoinTypeID(req.CoinTypeID, false),
 		orderuser.WithProportion(req.Proportion, false),
 		orderuser.WithRevenueAddress(req.RevenueAddress, false),
 		orderuser.WithAutoPay(req.AutoPay, false),

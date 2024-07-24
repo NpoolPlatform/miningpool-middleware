@@ -53,7 +53,6 @@ func createGoodUser(t *testing.T) {
 		goodUserRet.PoolID = info.PoolID
 		goodUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
 		goodUserRet.UpdatedAt = info.UpdatedAt
-		goodUserRet.FeeRatio = info.FeeRatio
 		goodUserRet.ID = info.ID
 		goodUserRet.EntID = info.EntID
 		assert.Equal(t, goodUserRet, info)

@@ -10,10 +10,10 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 )
@@ -81,7 +81,7 @@ func (h *queryHandler) queryJoin() {
 
 func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	guT := sql.Table(gooduser.Table)
-	coinT := sql.Table(coin.Table)
+	ruT := sql.Table(rootuser.Table)
 	poolT := sql.Table(pool.Table)
 
 	s.Join(guT).On(
@@ -89,18 +89,17 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		guT.C(gooduser.FieldEntID),
 	).OnP(
 		sql.EQ(guT.C(gooduser.FieldDeletedAt), 0),
-	).Join(coinT).On(
-		guT.C(gooduser.FieldPoolCoinTypeID),
-		coinT.C(coin.FieldEntID),
+	).Join(ruT).On(
+		guT.C(gooduser.FieldRootUserID),
+		ruT.C(rootuser.FieldEntID),
 	).OnP(
-		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
+		sql.EQ(ruT.C(rootuser.FieldDeletedAt), 0),
 	).Join(poolT).On(
-		coinT.C(coin.FieldPoolID),
+		ruT.C(rootuser.FieldPoolID),
 		poolT.C(pool.FieldEntID),
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		coin.FieldCoinType,
 		pool.FieldMiningpoolType,
 		gooduser.FieldRootUserID,
 	)

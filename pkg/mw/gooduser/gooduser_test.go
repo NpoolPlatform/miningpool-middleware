@@ -30,25 +30,20 @@ func init() {
 	}
 }
 
-var ret = &npool.GoodUser{
+var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
 }
 
-var req = &npool.GoodUserReq{
-	EntID:      &ret.EntID,
-	RootUserID: &ret.RootUserID,
+var gooduserReq = &npool.GoodUserReq{
+	EntID:      &gooduserRet.EntID,
+	RootUserID: &gooduserRet.RootUserID,
 }
 
 func create(t *testing.T) {
 	coinH, err := coin.NewHandler(context.Background(),
 		coin.WithConds(&coinmw.Conds{
-			CoinType: &basetypes.Uint32Val{
-				Op:    cruder.EQ,
-				Value: uint32(ret.CoinType),
-			},
 			PoolID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: rootuserRet.PoolID,
@@ -66,10 +61,15 @@ func create(t *testing.T) {
 		return
 	}
 
+	for _, coinInfo := range coinInfos {
+		gooduserReq.CoinTypeIDs = append(gooduserReq.CoinTypeIDs, coinInfo.CoinTypeID)
+	}
+
 	handler, err := NewHandler(
 		context.Background(),
-		WithEntID(req.EntID, true),
-		WithRootUserID(req.RootUserID, true),
+		WithEntID(gooduserReq.EntID, true),
+		WithRootUserID(gooduserReq.RootUserID, true),
+		WithCoinTypeIDs(gooduserReq.CoinTypeIDs, true),
 	)
 	if !assert.Nil(t, err) {
 		return
@@ -82,24 +82,23 @@ func create(t *testing.T) {
 
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		ret.CreatedAt = info.CreatedAt
-		ret.PoolID = info.PoolID
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.FeeRatio = info.FeeRatio
-		ret.ID = info.ID
-		ret.EntID = info.EntID
-		ret.Name = info.Name
-		ret.ReadPageLink = info.ReadPageLink
-		assert.Equal(t, info, ret)
+		gooduserRet.UpdatedAt = info.UpdatedAt
+		gooduserRet.CreatedAt = info.CreatedAt
+		gooduserRet.PoolID = info.PoolID
+		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		gooduserRet.FeeRatio = info.FeeRatio
+		gooduserRet.ID = info.ID
+		gooduserRet.EntID = info.EntID
+		gooduserRet.Name = info.Name
+		gooduserRet.ReadPageLink = info.ReadPageLink
+		assert.Equal(t, info, gooduserRet)
 	}
 }
 
 func update(t *testing.T) {
 	handler, err := NewHandler(
 		context.Background(),
-		WithID(&ret.ID, true),
+		WithID(&gooduserRet.ID, true),
 	)
 	assert.Nil(t, err)
 
@@ -108,9 +107,9 @@ func update(t *testing.T) {
 
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		gooduserRet.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, gooduserRet)
 	}
 }
 
@@ -118,13 +117,13 @@ func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
 		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
-			Value: ret.EntID,
+			Value: gooduserRet.EntID,
 		},
 	}
 	handler, err := NewHandler(
 		context.Background(),
 		WithConds(conds),
-		WithID(&ret.ID, true),
+		WithID(&gooduserRet.ID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -133,15 +132,15 @@ func deleteRow(t *testing.T) {
 	infos, total, err := handler.GetGoodUsers(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
-		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		ret.UpdatedAt = infos[0].UpdatedAt
-		assert.Equal(t, infos[0], ret)
+		gooduserRet.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
+		gooduserRet.UpdatedAt = infos[0].UpdatedAt
+		assert.Equal(t, infos[0], gooduserRet)
 	}
 
-	ret.EntID = infos[0].EntID
+	gooduserRet.EntID = infos[0].EntID
 	handler, err = NewHandler(
 		context.Background(),
-		WithEntID(&ret.EntID, true),
+		WithEntID(&gooduserRet.EntID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -154,7 +153,7 @@ func deleteRow(t *testing.T) {
 
 	handler, err = NewHandler(
 		context.Background(),
-		WithID(&ret.ID, true),
+		WithID(&gooduserRet.ID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -167,7 +166,7 @@ func deleteRow(t *testing.T) {
 		WithConds(&npool.Conds{
 			EntID: &basetypes.StringVal{
 				Op:    cruder.EQ,
-				Value: ret.EntID,
+				Value: gooduserRet.EntID,
 			},
 		}),
 	)

@@ -51,12 +51,11 @@ func UpdateSet(u *ent.GoodUserUpdateOne, req *Req) (*ent.GoodUserUpdateOne, erro
 }
 
 type Conds struct {
-	ID             *cruder.Cond
-	EntID          *cruder.Cond
-	Name           *cruder.Cond
-	RootUserID     *cruder.Cond
-	PoolCoinTypeID *cruder.Cond
-	EntIDs         *cruder.Cond
+	ID         *cruder.Cond
+	EntID      *cruder.Cond
+	Name       *cruder.Cond
+	RootUserID *cruder.Cond
+	EntIDs     *cruder.Cond
 }
 
 func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, error) { //nolint
@@ -97,18 +96,6 @@ func SetQueryConds(q *ent.GoodUserQuery, conds *Conds) (*ent.GoodUserQuery, erro
 			q.Where(gooduserent.EntIDIn(ids...))
 		default:
 			return nil, wlog.Errorf("invalid entids field")
-		}
-	}
-	if conds.PoolCoinTypeID != nil {
-		id, ok := conds.PoolCoinTypeID.Val.(uuid.UUID)
-		if !ok {
-			return nil, wlog.Errorf("invalid poolcointypeid")
-		}
-		switch conds.PoolCoinTypeID.Op {
-		case cruder.EQ:
-			q.Where(gooduserent.PoolCoinTypeID(id))
-		default:
-			return nil, wlog.Errorf("invalid poolcointypeid field")
 		}
 	}
 	if conds.RootUserID != nil {

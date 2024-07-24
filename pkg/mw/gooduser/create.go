@@ -95,7 +95,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 	}
 
 	// check if cointypes is suppored by the miningpool
-	coinInfos, total, err := coinH.GetCoins(ctx)
+	_, total, err := coinH.GetCoins(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -104,7 +104,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		return wlog.Errorf("cannot support all cointype in cointypeids")
 	}
 
-	mgr, err := pools.NewPoolManager(ruInfo.MiningpoolType, coinInfos[0].CoinType, rootuserToken.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(ruInfo.MiningpoolType, nil, rootuserToken.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

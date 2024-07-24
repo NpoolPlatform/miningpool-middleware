@@ -84,7 +84,7 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	mgr, err := pools.NewPoolManager(h.baseInfo.MiningpoolType, h.baseInfo.CoinType, h.baseInfo.AuthToken)
+	mgr, err := pools.NewPoolManager(h.baseInfo.MiningpoolType, h.baseInfo.CoinType.Enum(), h.baseInfo.AuthToken)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -135,6 +135,9 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 }
 
 func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
+	if h.CoinTypeID == nil {
+		return wlog.Errorf("have invalid cointypeid")
+	}
 	orderUser, err := h.GetOrderUser(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
@@ -175,9 +178,9 @@ func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
 			Op:    cruder.EQ,
 			Value: uint32(*orderUser.MiningpoolType.Enum()),
 		},
-		CoinTypeIDs: &basetypes.StringSliceVal{
+		CoinTypeID: &basetypes.StringVal{
 			Op:    cruder.EQ,
-			Value: []string{*h.CoinTypeID},
+			Value: *h.CoinTypeID,
 		},
 	}), coin.WithOffset(0), coin.WithLimit(1))
 	if err != nil {

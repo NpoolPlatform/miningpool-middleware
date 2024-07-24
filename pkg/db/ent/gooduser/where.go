@@ -121,13 +121,6 @@ func Name(v string) predicate.GoodUser {
 	})
 }
 
-// PoolCoinTypeID applies equality check predicate on the "pool_coin_type_id" field. It's identical to PoolCoinTypeIDEQ.
-func PoolCoinTypeID(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
 // ReadPageLink applies equality check predicate on the "read_page_link" field. It's identical to ReadPageLinkEQ.
 func ReadPageLink(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
@@ -579,84 +572,6 @@ func NameEqualFold(v string) predicate.GoodUser {
 func NameContainsFold(v string) predicate.GoodUser {
 	return predicate.GoodUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldName), v))
-	})
-}
-
-// PoolCoinTypeIDEQ applies the EQ predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDEQ(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDNEQ applies the NEQ predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDNEQ(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDIn applies the In predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDIn(vs ...uuid.UUID) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldPoolCoinTypeID), v...))
-	})
-}
-
-// PoolCoinTypeIDNotIn applies the NotIn predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDNotIn(vs ...uuid.UUID) predicate.GoodUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldPoolCoinTypeID), v...))
-	})
-}
-
-// PoolCoinTypeIDGT applies the GT predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDGT(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDGTE applies the GTE predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDGTE(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDLT applies the LT predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDLT(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDLTE applies the LTE predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDLTE(v uuid.UUID) predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldPoolCoinTypeID), v))
-	})
-}
-
-// PoolCoinTypeIDIsNil applies the IsNil predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDIsNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldPoolCoinTypeID)))
-	})
-}
-
-// PoolCoinTypeIDNotNil applies the NotNil predicate on the "pool_coin_type_id" field.
-func PoolCoinTypeIDNotNil() predicate.GoodUser {
-	return predicate.GoodUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldPoolCoinTypeID)))
 	})
 }
 

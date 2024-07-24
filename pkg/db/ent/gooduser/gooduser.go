@@ -24,8 +24,6 @@ const (
 	FieldRootUserID = "root_user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldPoolCoinTypeID holds the string denoting the pool_coin_type_id field in the database.
-	FieldPoolCoinTypeID = "pool_coin_type_id"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
 	FieldReadPageLink = "read_page_link"
 	// Table holds the table name of the gooduser in the database.
@@ -41,7 +39,6 @@ var Columns = []string{
 	FieldEntID,
 	FieldRootUserID,
 	FieldName,
-	FieldPoolCoinTypeID,
 	FieldReadPageLink,
 }
 
@@ -77,8 +74,6 @@ var (
 	DefaultRootUserID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
-	// DefaultPoolCoinTypeID holds the default value on creation for the "pool_coin_type_id" field.
-	DefaultPoolCoinTypeID func() uuid.UUID
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
 	DefaultReadPageLink string
 )

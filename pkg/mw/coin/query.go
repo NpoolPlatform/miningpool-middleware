@@ -130,6 +130,7 @@ func (h *Handler) GetCoin(ctx context.Context) (*npool.Coin, error) {
 	if err != nil {
 		return nil, wlog.WrapError(err)
 	}
+
 	if len(handler.infos) == 0 {
 		return nil, nil
 	}

@@ -11,6 +11,7 @@ import (
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
@@ -34,7 +35,7 @@ var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
 	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
-	Name:           "Bob123",
+	Name:           pools.RandomPoolUserNameForTest(),
 	MiningpoolType: basetype.MiningpoolType_F2Pool,
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,

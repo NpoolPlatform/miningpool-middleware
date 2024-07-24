@@ -31,31 +31,6 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 }
 
 func (h *Handler) DeleteOrderUser(ctx context.Context) error {
-	info, err := h.GetOrderUser(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-
-	if info == nil {
-		return nil
-	}
-	h.ID = &info.ID
-
-	zeroProportion := "0"
-	updateH, err := NewHandler(ctx,
-		WithID(h.ID, true),
-		WithEntID(&info.EntID, true),
-		WithProportion(&zeroProportion, true),
-	)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-
-	err = updateH.UpdateOrderUser(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-
 	handler := &deleteHandler{
 		Handler: h,
 	}

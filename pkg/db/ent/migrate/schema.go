@@ -58,6 +58,11 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{CoinsColumns[4]},
 			},
+			{
+				Name:    "coin_pool_id_coin_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{CoinsColumns[5], CoinsColumns[6]},
+			},
 		},
 	}
 	// FractionsColumns holds the columns for the "fractions" table.
@@ -128,7 +133,6 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.

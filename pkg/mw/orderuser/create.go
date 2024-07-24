@@ -53,6 +53,7 @@ func (h *Handler) newOrderUserInPool(ctx context.Context) error {
 	if h.GoodUserID == nil {
 		return wlog.Errorf("invalid gooduserid")
 	}
+
 	gooduserID := h.GoodUserID.String()
 	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&gooduserID, true))
 	if err != nil {
@@ -78,7 +79,7 @@ func (h *Handler) newOrderUserInPool(ctx context.Context) error {
 		return wlog.Errorf("have no rootuser,entid: %v", guInfo.RootUserID)
 	}
 
-	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, guInfo.CoinType, ruInfo.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, nil, ruInfo.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

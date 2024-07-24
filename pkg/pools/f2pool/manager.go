@@ -52,11 +52,16 @@ const (
 	MiningUserLen         = 15
 	MiningUserPageNameLen = 20
 	DefaultPermissions    = "1,2"
+	DefaultCoinType       = basetype.CoinType_CoinTypeBitCoin
 )
 
-func NewF2PoolManager(coinType basetype.CoinType, auth string) (*Manager, error) {
+func NewF2PoolManager(coinType *basetype.CoinType, auth string) (*Manager, error) {
+	if coinType == nil {
+		coinType = DefaultCoinType.Enum()
+	}
+
 	currency := ""
-	if k, ok := CoinType2Currency[coinType]; ok {
+	if k, ok := CoinType2Currency[*coinType]; ok {
 		currency = k
 	} else {
 		return nil, wlog.Errorf("have no pool manager for %v-%v", MiningPoolType, coinType)

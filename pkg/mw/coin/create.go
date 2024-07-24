@@ -24,7 +24,7 @@ func (h *Handler) _checkCreateCoinInfo(ctx context.Context) error {
 	}
 
 	// check if the miningpool and cointype is supported
-	_, err = pools.NewPoolManager(poolInfo.MiningpoolType, *h.CoinType, "")
+	_, err = pools.NewPoolManager(poolInfo.MiningpoolType, h.CoinType, "")
 	return wlog.WrapError(err)
 }
 

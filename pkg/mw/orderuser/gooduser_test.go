@@ -19,7 +19,6 @@ var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
 	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 }
 
 var gooduserReq = &npool.GoodUserReq{
@@ -30,10 +29,6 @@ var gooduserReq = &npool.GoodUserReq{
 func createGoodUser(t *testing.T) {
 	coinH, err := coin.NewHandler(context.Background(),
 		coin.WithConds(&coinmw.Conds{
-			CoinType: &basetypes.Uint32Val{
-				Op:    cruder.EQ,
-				Value: uint32(gooduserRet.CoinType),
-			},
 			PoolID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: rootuserRet.PoolID,
@@ -47,14 +42,19 @@ func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coinH.GetCoins(context.Background())
 	assert.Nil(t, err)
 
-	if !assert.NotEqual(t, 0, len(coinInfos)) {
+	if len(coinInfos) == 0 {
 		return
+	}
+
+	for _, coinInfo := range coinInfos {
+		gooduserReq.CoinTypeIDs = append(gooduserReq.CoinTypeIDs, coinInfo.CoinTypeID)
 	}
 
 	handler, err := gooduser.NewHandler(
 		context.Background(),
 		gooduser.WithEntID(gooduserReq.EntID, true),
 		gooduser.WithRootUserID(gooduserReq.RootUserID, true),
+		gooduser.WithCoinTypeIDs(gooduserReq.CoinTypeIDs, true),
 	)
 	if !assert.Nil(t, err) {
 		return
@@ -71,7 +71,6 @@ func createGoodUser(t *testing.T) {
 		gooduserRet.CreatedAt = info.CreatedAt
 		gooduserRet.PoolID = info.PoolID
 		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
-		gooduserRet.CoinTypeStr = info.CoinTypeStr
 		gooduserRet.FeeRatio = info.FeeRatio
 		gooduserRet.ID = info.ID
 		gooduserRet.EntID = info.EntID

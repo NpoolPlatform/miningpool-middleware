@@ -164,7 +164,8 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 
 	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp "+
 		"where not exists (select * from %v where %v and deleted_at=0)"+
-		"and exists (select * from good_users A left join coins B on A.pool_coin_type_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v');",
+		"and exists "+
+		"(select * from good_users A left join root_users B on A.root_user_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v' and A.deleted_at=0 and B.deleted_at=0 and C.deleted_at=0);",
 		orderuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
@@ -187,12 +188,12 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	delete(h.baseVals, orderuser.FieldID)
 	delete(h.baseVals, orderuser.FieldEntID)
 
+	now := uint32(time.Now().Unix())
+	h.baseVals[orderuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+
 	if len(h.baseVals) == 0 {
 		return "", wlog.Errorf("update nothing")
 	}
-
-	now := uint32(time.Now().Unix())
-	h.baseVals[orderuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
 
 	keys := []string{}
 	for k, v := range h.baseVals {
@@ -227,5 +228,6 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		orderuser.Table,
 		strings.Join(bondVals, " AND "),
 	)
+
 	return sql, nil
 }

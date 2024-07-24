@@ -248,9 +248,19 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				ids = append(ids, _id)
 			}
 
-			h.Conds.CoinTypeID = &cruder.Cond{
+			h.Conds.CoinTypeIDs = &cruder.Cond{
 				Op:  conds.GetCoinTypeIDs().GetOp(),
 				Val: ids,
+			}
+		}
+		if conds.CoinTypeID != nil {
+			id, err := uuid.Parse(conds.GetCoinTypeID().GetValue())
+			if err != nil {
+				return wlog.WrapError(err)
+			}
+			h.Conds.CoinTypeID = &cruder.Cond{
+				Op:  conds.GetCoinTypeID().GetOp(),
+				Val: id,
 			}
 		}
 		if conds.EntIDs != nil {

@@ -46,6 +46,8 @@ var req = &npool.OrderUserReq{
 }
 
 func create(t *testing.T) {
+	req.CoinTypeID = &gooduserReq.CoinTypeIDs[0]
+
 	apppoolH, err := apppool.NewHandler(
 		context.Background(),
 		apppool.WithAppID(&ret.AppID, true),
@@ -69,8 +71,6 @@ func create(t *testing.T) {
 		WithGoodUserID(req.GoodUserID, true),
 		WithAppID(req.AppID, true),
 		WithUserID(req.UserID, true),
-		WithRevenueAddress(req.RevenueAddress, true),
-		WithAutoPay(req.AutoPay, true),
 	)
 	assert.Nil(t, err)
 
@@ -93,11 +93,21 @@ func create(t *testing.T) {
 
 func update(t *testing.T) {
 	ret.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
+	revenueAddress := "ffffffff"
+	autoPay := true
+	proportion := "0.5"
+
+	req.RevenueAddress = &revenueAddress
+	req.AutoPay = &autoPay
+	req.Proportion = &proportion
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithID(&ret.ID, true),
-		WithRevenueAddress(nil, false),
+		WithRevenueAddress(req.RevenueAddress, true),
+		WithAutoPay(req.AutoPay, true),
+		WithCoinTypeID(req.CoinTypeID, true),
+		WithProportion(req.Proportion, true),
 	)
 	assert.Nil(t, err)
 

@@ -291,12 +291,8 @@ func init() {
 	gooduserDescName := gooduserFields[1].Descriptor()
 	// gooduser.DefaultName holds the default value on creation for the name field.
 	gooduser.DefaultName = gooduserDescName.Default.(string)
-	// gooduserDescPoolCoinTypeID is the schema descriptor for pool_coin_type_id field.
-	gooduserDescPoolCoinTypeID := gooduserFields[2].Descriptor()
-	// gooduser.DefaultPoolCoinTypeID holds the default value on creation for the pool_coin_type_id field.
-	gooduser.DefaultPoolCoinTypeID = gooduserDescPoolCoinTypeID.Default.(func() uuid.UUID)
 	// gooduserDescReadPageLink is the schema descriptor for read_page_link field.
-	gooduserDescReadPageLink := gooduserFields[3].Descriptor()
+	gooduserDescReadPageLink := gooduserFields[2].Descriptor()
 	// gooduser.DefaultReadPageLink holds the default value on creation for the read_page_link field.
 	gooduser.DefaultReadPageLink = gooduserDescReadPageLink.Default.(string)
 	orderuserMixin := schema.OrderUser{}.Mixin()

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/google/uuid"
 )
@@ -55,16 +56,10 @@ var (
 	proportions  map[string]float64
 	revenueAddrs map[string]map[string]string
 	defaultPage  types.ReadOnlyPage
-
-	knownUsers = []string{"Bob123", "Lily123", "Hasiky123"}
 )
 
 func init() {
 	users = make(map[string]struct{})
-	for _, k := range knownUsers {
-		users[k] = struct{}{}
-	}
-
 	proportions = make(map[string]float64)
 	revenueAddrs = make(map[string]map[string]string)
 	defaultPage = types.ReadOnlyPage{
@@ -77,8 +72,11 @@ func init() {
 func mockMiningUserGet() {
 	req := &types.MiningUserGetReq{}
 	httpHandler(types.MiningUserGet, req, func() (interface{}, error) {
+		if pools.IsTestPoolUserName(req.MiningUserName) {
+			users[req.MiningUserName] = struct{}{}
+		}
+
 		if _, ok := users[req.MiningUserName]; !ok {
-			fmt.Println("error sssssssssdfasdf", req.MiningUserName)
 			return nil, fmt.Errorf("have no user")
 		}
 

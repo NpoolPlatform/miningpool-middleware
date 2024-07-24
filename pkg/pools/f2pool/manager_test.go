@@ -17,7 +17,7 @@ var (
 )
 
 func auth(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -29,7 +29,7 @@ func auth(t *testing.T) {
 
 //nolint:gocritic
 func mininguser(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -62,7 +62,7 @@ func mininguser(t *testing.T) {
 }
 
 func proportion(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -79,7 +79,7 @@ func proportion(t *testing.T) {
 }
 
 func revenueAddress(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -99,7 +99,7 @@ func revenueAddress(t *testing.T) {
 
 //nolint:gocritic
 func pageLink(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -124,7 +124,7 @@ func pageLink(t *testing.T) {
 
 //nolint:gocritic
 func payment(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
@@ -141,7 +141,7 @@ func payment(t *testing.T) {
 
 //nolint:gocritic
 func withdrawFraction(t *testing.T) {
-	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin, accessToken)
+	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {

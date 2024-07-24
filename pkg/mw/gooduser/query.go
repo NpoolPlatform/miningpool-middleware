@@ -6,14 +6,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	gooduserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 )
@@ -33,7 +32,6 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldEntID,
 		gooduserent.FieldRootUserID,
 		gooduserent.FieldName,
-		gooduserent.FieldPoolCoinTypeID,
 		gooduserent.FieldReadPageLink,
 	)
 }
@@ -63,7 +61,7 @@ func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) erro
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	stmCount.Modify(h.queryJoinCoinAndPool)
+	stmCount.Modify(h.queryJoinRootUserAndPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
@@ -75,27 +73,25 @@ func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) erro
 }
 
 func (h *queryHandler) queryJoin() {
-	h.stm.Modify(h.queryJoinCoinAndPool)
+	h.stm.Modify(h.queryJoinRootUserAndPool)
 }
 
-func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
-	coinT := sql.Table(coin.Table)
+func (h *queryHandler) queryJoinRootUserAndPool(s *sql.Selector) {
+	ruT := sql.Table(rootuser.Table)
 	poolT := sql.Table(pool.Table)
-	s.Join(coinT).On(
-		s.C(gooduserent.FieldPoolCoinTypeID),
-		coinT.C(coin.FieldEntID),
+	s.Join(ruT).On(
+		s.C(gooduserent.FieldRootUserID),
+		ruT.C(rootuser.FieldEntID),
 	).OnP(
-		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
+		sql.EQ(ruT.C(rootuser.FieldDeletedAt), 0),
 	).Join(poolT).On(
-		coinT.C(coin.FieldPoolID),
+		ruT.C(rootuser.FieldPoolID),
 		poolT.C(pool.FieldEntID),
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		coinT.C(coin.FieldCoinType),
-		coinT.C(coin.FieldFeeRatio),
-		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldMiningpoolType),
+		ruT.C(rootuser.FieldPoolID),
 	).Distinct()
 }
 
@@ -106,7 +102,6 @@ func (h *queryHandler) scan(ctx context.Context) error {
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
 		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }
 

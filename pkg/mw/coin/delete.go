@@ -22,6 +22,7 @@ func (h *deleteHandler) deleteCoinBase(ctx context.Context, tx *ent.Tx) error {
 	if err != nil {
 		return wlog.WrapError(err)
 	}
+
 	_, err = updateOne.Save(ctx)
 	if err != nil {
 		return wlog.WrapError(err)

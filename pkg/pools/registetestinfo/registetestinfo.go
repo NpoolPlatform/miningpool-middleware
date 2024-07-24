@@ -158,9 +158,11 @@ func registeCoinInfo(ctx context.Context) {
 		}
 
 		info.EntID = uuid.NewString()
+		info.CoinTypeID = uuid.NewString()
 		// create coin
 		coinH, err = coin.NewHandler(ctx,
 			coin.WithEntID(&info.EntID, true),
+			coin.WithCoinTypeID(&info.CoinTypeID, true),
 			coin.WithPoolID(&poolInfos[0].EntID, true),
 			coin.WithCoinType(&info.CoinType, true),
 			coin.WithFeeRatio(&info.FeeRatio, true),
@@ -303,7 +305,7 @@ func InitTestInfo(ctx context.Context) {
 }
 
 func CleanTestInfo(ctx context.Context) {
-	cleanPools(ctx)
-	cleanCoins(ctx)
 	cleanFractionrules(ctx)
+	cleanCoins(ctx)
+	cleanPools(ctx)
 }

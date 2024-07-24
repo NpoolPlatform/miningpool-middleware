@@ -91,6 +91,7 @@ type Conds struct {
 	ID               *cruder.Cond
 	EntID            *cruder.Cond
 	PoolID           *cruder.Cond
+	CoinTypeIDs      *cruder.Cond
 	CoinTypeID       *cruder.Cond
 	CoinType         *cruder.Cond
 	MiningpoolType   *cruder.Cond
@@ -148,6 +149,18 @@ func SetQueryConds(q *ent.CoinQuery, conds *Conds) (*ent.CoinQuery, error) { //n
 			q.Where(coinent.PoolID(poolid))
 		default:
 			return nil, wlog.Errorf("invalid poolid field")
+		}
+	}
+	if conds.CoinTypeIDs != nil {
+		cointypeids, ok := conds.CoinTypeIDs.Val.([]uuid.UUID)
+		if !ok {
+			return nil, wlog.Errorf("invalid cointypeids")
+		}
+		switch conds.CoinTypeIDs.Op {
+		case cruder.EQ:
+			q.Where(coinent.CoinTypeIDIn(cointypeids...))
+		default:
+			return nil, wlog.Errorf("invalid cointypeids field")
 		}
 	}
 	if conds.CoinTypeID != nil {

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -78,8 +77,6 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 	if info == nil {
 		return wlog.Errorf("invalid poolid")
 	}
-
-	defaultCoinType := basetypes.CoinType_CoinTypeBitCoin
 	miningtype := info.MiningpoolType
 
 	authInfo, err := h.GetAuthToken(ctx)
@@ -98,7 +95,7 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 		return nil
 	}
 
-	mgr, err := pools.NewPoolManager(miningtype, defaultCoinType, *h.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(miningtype, nil, *h.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

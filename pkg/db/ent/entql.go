@@ -122,14 +122,13 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "GoodUser",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			gooduser.FieldCreatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
-			gooduser.FieldUpdatedAt:      {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
-			gooduser.FieldDeletedAt:      {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
-			gooduser.FieldEntID:          {Type: field.TypeUUID, Column: gooduser.FieldEntID},
-			gooduser.FieldRootUserID:     {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
-			gooduser.FieldName:           {Type: field.TypeString, Column: gooduser.FieldName},
-			gooduser.FieldPoolCoinTypeID: {Type: field.TypeUUID, Column: gooduser.FieldPoolCoinTypeID},
-			gooduser.FieldReadPageLink:   {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
+			gooduser.FieldCreatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldCreatedAt},
+			gooduser.FieldUpdatedAt:    {Type: field.TypeUint32, Column: gooduser.FieldUpdatedAt},
+			gooduser.FieldDeletedAt:    {Type: field.TypeUint32, Column: gooduser.FieldDeletedAt},
+			gooduser.FieldEntID:        {Type: field.TypeUUID, Column: gooduser.FieldEntID},
+			gooduser.FieldRootUserID:   {Type: field.TypeUUID, Column: gooduser.FieldRootUserID},
+			gooduser.FieldName:         {Type: field.TypeString, Column: gooduser.FieldName},
+			gooduser.FieldReadPageLink: {Type: field.TypeString, Column: gooduser.FieldReadPageLink},
 		},
 	}
 	graph.Nodes[5] = &sqlgraph.Node{
@@ -627,11 +626,6 @@ func (f *GoodUserFilter) WhereRootUserID(p entql.ValueP) {
 // WhereName applies the entql string predicate on the name field.
 func (f *GoodUserFilter) WhereName(p entql.StringP) {
 	f.Where(p.Field(gooduser.FieldName))
-}
-
-// WherePoolCoinTypeID applies the entql [16]byte predicate on the pool_coin_type_id field.
-func (f *GoodUserFilter) WherePoolCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(gooduser.FieldPoolCoinTypeID))
 }
 
 // WhereReadPageLink applies the entql string predicate on the read_page_link field.

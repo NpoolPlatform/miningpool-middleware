@@ -4123,24 +4123,23 @@ func (m *FractionRuleMutation) ResetEdge(name string) error {
 // GoodUserMutation represents an operation that mutates the GoodUser nodes in the graph.
 type GoodUserMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *uint32
-	created_at        *uint32
-	addcreated_at     *int32
-	updated_at        *uint32
-	addupdated_at     *int32
-	deleted_at        *uint32
-	adddeleted_at     *int32
-	ent_id            *uuid.UUID
-	root_user_id      *uuid.UUID
-	name              *string
-	pool_coin_type_id *uuid.UUID
-	read_page_link    *string
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*GoodUser, error)
-	predicates        []predicate.GoodUser
+	op             Op
+	typ            string
+	id             *uint32
+	created_at     *uint32
+	addcreated_at  *int32
+	updated_at     *uint32
+	addupdated_at  *int32
+	deleted_at     *uint32
+	adddeleted_at  *int32
+	ent_id         *uuid.UUID
+	root_user_id   *uuid.UUID
+	name           *string
+	read_page_link *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*GoodUser, error)
+	predicates     []predicate.GoodUser
 }
 
 var _ ent.Mutation = (*GoodUserMutation)(nil)
@@ -4549,55 +4548,6 @@ func (m *GoodUserMutation) ResetName() {
 	delete(m.clearedFields, gooduser.FieldName)
 }
 
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (m *GoodUserMutation) SetPoolCoinTypeID(u uuid.UUID) {
-	m.pool_coin_type_id = &u
-}
-
-// PoolCoinTypeID returns the value of the "pool_coin_type_id" field in the mutation.
-func (m *GoodUserMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
-	v := m.pool_coin_type_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPoolCoinTypeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPoolCoinTypeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPoolCoinTypeID: %w", err)
-	}
-	return oldValue.PoolCoinTypeID, nil
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (m *GoodUserMutation) ClearPoolCoinTypeID() {
-	m.pool_coin_type_id = nil
-	m.clearedFields[gooduser.FieldPoolCoinTypeID] = struct{}{}
-}
-
-// PoolCoinTypeIDCleared returns if the "pool_coin_type_id" field was cleared in this mutation.
-func (m *GoodUserMutation) PoolCoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldPoolCoinTypeID]
-	return ok
-}
-
-// ResetPoolCoinTypeID resets all changes to the "pool_coin_type_id" field.
-func (m *GoodUserMutation) ResetPoolCoinTypeID() {
-	m.pool_coin_type_id = nil
-	delete(m.clearedFields, gooduser.FieldPoolCoinTypeID)
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (m *GoodUserMutation) SetReadPageLink(s string) {
 	m.read_page_link = &s
@@ -4666,7 +4616,7 @@ func (m *GoodUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodUserMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, gooduser.FieldCreatedAt)
 	}
@@ -4684,9 +4634,6 @@ func (m *GoodUserMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, gooduser.FieldName)
-	}
-	if m.pool_coin_type_id != nil {
-		fields = append(fields, gooduser.FieldPoolCoinTypeID)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, gooduser.FieldReadPageLink)
@@ -4711,8 +4658,6 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.RootUserID()
 	case gooduser.FieldName:
 		return m.Name()
-	case gooduser.FieldPoolCoinTypeID:
-		return m.PoolCoinTypeID()
 	case gooduser.FieldReadPageLink:
 		return m.ReadPageLink()
 	}
@@ -4736,8 +4681,6 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRootUserID(ctx)
 	case gooduser.FieldName:
 		return m.OldName(ctx)
-	case gooduser.FieldPoolCoinTypeID:
-		return m.OldPoolCoinTypeID(ctx)
 	case gooduser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
 	}
@@ -4790,13 +4733,6 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPoolCoinTypeID(v)
 		return nil
 	case gooduser.FieldReadPageLink:
 		v, ok := value.(string)
@@ -4880,9 +4816,6 @@ func (m *GoodUserMutation) ClearedFields() []string {
 	if m.FieldCleared(gooduser.FieldName) {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.FieldCleared(gooduser.FieldPoolCoinTypeID) {
-		fields = append(fields, gooduser.FieldPoolCoinTypeID)
-	}
 	if m.FieldCleared(gooduser.FieldReadPageLink) {
 		fields = append(fields, gooduser.FieldReadPageLink)
 	}
@@ -4905,9 +4838,6 @@ func (m *GoodUserMutation) ClearField(name string) error {
 		return nil
 	case gooduser.FieldName:
 		m.ClearName()
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		m.ClearPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ClearReadPageLink()
@@ -4937,9 +4867,6 @@ func (m *GoodUserMutation) ResetField(name string) error {
 		return nil
 	case gooduser.FieldName:
 		m.ResetName()
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		m.ResetPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ResetReadPageLink()

@@ -80,7 +80,7 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID.String())
 	}
 
-	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, coinInfos[0].CoinType, rootUser.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, &coinInfos[0].CoinType, rootUser.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

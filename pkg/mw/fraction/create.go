@@ -24,6 +24,13 @@ import (
 )
 
 func (h *Handler) fractionInPool(ctx context.Context) error {
+	if h.CoinTypeID == nil {
+		return wlog.Errorf("invalid cointypeid")
+	}
+	if h.OrderUserID == nil {
+		return wlog.Errorf("invalid orderuserid")
+	}
+
 	orderUserID := h.OrderUserID.String()
 	orderuserH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(&orderUserID, true))
 	if err != nil {

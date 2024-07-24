@@ -9,6 +9,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/google/uuid"
 
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
@@ -20,8 +21,8 @@ import (
 var rootuserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
 	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	Name:           pools.RandomPoolUserNameForTest(),
 	Email:          "gggo@go.go",
-	Name:           "Bob123",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",

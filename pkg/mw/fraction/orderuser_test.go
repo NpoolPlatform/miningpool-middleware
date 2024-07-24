@@ -11,8 +11,8 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 	"github.com/google/uuid"
 
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
+	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +22,7 @@ var orderuserRet = &npool.OrderUser{
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
 }
 
 var orderuserReq = &npool.OrderUserReq{
@@ -33,9 +33,11 @@ var orderuserReq = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
+	orderuserReq.CoinTypeID = &gooduserReq.CoinTypeIDs[0]
+
 	apppoolH, err := apppool.NewHandler(
 		context.Background(),
-		apppool.WithAppID(&ret.AppID, true),
+		apppool.WithAppID(&orderuserRet.AppID, true),
 		apppool.WithPoolID(&gooduserRet.PoolID, true),
 	)
 	assert.Nil(t, err)
@@ -56,8 +58,6 @@ func createOrderUser(t *testing.T) {
 		orderuser.WithGoodUserID(orderuserReq.GoodUserID, true),
 		orderuser.WithAppID(orderuserReq.AppID, true),
 		orderuser.WithUserID(orderuserReq.UserID, true),
-		orderuser.WithRevenueAddress(orderuserReq.RevenueAddress, true),
-		orderuser.WithAutoPay(orderuserReq.AutoPay, true),
 	)
 	assert.Nil(t, err)
 
@@ -80,7 +80,7 @@ func createOrderUser(t *testing.T) {
 
 func deleteOrderUser(t *testing.T) {
 	conds := &npool.Conds{
-		EntID: &v1.StringVal{
+		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: orderuserRet.EntID,
 		},
@@ -129,7 +129,7 @@ func deleteOrderUser(t *testing.T) {
 	handler, err = orderuser.NewHandler(
 		context.Background(),
 		orderuser.WithConds(&npool.Conds{
-			EntID: &v1.StringVal{
+			EntID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: orderuserRet.EntID,
 			},

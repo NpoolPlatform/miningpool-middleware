@@ -51,12 +51,16 @@ var req = &npool.FractionReq{
 }
 
 func create(t *testing.T) {
+	ret.CoinTypeID = gooduserReq.CoinTypeIDs[0]
+	req.CoinTypeID = &ret.CoinTypeID
+
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
 		WithAppID(req.AppID, true),
 		WithUserID(req.UserID, true),
 		WithOrderUserID(req.OrderUserID, true),
+		WithCoinTypeID(req.CoinTypeID, true),
 	)
 	assert.Nil(t, err)
 

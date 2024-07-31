@@ -101,6 +101,9 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
 		pool.FieldMiningpoolType,
+		sql.As(poolT.C(pool.FieldName), "miningpool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "miningpool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "miningpool_site"),
 		gooduser.FieldRootUserID,
 	)
 }

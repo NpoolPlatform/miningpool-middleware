@@ -80,7 +80,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 	coinH, err := coin.NewHandler(ctx,
 		coin.WithConds(&coinpb.Conds{
 			CoinTypeIDs: &v1.StringSliceVal{
-				Op:    cruder.EQ,
+				Op:    cruder.IN,
 				Value: h.CoinTypeIDs,
 			},
 			PoolID: &v1.StringVal{
@@ -88,20 +88,30 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 				Value: ruInfo.PoolID,
 			},
 		}),
-		coin.WithLimit(1),
+		coin.WithLimit(int32(len(h.CoinTypeIDs))),
 		coin.WithOffset(0))
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 
 	// check if cointypes is suppored by the miningpool
-	_, total, err := coinH.GetCoins(ctx)
+	coinInfos, _, err := coinH.GetCoins(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 
-	if total == 0 {
-		return wlog.Errorf("cannot support all cointype in cointypeids")
+	for _, coinTypeID := range h.CoinTypeIDs {
+		existID := false
+		for _, coinInfo := range coinInfos {
+			if coinInfo.CoinTypeID == coinTypeID {
+				existID = true
+				break
+			}
+		}
+
+		if !existID {
+			return wlog.Errorf("cannot support all cointype in cointypeids")
+		}
 	}
 
 	mgr, err := pools.NewPoolManager(ruInfo.MiningpoolType, nil, rootuserToken.AuthTokenPlain)

@@ -71,3 +71,32 @@ func (s *Server) GetGoodUsers(ctx context.Context, in *npool.GetGoodUsersRequest
 		Total: total,
 	}, nil
 }
+
+func (s *Server) GetGoodUserHashRate(ctx context.Context, in *npool.GetGoodUserHashRateRequest) (*npool.GetGoodUserHashRateResponse, error) {
+	handler, err := gooduser.NewHandler(
+		ctx,
+		gooduser.WithCoinTypeIDs(in.CoinTypeIDs, true),
+		gooduser.WithEntID(&in.EntID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetGoodUserHashRate",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+	hashRate, err := handler.GetGoodUserHashRate(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetGoodUserHashRate",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.GetGoodUserHashRateResponse{
+		HashRate: hashRate,
+	}, nil
+}

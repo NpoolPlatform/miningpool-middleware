@@ -1,6 +1,10 @@
 package pools
 
-import "context"
+import (
+	"context"
+
+	basetype "github.com/NpoolPlatform/message/npool/basetypes/v1"
+)
 
 type PoolManager interface {
 	CheckAuth(ctx context.Context) error
@@ -26,4 +30,7 @@ type PoolManager interface {
 
 	// withdraw Fraction
 	WithdrawFraction(ctx context.Context, userName string) (int64, error)
+
+	// hash rate
+	GetHashRate(ctx context.Context, name string, cointypes []basetype.CoinType) (float64, error)
 }

@@ -375,6 +375,37 @@ func (mgr *Manager) WithdrawFraction(ctx context.Context, name string) (int64, e
 	return resumeResp.PaidTime, nil
 }
 
+func (mgr *Manager) GetHashRate(ctx context.Context, name string, cointypes []basetype.CoinType) (float64, error) {
+	reqs := []types.UserMiningReq{}
+	for _, cointype := range cointypes {
+		currency, ok := CoinType2Currency[cointype]
+		if !ok {
+			return 0, wlog.Errorf("cannot support cointype:%v", cointype.String())
+		}
+		reqs = append(reqs, types.UserMiningReq{
+			MiningUserName: name,
+			Currency:       currency,
+		})
+	}
+	hashRateResp, err := mgr.cli.HashRateInfoList(ctx, &types.HashRateInfoListReq{
+		Reqs: reqs,
+	})
+	if err != nil {
+		return 0, wlog.WrapError(err)
+	}
+
+	if hashRateResp == nil {
+		return 0, wlog.Errorf("failed to resume payment,have nil response")
+	}
+
+	hashRate := 0.0
+	for _, info := range hashRateResp.Info {
+		hashRate += info.H1StaleHashRate
+	}
+
+	return hashRate, nil
+}
+
 func getReadPageLink(key, userName string) string {
 	return fmt.Sprintf("%v/mining-user/%v?user_name=%v", config.F2PoolBaseURL, key, userName)
 }

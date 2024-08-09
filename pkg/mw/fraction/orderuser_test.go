@@ -49,11 +49,9 @@ func createOrderUser(t *testing.T) {
 		return
 	}
 	orderuserRet.Name = name
-	orderuserReq.Name = &name
 
 	handler, err := orderuser.NewHandler(
 		context.Background(),
-		orderuser.WithName(orderuserReq.Name, true),
 		orderuser.WithEntID(orderuserReq.EntID, true),
 		orderuser.WithGoodUserID(orderuserReq.GoodUserID, true),
 		orderuser.WithAppID(orderuserReq.AppID, true),

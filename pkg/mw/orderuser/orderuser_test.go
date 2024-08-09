@@ -62,11 +62,9 @@ func create(t *testing.T) {
 		return
 	}
 	orderuserRet.Name = name
-	orderuserReq.Name = &name
 
 	handler, err := NewHandler(
 		context.Background(),
-		WithName(orderuserReq.Name, true),
 		WithEntID(orderuserReq.EntID, true),
 		WithGoodUserID(orderuserReq.GoodUserID, true),
 		WithAppID(orderuserReq.AppID, true),

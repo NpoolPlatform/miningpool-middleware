@@ -99,6 +99,9 @@ func (h *queryHandler) queryJoinRootUserAndPool(s *sql.Selector) {
 	).AppendSelect(
 		poolT.C(pool.FieldMiningpoolType),
 		ruT.C(rootuser.FieldPoolID),
+		sql.As(poolT.C(pool.FieldName), "miningpool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "miningpool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "miningpool_site"),
 	).Distinct()
 }
 

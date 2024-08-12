@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -14,6 +15,7 @@ import (
 
 type deleteHandler struct {
 	*Handler
+	info *orderuser.OrderUser
 }
 
 func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) error {
@@ -31,12 +33,20 @@ func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) err
 }
 
 func (h *Handler) DeleteOrderUser(ctx context.Context) error {
-	handler := &deleteHandler{
-		Handler: h,
+	handler := deleteHandler{Handler: h}
+	var err error
+
+	handler.info, err = handler.GetOrderUser(ctx)
+	if err != nil {
+		return wlog.WrapError(err)
+	}
+
+	if handler.info == nil {
+		return nil
 	}
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		if err := handler.deleteOrderUserBase(_ctx, tx); err != nil {
+		if err := handler.deleteOrderUserBase(ctx, tx); err != nil {
 			return wlog.WrapError(err)
 		}
 		return nil

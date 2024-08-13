@@ -166,6 +166,26 @@ func (fru *FractionRuleUpdate) ClearMinAmount() *FractionRuleUpdate {
 	return fru
 }
 
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (fru *FractionRuleUpdate) SetPayoutThreshold(d decimal.Decimal) *FractionRuleUpdate {
+	fru.mutation.SetPayoutThreshold(d)
+	return fru
+}
+
+// SetNillablePayoutThreshold sets the "payout_threshold" field if the given value is not nil.
+func (fru *FractionRuleUpdate) SetNillablePayoutThreshold(d *decimal.Decimal) *FractionRuleUpdate {
+	if d != nil {
+		fru.SetPayoutThreshold(*d)
+	}
+	return fru
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (fru *FractionRuleUpdate) ClearPayoutThreshold() *FractionRuleUpdate {
+	fru.mutation.ClearPayoutThreshold()
+	return fru
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (fru *FractionRuleUpdate) SetWithdrawRate(d decimal.Decimal) *FractionRuleUpdate {
 	fru.mutation.SetWithdrawRate(d)
@@ -379,6 +399,19 @@ func (fru *FractionRuleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: fractionrule.FieldMinAmount,
 		})
 	}
+	if value, ok := fru.mutation.PayoutThreshold(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fractionrule.FieldPayoutThreshold,
+		})
+	}
+	if fru.mutation.PayoutThresholdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: fractionrule.FieldPayoutThreshold,
+		})
+	}
 	if value, ok := fru.mutation.WithdrawRate(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -546,6 +579,26 @@ func (fruo *FractionRuleUpdateOne) SetNillableMinAmount(d *decimal.Decimal) *Fra
 // ClearMinAmount clears the value of the "min_amount" field.
 func (fruo *FractionRuleUpdateOne) ClearMinAmount() *FractionRuleUpdateOne {
 	fruo.mutation.ClearMinAmount()
+	return fruo
+}
+
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (fruo *FractionRuleUpdateOne) SetPayoutThreshold(d decimal.Decimal) *FractionRuleUpdateOne {
+	fruo.mutation.SetPayoutThreshold(d)
+	return fruo
+}
+
+// SetNillablePayoutThreshold sets the "payout_threshold" field if the given value is not nil.
+func (fruo *FractionRuleUpdateOne) SetNillablePayoutThreshold(d *decimal.Decimal) *FractionRuleUpdateOne {
+	if d != nil {
+		fruo.SetPayoutThreshold(*d)
+	}
+	return fruo
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (fruo *FractionRuleUpdateOne) ClearPayoutThreshold() *FractionRuleUpdateOne {
+	fruo.mutation.ClearPayoutThreshold()
 	return fruo
 }
 
@@ -790,6 +843,19 @@ func (fruo *FractionRuleUpdateOne) sqlSave(ctx context.Context) (_node *Fraction
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
 			Column: fractionrule.FieldMinAmount,
+		})
+	}
+	if value, ok := fruo.mutation.PayoutThreshold(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fractionrule.FieldPayoutThreshold,
+		})
+	}
+	if fruo.mutation.PayoutThresholdCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Column: fractionrule.FieldPayoutThreshold,
 		})
 	}
 	if value, ok := fruo.mutation.WithdrawRate(); ok {

@@ -27,6 +27,7 @@ var ret = &npool.FractionRule{
 	EntID:            uuid.NewString(),
 	PoolCoinTypeID:   uuid.NewString(),
 	WithdrawInterval: 1000,
+	PayoutThreshold:  "5.0",
 	MinAmount:        "2.0",
 	WithdrawRate:     "0.03",
 }
@@ -35,6 +36,7 @@ var req = &npool.FractionRuleReq{
 	EntID:            &ret.EntID,
 	PoolCoinTypeID:   &ret.PoolCoinTypeID,
 	WithdrawInterval: &ret.WithdrawInterval,
+	PayoutThreshold:  &ret.PayoutThreshold,
 	MinAmount:        &ret.MinAmount,
 	WithdrawRate:     &ret.WithdrawRate,
 }
@@ -60,6 +62,7 @@ func create(t *testing.T) {
 		WithEntID(req.EntID, true),
 		WithPoolCoinTypeID(req.PoolCoinTypeID, true),
 		WithWithdrawInterval(req.WithdrawInterval, true),
+		WithPayoutThreshold(req.PayoutThreshold, true),
 		WithMinAmount(req.MinAmount, true),
 		WithWithdrawRate(req.WithdrawRate, true),
 	)

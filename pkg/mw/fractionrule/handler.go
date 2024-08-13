@@ -20,6 +20,7 @@ type Handler struct {
 	EntID            *uuid.UUID
 	PoolCoinTypeID   *uuid.UUID
 	WithdrawInterval *uint32
+	PayoutThreshold  *decimal.Decimal
 	MinAmount        *decimal.Decimal
 	WithdrawRate     *decimal.Decimal
 	Reqs             []*fractionrulecrud.Req
@@ -123,6 +124,26 @@ func WithMinAmount(minamount *string, must bool) func(context.Context, *Handler)
 			return wlog.Errorf("invalid minamount")
 		}
 		h.MinAmount = &_minamount
+		return nil
+	}
+}
+
+func WithPayoutThreshold(payoutthreshold *string, must bool) func(context.Context, *Handler) error {
+	return func(ctx context.Context, h *Handler) error {
+		if payoutthreshold == nil {
+			if must {
+				return wlog.Errorf("invalid payoutthreshold")
+			}
+			return nil
+		}
+		_payoutthreshold, err := decimal.NewFromString(*payoutthreshold)
+		if err != nil {
+			return wlog.Errorf("invalid payoutthreshold,err: %v", err)
+		}
+		if _payoutthreshold.Sign() <= 0 {
+			return wlog.Errorf("invalid payoutthreshold")
+		}
+		h.PayoutThreshold = &_payoutthreshold
 		return nil
 	}
 }

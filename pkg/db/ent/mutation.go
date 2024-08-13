@@ -3227,6 +3227,7 @@ type FractionRuleMutation struct {
 	withdraw_interval    *uint32
 	addwithdraw_interval *int32
 	min_amount           *decimal.Decimal
+	payout_threshold     *decimal.Decimal
 	withdraw_rate        *decimal.Decimal
 	clearedFields        map[string]struct{}
 	done                 bool
@@ -3710,6 +3711,55 @@ func (m *FractionRuleMutation) ResetMinAmount() {
 	delete(m.clearedFields, fractionrule.FieldMinAmount)
 }
 
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (m *FractionRuleMutation) SetPayoutThreshold(d decimal.Decimal) {
+	m.payout_threshold = &d
+}
+
+// PayoutThreshold returns the value of the "payout_threshold" field in the mutation.
+func (m *FractionRuleMutation) PayoutThreshold() (r decimal.Decimal, exists bool) {
+	v := m.payout_threshold
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPayoutThreshold returns the old "payout_threshold" field's value of the FractionRule entity.
+// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionRuleMutation) OldPayoutThreshold(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPayoutThreshold is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPayoutThreshold requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPayoutThreshold: %w", err)
+	}
+	return oldValue.PayoutThreshold, nil
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (m *FractionRuleMutation) ClearPayoutThreshold() {
+	m.payout_threshold = nil
+	m.clearedFields[fractionrule.FieldPayoutThreshold] = struct{}{}
+}
+
+// PayoutThresholdCleared returns if the "payout_threshold" field was cleared in this mutation.
+func (m *FractionRuleMutation) PayoutThresholdCleared() bool {
+	_, ok := m.clearedFields[fractionrule.FieldPayoutThreshold]
+	return ok
+}
+
+// ResetPayoutThreshold resets all changes to the "payout_threshold" field.
+func (m *FractionRuleMutation) ResetPayoutThreshold() {
+	m.payout_threshold = nil
+	delete(m.clearedFields, fractionrule.FieldPayoutThreshold)
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (m *FractionRuleMutation) SetWithdrawRate(d decimal.Decimal) {
 	m.withdraw_rate = &d
@@ -3778,7 +3828,7 @@ func (m *FractionRuleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FractionRuleMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, fractionrule.FieldCreatedAt)
 	}
@@ -3799,6 +3849,9 @@ func (m *FractionRuleMutation) Fields() []string {
 	}
 	if m.min_amount != nil {
 		fields = append(fields, fractionrule.FieldMinAmount)
+	}
+	if m.payout_threshold != nil {
+		fields = append(fields, fractionrule.FieldPayoutThreshold)
 	}
 	if m.withdraw_rate != nil {
 		fields = append(fields, fractionrule.FieldWithdrawRate)
@@ -3825,6 +3878,8 @@ func (m *FractionRuleMutation) Field(name string) (ent.Value, bool) {
 		return m.WithdrawInterval()
 	case fractionrule.FieldMinAmount:
 		return m.MinAmount()
+	case fractionrule.FieldPayoutThreshold:
+		return m.PayoutThreshold()
 	case fractionrule.FieldWithdrawRate:
 		return m.WithdrawRate()
 	}
@@ -3850,6 +3905,8 @@ func (m *FractionRuleMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldWithdrawInterval(ctx)
 	case fractionrule.FieldMinAmount:
 		return m.OldMinAmount(ctx)
+	case fractionrule.FieldPayoutThreshold:
+		return m.OldPayoutThreshold(ctx)
 	case fractionrule.FieldWithdrawRate:
 		return m.OldWithdrawRate(ctx)
 	}
@@ -3909,6 +3966,13 @@ func (m *FractionRuleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMinAmount(v)
+		return nil
+	case fractionrule.FieldPayoutThreshold:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPayoutThreshold(v)
 		return nil
 	case fractionrule.FieldWithdrawRate:
 		v, ok := value.(decimal.Decimal)
@@ -4007,6 +4071,9 @@ func (m *FractionRuleMutation) ClearedFields() []string {
 	if m.FieldCleared(fractionrule.FieldMinAmount) {
 		fields = append(fields, fractionrule.FieldMinAmount)
 	}
+	if m.FieldCleared(fractionrule.FieldPayoutThreshold) {
+		fields = append(fields, fractionrule.FieldPayoutThreshold)
+	}
 	if m.FieldCleared(fractionrule.FieldWithdrawRate) {
 		fields = append(fields, fractionrule.FieldWithdrawRate)
 	}
@@ -4032,6 +4099,9 @@ func (m *FractionRuleMutation) ClearField(name string) error {
 		return nil
 	case fractionrule.FieldMinAmount:
 		m.ClearMinAmount()
+		return nil
+	case fractionrule.FieldPayoutThreshold:
+		m.ClearPayoutThreshold()
 		return nil
 	case fractionrule.FieldWithdrawRate:
 		m.ClearWithdrawRate()
@@ -4064,6 +4134,9 @@ func (m *FractionRuleMutation) ResetField(name string) error {
 		return nil
 	case fractionrule.FieldMinAmount:
 		m.ResetMinAmount()
+		return nil
+	case fractionrule.FieldPayoutThreshold:
+		m.ResetPayoutThreshold()
 		return nil
 	case fractionrule.FieldWithdrawRate:
 		m.ResetWithdrawRate()

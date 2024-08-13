@@ -27,6 +27,8 @@ const (
 	FieldWithdrawInterval = "withdraw_interval"
 	// FieldMinAmount holds the string denoting the min_amount field in the database.
 	FieldMinAmount = "min_amount"
+	// FieldPayoutThreshold holds the string denoting the payout_threshold field in the database.
+	FieldPayoutThreshold = "payout_threshold"
 	// FieldWithdrawRate holds the string denoting the withdraw_rate field in the database.
 	FieldWithdrawRate = "withdraw_rate"
 	// Table holds the table name of the fractionrule in the database.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldPoolCoinTypeID,
 	FieldWithdrawInterval,
 	FieldMinAmount,
+	FieldPayoutThreshold,
 	FieldWithdrawRate,
 }
 
@@ -80,6 +83,8 @@ var (
 	DefaultWithdrawInterval uint32
 	// DefaultMinAmount holds the default value on creation for the "min_amount" field.
 	DefaultMinAmount decimal.Decimal
+	// DefaultPayoutThreshold holds the default value on creation for the "payout_threshold" field.
+	DefaultPayoutThreshold decimal.Decimal
 	// DefaultWithdrawRate holds the default value on creation for the "withdraw_rate" field.
 	DefaultWithdrawRate decimal.Decimal
 )

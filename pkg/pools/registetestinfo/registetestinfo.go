@@ -51,6 +51,7 @@ var (
 			CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 			// 30Day
 			WithdrawInterval: time.SecondsPerDay * 30,
+			PayoutThreshold:  "0.005",
 			MinAmount:        "0.0005",
 			WithdrawRate:     "0",
 		},
@@ -241,6 +242,7 @@ func registeFractionRule(ctx context.Context) {
 			fractionrule.WithEntID(&info.EntID, true),
 			fractionrule.WithPoolCoinTypeID(&coinInfos[0].EntID, true),
 			fractionrule.WithWithdrawInterval(&info.WithdrawInterval, true),
+			fractionrule.WithPayoutThreshold(&info.PayoutThreshold, true),
 			fractionrule.WithMinAmount(&info.MinAmount, true),
 			fractionrule.WithWithdrawRate(&info.WithdrawRate, true),
 		)

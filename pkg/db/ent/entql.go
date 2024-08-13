@@ -108,6 +108,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			fractionrule.FieldPoolCoinTypeID:   {Type: field.TypeUUID, Column: fractionrule.FieldPoolCoinTypeID},
 			fractionrule.FieldWithdrawInterval: {Type: field.TypeUint32, Column: fractionrule.FieldWithdrawInterval},
 			fractionrule.FieldMinAmount:        {Type: field.TypeOther, Column: fractionrule.FieldMinAmount},
+			fractionrule.FieldPayoutThreshold:  {Type: field.TypeOther, Column: fractionrule.FieldPayoutThreshold},
 			fractionrule.FieldWithdrawRate:     {Type: field.TypeOther, Column: fractionrule.FieldWithdrawRate},
 		},
 	}
@@ -551,6 +552,11 @@ func (f *FractionRuleFilter) WhereWithdrawInterval(p entql.Uint32P) {
 // WhereMinAmount applies the entql other predicate on the min_amount field.
 func (f *FractionRuleFilter) WhereMinAmount(p entql.OtherP) {
 	f.Where(p.Field(fractionrule.FieldMinAmount))
+}
+
+// WherePayoutThreshold applies the entql other predicate on the payout_threshold field.
+func (f *FractionRuleFilter) WherePayoutThreshold(p entql.OtherP) {
+	f.Where(p.Field(fractionrule.FieldPayoutThreshold))
 }
 
 // WhereWithdrawRate applies the entql other predicate on the withdraw_rate field.

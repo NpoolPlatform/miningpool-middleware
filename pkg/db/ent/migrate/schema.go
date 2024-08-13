@@ -109,6 +109,7 @@ var (
 		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_interval", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "min_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "payout_threshold", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "withdraw_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
 	// FractionRulesTable holds the schema information for the "fraction_rules" table.

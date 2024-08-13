@@ -31,6 +31,8 @@ type FractionRule struct {
 	WithdrawInterval uint32 `json:"withdraw_interval,omitempty"`
 	// MinAmount holds the value of the "min_amount" field.
 	MinAmount decimal.Decimal `json:"min_amount,omitempty"`
+	// PayoutThreshold holds the value of the "payout_threshold" field.
+	PayoutThreshold decimal.Decimal `json:"payout_threshold,omitempty"`
 	// WithdrawRate holds the value of the "withdraw_rate" field.
 	WithdrawRate decimal.Decimal `json:"withdraw_rate,omitempty"`
 }
@@ -40,7 +42,7 @@ func (*FractionRule) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case fractionrule.FieldMinAmount, fractionrule.FieldWithdrawRate:
+		case fractionrule.FieldMinAmount, fractionrule.FieldPayoutThreshold, fractionrule.FieldWithdrawRate:
 			values[i] = new(decimal.Decimal)
 		case fractionrule.FieldID, fractionrule.FieldCreatedAt, fractionrule.FieldUpdatedAt, fractionrule.FieldDeletedAt, fractionrule.FieldWithdrawInterval:
 			values[i] = new(sql.NullInt64)
@@ -109,6 +111,12 @@ func (fr *FractionRule) assignValues(columns []string, values []interface{}) err
 			} else if value != nil {
 				fr.MinAmount = *value
 			}
+		case fractionrule.FieldPayoutThreshold:
+			if value, ok := values[i].(*decimal.Decimal); !ok {
+				return fmt.Errorf("unexpected type %T for field payout_threshold", values[i])
+			} else if value != nil {
+				fr.PayoutThreshold = *value
+			}
 		case fractionrule.FieldWithdrawRate:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
 				return fmt.Errorf("unexpected type %T for field withdraw_rate", values[i])
@@ -163,6 +171,9 @@ func (fr *FractionRule) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("min_amount=")
 	builder.WriteString(fmt.Sprintf("%v", fr.MinAmount))
+	builder.WriteString(", ")
+	builder.WriteString("payout_threshold=")
+	builder.WriteString(fmt.Sprintf("%v", fr.PayoutThreshold))
 	builder.WriteString(", ")
 	builder.WriteString("withdraw_rate=")
 	builder.WriteString(fmt.Sprintf("%v", fr.WithdrawRate))

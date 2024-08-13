@@ -121,6 +121,20 @@ func (frc *FractionRuleCreate) SetNillableMinAmount(d *decimal.Decimal) *Fractio
 	return frc
 }
 
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (frc *FractionRuleCreate) SetPayoutThreshold(d decimal.Decimal) *FractionRuleCreate {
+	frc.mutation.SetPayoutThreshold(d)
+	return frc
+}
+
+// SetNillablePayoutThreshold sets the "payout_threshold" field if the given value is not nil.
+func (frc *FractionRuleCreate) SetNillablePayoutThreshold(d *decimal.Decimal) *FractionRuleCreate {
+	if d != nil {
+		frc.SetPayoutThreshold(*d)
+	}
+	return frc
+}
+
 // SetWithdrawRate sets the "withdraw_rate" field.
 func (frc *FractionRuleCreate) SetWithdrawRate(d decimal.Decimal) *FractionRuleCreate {
 	frc.mutation.SetWithdrawRate(d)
@@ -263,6 +277,10 @@ func (frc *FractionRuleCreate) defaults() error {
 		v := fractionrule.DefaultMinAmount
 		frc.mutation.SetMinAmount(v)
 	}
+	if _, ok := frc.mutation.PayoutThreshold(); !ok {
+		v := fractionrule.DefaultPayoutThreshold
+		frc.mutation.SetPayoutThreshold(v)
+	}
 	if _, ok := frc.mutation.WithdrawRate(); !ok {
 		v := fractionrule.DefaultWithdrawRate
 		frc.mutation.SetWithdrawRate(v)
@@ -373,6 +391,14 @@ func (frc *FractionRuleCreate) createSpec() (*FractionRule, *sqlgraph.CreateSpec
 			Column: fractionrule.FieldMinAmount,
 		})
 		_node.MinAmount = value
+	}
+	if value, ok := frc.mutation.PayoutThreshold(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeOther,
+			Value:  value,
+			Column: fractionrule.FieldPayoutThreshold,
+		})
+		_node.PayoutThreshold = value
 	}
 	if value, ok := frc.mutation.WithdrawRate(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -557,6 +583,24 @@ func (u *FractionRuleUpsert) UpdateMinAmount() *FractionRuleUpsert {
 // ClearMinAmount clears the value of the "min_amount" field.
 func (u *FractionRuleUpsert) ClearMinAmount() *FractionRuleUpsert {
 	u.SetNull(fractionrule.FieldMinAmount)
+	return u
+}
+
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (u *FractionRuleUpsert) SetPayoutThreshold(v decimal.Decimal) *FractionRuleUpsert {
+	u.Set(fractionrule.FieldPayoutThreshold, v)
+	return u
+}
+
+// UpdatePayoutThreshold sets the "payout_threshold" field to the value that was provided on create.
+func (u *FractionRuleUpsert) UpdatePayoutThreshold() *FractionRuleUpsert {
+	u.SetExcluded(fractionrule.FieldPayoutThreshold)
+	return u
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (u *FractionRuleUpsert) ClearPayoutThreshold() *FractionRuleUpsert {
+	u.SetNull(fractionrule.FieldPayoutThreshold)
 	return u
 }
 
@@ -770,6 +814,27 @@ func (u *FractionRuleUpsertOne) UpdateMinAmount() *FractionRuleUpsertOne {
 func (u *FractionRuleUpsertOne) ClearMinAmount() *FractionRuleUpsertOne {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.ClearMinAmount()
+	})
+}
+
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (u *FractionRuleUpsertOne) SetPayoutThreshold(v decimal.Decimal) *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.SetPayoutThreshold(v)
+	})
+}
+
+// UpdatePayoutThreshold sets the "payout_threshold" field to the value that was provided on create.
+func (u *FractionRuleUpsertOne) UpdatePayoutThreshold() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.UpdatePayoutThreshold()
+	})
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (u *FractionRuleUpsertOne) ClearPayoutThreshold() *FractionRuleUpsertOne {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearPayoutThreshold()
 	})
 }
 
@@ -1149,6 +1214,27 @@ func (u *FractionRuleUpsertBulk) UpdateMinAmount() *FractionRuleUpsertBulk {
 func (u *FractionRuleUpsertBulk) ClearMinAmount() *FractionRuleUpsertBulk {
 	return u.Update(func(s *FractionRuleUpsert) {
 		s.ClearMinAmount()
+	})
+}
+
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (u *FractionRuleUpsertBulk) SetPayoutThreshold(v decimal.Decimal) *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.SetPayoutThreshold(v)
+	})
+}
+
+// UpdatePayoutThreshold sets the "payout_threshold" field to the value that was provided on create.
+func (u *FractionRuleUpsertBulk) UpdatePayoutThreshold() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.UpdatePayoutThreshold()
+	})
+}
+
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (u *FractionRuleUpsertBulk) ClearPayoutThreshold() *FractionRuleUpsertBulk {
+	return u.Update(func(s *FractionRuleUpsert) {
+		s.ClearPayoutThreshold()
 	})
 }
 

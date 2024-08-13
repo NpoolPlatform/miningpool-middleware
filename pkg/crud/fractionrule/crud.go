@@ -15,6 +15,7 @@ type Req struct {
 	EntID            *uuid.UUID
 	PoolCoinTypeID   *uuid.UUID
 	WithdrawInterval *uint32
+	PayoutThreshold  *decimal.Decimal
 	MinAmount        *decimal.Decimal
 	WithdrawRate     *decimal.Decimal
 	DeletedAt        *uint32
@@ -33,6 +34,9 @@ func CreateSet(c *ent.FractionRuleCreate, req *Req) *ent.FractionRuleCreate {
 	if req.MinAmount != nil {
 		c.SetMinAmount(*req.MinAmount)
 	}
+	if req.PayoutThreshold != nil {
+		c.SetPayoutThreshold(*req.PayoutThreshold)
+	}
 	if req.WithdrawRate != nil {
 		c.SetWithdrawRate(*req.WithdrawRate)
 	}
@@ -48,6 +52,9 @@ func UpdateSet(u *ent.FractionRuleUpdateOne, req *Req) (*ent.FractionRuleUpdateO
 	}
 	if req.MinAmount != nil {
 		u = u.SetMinAmount(*req.MinAmount)
+	}
+	if req.PayoutThreshold != nil {
+		u = u.SetPayoutThreshold(*req.PayoutThreshold)
 	}
 	if req.WithdrawRate != nil {
 		u = u.SetWithdrawRate(*req.WithdrawRate)

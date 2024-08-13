@@ -33,6 +33,7 @@ func (h *queryHandler) selectFractionRule(stm *ent.FractionRuleQuery) {
 		fractionruleent.FieldEntID,
 		fractionruleent.FieldPoolCoinTypeID,
 		fractionruleent.FieldWithdrawInterval,
+		fractionruleent.FieldPayoutThreshold,
 		fractionruleent.FieldMinAmount,
 		fractionruleent.FieldWithdrawRate,
 	)

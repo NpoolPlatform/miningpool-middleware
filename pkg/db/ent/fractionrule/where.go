@@ -129,6 +129,13 @@ func MinAmount(v decimal.Decimal) predicate.FractionRule {
 	})
 }
 
+// PayoutThreshold applies equality check predicate on the "payout_threshold" field. It's identical to PayoutThresholdEQ.
+func PayoutThreshold(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPayoutThreshold), v))
+	})
+}
+
 // WithdrawRate applies equality check predicate on the "withdraw_rate" field. It's identical to WithdrawRateEQ.
 func WithdrawRate(v decimal.Decimal) predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
@@ -623,6 +630,84 @@ func MinAmountIsNil() predicate.FractionRule {
 func MinAmountNotNil() predicate.FractionRule {
 	return predicate.FractionRule(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldMinAmount)))
+	})
+}
+
+// PayoutThresholdEQ applies the EQ predicate on the "payout_threshold" field.
+func PayoutThresholdEQ(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdNEQ applies the NEQ predicate on the "payout_threshold" field.
+func PayoutThresholdNEQ(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdIn applies the In predicate on the "payout_threshold" field.
+func PayoutThresholdIn(vs ...decimal.Decimal) predicate.FractionRule {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldPayoutThreshold), v...))
+	})
+}
+
+// PayoutThresholdNotIn applies the NotIn predicate on the "payout_threshold" field.
+func PayoutThresholdNotIn(vs ...decimal.Decimal) predicate.FractionRule {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldPayoutThreshold), v...))
+	})
+}
+
+// PayoutThresholdGT applies the GT predicate on the "payout_threshold" field.
+func PayoutThresholdGT(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdGTE applies the GTE predicate on the "payout_threshold" field.
+func PayoutThresholdGTE(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdLT applies the LT predicate on the "payout_threshold" field.
+func PayoutThresholdLT(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdLTE applies the LTE predicate on the "payout_threshold" field.
+func PayoutThresholdLTE(v decimal.Decimal) predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldPayoutThreshold), v))
+	})
+}
+
+// PayoutThresholdIsNil applies the IsNil predicate on the "payout_threshold" field.
+func PayoutThresholdIsNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldPayoutThreshold)))
+	})
+}
+
+// PayoutThresholdNotNil applies the NotNil predicate on the "payout_threshold" field.
+func PayoutThresholdNotNil() predicate.FractionRule {
+	return predicate.FractionRule(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldPayoutThreshold)))
 	})
 }
 

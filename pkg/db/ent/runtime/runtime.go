@@ -245,8 +245,12 @@ func init() {
 	fractionruleDescMinAmount := fractionruleFields[2].Descriptor()
 	// fractionrule.DefaultMinAmount holds the default value on creation for the min_amount field.
 	fractionrule.DefaultMinAmount = fractionruleDescMinAmount.Default.(decimal.Decimal)
+	// fractionruleDescPayoutThreshold is the schema descriptor for payout_threshold field.
+	fractionruleDescPayoutThreshold := fractionruleFields[3].Descriptor()
+	// fractionrule.DefaultPayoutThreshold holds the default value on creation for the payout_threshold field.
+	fractionrule.DefaultPayoutThreshold = fractionruleDescPayoutThreshold.Default.(decimal.Decimal)
 	// fractionruleDescWithdrawRate is the schema descriptor for withdraw_rate field.
-	fractionruleDescWithdrawRate := fractionruleFields[3].Descriptor()
+	fractionruleDescWithdrawRate := fractionruleFields[4].Descriptor()
 	// fractionrule.DefaultWithdrawRate holds the default value on creation for the withdraw_rate field.
 	fractionrule.DefaultWithdrawRate = fractionruleDescWithdrawRate.Default.(decimal.Decimal)
 	gooduserMixin := schema.GoodUser{}.Mixin()

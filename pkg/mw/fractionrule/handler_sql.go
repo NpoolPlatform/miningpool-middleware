@@ -66,6 +66,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[fractionrule.FieldMinAmount] = string(strBytes)
 	}
+	if h.PayoutThreshold != nil {
+		strBytes, err := json.Marshal(*h.PayoutThreshold)
+		if err != nil {
+			return wlog.WrapError(err)
+		}
+		h.baseVals[fractionrule.FieldPayoutThreshold] = string(strBytes)
+	}
 	if h.WithdrawRate != nil {
 		strBytes, err := json.Marshal(*h.WithdrawRate)
 		if err != nil {

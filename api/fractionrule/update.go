@@ -30,6 +30,7 @@ func (s *Server) UpdateFractionRule(ctx context.Context, in *npool.UpdateFractio
 		fractionrule.WithID(req.ID, false),
 		fractionrule.WithEntID(req.EntID, false),
 		fractionrule.WithWithdrawInterval(req.WithdrawInterval, false),
+		fractionrule.WithPayoutThreshold(req.PayoutThreshold, false),
 		fractionrule.WithMinAmount(req.MinAmount, false),
 		fractionrule.WithWithdrawRate(req.WithdrawRate, false),
 	)

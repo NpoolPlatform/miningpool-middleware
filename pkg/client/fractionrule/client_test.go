@@ -33,6 +33,7 @@ var ret = &npool.FractionRule{
 	MiningpoolType:   mpbasetypes.MiningpoolType_F2Pool,
 	CoinType:         basetypes.CoinType_CoinTypeBitCoin,
 	WithdrawInterval: 3,
+	PayoutThreshold:  "5.0",
 	MinAmount:        "2.0",
 	WithdrawRate:     "2.0",
 }
@@ -40,6 +41,7 @@ var ret = &npool.FractionRule{
 var req = &npool.FractionRuleReq{
 	EntID:            &ret.EntID,
 	WithdrawInterval: &ret.WithdrawInterval,
+	PayoutThreshold:  &ret.PayoutThreshold,
 	MinAmount:        &ret.MinAmount,
 	WithdrawRate:     &ret.WithdrawRate,
 }

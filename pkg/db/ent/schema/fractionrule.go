@@ -41,6 +41,13 @@ func (FractionRule) Fields() []ent.Field {
 			Optional().
 			Default(decimal.Decimal{}),
 		field.
+			Other("payout_threshold", decimal.Decimal{}).
+			SchemaType(map[string]string{
+				dialect.MySQL: "decimal(37,18)",
+			}).
+			Optional().
+			Default(decimal.Decimal{}),
+		field.
 			Other("withdraw_rate", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",

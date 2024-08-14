@@ -129,10 +129,12 @@ func (s *Server) GetOrderUserBalance(ctx context.Context, in *npool.GetOrderUser
 	}
 
 	return &npool.GetOrderUserBalanceResponse{
-		Balance:              assetsBalance.Balance,
-		Paid:                 assetsBalance.Paid,
-		TotalIncome:          assetsBalance.TotalIncome,
-		YesterdayIncome:      assetsBalance.YesterdayIncome,
-		EstimatedTodayIncome: assetsBalance.EstimatedTodayIncome,
+		Info: &npool.BalanceInfo{
+			Balance:              assetsBalance.Balance,
+			Paid:                 assetsBalance.Paid,
+			TotalIncome:          assetsBalance.TotalIncome,
+			YesterdayIncome:      assetsBalance.YesterdayIncome,
+			EstimatedTodayIncome: assetsBalance.EstimatedTodayIncome,
+		},
 	}, nil
 }

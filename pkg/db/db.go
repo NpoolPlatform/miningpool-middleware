@@ -2,9 +2,9 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 
@@ -45,7 +45,7 @@ func WithTx(ctx context.Context, fn func(ctx context.Context, tx *ent.Tx) error)
 
 	tx, err := cli.Tx(ctx)
 	if err != nil {
-		return fmt.Errorf("fail get client transaction: %v", err)
+		return wlog.Errorf("fail get client transaction: %v", err)
 	}
 
 	succ := false
@@ -64,7 +64,7 @@ func WithTx(ctx context.Context, fn func(ctx context.Context, tx *ent.Tx) error)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return fmt.Errorf("committing transaction: %v", err)
+		return wlog.Errorf("committing transaction: %v", err)
 	}
 
 	succ = true
@@ -74,7 +74,7 @@ func WithTx(ctx context.Context, fn func(ctx context.Context, tx *ent.Tx) error)
 func WithClient(ctx context.Context, fn func(ctx context.Context, cli *ent.Client) error) error {
 	cli, err := Client()
 	if err != nil {
-		return fmt.Errorf("fail get db client: %v", err)
+		return wlog.Errorf("fail get db client: %v", err)
 	}
 
 	if err := fn(ctx, cli); err != nil {

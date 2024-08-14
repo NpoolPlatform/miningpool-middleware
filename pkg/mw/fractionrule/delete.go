@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionrule"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -14,11 +15,12 @@ import (
 
 type deleteHandler struct {
 	*Handler
+	info *fractionrule.FractionRule
 }
 
 func (h *deleteHandler) deleteFractionRuleBase(ctx context.Context, tx *ent.Tx) error {
 	now := uint32(time.Now().Unix())
-	updateOne, err := crud.UpdateSet(tx.FractionRule.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
+	updateOne, err := crud.UpdateSet(tx.FractionRule.UpdateOneID(h.info.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -26,26 +28,25 @@ func (h *deleteHandler) deleteFractionRuleBase(ctx context.Context, tx *ent.Tx) 
 	if err != nil {
 		return wlog.WrapError(err)
 	}
+
 	return nil
 }
 
 func (h *Handler) DeleteFractionRule(ctx context.Context) error {
-	info, err := h.GetFractionRule(ctx)
+	handler := deleteHandler{Handler: h}
+	var err error
+
+	handler.info, err = handler.GetFractionRule(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 
-	if info == nil {
+	if handler.info == nil {
 		return nil
 	}
 
-	h.ID = &info.ID
-	handler := &deleteHandler{
-		Handler: h,
-	}
-
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		if err := handler.deleteFractionRuleBase(_ctx, tx); err != nil {
+		if err := handler.deleteFractionRuleBase(ctx, tx); err != nil {
 			return wlog.WrapError(err)
 		}
 		return nil

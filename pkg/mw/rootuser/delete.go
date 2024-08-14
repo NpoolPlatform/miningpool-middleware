@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	crud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/rootuser"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
@@ -14,11 +15,12 @@ import (
 
 type deleteHandler struct {
 	*Handler
+	info *rootuser.RootUser
 }
 
 func (h *deleteHandler) deleteRootUserBase(ctx context.Context, tx *ent.Tx) error {
 	now := uint32(time.Now().Unix())
-	updateOne, err := crud.UpdateSet(tx.RootUser.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
+	updateOne, err := crud.UpdateSet(tx.RootUser.UpdateOneID(h.info.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -26,26 +28,25 @@ func (h *deleteHandler) deleteRootUserBase(ctx context.Context, tx *ent.Tx) erro
 	if err != nil {
 		return wlog.WrapError(err)
 	}
+
 	return nil
 }
 
 func (h *Handler) DeleteRootUser(ctx context.Context) error {
-	info, err := h.GetRootUser(ctx)
+	handler := deleteHandler{Handler: h}
+	var err error
+
+	handler.info, err = handler.GetRootUser(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 
-	if info == nil {
+	if handler.info == nil {
 		return nil
 	}
 
-	h.ID = &info.ID
-	handler := &deleteHandler{
-		Handler: h,
-	}
-
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
-		if err := handler.deleteRootUserBase(_ctx, tx); err != nil {
+		if err := handler.deleteRootUserBase(ctx, tx); err != nil {
 			return wlog.WrapError(err)
 		}
 		return nil

@@ -14,6 +14,8 @@ import (
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	pooltypes "github.com/NpoolPlatform/miningpool-middleware/pkg/pools/types"
 
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 )
@@ -104,6 +106,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		sql.As(poolT.C(pool.FieldName), "miningpool_name"),
 		sql.As(poolT.C(pool.FieldLogo), "miningpool_logo"),
 		sql.As(poolT.C(pool.FieldSite), "miningpool_site"),
+		sql.As(poolT.C(pool.FieldEntID), "pool_id"),
 		gooduser.FieldRootUserID,
 	)
 }
@@ -168,4 +171,64 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 
 	handler.formalize()
 	return handler.infos, handler.total, nil
+}
+
+func (h *Handler) GetOrderUserProportion(ctx context.Context) (*float64, error) {
+	info, err := h.GetOrderUser(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	if info == nil {
+		return nil, wlog.Errorf("invalid entid")
+	}
+
+	handle := &baseInfoHandle{Handler: h}
+
+	err = handle.getBaseInfo(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	proportion, err := mgr.GetRevenueProportion(ctx, handle.baseInfo.Distributor, handle.baseInfo.Recipient)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	return proportion, nil
+}
+
+func (h *Handler) GetOrderUserBalance(ctx context.Context) (*pooltypes.AssetsBalance, error) {
+	info, err := h.GetOrderUser(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	if info == nil {
+		return nil, wlog.Errorf("invalid entid")
+	}
+
+	handle := &baseInfoHandle{Handler: h}
+
+	err = handle.getBaseInfo(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	assetsBalance, err := mgr.GetAssetsBalance(ctx, handle.baseInfo.Recipient)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	return assetsBalance, nil
 }

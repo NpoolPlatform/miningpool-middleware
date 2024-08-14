@@ -20,7 +20,7 @@ type deleteHandler struct {
 
 func (h *deleteHandler) deleteOrderUserBase(ctx context.Context, tx *ent.Tx) error {
 	now := uint32(time.Now().Unix())
-	updateOne, err := crud.UpdateSet(tx.OrderUser.UpdateOneID(*h.ID), &crud.Req{DeletedAt: &now})
+	updateOne, err := crud.UpdateSet(tx.OrderUser.UpdateOneID(h.info.ID), &crud.Req{DeletedAt: &now})
 	if err != nil {
 		return wlog.WrapError(err)
 	}

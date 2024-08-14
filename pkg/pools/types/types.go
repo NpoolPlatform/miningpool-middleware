@@ -1,10 +1,18 @@
-package pools
+package types
 
 import (
 	"context"
 
 	basetype "github.com/NpoolPlatform/message/npool/basetypes/v1"
 )
+
+type AssetsBalance struct {
+	Balance              float64
+	Paid                 float64
+	TotalIncome          float64
+	YesterdayIncome      float64
+	EstimatedTodayIncome float64
+}
 
 type PoolManager interface {
 	CheckAuth(ctx context.Context) error
@@ -20,7 +28,7 @@ type PoolManager interface {
 
 	// revenue
 	SetRevenueProportion(ctx context.Context, distributor string, recipient string, proportion string) error
-	GetRevenueProportion(ctx context.Context, distributor string, recipient string) (float64, error)
+	GetRevenueProportion(ctx context.Context, distributor string, recipient string) (*float64, error)
 	SetRevenueAddress(ctx context.Context, userName string, address string) error
 	GetRevenueAddress(ctx context.Context, userName string) (string, error)
 
@@ -33,4 +41,6 @@ type PoolManager interface {
 
 	// hash rate
 	GetHashRate(ctx context.Context, name string, cointypes []basetype.CoinType) (float64, error)
+
+	GetAssetsBalance(ctx context.Context, name string) (*AssetsBalance, error)
 }

@@ -72,3 +72,67 @@ func (s *Server) GetOrderUsers(ctx context.Context, in *npool.GetOrderUsersReque
 		Total: total,
 	}, nil
 }
+
+func (s *Server) GetOrderUserProportion(ctx context.Context, in *npool.GetOrderUserProportionRequest) (*npool.GetOrderUserProportionResponse, error) {
+	handler, err := orderuser.NewHandler(
+		ctx,
+		orderuser.WithEntID(&in.EntID, true),
+		orderuser.WithCoinTypeID(&in.CoinTypeID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserProportion",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	proportion, err := handler.GetOrderUserProportion(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserProportion",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.GetOrderUserProportionResponse{
+		Proportion: proportion,
+	}, nil
+}
+
+func (s *Server) GetOrderUserBalance(ctx context.Context, in *npool.GetOrderUserBalanceRequest) (*npool.GetOrderUserBalanceResponse, error) {
+	handler, err := orderuser.NewHandler(
+		ctx,
+		orderuser.WithEntID(&in.EntID, true),
+		orderuser.WithCoinTypeID(&in.CoinTypeID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserBalance",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	assetsBalance, err := handler.GetOrderUserBalance(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserBalance",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, err.Error())
+	}
+
+	return &npool.GetOrderUserBalanceResponse{
+		Balance:              assetsBalance.Balance,
+		Paid:                 assetsBalance.Paid,
+		TotalIncome:          assetsBalance.TotalIncome,
+		YesterdayIncome:      assetsBalance.YesterdayIncome,
+		EstimatedTodayIncome: assetsBalance.EstimatedTodayIncome,
+	}, nil
+}

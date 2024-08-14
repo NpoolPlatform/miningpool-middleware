@@ -16,6 +16,7 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/const/time"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/client"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
+	pooltypes "github.com/NpoolPlatform/miningpool-middleware/pkg/pools/types"
 	"github.com/mr-tron/base58"
 	"github.com/shopspring/decimal"
 )
@@ -246,27 +247,27 @@ func (mgr *Manager) SetRevenueProportion(ctx context.Context, distributor, recip
 	return nil
 }
 
-func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor, recipient string) (float64, error) {
+func (mgr *Manager) GetRevenueProportion(ctx context.Context, distributor, recipient string) (*float64, error) {
 	getResp, err := mgr.cli.RevenueDistributionInfo(ctx, &types.RevenueDistributionInfoReq{
 		Distributor: distributor,
 		Recipient:   recipient,
 		Currency:    mgr.currency,
 	})
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return nil, wlog.WrapError(err)
 	}
 
 	if getResp == nil {
-		return 0, wlog.Errorf("failed to get revenue proportion info,have nil response")
+		return nil, wlog.Errorf("failed to get revenue proportion info,have nil response")
 	}
 
 	for _, v := range getResp.Data {
 		if v.Currency == mgr.currency && v.Distributor == distributor && v.Recipient == recipient {
-			return v.Proportion, nil
+			return &v.Proportion, nil
 		}
 	}
 
-	return 0, nil
+	return nil, nil
 }
 
 func (mgr *Manager) SetRevenueAddress(ctx context.Context, name, address string) error {
@@ -404,6 +405,23 @@ func (mgr *Manager) GetHashRate(ctx context.Context, name string, cointypes []ba
 	}
 
 	return hashRate, nil
+}
+
+func (mgr *Manager) GetAssetsBalance(ctx context.Context, name string) (*pooltypes.AssetsBalance, error) {
+	resp, err := mgr.cli.AssetsBalance(ctx, &types.AssetsBalanceReq{
+		Currency:       mgr.currency,
+		MiningUserName: name,
+	})
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+	return &pooltypes.AssetsBalance{
+		Balance:              resp.BalanceInfo.Balance,
+		Paid:                 resp.BalanceInfo.Paid,
+		TotalIncome:          resp.BalanceInfo.TotalIncome,
+		YesterdayIncome:      resp.BalanceInfo.YesterdayIncome,
+		EstimatedTodayIncome: resp.BalanceInfo.EstimatedTodayIncome,
+	}, nil
 }
 
 func getReadPageLink(key, userName string) string {

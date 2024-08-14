@@ -4,16 +4,9 @@ import (
 	"context"
 
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
-	coinpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/gooduser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/google/uuid"
 )
@@ -64,39 +57,30 @@ func (h *Handler) UpdateOrderUser(ctx context.Context) error {
 	})
 }
 
-type baseInfo struct {
-	OrderUserID    uint32
-	MiningpoolType mpbasetypes.MiningpoolType
-	CoinType       basetypes.CoinType
-	AuthToken      string
-	Recipient      string
-	Distributor    string
-}
-
 type updateInPoolHandle struct {
 	*Handler
-	baseInfo *baseInfo
 }
 
 //nolint:gocognit
 func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
-	err := h.getBaseInfo(ctx)
+	handle := &baseInfoHandle{Handler: h.Handler}
+	err := handle.getBaseInfo(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	mgr, err := pools.NewPoolManager(h.baseInfo.MiningpoolType, h.baseInfo.CoinType.Enum(), h.baseInfo.AuthToken)
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, handle.baseInfo.CoinType.Enum(), handle.baseInfo.AuthToken)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 	if h.Proportion != nil {
-		err = mgr.SetRevenueProportion(ctx, h.baseInfo.Distributor, h.baseInfo.Recipient, h.Proportion.String())
+		err = mgr.SetRevenueProportion(ctx, handle.baseInfo.Distributor, handle.baseInfo.Recipient, handle.Proportion.String())
 		if err != nil {
 			return wlog.WrapError(err)
 		}
 	}
 
 	if h.RevenueAddress != nil {
-		err = mgr.SetRevenueAddress(ctx, h.baseInfo.Recipient, *h.RevenueAddress)
+		err = mgr.SetRevenueAddress(ctx, handle.baseInfo.Recipient, *handle.RevenueAddress)
 		if err != nil {
 			return wlog.WrapError(err)
 		}
@@ -117,9 +101,9 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 		paused := true
 
 		if autoPay {
-			autoPay, err = mgr.ResumePayment(ctx, h.baseInfo.Recipient)
+			autoPay, err = mgr.ResumePayment(ctx, handle.baseInfo.Recipient)
 		} else {
-			paused, err = mgr.PausePayment(ctx, h.baseInfo.Recipient)
+			paused, err = mgr.PausePayment(ctx, handle.baseInfo.Recipient)
 		}
 		if err != nil {
 			return wlog.WrapError(err)
@@ -131,78 +115,5 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 		h.AutoPay = &autoPay
 	}
 
-	return nil
-}
-
-func (h *updateInPoolHandle) getBaseInfo(ctx context.Context) error {
-	if h.CoinTypeID == nil {
-		return wlog.Errorf("have invalid cointypeid")
-	}
-	orderUser, err := h.GetOrderUser(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	if orderUser == nil {
-		err = wlog.Errorf("have no record of orderuser")
-		return wlog.WrapError(err)
-	}
-
-	gooduserH, err := gooduser.NewHandler(ctx, gooduser.WithEntID(&orderUser.GoodUserID, true))
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	goodUser, err := gooduserH.GetGoodUser(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	if goodUser == nil {
-		err = wlog.Errorf("have no record of gooduser with entid %v", orderUser.GoodUserID)
-		return wlog.WrapError(err)
-	}
-
-	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&goodUser.RootUserID, true))
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	rootUser, err := rootuserH.GetAuthToken(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-	if rootUser == nil {
-		err = wlog.Errorf("have no record of rootuser with entid %v", goodUser.RootUserID)
-		return wlog.WrapError(err)
-	}
-
-	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
-		MiningpoolType: &basetypes.Uint32Val{
-			Op:    cruder.EQ,
-			Value: uint32(*orderUser.MiningpoolType.Enum()),
-		},
-		CoinTypeID: &basetypes.StringVal{
-			Op:    cruder.EQ,
-			Value: *h.CoinTypeID,
-		},
-	}), coin.WithOffset(0), coin.WithLimit(1))
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-
-	coinInfos, _, err := coinH.GetCoins(ctx)
-	if err != nil {
-		return wlog.WrapError(err)
-	}
-
-	if len(coinInfos) == 0 {
-		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID)
-	}
-
-	h.baseInfo = &baseInfo{
-		OrderUserID:    orderUser.ID,
-		MiningpoolType: orderUser.MiningpoolType,
-		CoinType:       coinInfos[0].CoinType,
-		Distributor:    goodUser.Name,
-		Recipient:      orderUser.Name,
-		AuthToken:      rootUser.AuthTokenPlain,
-	}
 	return nil
 }

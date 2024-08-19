@@ -93,7 +93,20 @@ func WithGoodUserID(gooduserid *string, must bool) func(context.Context, *Handle
 
 func WithCoinTypeID(cointypeid *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		h.CoinTypeID = cointypeid
+		if cointypeid == nil {
+			if must {
+				return wlog.Errorf("invalid cointypeid")
+			}
+			return nil
+		}
+		id, err := uuid.Parse(*cointypeid)
+		if err != nil {
+			return wlog.WrapError(err)
+		}
+
+		_id := id.String()
+
+		h.CoinTypeID = &_id
 		return nil
 	}
 }

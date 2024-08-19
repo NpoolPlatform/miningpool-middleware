@@ -100,6 +100,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	).AppendSelect(
 		coinT.C(coin.FieldCoinType),
 		coinT.C(coin.FieldPoolID),
+		coinT.C(coin.FieldCoinTypeID),
 		poolT.C(pool.FieldMiningpoolType),
 	)
 

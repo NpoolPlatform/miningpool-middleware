@@ -25,6 +25,7 @@ type Handler struct {
 	WithdrawRate     *decimal.Decimal
 	Reqs             []*fractionrulecrud.Req
 	Conds            *fractionrulecrud.Conds
+	JoinPoolConds    *fractionrulecrud.JoinPoolConds
 	Offset           int32
 	Limit            int32
 }
@@ -212,6 +213,16 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			}
 			h.Conds.PoolCoinTypeID = &cruder.Cond{
 				Op:  conds.GetPoolCoinTypeID().GetOp(),
+				Val: id,
+			}
+		}
+		if conds.PoolID != nil {
+			id, err := uuid.Parse(conds.GetPoolID().GetValue())
+			if err != nil {
+				return wlog.WrapError(err)
+			}
+			h.JoinPoolConds.PoolID = &cruder.Cond{
+				Op:  conds.GetPoolID().GetOp(),
 				Val: id,
 			}
 		}

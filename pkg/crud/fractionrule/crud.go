@@ -74,6 +74,10 @@ type Conds struct {
 	EntIDs           *cruder.Cond
 }
 
+type JoinPoolConds struct {
+	PoolID *cruder.Cond
+}
+
 func SetQueryConds(q *ent.FractionRuleQuery, conds *Conds) (*ent.FractionRuleQuery, error) { //nolint
 	if conds == nil {
 		return nil, wlog.Errorf("have no any conds")

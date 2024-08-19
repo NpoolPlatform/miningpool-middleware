@@ -4,10 +4,13 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
+	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -99,6 +102,20 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		coinT.C(coin.FieldPoolID),
 		poolT.C(pool.FieldMiningpoolType),
 	)
+
+	if h.JoinPoolConds.PoolID != nil {
+		_type, ok := h.JoinPoolConds.PoolID.Val.(uuid.UUID)
+		if !ok {
+			logger.Sugar().Error("invalid poolid")
+			return
+		}
+		switch h.JoinPoolConds.PoolID.Op {
+		case cruder.EQ:
+			s.OnP(
+				sql.EQ(poolT.C(pool.FieldEntID), _type.String()),
+			)
+		}
+	}
 }
 
 func (h *queryHandler) scan(ctx context.Context) error {

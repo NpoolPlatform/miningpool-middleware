@@ -8,6 +8,7 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypesv1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	orderusermwpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 
 	fractioncrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fraction"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
@@ -23,15 +24,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func (h *Handler) fractionInPool(ctx context.Context) error {
-	if h.CoinTypeID == nil {
-		return wlog.Errorf("invalid cointypeid")
-	}
-	if h.OrderUserID == nil {
-		return wlog.Errorf("invalid orderuserid")
-	}
+type createHandler struct {
+	*Handler
+	orderUser    *orderusermwpb.OrderUser
+	rootUserAuth *rootuser.TokenInfo
+}
 
-	orderUserID := h.OrderUserID.String()
+func (h *createHandler) _getOrderUser(ctx context.Context, orderUserID string) error {
 	orderuserH, err := orderuser.NewHandler(ctx, orderuser.WithEntID(&orderUserID, true))
 	if err != nil {
 		return wlog.WrapError(err)
@@ -52,7 +51,12 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return wlog.Errorf("invalid userid")
 	}
 
-	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&orderUser.RootUserID, true))
+	h.orderUser = orderUser
+	return nil
+}
+
+func (h *createHandler) _getRootUserAuth(ctx context.Context, rootUserID string) error {
+	rootuserH, err := rootuser.NewHandler(ctx, rootuser.WithEntID(&rootUserID, true))
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -61,13 +65,34 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return wlog.WrapError(err)
 	}
 	if rootUser == nil {
-		return wlog.Errorf("have no rootuser,entid: %v", orderUser.RootUserID)
+		return wlog.Errorf("have no rootuser,entid: %v", h.orderUser.RootUserID)
+	}
+
+	h.rootUserAuth = rootUser
+	return nil
+}
+
+func (h *createHandler) fractionInPool(ctx context.Context) error {
+	if h.OrderUserID == nil {
+		return wlog.Errorf("invalid orderuserid")
+	}
+
+	if h.CoinTypeID == nil {
+		return wlog.Errorf("invalid cointypeid")
+	}
+
+	if err := h._getOrderUser(ctx, h.OrderUserID.String()); err != nil {
+		return wlog.WrapError(err)
+	}
+
+	if err := h._getRootUserAuth(ctx, h.orderUser.RootUserID); err != nil {
+		return wlog.WrapError(err)
 	}
 
 	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
 		MiningpoolType: &basetypesv1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(*orderUser.MiningpoolType.Enum()),
+			Value: uint32(*h.orderUser.MiningpoolType.Enum()),
 		},
 		CoinTypeIDs: &basetypesv1.StringSliceVal{
 			Op:    cruder.EQ,
@@ -87,13 +112,13 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID.String())
 	}
 
-	mgr, err := pools.NewPoolManager(orderUser.MiningpoolType, &coinInfos[0].CoinType, rootUser.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(h.orderUser.MiningpoolType, &coinInfos[0].CoinType, h.rootUserAuth.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
 	withdrawTime := uint32(time.Now().Unix())
 	h.WithdrawAt = &withdrawTime
-	_PromisePayAt, err := mgr.WithdrawFraction(ctx, orderUser.Name)
+	_PromisePayAt, err := mgr.WithdrawFraction(ctx, h.orderUser.Name)
 	PromisePayAt := uint32(_PromisePayAt)
 	if err != nil {
 		errMsg := err.Error()
@@ -110,11 +135,13 @@ func (h *Handler) fractionInPool(ctx context.Context) error {
 }
 
 func (h *Handler) CreateFraction(ctx context.Context) error {
-	if h.EntID == nil {
-		h.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
+	handle := createHandler{Handler: h}
+
+	if handle.EntID == nil {
+		handle.EntID = func() *uuid.UUID { uid := uuid.New(); return &uid }()
 	}
 
-	err := h.fractionInPool(ctx)
+	err := handle.fractionInPool(ctx)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

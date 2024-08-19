@@ -82,11 +82,11 @@ func GetGoodUsers(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	return infos.([]*npool.GoodUser), total, nil
 }
 
-func GetGoodUserHashRate(ctx context.Context, EntID string, CoinTypeIDs []string) (float64, error) {
+func GetGoodUserHashRate(ctx context.Context, entID string, coinTypeIDs []string) (float64, error) {
 	hashRate, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetGoodUserHashRate(ctx, &npool.GetGoodUserHashRateRequest{
-			EntID:       EntID,
-			CoinTypeIDs: CoinTypeIDs,
+			EntID:       entID,
+			CoinTypeIDs: coinTypeIDs,
 		})
 		if err != nil {
 			return nil, err

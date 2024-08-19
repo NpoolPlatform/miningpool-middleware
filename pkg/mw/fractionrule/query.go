@@ -110,8 +110,8 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 			logger.Sugar().Error("invalid poolid")
 			return
 		}
-		switch h.JoinPoolConds.PoolID.Op {
-		case cruder.EQ:
+
+		if h.JoinPoolConds.PoolID.Op == cruder.EQ {
 			s.OnP(
 				sql.EQ(poolT.C(pool.FieldEntID), _type.String()),
 			)

@@ -15,12 +15,12 @@ func (h *Handler) _checkCreateCoinInfo(ctx context.Context) error {
 	poolID := h.PoolID.String()
 	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
 	if err != nil {
-		wlog.WrapError(err)
+		return wlog.WrapError(err)
 	}
 
 	poolInfo, err := poolH.GetPool(ctx)
 	if err != nil {
-		wlog.WrapError(err)
+		return wlog.WrapError(err)
 	}
 
 	// check if the miningpool and cointype is supported

@@ -14,6 +14,7 @@ const (
 func IsTestPoolUserName(name string) bool {
 	return strings.HasPrefix(name, TestNamePrefix)
 }
+
 func RandomPoolUserNameForTest() string {
 	name := TestNamePrefix
 	_name, err := f2pool.RandomF2PoolUser(6)

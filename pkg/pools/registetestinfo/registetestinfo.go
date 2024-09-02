@@ -8,14 +8,14 @@ import (
 	mpbasetype "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	coinmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
-	fractionrulemw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
+	fractionwithdrawalrulemw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionwithdrawalrule"
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/config"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/const/time"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
 )
@@ -30,9 +30,9 @@ var (
 			Description:    "",
 		},
 	}
-	poolEntIDs         = []*uuid.UUID{}
-	coinEntIDs         = []*uuid.UUID{}
-	fractionruleEntIDs = []*uuid.UUID{}
+	poolEntIDs                   = []*uuid.UUID{}
+	coinEntIDs                   = []*uuid.UUID{}
+	fractionwithdrawalruleEntIDs = []*uuid.UUID{}
 
 	coinInfos = []*coinmw.Coin{
 		{
@@ -45,15 +45,15 @@ var (
 		},
 	}
 
-	fractionruleInfos = []*fractionrulemw.FractionRule{
+	fractionwithdrawalruleInfos = []*fractionwithdrawalrulemw.FractionWithdrawalRule{
 		{
 			MiningpoolType: mpbasetype.MiningpoolType_F2Pool,
 			CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 			// 30Day
-			WithdrawInterval: time.SecondsPerDay * 30,
-			PayoutThreshold:  "0.005",
-			MinAmount:        "0.0005",
-			WithdrawRate:     "0",
+			WithdrawInterval:      time.SecondsPerDay * 30,
+			PayoutThreshold:       "0.005",
+			LeastWithdrawalAmount: "0.0005",
+			WithdrawFee:           "0",
 		},
 	}
 )
@@ -183,8 +183,8 @@ func registeCoinInfo(ctx context.Context) {
 	}
 }
 
-func registeFractionRule(ctx context.Context) {
-	for _, info := range fractionruleInfos {
+func registeFractionWithdrawalRule(ctx context.Context) {
+	for _, info := range fractionwithdrawalruleInfos {
 		coinH, err := coin.NewHandler(ctx,
 			coin.WithConds(&coinmw.Conds{
 				CoinType: &basetypes.Uint32Val{
@@ -214,8 +214,8 @@ func registeFractionRule(ctx context.Context) {
 			continue
 		}
 		// check if exist
-		fractionruleH, err := fractionrule.NewHandler(ctx, fractionrule.WithConds(
-			&fractionrulemw.Conds{
+		fractionwithdrawalruleH, err := fractionwithdrawalrule.NewHandler(ctx, fractionwithdrawalrule.WithConds(
+			&fractionwithdrawalrulemw.Conds{
 				PoolCoinTypeID: &basetypes.StringVal{
 					Op:    cruder.EQ,
 					Value: coinInfos[0].EntID,
@@ -227,7 +227,7 @@ func registeFractionRule(ctx context.Context) {
 			continue
 		}
 
-		exist, err := fractionruleH.ExistFractionRuleConds(ctx)
+		exist, err := fractionwithdrawalruleH.ExistFractionWithdrawalRuleConds(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 			continue
@@ -237,24 +237,24 @@ func registeFractionRule(ctx context.Context) {
 		}
 
 		info.EntID = uuid.NewString()
-		// create fraction rule
-		fractionruleH, err = fractionrule.NewHandler(ctx,
-			fractionrule.WithEntID(&info.EntID, true),
-			fractionrule.WithPoolCoinTypeID(&coinInfos[0].EntID, true),
-			fractionrule.WithWithdrawInterval(&info.WithdrawInterval, true),
-			fractionrule.WithPayoutThreshold(&info.PayoutThreshold, true),
-			fractionrule.WithMinAmount(&info.MinAmount, true),
-			fractionrule.WithWithdrawRate(&info.WithdrawRate, true),
+		// create fractionwithdrawal rule
+		fractionwithdrawalruleH, err = fractionwithdrawalrule.NewHandler(ctx,
+			fractionwithdrawalrule.WithEntID(&info.EntID, true),
+			fractionwithdrawalrule.WithPoolCoinTypeID(&coinInfos[0].EntID, true),
+			fractionwithdrawalrule.WithWithdrawInterval(&info.WithdrawInterval, true),
+			fractionwithdrawalrule.WithPayoutThreshold(&info.PayoutThreshold, true),
+			fractionwithdrawalrule.WithLeastWithdrawalAmount(&info.LeastWithdrawalAmount, true),
+			fractionwithdrawalrule.WithWithdrawFee(&info.WithdrawFee, true),
 		)
 		if err != nil {
 			logger.Sugar().Error(err)
 			continue
 		}
-		err = fractionruleH.CreateFractionRule(ctx)
+		err = fractionwithdrawalruleH.CreateFractionWithdrawalRule(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 		}
-		fractionruleEntIDs = append(fractionruleEntIDs, fractionruleH.EntID)
+		fractionwithdrawalruleEntIDs = append(fractionwithdrawalruleEntIDs, fractionwithdrawalruleH.EntID)
 	}
 }
 
@@ -286,14 +286,14 @@ func cleanCoins(ctx context.Context) {
 	}
 }
 
-func cleanFractionrules(ctx context.Context) {
-	for _, entid := range fractionruleEntIDs {
+func cleanFractionWithdrawalrules(ctx context.Context) {
+	for _, entid := range fractionwithdrawalruleEntIDs {
 		_entid := entid.String()
-		fractionruleH, err := fractionrule.NewHandler(ctx, fractionrule.WithEntID(&_entid, true))
+		fractionwithdrawalruleH, err := fractionwithdrawalrule.NewHandler(ctx, fractionwithdrawalrule.WithEntID(&_entid, true))
 		if err != nil {
 			logger.Sugar().Error(err)
 		}
-		err = fractionruleH.DeleteFractionRule(ctx)
+		err = fractionwithdrawalruleH.DeleteFractionWithdrawalRule(ctx)
 		if err != nil {
 			logger.Sugar().Error(err)
 		}
@@ -303,11 +303,11 @@ func cleanFractionrules(ctx context.Context) {
 func InitTestInfo(ctx context.Context) {
 	registePool(ctx)
 	registeCoinInfo(ctx)
-	registeFractionRule(ctx)
+	registeFractionWithdrawalRule(ctx)
 }
 
 func CleanTestInfo(ctx context.Context) {
-	cleanFractionrules(ctx)
+	cleanFractionWithdrawalrules(ctx)
 	cleanCoins(ctx)
 	cleanPools(ctx)
 }

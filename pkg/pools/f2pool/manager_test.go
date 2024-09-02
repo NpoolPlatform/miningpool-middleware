@@ -140,14 +140,14 @@ func payment(t *testing.T) {
 }
 
 //nolint:gocritic
-func withdrawFraction(t *testing.T) {
+func withdrawFractionWithdrawal(t *testing.T) {
 	mgr, err := NewF2PoolManager(v1.CoinType_CoinTypeBitCoin.Enum(), accessToken)
 	assert.Nil(t, err)
 	assert.NotNil(t, mgr)
 	if err != nil {
 		return
 	}
-	txTime, err := mgr.WithdrawFraction(context.Background(), user1)
+	txTime, err := mgr.WithdrawFractionWithdrawal(context.Background(), user1)
 	// most of the time this api will report an error
 	if err == nil {
 		assert.Nil(t, err)
@@ -172,5 +172,5 @@ func TestCoin(t *testing.T) {
 	t.Run("revenueAddress", revenueAddress)
 	t.Run("pageLink", pageLink)
 	t.Run("payment", payment)
-	t.Run("withdrawFraction", withdrawFraction)
+	t.Run("withdrawFractionWithdrawal", withdrawFractionWithdrawal)
 }

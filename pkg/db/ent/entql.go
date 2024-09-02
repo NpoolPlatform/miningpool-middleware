@@ -5,8 +5,8 @@ package ent
 import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawal"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
@@ -67,49 +67,49 @@ var schemaGraph = func() *sqlgraph.Schema {
 	}
 	graph.Nodes[2] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   fraction.Table,
-			Columns: fraction.Columns,
+			Table:   fractionwithdrawal.Table,
+			Columns: fractionwithdrawal.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUint32,
-				Column: fraction.FieldID,
+				Column: fractionwithdrawal.FieldID,
 			},
 		},
-		Type: "Fraction",
+		Type: "FractionWithdrawal",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			fraction.FieldCreatedAt:     {Type: field.TypeUint32, Column: fraction.FieldCreatedAt},
-			fraction.FieldUpdatedAt:     {Type: field.TypeUint32, Column: fraction.FieldUpdatedAt},
-			fraction.FieldDeletedAt:     {Type: field.TypeUint32, Column: fraction.FieldDeletedAt},
-			fraction.FieldEntID:         {Type: field.TypeUUID, Column: fraction.FieldEntID},
-			fraction.FieldAppID:         {Type: field.TypeUUID, Column: fraction.FieldAppID},
-			fraction.FieldUserID:        {Type: field.TypeUUID, Column: fraction.FieldUserID},
-			fraction.FieldOrderUserID:   {Type: field.TypeUUID, Column: fraction.FieldOrderUserID},
-			fraction.FieldCoinTypeID:    {Type: field.TypeUUID, Column: fraction.FieldCoinTypeID},
-			fraction.FieldWithdrawState: {Type: field.TypeString, Column: fraction.FieldWithdrawState},
-			fraction.FieldWithdrawAt:    {Type: field.TypeUint32, Column: fraction.FieldWithdrawAt},
-			fraction.FieldPromisePayAt:  {Type: field.TypeUint32, Column: fraction.FieldPromisePayAt},
-			fraction.FieldMsg:           {Type: field.TypeString, Column: fraction.FieldMsg},
+			fractionwithdrawal.FieldCreatedAt:             {Type: field.TypeUint32, Column: fractionwithdrawal.FieldCreatedAt},
+			fractionwithdrawal.FieldUpdatedAt:             {Type: field.TypeUint32, Column: fractionwithdrawal.FieldUpdatedAt},
+			fractionwithdrawal.FieldDeletedAt:             {Type: field.TypeUint32, Column: fractionwithdrawal.FieldDeletedAt},
+			fractionwithdrawal.FieldEntID:                 {Type: field.TypeUUID, Column: fractionwithdrawal.FieldEntID},
+			fractionwithdrawal.FieldAppID:                 {Type: field.TypeUUID, Column: fractionwithdrawal.FieldAppID},
+			fractionwithdrawal.FieldUserID:                {Type: field.TypeUUID, Column: fractionwithdrawal.FieldUserID},
+			fractionwithdrawal.FieldOrderUserID:           {Type: field.TypeUUID, Column: fractionwithdrawal.FieldOrderUserID},
+			fractionwithdrawal.FieldCoinTypeID:            {Type: field.TypeUUID, Column: fractionwithdrawal.FieldCoinTypeID},
+			fractionwithdrawal.FieldFractionWithdrawState: {Type: field.TypeString, Column: fractionwithdrawal.FieldFractionWithdrawState},
+			fractionwithdrawal.FieldWithdrawAt:            {Type: field.TypeUint32, Column: fractionwithdrawal.FieldWithdrawAt},
+			fractionwithdrawal.FieldPromisePayAt:          {Type: field.TypeUint32, Column: fractionwithdrawal.FieldPromisePayAt},
+			fractionwithdrawal.FieldMsg:                   {Type: field.TypeString, Column: fractionwithdrawal.FieldMsg},
 		},
 	}
 	graph.Nodes[3] = &sqlgraph.Node{
 		NodeSpec: sqlgraph.NodeSpec{
-			Table:   fractionrule.Table,
-			Columns: fractionrule.Columns,
+			Table:   fractionwithdrawalrule.Table,
+			Columns: fractionwithdrawalrule.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeUint32,
-				Column: fractionrule.FieldID,
+				Column: fractionwithdrawalrule.FieldID,
 			},
 		},
-		Type: "FractionRule",
+		Type: "FractionWithdrawalRule",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			fractionrule.FieldCreatedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldCreatedAt},
-			fractionrule.FieldUpdatedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldUpdatedAt},
-			fractionrule.FieldDeletedAt:        {Type: field.TypeUint32, Column: fractionrule.FieldDeletedAt},
-			fractionrule.FieldEntID:            {Type: field.TypeUUID, Column: fractionrule.FieldEntID},
-			fractionrule.FieldPoolCoinTypeID:   {Type: field.TypeUUID, Column: fractionrule.FieldPoolCoinTypeID},
-			fractionrule.FieldWithdrawInterval: {Type: field.TypeUint32, Column: fractionrule.FieldWithdrawInterval},
-			fractionrule.FieldMinAmount:        {Type: field.TypeOther, Column: fractionrule.FieldMinAmount},
-			fractionrule.FieldPayoutThreshold:  {Type: field.TypeOther, Column: fractionrule.FieldPayoutThreshold},
-			fractionrule.FieldWithdrawRate:     {Type: field.TypeOther, Column: fractionrule.FieldWithdrawRate},
+			fractionwithdrawalrule.FieldCreatedAt:             {Type: field.TypeUint32, Column: fractionwithdrawalrule.FieldCreatedAt},
+			fractionwithdrawalrule.FieldUpdatedAt:             {Type: field.TypeUint32, Column: fractionwithdrawalrule.FieldUpdatedAt},
+			fractionwithdrawalrule.FieldDeletedAt:             {Type: field.TypeUint32, Column: fractionwithdrawalrule.FieldDeletedAt},
+			fractionwithdrawalrule.FieldEntID:                 {Type: field.TypeUUID, Column: fractionwithdrawalrule.FieldEntID},
+			fractionwithdrawalrule.FieldPoolCoinTypeID:        {Type: field.TypeUUID, Column: fractionwithdrawalrule.FieldPoolCoinTypeID},
+			fractionwithdrawalrule.FieldWithdrawInterval:      {Type: field.TypeUint32, Column: fractionwithdrawalrule.FieldWithdrawInterval},
+			fractionwithdrawalrule.FieldLeastWithdrawalAmount: {Type: field.TypeOther, Column: fractionwithdrawalrule.FieldLeastWithdrawalAmount},
+			fractionwithdrawalrule.FieldPayoutThreshold:       {Type: field.TypeOther, Column: fractionwithdrawalrule.FieldPayoutThreshold},
+			fractionwithdrawalrule.FieldWithdrawFee:           {Type: field.TypeOther, Column: fractionwithdrawalrule.FieldWithdrawFee},
 		},
 	}
 	graph.Nodes[4] = &sqlgraph.Node{
@@ -380,33 +380,33 @@ func (f *CoinFilter) WhereRemark(p entql.StringP) {
 }
 
 // addPredicate implements the predicateAdder interface.
-func (fq *FractionQuery) addPredicate(pred func(s *sql.Selector)) {
-	fq.predicates = append(fq.predicates, pred)
+func (fwq *FractionWithdrawalQuery) addPredicate(pred func(s *sql.Selector)) {
+	fwq.predicates = append(fwq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the FractionQuery builder.
-func (fq *FractionQuery) Filter() *FractionFilter {
-	return &FractionFilter{config: fq.config, predicateAdder: fq}
+// Filter returns a Filter implementation to apply filters on the FractionWithdrawalQuery builder.
+func (fwq *FractionWithdrawalQuery) Filter() *FractionWithdrawalFilter {
+	return &FractionWithdrawalFilter{config: fwq.config, predicateAdder: fwq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *FractionMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *FractionWithdrawalMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the FractionMutation builder.
-func (m *FractionMutation) Filter() *FractionFilter {
-	return &FractionFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the FractionWithdrawalMutation builder.
+func (m *FractionWithdrawalMutation) Filter() *FractionWithdrawalFilter {
+	return &FractionWithdrawalFilter{config: m.config, predicateAdder: m}
 }
 
-// FractionFilter provides a generic filtering capability at runtime for FractionQuery.
-type FractionFilter struct {
+// FractionWithdrawalFilter provides a generic filtering capability at runtime for FractionWithdrawalQuery.
+type FractionWithdrawalFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *FractionFilter) Where(p entql.P) {
+func (f *FractionWithdrawalFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[2].Type, p, s); err != nil {
 			s.AddError(err)
@@ -415,98 +415,98 @@ func (f *FractionFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql uint32 predicate on the id field.
-func (f *FractionFilter) WhereID(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldID))
+func (f *FractionWithdrawalFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldID))
 }
 
 // WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *FractionFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldCreatedAt))
+func (f *FractionWithdrawalFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldCreatedAt))
 }
 
 // WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *FractionFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldUpdatedAt))
+func (f *FractionWithdrawalFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldUpdatedAt))
 }
 
 // WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *FractionFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldDeletedAt))
+func (f *FractionWithdrawalFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldDeletedAt))
 }
 
 // WhereEntID applies the entql [16]byte predicate on the ent_id field.
-func (f *FractionFilter) WhereEntID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldEntID))
+func (f *FractionWithdrawalFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawal.FieldEntID))
 }
 
 // WhereAppID applies the entql [16]byte predicate on the app_id field.
-func (f *FractionFilter) WhereAppID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldAppID))
+func (f *FractionWithdrawalFilter) WhereAppID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawal.FieldAppID))
 }
 
 // WhereUserID applies the entql [16]byte predicate on the user_id field.
-func (f *FractionFilter) WhereUserID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldUserID))
+func (f *FractionWithdrawalFilter) WhereUserID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawal.FieldUserID))
 }
 
 // WhereOrderUserID applies the entql [16]byte predicate on the order_user_id field.
-func (f *FractionFilter) WhereOrderUserID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldOrderUserID))
+func (f *FractionWithdrawalFilter) WhereOrderUserID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawal.FieldOrderUserID))
 }
 
 // WhereCoinTypeID applies the entql [16]byte predicate on the coin_type_id field.
-func (f *FractionFilter) WhereCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(fraction.FieldCoinTypeID))
+func (f *FractionWithdrawalFilter) WhereCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawal.FieldCoinTypeID))
 }
 
-// WhereWithdrawState applies the entql string predicate on the withdraw_state field.
-func (f *FractionFilter) WhereWithdrawState(p entql.StringP) {
-	f.Where(p.Field(fraction.FieldWithdrawState))
+// WhereFractionWithdrawState applies the entql string predicate on the fraction_withdraw_state field.
+func (f *FractionWithdrawalFilter) WhereFractionWithdrawState(p entql.StringP) {
+	f.Where(p.Field(fractionwithdrawal.FieldFractionWithdrawState))
 }
 
 // WhereWithdrawAt applies the entql uint32 predicate on the withdraw_at field.
-func (f *FractionFilter) WhereWithdrawAt(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldWithdrawAt))
+func (f *FractionWithdrawalFilter) WhereWithdrawAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldWithdrawAt))
 }
 
 // WherePromisePayAt applies the entql uint32 predicate on the promise_pay_at field.
-func (f *FractionFilter) WherePromisePayAt(p entql.Uint32P) {
-	f.Where(p.Field(fraction.FieldPromisePayAt))
+func (f *FractionWithdrawalFilter) WherePromisePayAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawal.FieldPromisePayAt))
 }
 
 // WhereMsg applies the entql string predicate on the msg field.
-func (f *FractionFilter) WhereMsg(p entql.StringP) {
-	f.Where(p.Field(fraction.FieldMsg))
+func (f *FractionWithdrawalFilter) WhereMsg(p entql.StringP) {
+	f.Where(p.Field(fractionwithdrawal.FieldMsg))
 }
 
 // addPredicate implements the predicateAdder interface.
-func (frq *FractionRuleQuery) addPredicate(pred func(s *sql.Selector)) {
-	frq.predicates = append(frq.predicates, pred)
+func (fwrq *FractionWithdrawalRuleQuery) addPredicate(pred func(s *sql.Selector)) {
+	fwrq.predicates = append(fwrq.predicates, pred)
 }
 
-// Filter returns a Filter implementation to apply filters on the FractionRuleQuery builder.
-func (frq *FractionRuleQuery) Filter() *FractionRuleFilter {
-	return &FractionRuleFilter{config: frq.config, predicateAdder: frq}
+// Filter returns a Filter implementation to apply filters on the FractionWithdrawalRuleQuery builder.
+func (fwrq *FractionWithdrawalRuleQuery) Filter() *FractionWithdrawalRuleFilter {
+	return &FractionWithdrawalRuleFilter{config: fwrq.config, predicateAdder: fwrq}
 }
 
 // addPredicate implements the predicateAdder interface.
-func (m *FractionRuleMutation) addPredicate(pred func(s *sql.Selector)) {
+func (m *FractionWithdrawalRuleMutation) addPredicate(pred func(s *sql.Selector)) {
 	m.predicates = append(m.predicates, pred)
 }
 
-// Filter returns an entql.Where implementation to apply filters on the FractionRuleMutation builder.
-func (m *FractionRuleMutation) Filter() *FractionRuleFilter {
-	return &FractionRuleFilter{config: m.config, predicateAdder: m}
+// Filter returns an entql.Where implementation to apply filters on the FractionWithdrawalRuleMutation builder.
+func (m *FractionWithdrawalRuleMutation) Filter() *FractionWithdrawalRuleFilter {
+	return &FractionWithdrawalRuleFilter{config: m.config, predicateAdder: m}
 }
 
-// FractionRuleFilter provides a generic filtering capability at runtime for FractionRuleQuery.
-type FractionRuleFilter struct {
+// FractionWithdrawalRuleFilter provides a generic filtering capability at runtime for FractionWithdrawalRuleQuery.
+type FractionWithdrawalRuleFilter struct {
 	predicateAdder
 	config
 }
 
 // Where applies the entql predicate on the query filter.
-func (f *FractionRuleFilter) Where(p entql.P) {
+func (f *FractionWithdrawalRuleFilter) Where(p entql.P) {
 	f.addPredicate(func(s *sql.Selector) {
 		if err := schemaGraph.EvalP(schemaGraph.Nodes[3].Type, p, s); err != nil {
 			s.AddError(err)
@@ -515,53 +515,53 @@ func (f *FractionRuleFilter) Where(p entql.P) {
 }
 
 // WhereID applies the entql uint32 predicate on the id field.
-func (f *FractionRuleFilter) WhereID(p entql.Uint32P) {
-	f.Where(p.Field(fractionrule.FieldID))
+func (f *FractionWithdrawalRuleFilter) WhereID(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldID))
 }
 
 // WhereCreatedAt applies the entql uint32 predicate on the created_at field.
-func (f *FractionRuleFilter) WhereCreatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fractionrule.FieldCreatedAt))
+func (f *FractionWithdrawalRuleFilter) WhereCreatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldCreatedAt))
 }
 
 // WhereUpdatedAt applies the entql uint32 predicate on the updated_at field.
-func (f *FractionRuleFilter) WhereUpdatedAt(p entql.Uint32P) {
-	f.Where(p.Field(fractionrule.FieldUpdatedAt))
+func (f *FractionWithdrawalRuleFilter) WhereUpdatedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldUpdatedAt))
 }
 
 // WhereDeletedAt applies the entql uint32 predicate on the deleted_at field.
-func (f *FractionRuleFilter) WhereDeletedAt(p entql.Uint32P) {
-	f.Where(p.Field(fractionrule.FieldDeletedAt))
+func (f *FractionWithdrawalRuleFilter) WhereDeletedAt(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldDeletedAt))
 }
 
 // WhereEntID applies the entql [16]byte predicate on the ent_id field.
-func (f *FractionRuleFilter) WhereEntID(p entql.ValueP) {
-	f.Where(p.Field(fractionrule.FieldEntID))
+func (f *FractionWithdrawalRuleFilter) WhereEntID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldEntID))
 }
 
 // WherePoolCoinTypeID applies the entql [16]byte predicate on the pool_coin_type_id field.
-func (f *FractionRuleFilter) WherePoolCoinTypeID(p entql.ValueP) {
-	f.Where(p.Field(fractionrule.FieldPoolCoinTypeID))
+func (f *FractionWithdrawalRuleFilter) WherePoolCoinTypeID(p entql.ValueP) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldPoolCoinTypeID))
 }
 
 // WhereWithdrawInterval applies the entql uint32 predicate on the withdraw_interval field.
-func (f *FractionRuleFilter) WhereWithdrawInterval(p entql.Uint32P) {
-	f.Where(p.Field(fractionrule.FieldWithdrawInterval))
+func (f *FractionWithdrawalRuleFilter) WhereWithdrawInterval(p entql.Uint32P) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldWithdrawInterval))
 }
 
-// WhereMinAmount applies the entql other predicate on the min_amount field.
-func (f *FractionRuleFilter) WhereMinAmount(p entql.OtherP) {
-	f.Where(p.Field(fractionrule.FieldMinAmount))
+// WhereLeastWithdrawalAmount applies the entql other predicate on the least_withdrawal_amount field.
+func (f *FractionWithdrawalRuleFilter) WhereLeastWithdrawalAmount(p entql.OtherP) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldLeastWithdrawalAmount))
 }
 
 // WherePayoutThreshold applies the entql other predicate on the payout_threshold field.
-func (f *FractionRuleFilter) WherePayoutThreshold(p entql.OtherP) {
-	f.Where(p.Field(fractionrule.FieldPayoutThreshold))
+func (f *FractionWithdrawalRuleFilter) WherePayoutThreshold(p entql.OtherP) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldPayoutThreshold))
 }
 
-// WhereWithdrawRate applies the entql other predicate on the withdraw_rate field.
-func (f *FractionRuleFilter) WhereWithdrawRate(p entql.OtherP) {
-	f.Where(p.Field(fractionrule.FieldWithdrawRate))
+// WhereWithdrawFee applies the entql other predicate on the withdraw_fee field.
+func (f *FractionWithdrawalRuleFilter) WhereWithdrawFee(p entql.OtherP) {
+	f.Where(p.Field(fractionwithdrawalrule.FieldWithdrawFee))
 }
 
 // addPredicate implements the predicateAdder interface.

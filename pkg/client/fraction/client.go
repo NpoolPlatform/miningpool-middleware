@@ -1,4 +1,4 @@
-package fraction
+package fractionwithdrawal
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionwithdrawal"
 
 	servicename "github.com/NpoolPlatform/miningpool-middleware/pkg/servicename"
 )
@@ -33,9 +33,9 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateFraction(ctx context.Context, in *npool.FractionReq) error {
+func CreateFractionWithdrawal(ctx context.Context, in *npool.FractionWithdrawalReq) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.CreateFraction(ctx, &npool.CreateFractionRequest{
+		_, err := cli.CreateFractionWithdrawal(ctx, &npool.CreateFractionWithdrawalRequest{
 			Info: in,
 		})
 		return nil, err
@@ -43,9 +43,9 @@ func CreateFraction(ctx context.Context, in *npool.FractionReq) error {
 	return err
 }
 
-func GetFraction(ctx context.Context, id string) (*npool.Fraction, error) {
+func GetFractionWithdrawal(ctx context.Context, id string) (*npool.FractionWithdrawal, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetFraction(ctx, &npool.GetFractionRequest{
+		resp, err := cli.GetFractionWithdrawal(ctx, &npool.GetFractionWithdrawalRequest{
 			EntID: id,
 		})
 		if err != nil {
@@ -56,14 +56,14 @@ func GetFraction(ctx context.Context, id string) (*npool.Fraction, error) {
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.Fraction), nil
+	return info.(*npool.FractionWithdrawal), nil
 }
 
-func GetFractions(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.Fraction, uint32, error) {
+func GetFractionWithdrawals(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.FractionWithdrawal, uint32, error) {
 	var total uint32
 
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetFractions(ctx, &npool.GetFractionsRequest{
+		resp, err := cli.GetFractionWithdrawals(ctx, &npool.GetFractionWithdrawalsRequest{
 			Conds:  conds,
 			Offset: offset,
 			Limit:  limit,
@@ -79,12 +79,12 @@ func GetFractions(ctx context.Context, conds *npool.Conds, offset, limit int32) 
 	if err != nil {
 		return nil, 0, err
 	}
-	return infos.([]*npool.Fraction), total, nil
+	return infos.([]*npool.FractionWithdrawal), total, nil
 }
 
-func UpdateFraction(ctx context.Context, in *npool.FractionReq) error {
+func UpdateFractionWithdrawal(ctx context.Context, in *npool.FractionWithdrawalReq) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.UpdateFraction(ctx, &npool.UpdateFractionRequest{
+		_, err := cli.UpdateFractionWithdrawal(ctx, &npool.UpdateFractionWithdrawalRequest{
 			Info: in,
 		})
 		return nil, err
@@ -92,9 +92,9 @@ func UpdateFraction(ctx context.Context, in *npool.FractionReq) error {
 	return err
 }
 
-func ExistFraction(ctx context.Context, id string) (bool, error) {
+func ExistFractionWithdrawal(ctx context.Context, id string) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.ExistFraction(ctx, &npool.ExistFractionRequest{
+		resp, err := cli.ExistFractionWithdrawal(ctx, &npool.ExistFractionWithdrawalRequest{
 			EntID: id,
 		})
 		if err != nil {
@@ -108,9 +108,9 @@ func ExistFraction(ctx context.Context, id string) (bool, error) {
 	return info.(bool), nil
 }
 
-func ExistFractionConds(ctx context.Context, conds *npool.Conds) (bool, error) {
+func ExistFractionWithdrawalConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.ExistFractionConds(ctx, &npool.ExistFractionCondsRequest{
+		resp, err := cli.ExistFractionWithdrawalConds(ctx, &npool.ExistFractionWithdrawalCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -124,10 +124,10 @@ func ExistFractionConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	return info.(bool), nil
 }
 
-func GetFractionOnly(ctx context.Context, conds *npool.Conds) (*npool.Fraction, error) {
+func GetFractionWithdrawalOnly(ctx context.Context, conds *npool.Conds) (*npool.FractionWithdrawal, error) {
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		const singleRowLimit = 2
-		resp, err := cli.GetFractions(ctx, &npool.GetFractionsRequest{
+		resp, err := cli.GetFractionWithdrawals(ctx, &npool.GetFractionWithdrawalsRequest{
 			Conds:  conds,
 			Offset: 0,
 			Limit:  singleRowLimit,
@@ -140,19 +140,19 @@ func GetFractionOnly(ctx context.Context, conds *npool.Conds) (*npool.Fraction, 
 	if err != nil {
 		return nil, err
 	}
-	if len(infos.([]*npool.Fraction)) == 0 {
+	if len(infos.([]*npool.FractionWithdrawal)) == 0 {
 		return nil, nil
 	}
-	if len(infos.([]*npool.Fraction)) > 1 {
+	if len(infos.([]*npool.FractionWithdrawal)) > 1 {
 		return nil, fmt.Errorf("too many record")
 	}
-	return infos.([]*npool.Fraction)[0], nil
+	return infos.([]*npool.FractionWithdrawal)[0], nil
 }
 
-func DeleteFraction(ctx context.Context, id uint32, entID string) error {
+func DeleteFractionWithdrawal(ctx context.Context, id uint32, entID string) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.DeleteFraction(ctx, &npool.DeleteFractionRequest{
-			Info: &npool.FractionReq{
+		_, err := cli.DeleteFractionWithdrawal(ctx, &npool.DeleteFractionWithdrawalRequest{
+			Info: &npool.FractionWithdrawalReq{
 				ID:    &id,
 				EntID: &entID,
 			},

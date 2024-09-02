@@ -10,6 +10,7 @@ import (
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	coinpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -167,27 +168,27 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 	return handler.infos, handler.total, nil
 }
 
-func (h *Handler) getGoodUserHashRate(ctx context.Context) (float64, error) {
+func (h *Handler) getGoodUserHashRate(ctx context.Context) (string, error) {
 	guInfo, err := h.GetGoodUser(ctx)
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 
 	if guInfo == nil {
-		return 0, wlog.Errorf("invalid id or ent_id")
+		return "", wlog.Errorf("invalid id or ent_id")
 	}
 
 	rootuserID := guInfo.RootUserID
 	rootuserH, err := rootusermw.NewHandler(ctx, rootusermw.WithEntID(&rootuserID, true))
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 	rootuserToken, err := rootuserH.GetAuthToken(ctx)
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 	if rootuserToken == nil {
-		return 0, wlog.Errorf("have no rootuser,entid: %v", rootuserID)
+		return "", wlog.Errorf("have no rootuser,entid: %v", rootuserID)
 	}
 
 	coinH, err := coin.NewHandler(ctx,
@@ -204,13 +205,13 @@ func (h *Handler) getGoodUserHashRate(ctx context.Context) (float64, error) {
 		coin.WithLimit(int32(len(h.CoinTypeIDs))),
 		coin.WithOffset(0))
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 
 	// check if cointypes is suppored by the miningpool
 	coinInfos, _, err := coinH.GetCoins(ctx)
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 
 	coinTypes := []v1.CoinType{}
@@ -225,21 +226,21 @@ func (h *Handler) getGoodUserHashRate(ctx context.Context) (float64, error) {
 		}
 
 		if !existID {
-			return 0, wlog.Errorf("cannot support all cointype in cointypeids")
+			return "", wlog.Errorf("cannot support all cointype in cointypeids")
 		}
 	}
 
 	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, nil, rootuserToken.AuthTokenPlain)
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
 	hashRate, err := mgr.GetHashRate(ctx, guInfo.Name, coinTypes)
 	if err != nil {
-		return 0, wlog.WrapError(err)
+		return "", wlog.WrapError(err)
 	}
-	return hashRate, nil
+	return decimal.NewFromFloat(hashRate).String(), nil
 }
 
-func (h *Handler) GetGoodUserHashRate(ctx context.Context) (float64, error) {
+func (h *Handler) GetGoodUserHashRate(ctx context.Context) (string, error) {
 	return h.getGoodUserHashRate(ctx)
 }

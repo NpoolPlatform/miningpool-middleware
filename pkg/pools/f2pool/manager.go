@@ -360,7 +360,7 @@ func (mgr *Manager) ResumePayment(ctx context.Context, name string) (bool, error
 	return false, nil
 }
 
-func (mgr *Manager) WithdrawFraction(ctx context.Context, name string) (int64, error) {
+func (mgr *Manager) WithdrawFractionWithdrawal(ctx context.Context, name string) (int64, error) {
 	resumeResp, err := mgr.cli.MiningUserBalanceWithdraw(ctx, &types.MiningUserBalanceWithdrawReq{
 		MiningUserName: name,
 		Currency:       mgr.currency,

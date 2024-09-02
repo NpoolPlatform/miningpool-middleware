@@ -264,6 +264,7 @@ func (ouq *OrderUserQuery) Clone() *OrderUserQuery {
 //		GroupBy(orderuser.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
+//
 func (ouq *OrderUserQuery) GroupBy(field string, fields ...string) *OrderUserGroupBy {
 	grbuild := &OrderUserGroupBy{config: ouq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -290,6 +291,7 @@ func (ouq *OrderUserQuery) GroupBy(field string, fields ...string) *OrderUserGro
 //	client.OrderUser.Query().
 //		Select(orderuser.FieldCreatedAt).
 //		Scan(ctx, &v)
+//
 func (ouq *OrderUserQuery) Select(fields ...string) *OrderUserSelect {
 	ouq.fields = append(ouq.fields, fields...)
 	selbuild := &OrderUserSelect{OrderUserQuery: ouq}

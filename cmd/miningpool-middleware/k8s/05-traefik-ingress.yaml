@@ -20,7 +20,7 @@ spec:
     - host: api.npool.top
       http: &http_rules
         paths:
-          - path: /api/miningpoolmw/v1/miningpool_DeleteFraction
+          - path: /api/miningpoolmw/v1/miningpool_DeleteFractionWithdrawal
             backend:
               serviceName: miningpool-middleware
               servicePort: 50850

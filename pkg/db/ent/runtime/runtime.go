@@ -7,8 +7,8 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawal"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
@@ -133,126 +133,126 @@ func init() {
 	coinDescRemark := coinFields[7].Descriptor()
 	// coin.DefaultRemark holds the default value on creation for the remark field.
 	coin.DefaultRemark = coinDescRemark.Default.(string)
-	fractionMixin := schema.Fraction{}.Mixin()
-	fraction.Policy = privacy.NewPolicies(fractionMixin[0], schema.Fraction{})
-	fraction.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+	fractionwithdrawalMixin := schema.FractionWithdrawal{}.Mixin()
+	fractionwithdrawal.Policy = privacy.NewPolicies(fractionwithdrawalMixin[0], schema.FractionWithdrawal{})
+	fractionwithdrawal.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := fraction.Policy.EvalMutation(ctx, m); err != nil {
+			if err := fractionwithdrawal.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)
 		})
 	}
-	fractionMixinFields0 := fractionMixin[0].Fields()
-	_ = fractionMixinFields0
-	fractionMixinFields1 := fractionMixin[1].Fields()
-	_ = fractionMixinFields1
-	fractionFields := schema.Fraction{}.Fields()
-	_ = fractionFields
-	// fractionDescCreatedAt is the schema descriptor for created_at field.
-	fractionDescCreatedAt := fractionMixinFields0[0].Descriptor()
-	// fraction.DefaultCreatedAt holds the default value on creation for the created_at field.
-	fraction.DefaultCreatedAt = fractionDescCreatedAt.Default.(func() uint32)
-	// fractionDescUpdatedAt is the schema descriptor for updated_at field.
-	fractionDescUpdatedAt := fractionMixinFields0[1].Descriptor()
-	// fraction.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	fraction.DefaultUpdatedAt = fractionDescUpdatedAt.Default.(func() uint32)
-	// fraction.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	fraction.UpdateDefaultUpdatedAt = fractionDescUpdatedAt.UpdateDefault.(func() uint32)
-	// fractionDescDeletedAt is the schema descriptor for deleted_at field.
-	fractionDescDeletedAt := fractionMixinFields0[2].Descriptor()
-	// fraction.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	fraction.DefaultDeletedAt = fractionDescDeletedAt.Default.(func() uint32)
-	// fractionDescEntID is the schema descriptor for ent_id field.
-	fractionDescEntID := fractionMixinFields1[1].Descriptor()
-	// fraction.DefaultEntID holds the default value on creation for the ent_id field.
-	fraction.DefaultEntID = fractionDescEntID.Default.(func() uuid.UUID)
-	// fractionDescAppID is the schema descriptor for app_id field.
-	fractionDescAppID := fractionFields[0].Descriptor()
-	// fraction.DefaultAppID holds the default value on creation for the app_id field.
-	fraction.DefaultAppID = fractionDescAppID.Default.(func() uuid.UUID)
-	// fractionDescUserID is the schema descriptor for user_id field.
-	fractionDescUserID := fractionFields[1].Descriptor()
-	// fraction.DefaultUserID holds the default value on creation for the user_id field.
-	fraction.DefaultUserID = fractionDescUserID.Default.(func() uuid.UUID)
-	// fractionDescOrderUserID is the schema descriptor for order_user_id field.
-	fractionDescOrderUserID := fractionFields[2].Descriptor()
-	// fraction.DefaultOrderUserID holds the default value on creation for the order_user_id field.
-	fraction.DefaultOrderUserID = fractionDescOrderUserID.Default.(func() uuid.UUID)
-	// fractionDescCoinTypeID is the schema descriptor for coin_type_id field.
-	fractionDescCoinTypeID := fractionFields[3].Descriptor()
-	// fraction.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
-	fraction.DefaultCoinTypeID = fractionDescCoinTypeID.Default.(func() uuid.UUID)
-	// fractionDescWithdrawState is the schema descriptor for withdraw_state field.
-	fractionDescWithdrawState := fractionFields[4].Descriptor()
-	// fraction.DefaultWithdrawState holds the default value on creation for the withdraw_state field.
-	fraction.DefaultWithdrawState = fractionDescWithdrawState.Default.(string)
-	// fractionDescWithdrawAt is the schema descriptor for withdraw_at field.
-	fractionDescWithdrawAt := fractionFields[5].Descriptor()
-	// fraction.DefaultWithdrawAt holds the default value on creation for the withdraw_at field.
-	fraction.DefaultWithdrawAt = fractionDescWithdrawAt.Default.(uint32)
-	// fractionDescPromisePayAt is the schema descriptor for promise_pay_at field.
-	fractionDescPromisePayAt := fractionFields[6].Descriptor()
-	// fraction.DefaultPromisePayAt holds the default value on creation for the promise_pay_at field.
-	fraction.DefaultPromisePayAt = fractionDescPromisePayAt.Default.(uint32)
-	// fractionDescMsg is the schema descriptor for msg field.
-	fractionDescMsg := fractionFields[7].Descriptor()
-	// fraction.DefaultMsg holds the default value on creation for the msg field.
-	fraction.DefaultMsg = fractionDescMsg.Default.(string)
-	fractionruleMixin := schema.FractionRule{}.Mixin()
-	fractionrule.Policy = privacy.NewPolicies(fractionruleMixin[0], schema.FractionRule{})
-	fractionrule.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+	fractionwithdrawalMixinFields0 := fractionwithdrawalMixin[0].Fields()
+	_ = fractionwithdrawalMixinFields0
+	fractionwithdrawalMixinFields1 := fractionwithdrawalMixin[1].Fields()
+	_ = fractionwithdrawalMixinFields1
+	fractionwithdrawalFields := schema.FractionWithdrawal{}.Fields()
+	_ = fractionwithdrawalFields
+	// fractionwithdrawalDescCreatedAt is the schema descriptor for created_at field.
+	fractionwithdrawalDescCreatedAt := fractionwithdrawalMixinFields0[0].Descriptor()
+	// fractionwithdrawal.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fractionwithdrawal.DefaultCreatedAt = fractionwithdrawalDescCreatedAt.Default.(func() uint32)
+	// fractionwithdrawalDescUpdatedAt is the schema descriptor for updated_at field.
+	fractionwithdrawalDescUpdatedAt := fractionwithdrawalMixinFields0[1].Descriptor()
+	// fractionwithdrawal.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	fractionwithdrawal.DefaultUpdatedAt = fractionwithdrawalDescUpdatedAt.Default.(func() uint32)
+	// fractionwithdrawal.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	fractionwithdrawal.UpdateDefaultUpdatedAt = fractionwithdrawalDescUpdatedAt.UpdateDefault.(func() uint32)
+	// fractionwithdrawalDescDeletedAt is the schema descriptor for deleted_at field.
+	fractionwithdrawalDescDeletedAt := fractionwithdrawalMixinFields0[2].Descriptor()
+	// fractionwithdrawal.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	fractionwithdrawal.DefaultDeletedAt = fractionwithdrawalDescDeletedAt.Default.(func() uint32)
+	// fractionwithdrawalDescEntID is the schema descriptor for ent_id field.
+	fractionwithdrawalDescEntID := fractionwithdrawalMixinFields1[1].Descriptor()
+	// fractionwithdrawal.DefaultEntID holds the default value on creation for the ent_id field.
+	fractionwithdrawal.DefaultEntID = fractionwithdrawalDescEntID.Default.(func() uuid.UUID)
+	// fractionwithdrawalDescAppID is the schema descriptor for app_id field.
+	fractionwithdrawalDescAppID := fractionwithdrawalFields[0].Descriptor()
+	// fractionwithdrawal.DefaultAppID holds the default value on creation for the app_id field.
+	fractionwithdrawal.DefaultAppID = fractionwithdrawalDescAppID.Default.(func() uuid.UUID)
+	// fractionwithdrawalDescUserID is the schema descriptor for user_id field.
+	fractionwithdrawalDescUserID := fractionwithdrawalFields[1].Descriptor()
+	// fractionwithdrawal.DefaultUserID holds the default value on creation for the user_id field.
+	fractionwithdrawal.DefaultUserID = fractionwithdrawalDescUserID.Default.(func() uuid.UUID)
+	// fractionwithdrawalDescOrderUserID is the schema descriptor for order_user_id field.
+	fractionwithdrawalDescOrderUserID := fractionwithdrawalFields[2].Descriptor()
+	// fractionwithdrawal.DefaultOrderUserID holds the default value on creation for the order_user_id field.
+	fractionwithdrawal.DefaultOrderUserID = fractionwithdrawalDescOrderUserID.Default.(func() uuid.UUID)
+	// fractionwithdrawalDescCoinTypeID is the schema descriptor for coin_type_id field.
+	fractionwithdrawalDescCoinTypeID := fractionwithdrawalFields[3].Descriptor()
+	// fractionwithdrawal.DefaultCoinTypeID holds the default value on creation for the coin_type_id field.
+	fractionwithdrawal.DefaultCoinTypeID = fractionwithdrawalDescCoinTypeID.Default.(func() uuid.UUID)
+	// fractionwithdrawalDescFractionWithdrawState is the schema descriptor for fraction_withdraw_state field.
+	fractionwithdrawalDescFractionWithdrawState := fractionwithdrawalFields[4].Descriptor()
+	// fractionwithdrawal.DefaultFractionWithdrawState holds the default value on creation for the fraction_withdraw_state field.
+	fractionwithdrawal.DefaultFractionWithdrawState = fractionwithdrawalDescFractionWithdrawState.Default.(string)
+	// fractionwithdrawalDescWithdrawAt is the schema descriptor for withdraw_at field.
+	fractionwithdrawalDescWithdrawAt := fractionwithdrawalFields[5].Descriptor()
+	// fractionwithdrawal.DefaultWithdrawAt holds the default value on creation for the withdraw_at field.
+	fractionwithdrawal.DefaultWithdrawAt = fractionwithdrawalDescWithdrawAt.Default.(uint32)
+	// fractionwithdrawalDescPromisePayAt is the schema descriptor for promise_pay_at field.
+	fractionwithdrawalDescPromisePayAt := fractionwithdrawalFields[6].Descriptor()
+	// fractionwithdrawal.DefaultPromisePayAt holds the default value on creation for the promise_pay_at field.
+	fractionwithdrawal.DefaultPromisePayAt = fractionwithdrawalDescPromisePayAt.Default.(uint32)
+	// fractionwithdrawalDescMsg is the schema descriptor for msg field.
+	fractionwithdrawalDescMsg := fractionwithdrawalFields[7].Descriptor()
+	// fractionwithdrawal.DefaultMsg holds the default value on creation for the msg field.
+	fractionwithdrawal.DefaultMsg = fractionwithdrawalDescMsg.Default.(string)
+	fractionwithdrawalruleMixin := schema.FractionWithdrawalRule{}.Mixin()
+	fractionwithdrawalrule.Policy = privacy.NewPolicies(fractionwithdrawalruleMixin[0], schema.FractionWithdrawalRule{})
+	fractionwithdrawalrule.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			if err := fractionrule.Policy.EvalMutation(ctx, m); err != nil {
+			if err := fractionwithdrawalrule.Policy.EvalMutation(ctx, m); err != nil {
 				return nil, err
 			}
 			return next.Mutate(ctx, m)
 		})
 	}
-	fractionruleMixinFields0 := fractionruleMixin[0].Fields()
-	_ = fractionruleMixinFields0
-	fractionruleMixinFields1 := fractionruleMixin[1].Fields()
-	_ = fractionruleMixinFields1
-	fractionruleFields := schema.FractionRule{}.Fields()
-	_ = fractionruleFields
-	// fractionruleDescCreatedAt is the schema descriptor for created_at field.
-	fractionruleDescCreatedAt := fractionruleMixinFields0[0].Descriptor()
-	// fractionrule.DefaultCreatedAt holds the default value on creation for the created_at field.
-	fractionrule.DefaultCreatedAt = fractionruleDescCreatedAt.Default.(func() uint32)
-	// fractionruleDescUpdatedAt is the schema descriptor for updated_at field.
-	fractionruleDescUpdatedAt := fractionruleMixinFields0[1].Descriptor()
-	// fractionrule.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	fractionrule.DefaultUpdatedAt = fractionruleDescUpdatedAt.Default.(func() uint32)
-	// fractionrule.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	fractionrule.UpdateDefaultUpdatedAt = fractionruleDescUpdatedAt.UpdateDefault.(func() uint32)
-	// fractionruleDescDeletedAt is the schema descriptor for deleted_at field.
-	fractionruleDescDeletedAt := fractionruleMixinFields0[2].Descriptor()
-	// fractionrule.DefaultDeletedAt holds the default value on creation for the deleted_at field.
-	fractionrule.DefaultDeletedAt = fractionruleDescDeletedAt.Default.(func() uint32)
-	// fractionruleDescEntID is the schema descriptor for ent_id field.
-	fractionruleDescEntID := fractionruleMixinFields1[1].Descriptor()
-	// fractionrule.DefaultEntID holds the default value on creation for the ent_id field.
-	fractionrule.DefaultEntID = fractionruleDescEntID.Default.(func() uuid.UUID)
-	// fractionruleDescPoolCoinTypeID is the schema descriptor for pool_coin_type_id field.
-	fractionruleDescPoolCoinTypeID := fractionruleFields[0].Descriptor()
-	// fractionrule.DefaultPoolCoinTypeID holds the default value on creation for the pool_coin_type_id field.
-	fractionrule.DefaultPoolCoinTypeID = fractionruleDescPoolCoinTypeID.Default.(func() uuid.UUID)
-	// fractionruleDescWithdrawInterval is the schema descriptor for withdraw_interval field.
-	fractionruleDescWithdrawInterval := fractionruleFields[1].Descriptor()
-	// fractionrule.DefaultWithdrawInterval holds the default value on creation for the withdraw_interval field.
-	fractionrule.DefaultWithdrawInterval = fractionruleDescWithdrawInterval.Default.(uint32)
-	// fractionruleDescMinAmount is the schema descriptor for min_amount field.
-	fractionruleDescMinAmount := fractionruleFields[2].Descriptor()
-	// fractionrule.DefaultMinAmount holds the default value on creation for the min_amount field.
-	fractionrule.DefaultMinAmount = fractionruleDescMinAmount.Default.(decimal.Decimal)
-	// fractionruleDescPayoutThreshold is the schema descriptor for payout_threshold field.
-	fractionruleDescPayoutThreshold := fractionruleFields[3].Descriptor()
-	// fractionrule.DefaultPayoutThreshold holds the default value on creation for the payout_threshold field.
-	fractionrule.DefaultPayoutThreshold = fractionruleDescPayoutThreshold.Default.(decimal.Decimal)
-	// fractionruleDescWithdrawRate is the schema descriptor for withdraw_rate field.
-	fractionruleDescWithdrawRate := fractionruleFields[4].Descriptor()
-	// fractionrule.DefaultWithdrawRate holds the default value on creation for the withdraw_rate field.
-	fractionrule.DefaultWithdrawRate = fractionruleDescWithdrawRate.Default.(decimal.Decimal)
+	fractionwithdrawalruleMixinFields0 := fractionwithdrawalruleMixin[0].Fields()
+	_ = fractionwithdrawalruleMixinFields0
+	fractionwithdrawalruleMixinFields1 := fractionwithdrawalruleMixin[1].Fields()
+	_ = fractionwithdrawalruleMixinFields1
+	fractionwithdrawalruleFields := schema.FractionWithdrawalRule{}.Fields()
+	_ = fractionwithdrawalruleFields
+	// fractionwithdrawalruleDescCreatedAt is the schema descriptor for created_at field.
+	fractionwithdrawalruleDescCreatedAt := fractionwithdrawalruleMixinFields0[0].Descriptor()
+	// fractionwithdrawalrule.DefaultCreatedAt holds the default value on creation for the created_at field.
+	fractionwithdrawalrule.DefaultCreatedAt = fractionwithdrawalruleDescCreatedAt.Default.(func() uint32)
+	// fractionwithdrawalruleDescUpdatedAt is the schema descriptor for updated_at field.
+	fractionwithdrawalruleDescUpdatedAt := fractionwithdrawalruleMixinFields0[1].Descriptor()
+	// fractionwithdrawalrule.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	fractionwithdrawalrule.DefaultUpdatedAt = fractionwithdrawalruleDescUpdatedAt.Default.(func() uint32)
+	// fractionwithdrawalrule.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	fractionwithdrawalrule.UpdateDefaultUpdatedAt = fractionwithdrawalruleDescUpdatedAt.UpdateDefault.(func() uint32)
+	// fractionwithdrawalruleDescDeletedAt is the schema descriptor for deleted_at field.
+	fractionwithdrawalruleDescDeletedAt := fractionwithdrawalruleMixinFields0[2].Descriptor()
+	// fractionwithdrawalrule.DefaultDeletedAt holds the default value on creation for the deleted_at field.
+	fractionwithdrawalrule.DefaultDeletedAt = fractionwithdrawalruleDescDeletedAt.Default.(func() uint32)
+	// fractionwithdrawalruleDescEntID is the schema descriptor for ent_id field.
+	fractionwithdrawalruleDescEntID := fractionwithdrawalruleMixinFields1[1].Descriptor()
+	// fractionwithdrawalrule.DefaultEntID holds the default value on creation for the ent_id field.
+	fractionwithdrawalrule.DefaultEntID = fractionwithdrawalruleDescEntID.Default.(func() uuid.UUID)
+	// fractionwithdrawalruleDescPoolCoinTypeID is the schema descriptor for pool_coin_type_id field.
+	fractionwithdrawalruleDescPoolCoinTypeID := fractionwithdrawalruleFields[0].Descriptor()
+	// fractionwithdrawalrule.DefaultPoolCoinTypeID holds the default value on creation for the pool_coin_type_id field.
+	fractionwithdrawalrule.DefaultPoolCoinTypeID = fractionwithdrawalruleDescPoolCoinTypeID.Default.(func() uuid.UUID)
+	// fractionwithdrawalruleDescWithdrawInterval is the schema descriptor for withdraw_interval field.
+	fractionwithdrawalruleDescWithdrawInterval := fractionwithdrawalruleFields[1].Descriptor()
+	// fractionwithdrawalrule.DefaultWithdrawInterval holds the default value on creation for the withdraw_interval field.
+	fractionwithdrawalrule.DefaultWithdrawInterval = fractionwithdrawalruleDescWithdrawInterval.Default.(uint32)
+	// fractionwithdrawalruleDescLeastWithdrawalAmount is the schema descriptor for least_withdrawal_amount field.
+	fractionwithdrawalruleDescLeastWithdrawalAmount := fractionwithdrawalruleFields[2].Descriptor()
+	// fractionwithdrawalrule.DefaultLeastWithdrawalAmount holds the default value on creation for the least_withdrawal_amount field.
+	fractionwithdrawalrule.DefaultLeastWithdrawalAmount = fractionwithdrawalruleDescLeastWithdrawalAmount.Default.(decimal.Decimal)
+	// fractionwithdrawalruleDescPayoutThreshold is the schema descriptor for payout_threshold field.
+	fractionwithdrawalruleDescPayoutThreshold := fractionwithdrawalruleFields[3].Descriptor()
+	// fractionwithdrawalrule.DefaultPayoutThreshold holds the default value on creation for the payout_threshold field.
+	fractionwithdrawalrule.DefaultPayoutThreshold = fractionwithdrawalruleDescPayoutThreshold.Default.(decimal.Decimal)
+	// fractionwithdrawalruleDescWithdrawFee is the schema descriptor for withdraw_fee field.
+	fractionwithdrawalruleDescWithdrawFee := fractionwithdrawalruleFields[4].Descriptor()
+	// fractionwithdrawalrule.DefaultWithdrawFee holds the default value on creation for the withdraw_fee field.
+	fractionwithdrawalrule.DefaultWithdrawFee = fractionwithdrawalruleDescWithdrawFee.Default.(decimal.Decimal)
 	gooduserMixin := schema.GoodUser{}.Mixin()
 	gooduser.Policy = privacy.NewPolicies(gooduserMixin[0], schema.GoodUser{})
 	gooduser.Hooks[0] = func(next ent.Mutator) ent.Mutator {

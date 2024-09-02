@@ -1,4 +1,4 @@
-package fraction
+package fractionwithdrawal
 
 import (
 	"context"

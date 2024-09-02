@@ -12,8 +12,8 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawal"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
@@ -32,10 +32,10 @@ type Client struct {
 	AppPool *AppPoolClient
 	// Coin is the client for interacting with the Coin builders.
 	Coin *CoinClient
-	// Fraction is the client for interacting with the Fraction builders.
-	Fraction *FractionClient
-	// FractionRule is the client for interacting with the FractionRule builders.
-	FractionRule *FractionRuleClient
+	// FractionWithdrawal is the client for interacting with the FractionWithdrawal builders.
+	FractionWithdrawal *FractionWithdrawalClient
+	// FractionWithdrawalRule is the client for interacting with the FractionWithdrawalRule builders.
+	FractionWithdrawalRule *FractionWithdrawalRuleClient
 	// GoodUser is the client for interacting with the GoodUser builders.
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
@@ -59,8 +59,8 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.AppPool = NewAppPoolClient(c.config)
 	c.Coin = NewCoinClient(c.config)
-	c.Fraction = NewFractionClient(c.config)
-	c.FractionRule = NewFractionRuleClient(c.config)
+	c.FractionWithdrawal = NewFractionWithdrawalClient(c.config)
+	c.FractionWithdrawalRule = NewFractionWithdrawalRuleClient(c.config)
 	c.GoodUser = NewGoodUserClient(c.config)
 	c.OrderUser = NewOrderUserClient(c.config)
 	c.Pool = NewPoolClient(c.config)
@@ -96,16 +96,16 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AppPool:      NewAppPoolClient(cfg),
-		Coin:         NewCoinClient(cfg),
-		Fraction:     NewFractionClient(cfg),
-		FractionRule: NewFractionRuleClient(cfg),
-		GoodUser:     NewGoodUserClient(cfg),
-		OrderUser:    NewOrderUserClient(cfg),
-		Pool:         NewPoolClient(cfg),
-		RootUser:     NewRootUserClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		AppPool:                NewAppPoolClient(cfg),
+		Coin:                   NewCoinClient(cfg),
+		FractionWithdrawal:     NewFractionWithdrawalClient(cfg),
+		FractionWithdrawalRule: NewFractionWithdrawalRuleClient(cfg),
+		GoodUser:               NewGoodUserClient(cfg),
+		OrderUser:              NewOrderUserClient(cfg),
+		Pool:                   NewPoolClient(cfg),
+		RootUser:               NewRootUserClient(cfg),
 	}, nil
 }
 
@@ -123,16 +123,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AppPool:      NewAppPoolClient(cfg),
-		Coin:         NewCoinClient(cfg),
-		Fraction:     NewFractionClient(cfg),
-		FractionRule: NewFractionRuleClient(cfg),
-		GoodUser:     NewGoodUserClient(cfg),
-		OrderUser:    NewOrderUserClient(cfg),
-		Pool:         NewPoolClient(cfg),
-		RootUser:     NewRootUserClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		AppPool:                NewAppPoolClient(cfg),
+		Coin:                   NewCoinClient(cfg),
+		FractionWithdrawal:     NewFractionWithdrawalClient(cfg),
+		FractionWithdrawalRule: NewFractionWithdrawalRuleClient(cfg),
+		GoodUser:               NewGoodUserClient(cfg),
+		OrderUser:              NewOrderUserClient(cfg),
+		Pool:                   NewPoolClient(cfg),
+		RootUser:               NewRootUserClient(cfg),
 	}, nil
 }
 
@@ -142,6 +142,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 //		AppPool.
 //		Query().
 //		Count(ctx)
+//
 func (c *Client) Debug() *Client {
 	if c.debug {
 		return c
@@ -163,8 +164,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.AppPool.Use(hooks...)
 	c.Coin.Use(hooks...)
-	c.Fraction.Use(hooks...)
-	c.FractionRule.Use(hooks...)
+	c.FractionWithdrawal.Use(hooks...)
+	c.FractionWithdrawalRule.Use(hooks...)
 	c.GoodUser.Use(hooks...)
 	c.OrderUser.Use(hooks...)
 	c.Pool.Use(hooks...)
@@ -353,84 +354,84 @@ func (c *CoinClient) Hooks() []Hook {
 	return append(hooks[:len(hooks):len(hooks)], coin.Hooks[:]...)
 }
 
-// FractionClient is a client for the Fraction schema.
-type FractionClient struct {
+// FractionWithdrawalClient is a client for the FractionWithdrawal schema.
+type FractionWithdrawalClient struct {
 	config
 }
 
-// NewFractionClient returns a client for the Fraction from the given config.
-func NewFractionClient(c config) *FractionClient {
-	return &FractionClient{config: c}
+// NewFractionWithdrawalClient returns a client for the FractionWithdrawal from the given config.
+func NewFractionWithdrawalClient(c config) *FractionWithdrawalClient {
+	return &FractionWithdrawalClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `fraction.Hooks(f(g(h())))`.
-func (c *FractionClient) Use(hooks ...Hook) {
-	c.hooks.Fraction = append(c.hooks.Fraction, hooks...)
+// A call to `Use(f, g, h)` equals to `fractionwithdrawal.Hooks(f(g(h())))`.
+func (c *FractionWithdrawalClient) Use(hooks ...Hook) {
+	c.hooks.FractionWithdrawal = append(c.hooks.FractionWithdrawal, hooks...)
 }
 
-// Create returns a builder for creating a Fraction entity.
-func (c *FractionClient) Create() *FractionCreate {
-	mutation := newFractionMutation(c.config, OpCreate)
-	return &FractionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a FractionWithdrawal entity.
+func (c *FractionWithdrawalClient) Create() *FractionWithdrawalCreate {
+	mutation := newFractionWithdrawalMutation(c.config, OpCreate)
+	return &FractionWithdrawalCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Fraction entities.
-func (c *FractionClient) CreateBulk(builders ...*FractionCreate) *FractionCreateBulk {
-	return &FractionCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of FractionWithdrawal entities.
+func (c *FractionWithdrawalClient) CreateBulk(builders ...*FractionWithdrawalCreate) *FractionWithdrawalCreateBulk {
+	return &FractionWithdrawalCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Fraction.
-func (c *FractionClient) Update() *FractionUpdate {
-	mutation := newFractionMutation(c.config, OpUpdate)
-	return &FractionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for FractionWithdrawal.
+func (c *FractionWithdrawalClient) Update() *FractionWithdrawalUpdate {
+	mutation := newFractionWithdrawalMutation(c.config, OpUpdate)
+	return &FractionWithdrawalUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *FractionClient) UpdateOne(f *Fraction) *FractionUpdateOne {
-	mutation := newFractionMutation(c.config, OpUpdateOne, withFraction(f))
-	return &FractionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FractionWithdrawalClient) UpdateOne(fw *FractionWithdrawal) *FractionWithdrawalUpdateOne {
+	mutation := newFractionWithdrawalMutation(c.config, OpUpdateOne, withFractionWithdrawal(fw))
+	return &FractionWithdrawalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FractionClient) UpdateOneID(id uint32) *FractionUpdateOne {
-	mutation := newFractionMutation(c.config, OpUpdateOne, withFractionID(id))
-	return &FractionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FractionWithdrawalClient) UpdateOneID(id uint32) *FractionWithdrawalUpdateOne {
+	mutation := newFractionWithdrawalMutation(c.config, OpUpdateOne, withFractionWithdrawalID(id))
+	return &FractionWithdrawalUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Fraction.
-func (c *FractionClient) Delete() *FractionDelete {
-	mutation := newFractionMutation(c.config, OpDelete)
-	return &FractionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for FractionWithdrawal.
+func (c *FractionWithdrawalClient) Delete() *FractionWithdrawalDelete {
+	mutation := newFractionWithdrawalMutation(c.config, OpDelete)
+	return &FractionWithdrawalDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *FractionClient) DeleteOne(f *Fraction) *FractionDeleteOne {
-	return c.DeleteOneID(f.ID)
+func (c *FractionWithdrawalClient) DeleteOne(fw *FractionWithdrawal) *FractionWithdrawalDeleteOne {
+	return c.DeleteOneID(fw.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *FractionClient) DeleteOneID(id uint32) *FractionDeleteOne {
-	builder := c.Delete().Where(fraction.ID(id))
+func (c *FractionWithdrawalClient) DeleteOneID(id uint32) *FractionWithdrawalDeleteOne {
+	builder := c.Delete().Where(fractionwithdrawal.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &FractionDeleteOne{builder}
+	return &FractionWithdrawalDeleteOne{builder}
 }
 
-// Query returns a query builder for Fraction.
-func (c *FractionClient) Query() *FractionQuery {
-	return &FractionQuery{
+// Query returns a query builder for FractionWithdrawal.
+func (c *FractionWithdrawalClient) Query() *FractionWithdrawalQuery {
+	return &FractionWithdrawalQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Fraction entity by its id.
-func (c *FractionClient) Get(ctx context.Context, id uint32) (*Fraction, error) {
-	return c.Query().Where(fraction.ID(id)).Only(ctx)
+// Get returns a FractionWithdrawal entity by its id.
+func (c *FractionWithdrawalClient) Get(ctx context.Context, id uint32) (*FractionWithdrawal, error) {
+	return c.Query().Where(fractionwithdrawal.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FractionClient) GetX(ctx context.Context, id uint32) *Fraction {
+func (c *FractionWithdrawalClient) GetX(ctx context.Context, id uint32) *FractionWithdrawal {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -439,89 +440,89 @@ func (c *FractionClient) GetX(ctx context.Context, id uint32) *Fraction {
 }
 
 // Hooks returns the client hooks.
-func (c *FractionClient) Hooks() []Hook {
-	hooks := c.hooks.Fraction
-	return append(hooks[:len(hooks):len(hooks)], fraction.Hooks[:]...)
+func (c *FractionWithdrawalClient) Hooks() []Hook {
+	hooks := c.hooks.FractionWithdrawal
+	return append(hooks[:len(hooks):len(hooks)], fractionwithdrawal.Hooks[:]...)
 }
 
-// FractionRuleClient is a client for the FractionRule schema.
-type FractionRuleClient struct {
+// FractionWithdrawalRuleClient is a client for the FractionWithdrawalRule schema.
+type FractionWithdrawalRuleClient struct {
 	config
 }
 
-// NewFractionRuleClient returns a client for the FractionRule from the given config.
-func NewFractionRuleClient(c config) *FractionRuleClient {
-	return &FractionRuleClient{config: c}
+// NewFractionWithdrawalRuleClient returns a client for the FractionWithdrawalRule from the given config.
+func NewFractionWithdrawalRuleClient(c config) *FractionWithdrawalRuleClient {
+	return &FractionWithdrawalRuleClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `fractionrule.Hooks(f(g(h())))`.
-func (c *FractionRuleClient) Use(hooks ...Hook) {
-	c.hooks.FractionRule = append(c.hooks.FractionRule, hooks...)
+// A call to `Use(f, g, h)` equals to `fractionwithdrawalrule.Hooks(f(g(h())))`.
+func (c *FractionWithdrawalRuleClient) Use(hooks ...Hook) {
+	c.hooks.FractionWithdrawalRule = append(c.hooks.FractionWithdrawalRule, hooks...)
 }
 
-// Create returns a builder for creating a FractionRule entity.
-func (c *FractionRuleClient) Create() *FractionRuleCreate {
-	mutation := newFractionRuleMutation(c.config, OpCreate)
-	return &FractionRuleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a FractionWithdrawalRule entity.
+func (c *FractionWithdrawalRuleClient) Create() *FractionWithdrawalRuleCreate {
+	mutation := newFractionWithdrawalRuleMutation(c.config, OpCreate)
+	return &FractionWithdrawalRuleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of FractionRule entities.
-func (c *FractionRuleClient) CreateBulk(builders ...*FractionRuleCreate) *FractionRuleCreateBulk {
-	return &FractionRuleCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of FractionWithdrawalRule entities.
+func (c *FractionWithdrawalRuleClient) CreateBulk(builders ...*FractionWithdrawalRuleCreate) *FractionWithdrawalRuleCreateBulk {
+	return &FractionWithdrawalRuleCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for FractionRule.
-func (c *FractionRuleClient) Update() *FractionRuleUpdate {
-	mutation := newFractionRuleMutation(c.config, OpUpdate)
-	return &FractionRuleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for FractionWithdrawalRule.
+func (c *FractionWithdrawalRuleClient) Update() *FractionWithdrawalRuleUpdate {
+	mutation := newFractionWithdrawalRuleMutation(c.config, OpUpdate)
+	return &FractionWithdrawalRuleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *FractionRuleClient) UpdateOne(fr *FractionRule) *FractionRuleUpdateOne {
-	mutation := newFractionRuleMutation(c.config, OpUpdateOne, withFractionRule(fr))
-	return &FractionRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FractionWithdrawalRuleClient) UpdateOne(fwr *FractionWithdrawalRule) *FractionWithdrawalRuleUpdateOne {
+	mutation := newFractionWithdrawalRuleMutation(c.config, OpUpdateOne, withFractionWithdrawalRule(fwr))
+	return &FractionWithdrawalRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FractionRuleClient) UpdateOneID(id uint32) *FractionRuleUpdateOne {
-	mutation := newFractionRuleMutation(c.config, OpUpdateOne, withFractionRuleID(id))
-	return &FractionRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *FractionWithdrawalRuleClient) UpdateOneID(id uint32) *FractionWithdrawalRuleUpdateOne {
+	mutation := newFractionWithdrawalRuleMutation(c.config, OpUpdateOne, withFractionWithdrawalRuleID(id))
+	return &FractionWithdrawalRuleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for FractionRule.
-func (c *FractionRuleClient) Delete() *FractionRuleDelete {
-	mutation := newFractionRuleMutation(c.config, OpDelete)
-	return &FractionRuleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for FractionWithdrawalRule.
+func (c *FractionWithdrawalRuleClient) Delete() *FractionWithdrawalRuleDelete {
+	mutation := newFractionWithdrawalRuleMutation(c.config, OpDelete)
+	return &FractionWithdrawalRuleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *FractionRuleClient) DeleteOne(fr *FractionRule) *FractionRuleDeleteOne {
-	return c.DeleteOneID(fr.ID)
+func (c *FractionWithdrawalRuleClient) DeleteOne(fwr *FractionWithdrawalRule) *FractionWithdrawalRuleDeleteOne {
+	return c.DeleteOneID(fwr.ID)
 }
 
 // DeleteOne returns a builder for deleting the given entity by its id.
-func (c *FractionRuleClient) DeleteOneID(id uint32) *FractionRuleDeleteOne {
-	builder := c.Delete().Where(fractionrule.ID(id))
+func (c *FractionWithdrawalRuleClient) DeleteOneID(id uint32) *FractionWithdrawalRuleDeleteOne {
+	builder := c.Delete().Where(fractionwithdrawalrule.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &FractionRuleDeleteOne{builder}
+	return &FractionWithdrawalRuleDeleteOne{builder}
 }
 
-// Query returns a query builder for FractionRule.
-func (c *FractionRuleClient) Query() *FractionRuleQuery {
-	return &FractionRuleQuery{
+// Query returns a query builder for FractionWithdrawalRule.
+func (c *FractionWithdrawalRuleClient) Query() *FractionWithdrawalRuleQuery {
+	return &FractionWithdrawalRuleQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a FractionRule entity by its id.
-func (c *FractionRuleClient) Get(ctx context.Context, id uint32) (*FractionRule, error) {
-	return c.Query().Where(fractionrule.ID(id)).Only(ctx)
+// Get returns a FractionWithdrawalRule entity by its id.
+func (c *FractionWithdrawalRuleClient) Get(ctx context.Context, id uint32) (*FractionWithdrawalRule, error) {
+	return c.Query().Where(fractionwithdrawalrule.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FractionRuleClient) GetX(ctx context.Context, id uint32) *FractionRule {
+func (c *FractionWithdrawalRuleClient) GetX(ctx context.Context, id uint32) *FractionWithdrawalRule {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -530,9 +531,9 @@ func (c *FractionRuleClient) GetX(ctx context.Context, id uint32) *FractionRule 
 }
 
 // Hooks returns the client hooks.
-func (c *FractionRuleClient) Hooks() []Hook {
-	hooks := c.hooks.FractionRule
-	return append(hooks[:len(hooks):len(hooks)], fractionrule.Hooks[:]...)
+func (c *FractionWithdrawalRuleClient) Hooks() []Hook {
+	hooks := c.hooks.FractionWithdrawalRule
+	return append(hooks[:len(hooks):len(hooks)], fractionwithdrawalrule.Hooks[:]...)
 }
 
 // GoodUserClient is a client for the GoodUser schema.

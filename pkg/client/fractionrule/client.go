@@ -1,4 +1,4 @@
-package fractionrule
+package fractionwithdrawalrule
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	grpc2 "github.com/NpoolPlatform/go-service-framework/pkg/grpc"
 
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionrule"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionwithdrawalrule"
 
 	servicename "github.com/NpoolPlatform/miningpool-middleware/pkg/servicename"
 )
@@ -33,9 +33,9 @@ func do(ctx context.Context, handler handler) (cruder.Any, error) {
 	return handler(_ctx, cli)
 }
 
-func CreateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
+func CreateFractionWithdrawalRule(ctx context.Context, in *npool.FractionWithdrawalRuleReq) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.CreateFractionRule(ctx, &npool.CreateFractionRuleRequest{
+		_, err := cli.CreateFractionWithdrawalRule(ctx, &npool.CreateFractionWithdrawalRuleRequest{
 			Info: in,
 		})
 		return nil, err
@@ -43,9 +43,9 @@ func CreateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
 	return err
 }
 
-func GetFractionRule(ctx context.Context, id string) (*npool.FractionRule, error) {
+func GetFractionWithdrawalRule(ctx context.Context, id string) (*npool.FractionWithdrawalRule, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetFractionRule(ctx, &npool.GetFractionRuleRequest{
+		resp, err := cli.GetFractionWithdrawalRule(ctx, &npool.GetFractionWithdrawalRuleRequest{
 			EntID: id,
 		})
 		if err != nil {
@@ -56,14 +56,14 @@ func GetFractionRule(ctx context.Context, id string) (*npool.FractionRule, error
 	if err != nil {
 		return nil, err
 	}
-	return info.(*npool.FractionRule), nil
+	return info.(*npool.FractionWithdrawalRule), nil
 }
 
-func GetFractionRules(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.FractionRule, uint32, error) {
+func GetFractionWithdrawalRules(ctx context.Context, conds *npool.Conds, offset, limit int32) ([]*npool.FractionWithdrawalRule, uint32, error) {
 	var total uint32
 
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.GetFractionRules(ctx, &npool.GetFractionRulesRequest{
+		resp, err := cli.GetFractionWithdrawalRules(ctx, &npool.GetFractionWithdrawalRulesRequest{
 			Conds:  conds,
 			Offset: offset,
 			Limit:  limit,
@@ -79,12 +79,12 @@ func GetFractionRules(ctx context.Context, conds *npool.Conds, offset, limit int
 	if err != nil {
 		return nil, 0, err
 	}
-	return infos.([]*npool.FractionRule), total, nil
+	return infos.([]*npool.FractionWithdrawalRule), total, nil
 }
 
-func UpdateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
+func UpdateFractionWithdrawalRule(ctx context.Context, in *npool.FractionWithdrawalRuleReq) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.UpdateFractionRule(ctx, &npool.UpdateFractionRuleRequest{
+		_, err := cli.UpdateFractionWithdrawalRule(ctx, &npool.UpdateFractionWithdrawalRuleRequest{
 			Info: in,
 		})
 		return nil, err
@@ -92,9 +92,9 @@ func UpdateFractionRule(ctx context.Context, in *npool.FractionRuleReq) error {
 	return err
 }
 
-func ExistFractionRule(ctx context.Context, id string) (bool, error) {
+func ExistFractionWithdrawalRule(ctx context.Context, id string) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.ExistFractionRule(ctx, &npool.ExistFractionRuleRequest{
+		resp, err := cli.ExistFractionWithdrawalRule(ctx, &npool.ExistFractionWithdrawalRuleRequest{
 			EntID: id,
 		})
 		if err != nil {
@@ -108,9 +108,9 @@ func ExistFractionRule(ctx context.Context, id string) (bool, error) {
 	return info.(bool), nil
 }
 
-func ExistFractionRuleConds(ctx context.Context, conds *npool.Conds) (bool, error) {
+func ExistFractionWithdrawalRuleConds(ctx context.Context, conds *npool.Conds) (bool, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		resp, err := cli.ExistFractionRuleConds(ctx, &npool.ExistFractionRuleCondsRequest{
+		resp, err := cli.ExistFractionWithdrawalRuleConds(ctx, &npool.ExistFractionWithdrawalRuleCondsRequest{
 			Conds: conds,
 		})
 		if err != nil {
@@ -124,10 +124,10 @@ func ExistFractionRuleConds(ctx context.Context, conds *npool.Conds) (bool, erro
 	return info.(bool), nil
 }
 
-func GetFractionRuleOnly(ctx context.Context, conds *npool.Conds) (*npool.FractionRule, error) {
+func GetFractionWithdrawalRuleOnly(ctx context.Context, conds *npool.Conds) (*npool.FractionWithdrawalRule, error) {
 	infos, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		const singleRowLimit = 2
-		resp, err := cli.GetFractionRules(ctx, &npool.GetFractionRulesRequest{
+		resp, err := cli.GetFractionWithdrawalRules(ctx, &npool.GetFractionWithdrawalRulesRequest{
 			Conds:  conds,
 			Offset: 0,
 			Limit:  singleRowLimit,
@@ -140,19 +140,19 @@ func GetFractionRuleOnly(ctx context.Context, conds *npool.Conds) (*npool.Fracti
 	if err != nil {
 		return nil, err
 	}
-	if len(infos.([]*npool.FractionRule)) == 0 {
+	if len(infos.([]*npool.FractionWithdrawalRule)) == 0 {
 		return nil, nil
 	}
-	if len(infos.([]*npool.FractionRule)) > 1 {
+	if len(infos.([]*npool.FractionWithdrawalRule)) > 1 {
 		return nil, fmt.Errorf("too many record")
 	}
-	return infos.([]*npool.FractionRule)[0], nil
+	return infos.([]*npool.FractionWithdrawalRule)[0], nil
 }
 
-func DeleteFractionRule(ctx context.Context, id uint32, entID string) error {
+func DeleteFractionWithdrawalRule(ctx context.Context, id uint32, entID string) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
-		_, err := cli.DeleteFractionRule(ctx, &npool.DeleteFractionRuleRequest{
-			Info: &npool.FractionRuleReq{
+		_, err := cli.DeleteFractionWithdrawalRule(ctx, &npool.DeleteFractionWithdrawalRuleRequest{
+			Info: &npool.FractionWithdrawalRuleReq{
 				ID:    &id,
 				EntID: &entID,
 			},

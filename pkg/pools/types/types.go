@@ -36,8 +36,8 @@ type PoolManager interface {
 	PausePayment(ctx context.Context, userName string) (bool, error)
 	ResumePayment(ctx context.Context, userName string) (bool, error)
 
-	// withdraw Fraction
-	WithdrawFraction(ctx context.Context, userName string) (int64, error)
+	// withdraw FractionWithdrawal
+	WithdrawFractionWithdrawal(ctx context.Context, userName string) (int64, error)
 
 	// hash rate
 	GetHashRate(ctx context.Context, name string, cointypes []basetype.CoinType) (float64, error)

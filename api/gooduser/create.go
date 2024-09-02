@@ -28,7 +28,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 		ctx,
 		gooduser.WithEntID(req.EntID, false),
 		gooduser.WithRootUserID(req.RootUserID, true),
-		gooduser.WithCoinTypeIDs(in.Info.CoinTypeIDs, true),
+		gooduser.WithCoinTypeIDs(req.CoinTypeIDs, true),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

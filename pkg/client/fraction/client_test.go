@@ -1,4 +1,4 @@
-package fraction
+package fractionwithdrawal
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
-	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fraction"
+	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionwithdrawal"
 
 	"github.com/google/uuid"
 )
@@ -28,28 +28,28 @@ func init() {
 	}
 }
 
-var ret = &npool.Fraction{
+var ret = &npool.FractionWithdrawal{
 	EntID:       uuid.NewString(),
 	AppID:       orderserRet.AppID,
 	UserID:      orderserRet.UserID,
 	OrderUserID: orderserRet.EntID,
 }
 
-var req = &npool.FractionReq{
+var req = &npool.FractionWithdrawalReq{
 	EntID:       &ret.EntID,
 	AppID:       &ret.AppID,
 	UserID:      &ret.UserID,
 	OrderUserID: &ret.OrderUserID,
 }
 
-func createFraction(t *testing.T) {
-	err := CreateFraction(context.Background(), req)
+func createFractionWithdrawal(t *testing.T) {
+	err := CreateFractionWithdrawal(context.Background(), req)
 	assert.Nil(t, err)
-	info, err := GetFraction(context.Background(), ret.EntID)
+	info, err := GetFractionWithdrawal(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
-		ret.WithdrawStateStr = info.WithdrawStateStr
-		ret.WithdrawState = info.WithdrawState
+		ret.FractionWithdrawStateStr = info.FractionWithdrawStateStr
+		ret.FractionWithdrawState = info.FractionWithdrawState
 		ret.WithdrawAt = info.WithdrawAt
 		ret.PromisePayAt = info.PromisePayAt
 		ret.Msg = info.Msg
@@ -60,14 +60,14 @@ func createFraction(t *testing.T) {
 	}
 }
 
-func updateFraction(t *testing.T) {
+func updateFractionWithdrawal(t *testing.T) {
 	ret.Msg = "test"
 	req.Msg = &ret.Msg
 	req.ID = &ret.ID
-	err := UpdateFraction(context.Background(), req)
+	err := UpdateFractionWithdrawal(context.Background(), req)
 	assert.Nil(t, err)
 
-	info, err := GetFraction(context.Background(), *req.EntID)
+	info, err := GetFractionWithdrawal(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
@@ -75,25 +75,25 @@ func updateFraction(t *testing.T) {
 
 	ret.Msg = "test1"
 	req.Msg = &ret.Msg
-	err = UpdateFraction(context.Background(), req)
+	err = UpdateFractionWithdrawal(context.Background(), req)
 	assert.Nil(t, err)
 
-	info, err = GetFraction(context.Background(), *req.EntID)
+	info, err = GetFractionWithdrawal(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
 	}
 }
 
-func getFraction(t *testing.T) {
-	info, err := GetFraction(context.Background(), ret.EntID)
+func getFractionWithdrawal(t *testing.T) {
+	info, err := GetFractionWithdrawal(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
 		assert.Equal(t, ret, info)
 	}
 }
 
-func getFractions(t *testing.T) {
-	infos, total, err := GetFractions(context.Background(), &npool.Conds{
+func getFractionWithdrawals(t *testing.T) {
+	infos, total, err := GetFractionWithdrawals(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{Op: cruder.EQ, Value: ret.EntID},
 	}, 0, 1)
 	if assert.Nil(t, err) {
@@ -103,8 +103,8 @@ func getFractions(t *testing.T) {
 	}
 }
 
-func deleteFraction(t *testing.T) {
-	exist, err := ExistFractionConds(context.Background(), &npool.Conds{
+func deleteFractionWithdrawal(t *testing.T) {
+	exist, err := ExistFractionWithdrawalConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
@@ -114,10 +114,10 @@ func deleteFraction(t *testing.T) {
 		assert.Equal(t, true, exist)
 	}
 
-	err = DeleteFraction(context.Background(), ret.ID, ret.EntID)
+	err = DeleteFractionWithdrawal(context.Background(), ret.ID, ret.EntID)
 	assert.Nil(t, err)
 
-	exist, err = ExistFractionConds(context.Background(), &npool.Conds{
+	exist, err = ExistFractionWithdrawalConds(context.Background(), &npool.Conds{
 		EntID: &v1.StringVal{
 			Op:    cruder.EQ,
 			Value: ret.EntID,
@@ -138,11 +138,11 @@ func TestClient(t *testing.T) {
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
-	t.Run("createFraction", createFraction)
-	t.Run("updateFraction", updateFraction)
-	t.Run("getFraction", getFraction)
-	t.Run("getFractions", getFractions)
-	t.Run("deleteFraction", deleteFraction)
+	t.Run("createFractionWithdrawal", createFractionWithdrawal)
+	t.Run("updateFractionWithdrawal", updateFractionWithdrawal)
+	t.Run("getFractionWithdrawal", getFractionWithdrawal)
+	t.Run("getFractionWithdrawals", getFractionWithdrawals)
+	t.Run("deleteFractionWithdrawal", deleteFractionWithdrawal)
 	t.Run("deleteOrderUser", deleteOrderUser)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)

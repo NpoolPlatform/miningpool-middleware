@@ -21,7 +21,7 @@ func (s *Server) DeleteFractionWithdrawal(ctx context.Context, in *npool.DeleteF
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -36,7 +36,7 @@ func (s *Server) DeleteFractionWithdrawal(ctx context.Context, in *npool.DeleteF
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.DeleteFractionWithdrawal(ctx)
@@ -46,7 +46,7 @@ func (s *Server) DeleteFractionWithdrawal(ctx context.Context, in *npool.DeleteF
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteFractionWithdrawalResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.DeleteFractionWithdrawalResponse{}, nil

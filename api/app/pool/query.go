@@ -23,7 +23,7 @@ func (s *Server) GetPool(ctx context.Context, in *npool.GetPoolRequest) (*npool.
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetPoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetPoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetPool(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetPool(ctx context.Context, in *npool.GetPoolRequest) (*npool.
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetPoolResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetPoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetPoolResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetPools(ctx context.Context, in *npool.GetPoolsRequest) (*npoo
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetPoolsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetPoolsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetPools(ctx)
@@ -64,7 +64,7 @@ func (s *Server) GetPools(ctx context.Context, in *npool.GetPoolsRequest) (*npoo
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetPoolsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetPoolsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetPoolsResponse{

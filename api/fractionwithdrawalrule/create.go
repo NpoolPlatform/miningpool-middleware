@@ -21,7 +21,7 @@ func (s *Server) CreateFractionWithdrawalRule(ctx context.Context, in *npool.Cre
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 	req := in.GetInfo()
 	handler, err := fractionwithdrawalrule.NewHandler(
@@ -39,7 +39,7 @@ func (s *Server) CreateFractionWithdrawalRule(ctx context.Context, in *npool.Cre
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreateFractionWithdrawalRule(ctx)
@@ -49,7 +49,7 @@ func (s *Server) CreateFractionWithdrawalRule(ctx context.Context, in *npool.Cre
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreateFractionWithdrawalRuleResponse{}, nil

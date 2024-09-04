@@ -23,7 +23,7 @@ func (s *Server) GetGoodUser(ctx context.Context, in *npool.GetGoodUserRequest) 
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetGoodUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetGoodUser(ctx context.Context, in *npool.GetGoodUserRequest) 
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetGoodUserResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetGoodUsers(ctx context.Context, in *npool.GetGoodUsersRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetGoodUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 	infos, total, err := handler.GetGoodUsers(ctx)
 	if err != nil {
@@ -63,7 +63,7 @@ func (s *Server) GetGoodUsers(ctx context.Context, in *npool.GetGoodUsersRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUsersResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetGoodUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetGoodUsersResponse{
@@ -84,7 +84,7 @@ func (s *Server) GetGoodUserHashRate(ctx context.Context, in *npool.GetGoodUserH
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 	hashRate, err := handler.GetGoodUserHashRate(ctx)
 	if err != nil {
@@ -93,7 +93,7 @@ func (s *Server) GetGoodUserHashRate(ctx context.Context, in *npool.GetGoodUserH
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetGoodUserHashRateResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetGoodUserHashRateResponse{

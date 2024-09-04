@@ -23,7 +23,7 @@ func (s *Server) ExistFractionWithdrawalRule(ctx context.Context, in *npool.Exis
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistFractionWithdrawalRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistFractionWithdrawalRule(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistFractionWithdrawalRule(ctx context.Context, in *npool.Exis
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistFractionWithdrawalRuleResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistFractionWithdrawalRuleConds(ctx context.Context, in *npool
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistFractionWithdrawalRuleCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistFractionWithdrawalRuleCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistFractionWithdrawalRuleConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistFractionWithdrawalRuleConds(ctx context.Context, in *npool
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistFractionWithdrawalRuleCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistFractionWithdrawalRuleCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistFractionWithdrawalRuleCondsResponse{

@@ -21,7 +21,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 	req := in.GetInfo()
 	handler, err := orderuser.NewHandler(
@@ -39,7 +39,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.UpdateOrderUser(ctx)
@@ -49,7 +49,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.UpdateOrderUserResponse{}, nil

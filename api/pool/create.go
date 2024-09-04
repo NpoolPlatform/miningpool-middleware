@@ -21,7 +21,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -40,7 +40,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreatePool(ctx)
@@ -50,7 +50,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreatePoolResponse{}, nil

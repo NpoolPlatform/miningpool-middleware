@@ -21,7 +21,7 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -41,7 +41,7 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.UpdateCoin(ctx)
@@ -51,7 +51,7 @@ func (s *Server) UpdateCoin(ctx context.Context, in *npool.UpdateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateCoinResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.UpdateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.UpdateCoinResponse{}, nil

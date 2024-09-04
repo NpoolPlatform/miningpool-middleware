@@ -21,7 +21,7 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -36,7 +36,7 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.DeleteOrderUser(ctx)
@@ -46,7 +46,7 @@ func (s *Server) DeleteOrderUser(ctx context.Context, in *npool.DeleteOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.DeleteOrderUserResponse{}, nil

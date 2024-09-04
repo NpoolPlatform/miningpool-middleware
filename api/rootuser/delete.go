@@ -21,7 +21,7 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -36,7 +36,7 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.DeleteRootUser(ctx)
@@ -46,7 +46,7 @@ func (s *Server) DeleteRootUser(ctx context.Context, in *npool.DeleteRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.DeleteRootUserResponse{}, nil

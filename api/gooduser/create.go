@@ -21,7 +21,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 	req := in.GetInfo()
 	handler, err := gooduser.NewHandler(
@@ -36,7 +36,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreateGoodUser(ctx)
@@ -46,7 +46,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreateGoodUserResponse{}, nil

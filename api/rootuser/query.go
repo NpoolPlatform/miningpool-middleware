@@ -23,7 +23,7 @@ func (s *Server) GetRootUser(ctx context.Context, in *npool.GetRootUserRequest) 
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetRootUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetRootUser(ctx context.Context, in *npool.GetRootUserRequest) 
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetRootUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetRootUserResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetRootUsers(ctx context.Context, in *npool.GetRootUsersRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetRootUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetRootUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetRootUsers(ctx)
@@ -64,7 +64,7 @@ func (s *Server) GetRootUsers(ctx context.Context, in *npool.GetRootUsersRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetRootUsersResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetRootUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetRootUsersResponse{

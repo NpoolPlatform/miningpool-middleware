@@ -23,7 +23,7 @@ func (s *Server) GetFractionWithdrawalRule(ctx context.Context, in *npool.GetFra
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetFractionWithdrawalRuleResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetFractionWithdrawalRule(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetFractionWithdrawalRule(ctx context.Context, in *npool.GetFra
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetFractionWithdrawalRuleResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetFractionWithdrawalRuleResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetFractionWithdrawalRules(ctx context.Context, in *npool.GetFr
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetFractionWithdrawalRulesResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetFractionWithdrawalRulesResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetFractionWithdrawalRules(ctx)
@@ -64,7 +64,7 @@ func (s *Server) GetFractionWithdrawalRules(ctx context.Context, in *npool.GetFr
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetFractionWithdrawalRulesResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetFractionWithdrawalRulesResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetFractionWithdrawalRulesResponse{

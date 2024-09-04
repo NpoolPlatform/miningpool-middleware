@@ -21,7 +21,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -43,7 +43,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreateCoin(ctx)
@@ -53,7 +53,7 @@ func (s *Server) CreateCoin(ctx context.Context, in *npool.CreateCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateCoinResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreateCoinResponse{}, nil

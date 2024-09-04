@@ -23,7 +23,7 @@ func (s *Server) GetOrderUser(ctx context.Context, in *npool.GetOrderUserRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetOrderUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetOrderUser(ctx context.Context, in *npool.GetOrderUserRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUserResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetOrderUsers(ctx context.Context, in *npool.GetOrderUsersReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetOrderUsers(ctx)
@@ -64,7 +64,7 @@ func (s *Server) GetOrderUsers(ctx context.Context, in *npool.GetOrderUsersReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUsersResponse{
@@ -85,7 +85,7 @@ func (s *Server) GetOrderUserProportion(ctx context.Context, in *npool.GetOrderU
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	proportion, err := handler.GetOrderUserProportion(ctx)
@@ -95,7 +95,7 @@ func (s *Server) GetOrderUserProportion(ctx context.Context, in *npool.GetOrderU
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUserProportionResponse{
@@ -115,7 +115,7 @@ func (s *Server) GetOrderUserBalance(ctx context.Context, in *npool.GetOrderUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	assetsBalance, err := handler.GetOrderUserBalance(ctx)
@@ -125,7 +125,7 @@ func (s *Server) GetOrderUserBalance(ctx context.Context, in *npool.GetOrderUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUserBalanceResponse{

@@ -7,6 +7,7 @@ import (
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -15,7 +16,6 @@ import (
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
-	pooltypes "github.com/NpoolPlatform/miningpool-middleware/pkg/pools/types"
 
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 )
@@ -173,37 +173,42 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 	return handler.infos, handler.total, nil
 }
 
-func (h *Handler) GetOrderUserProportion(ctx context.Context) (*float64, error) {
+func (h *Handler) GetOrderUserProportion(ctx context.Context) (string, error) {
 	info, err := h.GetOrderUser(ctx)
+	zeroStr := decimal.Zero.String()
 	if err != nil {
-		return nil, wlog.WrapError(err)
+		return zeroStr, wlog.WrapError(err)
 	}
 
 	if info == nil {
-		return nil, wlog.Errorf("invalid entid")
+		return zeroStr, wlog.Errorf("invalid entid")
 	}
 
 	handle := &baseInfoHandle{Handler: h}
 
 	err = handle.getBaseInfo(ctx)
 	if err != nil {
-		return nil, wlog.WrapError(err)
+		return zeroStr, wlog.WrapError(err)
 	}
 
 	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
 	if err != nil {
-		return nil, wlog.WrapError(err)
+		return zeroStr, wlog.WrapError(err)
 	}
 
 	proportion, err := mgr.GetRevenueProportion(ctx, handle.baseInfo.Distributor, handle.baseInfo.Recipient)
 	if err != nil {
-		return nil, wlog.WrapError(err)
+		return zeroStr, wlog.WrapError(err)
 	}
 
-	return proportion, nil
+	if proportion == nil {
+		return zeroStr, nil
+	}
+
+	return decimal.NewFromFloat(*proportion).String(), nil
 }
 
-func (h *Handler) GetOrderUserBalance(ctx context.Context) (*pooltypes.AssetsBalance, error) {
+func (h *Handler) GetOrderUserBalance(ctx context.Context) (*npool.BalanceInfo, error) {
 	info, err := h.GetOrderUser(ctx)
 	if err != nil {
 		return nil, wlog.WrapError(err)
@@ -230,5 +235,11 @@ func (h *Handler) GetOrderUserBalance(ctx context.Context) (*pooltypes.AssetsBal
 		return nil, wlog.WrapError(err)
 	}
 
-	return assetsBalance, nil
+	return &npool.BalanceInfo{
+		Balance:              decimal.NewFromFloat(assetsBalance.Balance).String(),
+		Paid:                 decimal.NewFromFloat(assetsBalance.Paid).String(),
+		TotalIncome:          decimal.NewFromFloat(assetsBalance.TotalIncome).String(),
+		YesterdayIncome:      decimal.NewFromFloat(assetsBalance.YesterdayIncome).String(),
+		EstimatedTodayIncome: decimal.NewFromFloat(assetsBalance.EstimatedTodayIncome).String(),
+	}, nil
 }

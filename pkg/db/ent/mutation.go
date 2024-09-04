@@ -5948,25 +5948,25 @@ func (m *OrderUserMutation) ResetEdge(name string) error {
 // PoolMutation represents an operation that mutates the Pool nodes in the graph.
 type PoolMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint32
-	created_at      *uint32
-	addcreated_at   *int32
-	updated_at      *uint32
-	addupdated_at   *int32
-	deleted_at      *uint32
-	adddeleted_at   *int32
-	ent_id          *uuid.UUID
-	miningpool_type *string
-	name            *string
-	site            *string
-	logo            *string
-	description     *string
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*Pool, error)
-	predicates      []predicate.Pool
+	op               Op
+	typ              string
+	id               *uint32
+	created_at       *uint32
+	addcreated_at    *int32
+	updated_at       *uint32
+	addupdated_at    *int32
+	deleted_at       *uint32
+	adddeleted_at    *int32
+	ent_id           *uuid.UUID
+	mining_pool_type *string
+	name             *string
+	site             *string
+	logo             *string
+	description      *string
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Pool, error)
+	predicates       []predicate.Pool
 }
 
 var _ ent.Mutation = (*PoolMutation)(nil)
@@ -6277,53 +6277,53 @@ func (m *PoolMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *PoolMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (m *PoolMutation) SetMiningPoolType(s string) {
+	m.mining_pool_type = &s
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *PoolMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// MiningPoolType returns the value of the "mining_pool_type" field in the mutation.
+func (m *PoolMutation) MiningPoolType() (r string, exists bool) {
+	v := m.mining_pool_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the Pool entity.
+// OldMiningPoolType returns the old "mining_pool_type" field's value of the Pool entity.
 // If the Pool object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PoolMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *PoolMutation) OldMiningPoolType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldMiningPoolType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldMiningPoolType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldMiningPoolType: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.MiningPoolType, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *PoolMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[pool.FieldMiningpoolType] = struct{}{}
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (m *PoolMutation) ClearMiningPoolType() {
+	m.mining_pool_type = nil
+	m.clearedFields[pool.FieldMiningPoolType] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *PoolMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[pool.FieldMiningpoolType]
+// MiningPoolTypeCleared returns if the "mining_pool_type" field was cleared in this mutation.
+func (m *PoolMutation) MiningPoolTypeCleared() bool {
+	_, ok := m.clearedFields[pool.FieldMiningPoolType]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *PoolMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, pool.FieldMiningpoolType)
+// ResetMiningPoolType resets all changes to the "mining_pool_type" field.
+func (m *PoolMutation) ResetMiningPoolType() {
+	m.mining_pool_type = nil
+	delete(m.clearedFields, pool.FieldMiningPoolType)
 }
 
 // SetName sets the "name" field.
@@ -6554,8 +6554,8 @@ func (m *PoolMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, pool.FieldEntID)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, pool.FieldMiningpoolType)
+	if m.mining_pool_type != nil {
+		fields = append(fields, pool.FieldMiningPoolType)
 	}
 	if m.name != nil {
 		fields = append(fields, pool.FieldName)
@@ -6585,8 +6585,8 @@ func (m *PoolMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case pool.FieldEntID:
 		return m.EntID()
-	case pool.FieldMiningpoolType:
-		return m.MiningpoolType()
+	case pool.FieldMiningPoolType:
+		return m.MiningPoolType()
 	case pool.FieldName:
 		return m.Name()
 	case pool.FieldSite:
@@ -6612,8 +6612,8 @@ func (m *PoolMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldDeletedAt(ctx)
 	case pool.FieldEntID:
 		return m.OldEntID(ctx)
-	case pool.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
+	case pool.FieldMiningPoolType:
+		return m.OldMiningPoolType(ctx)
 	case pool.FieldName:
 		return m.OldName(ctx)
 	case pool.FieldSite:
@@ -6659,12 +6659,12 @@ func (m *PoolMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case pool.FieldMiningpoolType:
+	case pool.FieldMiningPoolType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
+		m.SetMiningPoolType(v)
 		return nil
 	case pool.FieldName:
 		v, ok := value.(string)
@@ -6763,8 +6763,8 @@ func (m *PoolMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PoolMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(pool.FieldMiningpoolType) {
-		fields = append(fields, pool.FieldMiningpoolType)
+	if m.FieldCleared(pool.FieldMiningPoolType) {
+		fields = append(fields, pool.FieldMiningPoolType)
 	}
 	if m.FieldCleared(pool.FieldName) {
 		fields = append(fields, pool.FieldName)
@@ -6792,8 +6792,8 @@ func (m *PoolMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PoolMutation) ClearField(name string) error {
 	switch name {
-	case pool.FieldMiningpoolType:
-		m.ClearMiningpoolType()
+	case pool.FieldMiningPoolType:
+		m.ClearMiningPoolType()
 		return nil
 	case pool.FieldName:
 		m.ClearName()
@@ -6827,8 +6827,8 @@ func (m *PoolMutation) ResetField(name string) error {
 	case pool.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case pool.FieldMiningpoolType:
-		m.ResetMiningpoolType()
+	case pool.FieldMiningPoolType:
+		m.ResetMiningPoolType()
 		return nil
 	case pool.FieldName:
 		m.ResetName()

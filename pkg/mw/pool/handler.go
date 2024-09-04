@@ -61,7 +61,7 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	}
 }
 
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
+func WithMiningPoolType(miningpooltype *basetypes.MiningPoolType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if miningpooltype == nil {
 			if must {
@@ -69,10 +69,10 @@ func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) fun
 			}
 			return nil
 		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
+		if *miningpooltype == basetypes.MiningPoolType_DefaultMiningPoolType {
 			return wlog.Errorf("invalid miningpooltype,not allow be default type")
 		}
-		h.MiningpoolType = miningpooltype
+		h.MiningPoolType = miningpooltype
 
 		return nil
 	}
@@ -167,10 +167,10 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: ids,
 			}
 		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+		if conds.MiningPoolType != nil {
+			h.Conds.MiningPoolType = &cruder.Cond{
+				Op:  conds.GetMiningPoolType().GetOp(),
+				Val: basetypes.MiningPoolType(conds.GetMiningPoolType().GetValue()),
 			}
 		}
 		if conds.Name != nil {

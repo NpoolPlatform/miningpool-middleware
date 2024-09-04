@@ -13,7 +13,7 @@ import (
 type Req struct {
 	ID             *uint32
 	EntID          *uuid.UUID
-	MiningpoolType *basetypes.MiningpoolType
+	MiningPoolType *basetypes.MiningPoolType
 	Name           *string
 	Site           *string
 	Logo           *string
@@ -25,8 +25,8 @@ func CreateSet(c *ent.PoolCreate, req *Req) *ent.PoolCreate {
 	if req.EntID != nil {
 		c.SetEntID(*req.EntID)
 	}
-	if req.MiningpoolType != nil {
-		c.SetMiningpoolType(req.MiningpoolType.String())
+	if req.MiningPoolType != nil {
+		c.SetMiningPoolType(req.MiningPoolType.String())
 	}
 	if req.Name != nil {
 		c.SetName(*req.Name)
@@ -45,8 +45,8 @@ func CreateSet(c *ent.PoolCreate, req *Req) *ent.PoolCreate {
 }
 
 func UpdateSet(u *ent.PoolUpdateOne, req *Req) (*ent.PoolUpdateOne, error) {
-	if req.MiningpoolType != nil {
-		u = u.SetMiningpoolType(req.MiningpoolType.String())
+	if req.MiningPoolType != nil {
+		u = u.SetMiningPoolType(req.MiningPoolType.String())
 	}
 	if req.Name != nil {
 		u = u.SetName(*req.Name)
@@ -69,7 +69,7 @@ func UpdateSet(u *ent.PoolUpdateOne, req *Req) (*ent.PoolUpdateOne, error) {
 type Conds struct {
 	ID             *cruder.Cond
 	EntID          *cruder.Cond
-	MiningpoolType *cruder.Cond
+	MiningPoolType *cruder.Cond
 	Name           *cruder.Cond
 	Description    *cruder.Cond
 	EntIDs         *cruder.Cond
@@ -115,14 +115,14 @@ func SetQueryConds(q *ent.PoolQuery, conds *Conds) (*ent.PoolQuery, error) { //n
 			return nil, wlog.Errorf("invalid entids field")
 		}
 	}
-	if conds.MiningpoolType != nil {
-		miningpooltype, ok := conds.MiningpoolType.Val.(basetypes.MiningpoolType)
+	if conds.MiningPoolType != nil {
+		miningpooltype, ok := conds.MiningPoolType.Val.(basetypes.MiningPoolType)
 		if !ok {
 			return nil, wlog.Errorf("invalid miningpooltype")
 		}
-		switch conds.MiningpoolType.Op {
+		switch conds.MiningPoolType.Op {
 		case cruder.EQ:
-			q.Where(poolent.MiningpoolType(miningpooltype.String()))
+			q.Where(poolent.MiningPoolType(miningpooltype.String()))
 		default:
 			return nil, wlog.Errorf("invalid miningpooltype field")
 		}

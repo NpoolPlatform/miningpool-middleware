@@ -98,23 +98,23 @@ func (pu *PoolUpdate) SetNillableEntID(u *uuid.UUID) *PoolUpdate {
 	return pu
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (pu *PoolUpdate) SetMiningpoolType(s string) *PoolUpdate {
-	pu.mutation.SetMiningpoolType(s)
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (pu *PoolUpdate) SetMiningPoolType(s string) *PoolUpdate {
+	pu.mutation.SetMiningPoolType(s)
 	return pu
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (pu *PoolUpdate) SetNillableMiningpoolType(s *string) *PoolUpdate {
+// SetNillableMiningPoolType sets the "mining_pool_type" field if the given value is not nil.
+func (pu *PoolUpdate) SetNillableMiningPoolType(s *string) *PoolUpdate {
 	if s != nil {
-		pu.SetMiningpoolType(*s)
+		pu.SetMiningPoolType(*s)
 	}
 	return pu
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (pu *PoolUpdate) ClearMiningpoolType() *PoolUpdate {
-	pu.mutation.ClearMiningpoolType()
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (pu *PoolUpdate) ClearMiningPoolType() *PoolUpdate {
+	pu.mutation.ClearMiningPoolType()
 	return pu
 }
 
@@ -345,17 +345,17 @@ func (pu *PoolUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: pool.FieldEntID,
 		})
 	}
-	if value, ok := pu.mutation.MiningpoolType(); ok {
+	if value, ok := pu.mutation.MiningPoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: pool.FieldMiningpoolType,
+			Column: pool.FieldMiningPoolType,
 		})
 	}
-	if pu.mutation.MiningpoolTypeCleared() {
+	if pu.mutation.MiningPoolTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: pool.FieldMiningpoolType,
+			Column: pool.FieldMiningPoolType,
 		})
 	}
 	if value, ok := pu.mutation.Name(); ok {
@@ -500,23 +500,23 @@ func (puo *PoolUpdateOne) SetNillableEntID(u *uuid.UUID) *PoolUpdateOne {
 	return puo
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (puo *PoolUpdateOne) SetMiningpoolType(s string) *PoolUpdateOne {
-	puo.mutation.SetMiningpoolType(s)
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (puo *PoolUpdateOne) SetMiningPoolType(s string) *PoolUpdateOne {
+	puo.mutation.SetMiningPoolType(s)
 	return puo
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (puo *PoolUpdateOne) SetNillableMiningpoolType(s *string) *PoolUpdateOne {
+// SetNillableMiningPoolType sets the "mining_pool_type" field if the given value is not nil.
+func (puo *PoolUpdateOne) SetNillableMiningPoolType(s *string) *PoolUpdateOne {
 	if s != nil {
-		puo.SetMiningpoolType(*s)
+		puo.SetMiningPoolType(*s)
 	}
 	return puo
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (puo *PoolUpdateOne) ClearMiningpoolType() *PoolUpdateOne {
-	puo.mutation.ClearMiningpoolType()
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (puo *PoolUpdateOne) ClearMiningPoolType() *PoolUpdateOne {
+	puo.mutation.ClearMiningPoolType()
 	return puo
 }
 
@@ -777,17 +777,17 @@ func (puo *PoolUpdateOne) sqlSave(ctx context.Context) (_node *Pool, err error) 
 			Column: pool.FieldEntID,
 		})
 	}
-	if value, ok := puo.mutation.MiningpoolType(); ok {
+	if value, ok := puo.mutation.MiningPoolType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: pool.FieldMiningpoolType,
+			Column: pool.FieldMiningPoolType,
 		})
 	}
-	if puo.mutation.MiningpoolTypeCleared() {
+	if puo.mutation.MiningPoolTypeCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: pool.FieldMiningpoolType,
+			Column: pool.FieldMiningPoolType,
 		})
 	}
 	if value, ok := puo.mutation.Name(); ok {

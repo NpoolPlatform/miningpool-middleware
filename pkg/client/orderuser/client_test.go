@@ -36,7 +36,7 @@ var ret = &npool.OrderUser{
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var req = &npool.OrderUserReq{
@@ -61,7 +61,7 @@ func createOrderUser(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
 		ret.RootUserID = info.RootUserID
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID

@@ -68,7 +68,7 @@ func UpdateSet(u *ent.FractionWithdrawalRuleUpdateOne, req *Req) (*ent.FractionW
 type Conds struct {
 	ID               *cruder.Cond
 	EntID            *cruder.Cond
-	MiningpoolType   *cruder.Cond
+	MiningPoolType   *cruder.Cond
 	PoolCoinTypeID   *cruder.Cond
 	WithdrawInterval *cruder.Cond
 	EntIDs           *cruder.Cond

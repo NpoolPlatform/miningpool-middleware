@@ -19,7 +19,7 @@ func (h *Handler) UpdatePool(ctx context.Context) error {
 	}
 
 	sqlH := h.newSQLHandler()
-	sqlH.BondMiningpoolType = &info.MiningpoolType
+	sqlH.BondMiningPoolType = &info.MiningPoolType
 
 	return db.WithTx(ctx, func(_ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genUpdateSQL()

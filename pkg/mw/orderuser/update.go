@@ -68,7 +68,7 @@ func (h *updateInPoolHandle) handleUpdateReq(ctx context.Context) error {
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, handle.baseInfo.CoinType.Enum(), handle.baseInfo.AuthToken)
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, handle.baseInfo.CoinType.Enum(), handle.baseInfo.AuthToken)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

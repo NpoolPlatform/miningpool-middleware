@@ -29,7 +29,7 @@ type Manager struct {
 }
 
 var (
-	MiningPoolType                                 = miningpoolbase.MiningpoolType_F2Pool
+	MiningPoolType                                 = miningpoolbase.MiningPoolType_F2Pool
 	CoinType2Currency map[basetype.CoinType]string = map[basetype.CoinType]string{
 		basetype.CoinType_CoinTypeBitCoin: "bitcoin",
 	}

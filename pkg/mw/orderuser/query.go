@@ -102,10 +102,10 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		pool.FieldMiningpoolType,
-		sql.As(poolT.C(pool.FieldName), "miningpool_name"),
-		sql.As(poolT.C(pool.FieldLogo), "miningpool_logo"),
-		sql.As(poolT.C(pool.FieldSite), "miningpool_site"),
+		pool.FieldMiningPoolType,
+		sql.As(poolT.C(pool.FieldName), "mining_pool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "mining_pool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "mining_pool_site"),
 		sql.As(poolT.C(pool.FieldEntID), "pool_id"),
 		gooduser.FieldRootUserID,
 	)
@@ -117,7 +117,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 
@@ -190,7 +190,7 @@ func (h *Handler) GetOrderUserProportion(ctx context.Context) (*float64, error) 
 		return nil, wlog.WrapError(err)
 	}
 
-	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
 	if err != nil {
 		return nil, wlog.WrapError(err)
 	}
@@ -220,7 +220,7 @@ func (h *Handler) GetOrderUserBalance(ctx context.Context) (*pooltypes.AssetsBal
 		return nil, wlog.WrapError(err)
 	}
 
-	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningpoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
 	if err != nil {
 		return nil, wlog.WrapError(err)
 	}

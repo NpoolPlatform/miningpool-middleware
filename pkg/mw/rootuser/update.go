@@ -77,7 +77,7 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 	if info == nil {
 		return wlog.Errorf("invalid poolid")
 	}
-	miningtype := info.MiningpoolType
+	miningtype := info.MiningPoolType
 
 	authInfo, err := h.GetAuthToken(ctx)
 	if err != nil {

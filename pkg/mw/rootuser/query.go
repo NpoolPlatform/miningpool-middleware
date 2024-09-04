@@ -88,7 +88,7 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
 	).Distinct()
 }
 
@@ -98,7 +98,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = basetypes.MiningPoolType(basetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 

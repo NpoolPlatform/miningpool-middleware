@@ -18,7 +18,7 @@ import (
 var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var gooduserReq = &npool.GoodUserReq{
@@ -70,7 +70,7 @@ func createGoodUser(t *testing.T) {
 		gooduserRet.UpdatedAt = info.UpdatedAt
 		gooduserRet.CreatedAt = info.CreatedAt
 		gooduserRet.PoolID = info.PoolID
-		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		gooduserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		gooduserRet.ID = info.ID
 		gooduserRet.EntID = info.EntID
 		gooduserRet.Name = info.Name

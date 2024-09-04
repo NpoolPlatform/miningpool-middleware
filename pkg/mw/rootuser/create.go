@@ -53,7 +53,7 @@ func (h *Handler) checkCreateAuthed(ctx context.Context) error {
 	if info == nil {
 		return wlog.Errorf("invalid poolid")
 	}
-	mgr, err := pools.NewPoolManager(info.MiningpoolType, nil, *h.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(info.MiningPoolType, nil, *h.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
@@ -66,12 +66,12 @@ func (h *Handler) checkCreateAuthed(ctx context.Context) error {
 
 	exist, err := mgr.ExistMiningUser(ctx, *h.Name)
 	if err != nil {
-		err = wlog.Errorf("failed to queary in %v,which called %v, err: %v", info.MiningpoolType, *h.Name, err)
+		err = wlog.Errorf("failed to queary in %v,which called %v, err: %v", info.MiningPoolType, *h.Name, err)
 		return wlog.WrapError(err)
 	}
 
 	if !exist {
-		return wlog.Errorf("have no username in %v,which called %v", info.MiningpoolType, *h.Name)
+		return wlog.Errorf("have no username in %v,which called %v", info.MiningPoolType, *h.Name)
 	}
 
 	authed := true

@@ -92,12 +92,12 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
 	)
 
-	if h.Conds != nil && h.Conds.MiningpoolType != nil {
-		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(mpbasetypes.MiningpoolType); ok {
-			s.Where(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype.String()))
+	if h.Conds != nil && h.Conds.MiningPoolType != nil {
+		if miningpooltype, ok := h.Conds.MiningPoolType.Val.(mpbasetypes.MiningPoolType); ok {
+			s.Where(sql.EQ(poolT.C(pool.FieldMiningPoolType), miningpooltype.String()))
 		}
 	}
 }
@@ -108,7 +108,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }

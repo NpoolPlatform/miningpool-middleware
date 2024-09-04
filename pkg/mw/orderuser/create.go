@@ -79,7 +79,7 @@ func (h *Handler) newOrderUserInPool(ctx context.Context) error {
 		return wlog.Errorf("have no rootuser,entid: %v", guInfo.RootUserID)
 	}
 
-	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, nil, ruInfo.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(guInfo.MiningPoolType, nil, ruInfo.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

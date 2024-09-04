@@ -27,7 +27,7 @@ func (h *queryHandler) selectPool(stm *ent.PoolQuery) {
 		poolent.FieldCreatedAt,
 		poolent.FieldUpdatedAt,
 		poolent.FieldEntID,
-		poolent.FieldMiningpoolType,
+		poolent.FieldMiningPoolType,
 		poolent.FieldName,
 		poolent.FieldSite,
 		poolent.FieldLogo,
@@ -72,7 +72,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = basetypes.MiningpoolType(basetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = basetypes.MiningPoolType(basetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 

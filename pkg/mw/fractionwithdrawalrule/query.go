@@ -101,7 +101,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		coinT.C(coin.FieldCoinType),
 		coinT.C(coin.FieldPoolID),
 		coinT.C(coin.FieldCoinTypeID),
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
 	)
 
 	if h.PoolConds.EntID != nil {
@@ -125,7 +125,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
 	}
 }

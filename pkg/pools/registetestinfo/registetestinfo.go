@@ -23,8 +23,8 @@ import (
 var (
 	poolInfos = []*poolmw.Pool{
 		{
-			MiningpoolType: mpbasetype.MiningpoolType_F2Pool,
-			Name:           mpbasetype.MiningpoolType_F2Pool.String(),
+			MiningPoolType: mpbasetype.MiningPoolType_F2Pool,
+			Name:           mpbasetype.MiningPoolType_F2Pool.String(),
 			Site:           config.F2PoolSite,
 			Logo:           "https://static.f2pool.com/static/images/icon-logo-min-blue.png",
 			Description:    "",
@@ -36,7 +36,7 @@ var (
 
 	coinInfos = []*coinmw.Coin{
 		{
-			MiningpoolType:         mpbasetype.MiningpoolType_F2Pool,
+			MiningPoolType:         mpbasetype.MiningPoolType_F2Pool,
 			CoinType:               basetypes.CoinType_CoinTypeBitCoin,
 			FeeRatio:               f2pool.CoinType2FeeRatio[basetypes.CoinType_CoinTypeBitCoin],
 			FixedRevenueAble:       false,
@@ -47,7 +47,7 @@ var (
 
 	fractionwithdrawalruleInfos = []*fractionwithdrawalrulemw.FractionWithdrawalRule{
 		{
-			MiningpoolType: mpbasetype.MiningpoolType_F2Pool,
+			MiningPoolType: mpbasetype.MiningPoolType_F2Pool,
 			CoinType:       basetypes.CoinType_CoinTypeBitCoin,
 			// 30Day
 			WithdrawInterval:      time.SecondsPerDay * 30,
@@ -61,9 +61,9 @@ var (
 func registePool(ctx context.Context) {
 	for _, info := range poolInfos {
 		poolH, err := pool.NewHandler(ctx, pool.WithConds(&poolmw.Conds{
-			MiningpoolType: &basetypes.Uint32Val{
+			MiningPoolType: &basetypes.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(info.MiningpoolType),
+				Value: uint32(info.MiningPoolType),
 			},
 			Name: &basetypes.StringVal{
 				Op:    cruder.EQ,
@@ -87,7 +87,7 @@ func registePool(ctx context.Context) {
 		info.EntID = uuid.NewString()
 		poolH, err = pool.NewHandler(ctx,
 			pool.WithEntID(&info.EntID, true),
-			pool.WithMiningpoolType(&info.MiningpoolType, true),
+			pool.WithMiningPoolType(&info.MiningPoolType, true),
 			pool.WithName(&info.Name, true),
 			pool.WithSite(&info.Site, true),
 			pool.WithLogo(&info.Logo, true),
@@ -113,9 +113,9 @@ func registeCoinInfo(ctx context.Context) {
 				Op:    cruder.EQ,
 				Value: uint32(info.CoinType),
 			},
-			MiningpoolType: &basetypes.Uint32Val{
+			MiningPoolType: &basetypes.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(info.MiningpoolType),
+				Value: uint32(info.MiningPoolType),
 			},
 		}))
 		if err != nil {
@@ -135,9 +135,9 @@ func registeCoinInfo(ctx context.Context) {
 		// get pools
 		poolH, err := pool.NewHandler(ctx,
 			pool.WithConds(&poolmw.Conds{
-				MiningpoolType: &basetypes.Uint32Val{
+				MiningPoolType: &basetypes.Uint32Val{
 					Op:    cruder.EQ,
-					Value: uint32(info.MiningpoolType),
+					Value: uint32(info.MiningPoolType),
 				},
 			}),
 			pool.WithOffset(0),
@@ -154,7 +154,7 @@ func registeCoinInfo(ctx context.Context) {
 		}
 
 		if len(poolInfos) == 0 {
-			logger.Sugar().Errorf("have no pool of %v", info.MiningpoolType)
+			logger.Sugar().Errorf("have no pool of %v", info.MiningPoolType)
 			continue
 		}
 
@@ -191,9 +191,9 @@ func registeFractionWithdrawalRule(ctx context.Context) {
 					Op:    cruder.EQ,
 					Value: uint32(info.CoinType),
 				},
-				MiningpoolType: &basetypes.Uint32Val{
+				MiningPoolType: &basetypes.Uint32Val{
 					Op:    cruder.EQ,
-					Value: uint32(info.MiningpoolType),
+					Value: uint32(info.MiningPoolType),
 				},
 			}),
 			coin.WithOffset(0),

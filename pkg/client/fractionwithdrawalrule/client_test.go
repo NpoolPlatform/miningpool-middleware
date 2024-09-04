@@ -30,7 +30,7 @@ func init() {
 
 var ret = &npool.FractionWithdrawalRule{
 	EntID:                 uuid.NewString(),
-	MiningpoolType:        mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType:        mpbasetypes.MiningPoolType_F2Pool,
 	CoinType:              basetypes.CoinType_CoinTypeBitCoin,
 	WithdrawInterval:      3,
 	PayoutThreshold:       "5.0",
@@ -53,7 +53,7 @@ func createFractionWithdrawalRule(t *testing.T) {
 		return
 	}
 
-	ret.MiningpoolType = infos[0].MiningpoolType
+	ret.MiningPoolType = infos[0].MiningPoolType
 	ret.CoinType = infos[0].CoinType
 
 	err = CreateFractionWithdrawalRule(context.Background(), req)

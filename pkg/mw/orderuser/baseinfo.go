@@ -16,7 +16,7 @@ import (
 
 type baseInfo struct {
 	OrderUserID    uint32
-	MiningpoolType mpbasetypes.MiningpoolType
+	MiningPoolType mpbasetypes.MiningPoolType
 	CoinType       basetypes.CoinType
 	AuthToken      string
 	Recipient      string
@@ -68,9 +68,9 @@ func (h *baseInfoHandle) getBaseInfo(ctx context.Context) error {
 	}
 
 	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
-		MiningpoolType: &basetypes.Uint32Val{
+		MiningPoolType: &basetypes.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(*orderUser.MiningpoolType.Enum()),
+			Value: uint32(*orderUser.MiningPoolType.Enum()),
 		},
 		CoinTypeID: &basetypes.StringVal{
 			Op:    cruder.EQ,
@@ -92,7 +92,7 @@ func (h *baseInfoHandle) getBaseInfo(ctx context.Context) error {
 
 	h.baseInfo = &baseInfo{
 		OrderUserID:    orderUser.ID,
-		MiningpoolType: orderUser.MiningpoolType,
+		MiningPoolType: orderUser.MiningPoolType,
 		CoinType:       coinInfos[0].CoinType,
 		Distributor:    goodUser.Name,
 		Recipient:      orderUser.Name,

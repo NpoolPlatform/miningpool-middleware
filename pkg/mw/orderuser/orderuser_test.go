@@ -35,7 +35,7 @@ var orderuserRet = &npool.OrderUser{
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var orderuserReq = &npool.OrderUserReq{
@@ -79,7 +79,7 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		orderuserRet.UpdatedAt = info.UpdatedAt
 		orderuserRet.CreatedAt = info.CreatedAt
-		orderuserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		orderuserRet.RootUserID = info.RootUserID
 		orderuserRet.ID = info.ID
 		orderuserRet.EntID = info.EntID
@@ -90,7 +90,7 @@ func create(t *testing.T) {
 }
 
 func update(t *testing.T) {
-	orderuserRet.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
+	orderuserRet.MiningPoolType = mpbasetypes.MiningPoolType_F2Pool
 	revenueAddress := "ffffffff"
 	autoPay := true
 	proportion := "0.5"
@@ -114,7 +114,7 @@ func update(t *testing.T) {
 
 	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
-		orderuserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		orderuserRet.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, orderuserRet)
 	}
@@ -139,7 +139,7 @@ func deleteRow(t *testing.T) {
 	infos, total, err := handler.GetOrderUsers(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
-		orderuserRet.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
+		orderuserRet.MiningPoolTypeStr = infos[0].MiningPoolTypeStr
 		orderuserRet.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], orderuserRet)
 	}

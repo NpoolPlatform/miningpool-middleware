@@ -98,11 +98,11 @@ func (h *queryHandler) queryJoinRootUserAndPool(s *sql.Selector) {
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
 		ruT.C(rootuser.FieldPoolID),
-		sql.As(poolT.C(pool.FieldName), "miningpool_name"),
-		sql.As(poolT.C(pool.FieldLogo), "miningpool_logo"),
-		sql.As(poolT.C(pool.FieldSite), "miningpool_site"),
+		sql.As(poolT.C(pool.FieldName), "mining_pool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "mining_pool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "mining_pool_site"),
 	).Distinct()
 }
 
@@ -112,7 +112,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 
@@ -230,7 +230,7 @@ func (h *Handler) getGoodUserHashRate(ctx context.Context) (string, error) {
 		}
 	}
 
-	mgr, err := pools.NewPoolManager(guInfo.MiningpoolType, nil, rootuserToken.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(guInfo.MiningPoolType, nil, rootuserToken.AuthTokenPlain)
 	if err != nil {
 		return "", wlog.WrapError(err)
 	}

@@ -169,7 +169,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 			pool.FieldUpdatedAt:      {Type: field.TypeUint32, Column: pool.FieldUpdatedAt},
 			pool.FieldDeletedAt:      {Type: field.TypeUint32, Column: pool.FieldDeletedAt},
 			pool.FieldEntID:          {Type: field.TypeUUID, Column: pool.FieldEntID},
-			pool.FieldMiningpoolType: {Type: field.TypeString, Column: pool.FieldMiningpoolType},
+			pool.FieldMiningPoolType: {Type: field.TypeString, Column: pool.FieldMiningPoolType},
 			pool.FieldName:           {Type: field.TypeString, Column: pool.FieldName},
 			pool.FieldSite:           {Type: field.TypeString, Column: pool.FieldSite},
 			pool.FieldLogo:           {Type: field.TypeString, Column: pool.FieldLogo},
@@ -784,9 +784,9 @@ func (f *PoolFilter) WhereEntID(p entql.ValueP) {
 	f.Where(p.Field(pool.FieldEntID))
 }
 
-// WhereMiningpoolType applies the entql string predicate on the miningpool_type field.
-func (f *PoolFilter) WhereMiningpoolType(p entql.StringP) {
-	f.Where(p.Field(pool.FieldMiningpoolType))
+// WhereMiningPoolType applies the entql string predicate on the mining_pool_type field.
+func (f *PoolFilter) WhereMiningPoolType(p entql.StringP) {
+	f.Where(p.Field(pool.FieldMiningPoolType))
 }
 
 // WhereName applies the entql string predicate on the name field.

@@ -33,7 +33,7 @@ func init() {
 var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var gooduserReq = &npool.GoodUserReq{
@@ -85,7 +85,7 @@ func create(t *testing.T) {
 		gooduserRet.UpdatedAt = info.UpdatedAt
 		gooduserRet.CreatedAt = info.CreatedAt
 		gooduserRet.PoolID = info.PoolID
-		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		gooduserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		gooduserRet.ID = info.ID
 		gooduserRet.EntID = info.EntID
 		gooduserRet.Name = info.Name
@@ -106,7 +106,7 @@ func update(t *testing.T) {
 
 	info, err := handler.GetGoodUser(context.Background())
 	if assert.Nil(t, err) {
-		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		gooduserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		gooduserRet.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, gooduserRet)
 	}
@@ -131,7 +131,7 @@ func deleteRow(t *testing.T) {
 	infos, total, err := handler.GetGoodUsers(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
-		gooduserRet.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
+		gooduserRet.MiningPoolTypeStr = infos[0].MiningPoolTypeStr
 		gooduserRet.UpdatedAt = infos[0].UpdatedAt
 		assert.Equal(t, infos[0], gooduserRet)
 	}

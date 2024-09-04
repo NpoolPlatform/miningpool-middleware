@@ -13,7 +13,7 @@ import (
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
+	BondMiningPoolType *basetypes.MiningPoolType
 	bondVals           map[string]string
 	baseVals           map[string]string
 	idVals             map[string]string
@@ -44,13 +44,13 @@ func (h *sqlHandler) baseKeys() error {
 		}
 		h.baseVals[pool.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.MiningPoolType != nil {
+		strBytes, err := json.Marshal(h.MiningPoolType.String())
 		if err != nil {
 			return wlog.WrapError(err)
 		}
-		h.baseVals[pool.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
+		h.baseVals[pool.FieldMiningPoolType] = string(strBytes)
+		h.BondMiningPoolType = h.MiningPoolType
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
@@ -81,14 +81,14 @@ func (h *sqlHandler) baseKeys() error {
 		h.baseVals[pool.FieldDescription] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
+	if h.BondMiningPoolType == nil {
 		return wlog.Errorf("please give miningpooltype")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondMiningPoolType.String())
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	h.bondVals[pool.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[pool.FieldMiningPoolType] = string(strBytes)
 	return nil
 }
 

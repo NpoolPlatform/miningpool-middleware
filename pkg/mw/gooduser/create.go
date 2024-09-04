@@ -114,7 +114,7 @@ func (h *Handler) newGoodUserInPool(ctx context.Context) error {
 		}
 	}
 
-	mgr, err := pools.NewPoolManager(ruInfo.MiningpoolType, nil, rootuserToken.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(ruInfo.MiningPoolType, nil, rootuserToken.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

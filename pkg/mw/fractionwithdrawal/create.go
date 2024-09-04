@@ -90,9 +90,9 @@ func (h *createHandler) fractionwithdrawalInPool(ctx context.Context) error {
 	}
 
 	coinH, err := coin.NewHandler(ctx, coin.WithConds(&coinpb.Conds{
-		MiningpoolType: &basetypesv1.Uint32Val{
+		MiningPoolType: &basetypesv1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(*h.orderUser.MiningpoolType.Enum()),
+			Value: uint32(*h.orderUser.MiningPoolType.Enum()),
 		},
 		CoinTypeIDs: &basetypesv1.StringSliceVal{
 			Op:    cruder.EQ,
@@ -112,7 +112,7 @@ func (h *createHandler) fractionwithdrawalInPool(ctx context.Context) error {
 		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID.String())
 	}
 
-	mgr, err := pools.NewPoolManager(h.orderUser.MiningpoolType, &coinInfos[0].CoinType, h.rootUserAuth.AuthTokenPlain)
+	mgr, err := pools.NewPoolManager(h.orderUser.MiningPoolType, &coinInfos[0].CoinType, h.rootUserAuth.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}

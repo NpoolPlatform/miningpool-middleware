@@ -94,7 +94,7 @@ type Conds struct {
 	CoinTypeIDs      *cruder.Cond
 	CoinTypeID       *cruder.Cond
 	CoinType         *cruder.Cond
-	MiningpoolType   *cruder.Cond
+	MiningPoolType   *cruder.Cond
 	FixedRevenueAble *cruder.Cond
 	EntIDs           *cruder.Cond
 }

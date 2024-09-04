@@ -20,7 +20,7 @@ import (
 
 var rootUserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningPoolType: basetypes.MiningPoolType_F2Pool,
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
@@ -39,9 +39,9 @@ var rootUserReq = &npool.RootUserReq{
 
 func createRootUser(t *testing.T) {
 	poolInfos, _, err := pool.GetPools(context.Background(), &poolmw.Conds{
-		MiningpoolType: &v1.Uint32Val{
+		MiningPoolType: &v1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(ret.MiningpoolType),
+			Value: uint32(ret.MiningPoolType),
 		},
 	}, 0, 2)
 	assert.Nil(t, err)
@@ -56,7 +56,7 @@ func createRootUser(t *testing.T) {
 	info, err := rootuserclient.GetRootUser(context.Background(), *rootUserReq.EntID)
 	if assert.Nil(t, err) {
 		rootUserRet.CreatedAt = info.CreatedAt
-		rootUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		rootUserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		rootUserRet.UpdatedAt = info.UpdatedAt
 		rootUserRet.ID = info.ID
 		rootUserRet.AuthToken = info.AuthToken

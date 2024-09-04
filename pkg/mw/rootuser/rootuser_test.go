@@ -36,7 +36,7 @@ var ret = &npool.RootUser{
 	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
 	Name:           pools.RandomPoolUserNameForTest(),
-	MiningpoolType: basetype.MiningpoolType_F2Pool,
+	MiningPoolType: basetype.MiningPoolType_F2Pool,
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",
@@ -67,9 +67,9 @@ func create(t *testing.T) {
 
 	poolH, err := pool.NewHandler(context.Background(),
 		pool.WithConds(&poolmw.Conds{
-			MiningpoolType: &v1.Uint32Val{
+			MiningPoolType: &v1.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(ret.MiningpoolType),
+				Value: uint32(ret.MiningPoolType),
 			},
 		}),
 		pool.WithLimit(2),
@@ -104,7 +104,7 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
 		ret.AuthToken = info.AuthToken
 		ret.ID = info.ID
 		ret.EntID = info.EntID

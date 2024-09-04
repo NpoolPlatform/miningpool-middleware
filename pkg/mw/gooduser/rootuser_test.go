@@ -20,7 +20,7 @@ import (
 
 var rootuserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningPoolType: basetypes.MiningPoolType_F2Pool,
 	Email:          "gggo@go.go",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Name:           pools.RandomPoolUserNameForTest(),
@@ -40,9 +40,9 @@ var rootuserReq = &npool.RootUserReq{
 func createRootUser(t *testing.T) {
 	poolH, err := pool.NewHandler(context.Background(),
 		pool.WithConds(&poolmw.Conds{
-			MiningpoolType: &v1.Uint32Val{
+			MiningPoolType: &v1.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(rootuserRet.MiningpoolType),
+				Value: uint32(rootuserRet.MiningPoolType),
 			},
 		}),
 		pool.WithLimit(2),
@@ -78,7 +78,7 @@ func createRootUser(t *testing.T) {
 	if assert.Nil(t, err) {
 		rootuserRet.UpdatedAt = info.UpdatedAt
 		rootuserRet.CreatedAt = info.CreatedAt
-		rootuserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		rootuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		rootuserRet.AuthToken = info.AuthToken
 		rootuserRet.ID = info.ID
 		rootuserRet.EntID = info.EntID

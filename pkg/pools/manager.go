@@ -9,8 +9,8 @@ import (
 )
 
 // TODO: support use default coinType
-func NewPoolManager(poolType mpbasetype.MiningpoolType, coinType *basetype.CoinType, auth string) (types.PoolManager, error) {
-	if poolType == mpbasetype.MiningpoolType_F2Pool {
+func NewPoolManager(poolType mpbasetype.MiningPoolType, coinType *basetype.CoinType, auth string) (types.PoolManager, error) {
+	if poolType == mpbasetype.MiningPoolType_F2Pool {
 		return f2pool.NewF2PoolManager(coinType, auth)
 	}
 	return nil, wlog.Errorf("has not implemented for %v-%v ", poolType, coinType)

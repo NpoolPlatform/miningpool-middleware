@@ -387,10 +387,10 @@ func init() {
 	poolDescEntID := poolMixinFields1[1].Descriptor()
 	// pool.DefaultEntID holds the default value on creation for the ent_id field.
 	pool.DefaultEntID = poolDescEntID.Default.(func() uuid.UUID)
-	// poolDescMiningpoolType is the schema descriptor for miningpool_type field.
-	poolDescMiningpoolType := poolFields[0].Descriptor()
-	// pool.DefaultMiningpoolType holds the default value on creation for the miningpool_type field.
-	pool.DefaultMiningpoolType = poolDescMiningpoolType.Default.(string)
+	// poolDescMiningPoolType is the schema descriptor for mining_pool_type field.
+	poolDescMiningPoolType := poolFields[0].Descriptor()
+	// pool.DefaultMiningPoolType holds the default value on creation for the mining_pool_type field.
+	pool.DefaultMiningPoolType = poolDescMiningPoolType.Default.(string)
 	// poolDescName is the schema descriptor for name field.
 	poolDescName := poolFields[1].Descriptor()
 	// pool.DefaultName holds the default value on creation for the name field.

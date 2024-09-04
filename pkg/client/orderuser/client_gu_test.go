@@ -21,7 +21,7 @@ var goodUserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 	ReadPageLink:   "fffff",
 }
 
@@ -51,7 +51,7 @@ func createGoodUser(t *testing.T) {
 		goodUserRet.ReadPageLink = info.ReadPageLink
 		goodUserRet.CreatedAt = info.CreatedAt
 		goodUserRet.PoolID = info.PoolID
-		goodUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		goodUserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		goodUserRet.UpdatedAt = info.UpdatedAt
 		goodUserRet.ID = info.ID
 		goodUserRet.EntID = info.EntID

@@ -82,7 +82,7 @@ func GetOrderUsers(ctx context.Context, conds *npool.Conds, offset, limit int32)
 	return infos.([]*npool.OrderUser), total, nil
 }
 
-func GetOrderUserProportion(ctx context.Context, id, cointypeid string) (*float64, error) {
+func GetOrderUserProportion(ctx context.Context, id, cointypeid string) (*string, error) {
 	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		resp, err := cli.GetOrderUserProportion(ctx, &npool.GetOrderUserProportionRequest{
 			EntID:      id,
@@ -96,7 +96,7 @@ func GetOrderUserProportion(ctx context.Context, id, cointypeid string) (*float6
 	if err != nil {
 		return nil, err
 	}
-	return info.(*float64), nil
+	return info.(*string), nil
 }
 
 func GetOrderUserBalance(ctx context.Context, id, cointypeid string) (*npool.BalanceInfo, error) {

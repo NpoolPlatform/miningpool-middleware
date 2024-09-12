@@ -20,7 +20,6 @@ import (
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
-	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 )
@@ -51,7 +50,7 @@ var req = &npool.OrderUserReq{
 
 func createOrderUser(t *testing.T) {
 	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmwpb.Conds{
-		PoolID: &v1.StringVal{Op: cruder.EQ, Value: goodUserRet.PoolID},
+		PoolID: &basetypes.StringVal{Op: cruder.EQ, Value: goodUserRet.PoolID},
 	}, 0, 1)
 	assert.Nil(t, err)
 	if !assert.NotEqual(t, 0, len(coinInfos)) {

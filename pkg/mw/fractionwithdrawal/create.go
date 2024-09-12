@@ -94,9 +94,9 @@ func (h *createHandler) fractionwithdrawalInPool(ctx context.Context) error {
 			Op:    cruder.EQ,
 			Value: uint32(*h.orderUser.MiningPoolType.Enum()),
 		},
-		CoinTypeIDs: &basetypesv1.StringSliceVal{
+		CoinTypeID: &basetypesv1.StringVal{
 			Op:    cruder.EQ,
-			Value: []string{h.CoinTypeID.String()},
+			Value: h.CoinTypeID.String(),
 		},
 	}), coin.WithOffset(0), coin.WithLimit(1))
 	if err != nil {

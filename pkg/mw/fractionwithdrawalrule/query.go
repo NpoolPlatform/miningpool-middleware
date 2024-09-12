@@ -104,7 +104,7 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		poolT.C(pool.FieldMiningPoolType),
 	)
 
-	if h.PoolConds.EntID != nil {
+	if h.PoolConds != nil && h.PoolConds.EntID != nil {
 		_id, ok := h.PoolConds.EntID.Val.(uuid.UUID)
 		if !ok {
 			logger.Sugar().Error("invalid poolid")

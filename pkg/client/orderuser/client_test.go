@@ -12,12 +12,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 
+	coinmwpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	apppoolclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/app/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	"github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 )
@@ -47,7 +50,17 @@ var req = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	err := apppoolclient.CreatePool(context.Background(), &pool.PoolReq{
+	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmwpb.Conds{
+		PoolID: &v1.StringVal{Op: cruder.EQ, Value: goodUserRet.PoolID},
+	}, 0, 1)
+	assert.Nil(t, err)
+	if !assert.NotEqual(t, 0, len(coinInfos)) {
+		return
+	}
+
+	req.CoinTypeID = &coinInfos[0].CoinTypeID
+
+	err = apppoolclient.CreatePool(context.Background(), &pool.PoolReq{
 		AppID:  &ret.AppID,
 		PoolID: &goodUserRet.PoolID,
 	})
@@ -61,7 +74,11 @@ func createOrderUser(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
+		ret.PoolID = info.PoolID
 		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
+		ret.MiningPoolName = info.MiningPoolName
+		ret.MiningPoolSite = info.MiningPoolSite
+		ret.MiningPoolLogo = info.MiningPoolLogo
 		ret.RootUserID = info.RootUserID
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
@@ -92,8 +109,10 @@ func updateOrderUser(t *testing.T) {
 	proportion = dec.String()
 	req.Proportion = &proportion
 	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:    req.ID,
-		EntID: &ret.EntID,
+		ID:         req.ID,
+		EntID:      &ret.EntID,
+		Proportion: req.Proportion,
+		CoinTypeID: req.CoinTypeID,
 	})
 	assert.Nil(t, err)
 	info, err = GetOrderUser(context.Background(), *req.EntID)
@@ -101,36 +120,6 @@ func updateOrderUser(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
-
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:    req.ID,
-		EntID: &ret.EntID,
-	})
-	assert.Nil(t, err)
-
-	info, err = GetOrderUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:    req.ID,
-		EntID: &ret.EntID,
-	})
-	assert.Nil(t, err)
-
-	info, err = GetOrderUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:    req.ID,
-		EntID: &ret.EntID,
-	})
-	assert.Nil(t, err)
 
 	info, err = GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {

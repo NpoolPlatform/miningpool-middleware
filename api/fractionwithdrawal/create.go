@@ -31,6 +31,7 @@ func (s *Server) CreateFractionWithdrawal(ctx context.Context, in *npool.CreateF
 		fractionwithdrawal.WithAppID(req.AppID, true),
 		fractionwithdrawal.WithUserID(req.UserID, true),
 		fractionwithdrawal.WithOrderUserID(req.OrderUserID, true),
+		fractionwithdrawal.WithCoinTypeID(req.CoinTypeID, true),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(

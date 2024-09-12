@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"testing"
 
+	coinmwpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
@@ -40,10 +42,21 @@ var req = &npool.FractionWithdrawalReq{
 	AppID:       &ret.AppID,
 	UserID:      &ret.UserID,
 	OrderUserID: &ret.OrderUserID,
+	CoinTypeID:  &ret.CoinTypeID,
 }
 
 func createFractionWithdrawal(t *testing.T) {
-	err := CreateFractionWithdrawal(context.Background(), req)
+	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmwpb.Conds{
+		PoolID: &v1.StringVal{Op: cruder.EQ, Value: orderserRet.PoolID},
+	}, 0, 1)
+	assert.Nil(t, err)
+	if !assert.NotEqual(t, 0, len(coinInfos)) {
+		return
+	}
+
+	req.CoinTypeID = &coinInfos[0].CoinTypeID
+	ret.CoinTypeID = coinInfos[0].CoinTypeID
+	err = CreateFractionWithdrawal(context.Background(), req)
 	assert.Nil(t, err)
 	info, err := GetFractionWithdrawal(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {

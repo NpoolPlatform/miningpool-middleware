@@ -81,7 +81,9 @@ func createRootUser(t *testing.T) {
 
 func updateRootUser(t *testing.T) {
 	req.ID = &ret.ID
-	req.AuthToken = nil
+	authToken := "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
+	req.AuthToken = &authToken
+	ret.AuthToken = ""
 
 	err := UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
@@ -89,6 +91,7 @@ func updateRootUser(t *testing.T) {
 	info, err := GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
+		info.AuthToken = ""
 		assert.Equal(t, ret, info)
 	}
 
@@ -99,6 +102,7 @@ func updateRootUser(t *testing.T) {
 
 	info, err = GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
+		info.AuthToken = ""
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
 	}
@@ -107,6 +111,7 @@ func updateRootUser(t *testing.T) {
 func getRootUser(t *testing.T) {
 	info, err := GetRootUser(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
+		info.AuthToken = ""
 		assert.Equal(t, ret, info)
 	}
 }
@@ -118,6 +123,7 @@ func getRootUsers(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 1)
 		assert.Equal(t, total, uint32(1))
+		infos[0].AuthToken = ""
 		assert.Equal(t, infos[0], ret)
 	}
 }

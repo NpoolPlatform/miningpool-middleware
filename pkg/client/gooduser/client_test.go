@@ -65,6 +65,9 @@ func createGoodUser(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.PoolID = info.PoolID
 		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
+		ret.MiningPoolName = info.MiningPoolName
+		ret.MiningPoolSite = info.MiningPoolSite
+		ret.MiningPoolLogo = info.MiningPoolLogo
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
 		ret.EntID = info.EntID

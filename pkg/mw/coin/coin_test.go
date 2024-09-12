@@ -75,6 +75,20 @@ func create(t *testing.T) {
 	assert.Nil(t, err)
 
 	err = handler.CreateCoin(context.Background())
+	assert.Nil(t, err)
+
+	handler, err = NewHandler(
+		context.Background(),
+		WithCoinType(req.CoinType, true),
+		WithPoolID(req.PoolID, true),
+		WithCoinTypeID(req.CoinTypeID, true),
+		WithFixedRevenueAble(req.FixedRevenueAble, true),
+		WithLeastTransferAmount(req.LeastTransferAmount, true),
+		WithRemark(req.Remark, true),
+	)
+	assert.Nil(t, err)
+
+	err = handler.CreateCoin(context.Background())
 	assert.NotNil(t, err)
 }
 

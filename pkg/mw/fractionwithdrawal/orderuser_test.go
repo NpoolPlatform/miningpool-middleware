@@ -67,6 +67,11 @@ func createOrderUser(t *testing.T) {
 		orderuserRet.UpdatedAt = info.UpdatedAt
 		orderuserRet.CreatedAt = info.CreatedAt
 		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		orderuserRet.PoolID = info.PoolID
+		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		orderuserRet.MiningPoolName = info.MiningPoolName
+		orderuserRet.MiningPoolSite = info.MiningPoolSite
+		orderuserRet.MiningPoolLogo = info.MiningPoolLogo
 		orderuserRet.RootUserID = info.RootUserID
 		orderuserRet.ID = info.ID
 		orderuserRet.EntID = info.EntID

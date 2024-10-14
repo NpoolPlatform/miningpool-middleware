@@ -162,7 +162,7 @@ func WithWithdrawFee(withdrawrate *string, must bool) func(context.Context, *Han
 		if err != nil {
 			return wlog.Errorf("invalid withdrawrate,err: %v", err)
 		}
-		if _withdrawrate.Sign() < 0 || _withdrawrate.GreaterThan(decimal.NewFromInt(1)) {
+		if _withdrawrate.Sign() < 0 {
 			return wlog.Errorf("invalid withdrawrate")
 		}
 		h.WithdrawFee = &_withdrawrate

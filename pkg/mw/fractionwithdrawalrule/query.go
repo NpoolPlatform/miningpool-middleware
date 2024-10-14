@@ -3,20 +3,14 @@ package fractionwithdrawalrule
 import (
 	"context"
 
-	"entgo.io/ent/dialect/sql"
-	"github.com/NpoolPlatform/go-service-framework/pkg/logger"
 	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
-	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/fractionwithdrawalrule"
-	"github.com/google/uuid"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	fractionwithdrawalruleent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 
 	fractionwithdrawalrulecrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/fractionwithdrawalrule"
 )
@@ -78,47 +72,6 @@ func (h *queryHandler) queryFractionWithdrawalRules(ctx context.Context, cli *en
 	return nil
 }
 
-func (h *queryHandler) queryJoin() {
-	h.stm.Modify(
-		h.queryJoinCoinAndPool,
-	)
-}
-
-func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
-	coinT := sql.Table(coin.Table)
-	poolT := sql.Table(pool.Table)
-	s.Join(coinT).On(
-		s.C(fractionwithdrawalruleent.FieldPoolCoinTypeID),
-		coinT.C(coin.FieldEntID),
-	).OnP(
-		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
-	).Join(poolT).On(
-		coinT.C(coin.FieldPoolID),
-		poolT.C(pool.FieldEntID),
-	).OnP(
-		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
-	).AppendSelect(
-		coinT.C(coin.FieldCoinType),
-		coinT.C(coin.FieldPoolID),
-		coinT.C(coin.FieldCoinTypeID),
-		poolT.C(pool.FieldMiningPoolType),
-	)
-
-	if h.PoolConds != nil && h.PoolConds.EntID != nil {
-		_id, ok := h.PoolConds.EntID.Val.(uuid.UUID)
-		if !ok {
-			logger.Sugar().Error("invalid poolid")
-			return
-		}
-
-		if h.PoolConds.EntID.Op == cruder.EQ {
-			s.OnP(
-				sql.EQ(poolT.C(pool.FieldEntID), _id.String()),
-			)
-		}
-	}
-}
-
 func (h *queryHandler) scan(ctx context.Context) error {
 	return h.stm.Scan(ctx, &h.infos)
 }
@@ -139,7 +92,7 @@ func (h *Handler) GetFractionWithdrawalRule(ctx context.Context) (*npool.Fractio
 		if err := handler.queryFractionWithdrawalRule(cli); err != nil {
 			return wlog.WrapError(err)
 		}
-		handler.queryJoin()
+		handler.queryJoin(handler.stm.FractionWithdrawalRuleQuery)
 		const singleRowLimit = 2
 		handler.stm.Offset(0).Limit(singleRowLimit)
 		return handler.scan(_ctx)
@@ -167,7 +120,7 @@ func (h *Handler) GetFractionWithdrawalRules(ctx context.Context) ([]*npool.Frac
 		if err := handler.queryFractionWithdrawalRules(ctx, cli); err != nil {
 			return wlog.WrapError(err)
 		}
-		handler.queryJoin()
+		handler.queryJoin(handler.stm.FractionWithdrawalRuleQuery)
 		handler.stm.
 			Offset(int(h.Offset)).
 			Limit(int(h.Limit)).

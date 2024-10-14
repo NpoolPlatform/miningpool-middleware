@@ -36,19 +36,29 @@ func (h *Handler) ExistFractionWithdrawalRule(ctx context.Context) (bool, error)
 
 func (h *Handler) ExistFractionWithdrawalRuleConds(ctx context.Context) (bool, error) {
 	exist := false
-	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
-		stm, err := fractionwithdrawalrulecrud.SetQueryConds(cli.FractionWithdrawalRule.Query(), h.Conds)
+	var err error
+	handler := &existHandler{
+		Handler: h,
+	}
+
+	err = db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
+		handler.stm, err = fractionwithdrawalrulecrud.SetQueryConds(cli.FractionWithdrawalRule.Query(), h.Conds)
 		if err != nil {
 			return wlog.WrapError(err)
 		}
-		exist, err = stm.Exist(_ctx)
-		if err != nil {
-			return wlog.WrapError(err)
-		}
-		return nil
+
+		handler.queryJoin(handler.stm)
+		exist, err = handler.stm.Exist(ctx)
+		return wlog.WrapError(err)
 	})
 	if err != nil {
 		return false, wlog.WrapError(err)
 	}
+
 	return exist, nil
+}
+
+type existHandler struct {
+	*Handler
+	stm *ent.FractionWithdrawalRuleQuery
 }

@@ -55,7 +55,7 @@ func (FractionWithdrawal) Fields() []ent.Field {
 		field.
 			Uint32("promise_pay_at").Optional().Default(0),
 		field.
-			String("msg").Optional().Default(""),
+			Text("msg").Optional().Default(""),
 	}
 }
 

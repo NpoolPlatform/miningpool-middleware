@@ -87,7 +87,7 @@ func (h *baseInfoHandle) getBaseInfo(ctx context.Context) error {
 	}
 
 	if len(coinInfos) == 0 {
-		return wlog.Errorf("cannot support cointypeid: %v", h.CoinTypeID)
+		return wlog.Errorf("cannot support cointypeid: %v", *h.CoinTypeID)
 	}
 
 	h.baseInfo = &baseInfo{

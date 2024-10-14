@@ -57,7 +57,7 @@ func (h *Handler) UpdateRootUser(ctx context.Context) error {
 
 func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser) error {
 	h.Authed = nil
-	if h.AuthTokenPlain == nil && h.PoolID == nil {
+	if h.AuthTokenPlain == nil && h.PoolID == nil && h.Name == nil {
 		return nil
 	}
 
@@ -88,21 +88,29 @@ func (h *Handler) checkUpdateAuthed(ctx context.Context, oldInfo *npool.RootUser
 	}
 
 	// cannot update if new authtokenplain equal old authtoken
-	if *h.AuthTokenPlain == authInfo.AuthToken && (h.PoolID == nil || h.PoolID.String() == poolID) {
+	if *h.AuthTokenPlain == authInfo.AuthToken {
 		h.AuthToken = nil
-		h.AuthTokenPlain = nil
 		h.AuthTokenSalt = nil
-		return nil
 	}
 
 	mgr, err := pools.NewPoolManager(miningtype, nil, *h.AuthTokenPlain)
 	if err != nil {
 		return wlog.WrapError(err)
 	}
-	err = mgr.CheckAuth(ctx)
-	if err != nil {
+
+	if err = mgr.CheckAuth(ctx); err != nil {
 		return wlog.Errorf("have no permission to opreate pool,err: %v", err)
 	}
+
+	if h.Name != nil {
+		if exist, err := mgr.ExistMiningUser(ctx, *h.Name); err != nil {
+			err = wlog.Errorf("failed to queary in %v,which called %v, err: %v", info.MiningPoolType, *h.Name, err)
+			return wlog.WrapError(err)
+		} else if !exist {
+			return wlog.Errorf("have no username in %v,which called %v", info.MiningPoolType, *h.Name)
+		}
+	}
+
 	authed := true
 	h.Authed = &authed
 	return nil

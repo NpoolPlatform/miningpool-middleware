@@ -110,22 +110,22 @@ func WithWithdrawInterval(withdrawinterval *uint32, must bool) func(context.Cont
 	}
 }
 
-func WithLeastWithdrawalAmount(minamount *string, must bool) func(context.Context, *Handler) error {
+func WithLeastWithdrawalAmount(leastwithdrawalamount *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
-		if minamount == nil {
+		if leastwithdrawalamount == nil {
 			if must {
-				return wlog.Errorf("invalid minamount")
+				return wlog.Errorf("invalid leastwithdrawalamount")
 			}
 			return nil
 		}
-		_minamount, err := decimal.NewFromString(*minamount)
+		_leastwithdrawalamount, err := decimal.NewFromString(*leastwithdrawalamount)
 		if err != nil {
-			return wlog.Errorf("invalid minamount,err: %v", err)
+			return wlog.Errorf("invalid leastwithdrawalamount,err: %v", err)
 		}
-		if _minamount.Sign() <= 0 {
-			return wlog.Errorf("invalid minamount")
+		if _leastwithdrawalamount.Sign() <= 0 {
+			return wlog.Errorf("invalid leastwithdrawalamount")
 		}
-		h.LeastWithdrawalAmount = &_minamount
+		h.LeastWithdrawalAmount = &_leastwithdrawalamount
 		return nil
 	}
 }

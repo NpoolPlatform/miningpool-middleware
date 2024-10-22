@@ -21,7 +21,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
+		return &npool.CreateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	req := in.GetInfo()
@@ -38,7 +38,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
+		return &npool.CreateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	err = handler.CreateOrderUser(ctx)
@@ -48,7 +48,7 @@ func (s *Server) CreateOrderUser(ctx context.Context, in *npool.CreateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
+		return &npool.CreateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	return &npool.CreateOrderUserResponse{}, nil

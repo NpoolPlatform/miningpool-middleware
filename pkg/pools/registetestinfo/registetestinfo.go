@@ -65,10 +65,6 @@ func registePool(ctx context.Context) {
 				Op:    cruder.EQ,
 				Value: uint32(info.MiningPoolType),
 			},
-			Name: &basetypes.StringVal{
-				Op:    cruder.EQ,
-				Value: info.Name,
-			},
 		}))
 		if err != nil {
 			logger.Sugar().Error(err)

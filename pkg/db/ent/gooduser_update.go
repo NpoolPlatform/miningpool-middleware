@@ -138,26 +138,6 @@ func (guu *GoodUserUpdate) ClearName() *GoodUserUpdate {
 	return guu
 }
 
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (guu *GoodUserUpdate) SetPoolCoinTypeID(u uuid.UUID) *GoodUserUpdate {
-	guu.mutation.SetPoolCoinTypeID(u)
-	return guu
-}
-
-// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
-func (guu *GoodUserUpdate) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserUpdate {
-	if u != nil {
-		guu.SetPoolCoinTypeID(*u)
-	}
-	return guu
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (guu *GoodUserUpdate) ClearPoolCoinTypeID() *GoodUserUpdate {
-	guu.mutation.ClearPoolCoinTypeID()
-	return guu
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (guu *GoodUserUpdate) SetReadPageLink(s string) *GoodUserUpdate {
 	guu.mutation.SetReadPageLink(s)
@@ -351,19 +331,6 @@ func (guu *GoodUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: gooduser.FieldName,
 		})
 	}
-	if value, ok := guu.mutation.PoolCoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldPoolCoinTypeID,
-		})
-	}
-	if guu.mutation.PoolCoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: gooduser.FieldPoolCoinTypeID,
-		})
-	}
 	if value, ok := guu.mutation.ReadPageLink(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -504,26 +471,6 @@ func (guuo *GoodUserUpdateOne) SetNillableName(s *string) *GoodUserUpdateOne {
 // ClearName clears the value of the "name" field.
 func (guuo *GoodUserUpdateOne) ClearName() *GoodUserUpdateOne {
 	guuo.mutation.ClearName()
-	return guuo
-}
-
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (guuo *GoodUserUpdateOne) SetPoolCoinTypeID(u uuid.UUID) *GoodUserUpdateOne {
-	guuo.mutation.SetPoolCoinTypeID(u)
-	return guuo
-}
-
-// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
-func (guuo *GoodUserUpdateOne) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserUpdateOne {
-	if u != nil {
-		guuo.SetPoolCoinTypeID(*u)
-	}
-	return guuo
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (guuo *GoodUserUpdateOne) ClearPoolCoinTypeID() *GoodUserUpdateOne {
-	guuo.mutation.ClearPoolCoinTypeID()
 	return guuo
 }
 
@@ -748,19 +695,6 @@ func (guuo *GoodUserUpdateOne) sqlSave(ctx context.Context) (_node *GoodUser, er
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: gooduser.FieldName,
-		})
-	}
-	if value, ok := guuo.mutation.PoolCoinTypeID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldPoolCoinTypeID,
-		})
-	}
-	if guuo.mutation.PoolCoinTypeIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Column: gooduser.FieldPoolCoinTypeID,
 		})
 	}
 	if value, ok := guuo.mutation.ReadPageLink(); ok {

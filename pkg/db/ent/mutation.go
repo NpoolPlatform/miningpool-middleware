@@ -10,8 +10,8 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawal"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
@@ -32,14 +32,14 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAppPool      = "AppPool"
-	TypeCoin         = "Coin"
-	TypeFraction     = "Fraction"
-	TypeFractionRule = "FractionRule"
-	TypeGoodUser     = "GoodUser"
-	TypeOrderUser    = "OrderUser"
-	TypePool         = "Pool"
-	TypeRootUser     = "RootUser"
+	TypeAppPool                = "AppPool"
+	TypeCoin                   = "Coin"
+	TypeFractionWithdrawal     = "FractionWithdrawal"
+	TypeFractionWithdrawalRule = "FractionWithdrawalRule"
+	TypeGoodUser               = "GoodUser"
+	TypeOrderUser              = "OrderUser"
+	TypePool                   = "Pool"
+	TypeRootUser               = "RootUser"
 )
 
 // AppPoolMutation represents an operation that mutates the AppPool nodes in the graph.
@@ -788,7 +788,6 @@ type CoinMutation struct {
 	pool_id                     *uuid.UUID
 	coin_type_id                *uuid.UUID
 	coin_type                   *string
-	revenue_type                *string
 	fee_ratio                   *decimal.Decimal
 	fixed_revenue_able          *bool
 	least_transfer_amount       *decimal.Decimal
@@ -820,8 +819,8 @@ func newCoinMutation(c config, op Op, opts ...coinOption) *CoinMutation {
 	return m
 }
 
-// withPoolCoinTypeID sets the ID field of the mutation.
-func withPoolCoinTypeID(id uint32) coinOption {
+// withCoinID sets the ID field of the mutation.
+func withCoinID(id uint32) coinOption {
 	return func(m *CoinMutation) {
 		var (
 			err   error
@@ -1256,55 +1255,6 @@ func (m *CoinMutation) ResetCoinType() {
 	delete(m.clearedFields, coin.FieldCoinType)
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (m *CoinMutation) SetRevenueType(s string) {
-	m.revenue_type = &s
-}
-
-// RevenueType returns the value of the "revenue_type" field in the mutation.
-func (m *CoinMutation) RevenueType() (r string, exists bool) {
-	v := m.revenue_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueType returns the old "revenue_type" field's value of the Coin entity.
-// If the Coin object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CoinMutation) OldRevenueType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueType: %w", err)
-	}
-	return oldValue.RevenueType, nil
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (m *CoinMutation) ClearRevenueType() {
-	m.revenue_type = nil
-	m.clearedFields[coin.FieldRevenueType] = struct{}{}
-}
-
-// RevenueTypeCleared returns if the "revenue_type" field was cleared in this mutation.
-func (m *CoinMutation) RevenueTypeCleared() bool {
-	_, ok := m.clearedFields[coin.FieldRevenueType]
-	return ok
-}
-
-// ResetRevenueType resets all changes to the "revenue_type" field.
-func (m *CoinMutation) ResetRevenueType() {
-	m.revenue_type = nil
-	delete(m.clearedFields, coin.FieldRevenueType)
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (m *CoinMutation) SetFeeRatio(d decimal.Decimal) {
 	m.fee_ratio = &d
@@ -1590,7 +1540,7 @@ func (m *CoinMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CoinMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, coin.FieldCreatedAt)
 	}
@@ -1611,9 +1561,6 @@ func (m *CoinMutation) Fields() []string {
 	}
 	if m.coin_type != nil {
 		fields = append(fields, coin.FieldCoinType)
-	}
-	if m.revenue_type != nil {
-		fields = append(fields, coin.FieldRevenueType)
 	}
 	if m.fee_ratio != nil {
 		fields = append(fields, coin.FieldFeeRatio)
@@ -1652,8 +1599,6 @@ func (m *CoinMutation) Field(name string) (ent.Value, bool) {
 		return m.CoinTypeID()
 	case coin.FieldCoinType:
 		return m.CoinType()
-	case coin.FieldRevenueType:
-		return m.RevenueType()
 	case coin.FieldFeeRatio:
 		return m.FeeRatio()
 	case coin.FieldFixedRevenueAble:
@@ -1687,8 +1632,6 @@ func (m *CoinMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCoinTypeID(ctx)
 	case coin.FieldCoinType:
 		return m.OldCoinType(ctx)
-	case coin.FieldRevenueType:
-		return m.OldRevenueType(ctx)
 	case coin.FieldFeeRatio:
 		return m.OldFeeRatio(ctx)
 	case coin.FieldFixedRevenueAble:
@@ -1756,13 +1699,6 @@ func (m *CoinMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCoinType(v)
-		return nil
-	case coin.FieldRevenueType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueType(v)
 		return nil
 	case coin.FieldFeeRatio:
 		v, ok := value.(decimal.Decimal)
@@ -1889,9 +1825,6 @@ func (m *CoinMutation) ClearedFields() []string {
 	if m.FieldCleared(coin.FieldCoinType) {
 		fields = append(fields, coin.FieldCoinType)
 	}
-	if m.FieldCleared(coin.FieldRevenueType) {
-		fields = append(fields, coin.FieldRevenueType)
-	}
 	if m.FieldCleared(coin.FieldFeeRatio) {
 		fields = append(fields, coin.FieldFeeRatio)
 	}
@@ -1929,9 +1862,6 @@ func (m *CoinMutation) ClearField(name string) error {
 		return nil
 	case coin.FieldCoinType:
 		m.ClearCoinType()
-		return nil
-	case coin.FieldRevenueType:
-		m.ClearRevenueType()
 		return nil
 	case coin.FieldFeeRatio:
 		m.ClearFeeRatio()
@@ -1976,9 +1906,6 @@ func (m *CoinMutation) ResetField(name string) error {
 		return nil
 	case coin.FieldCoinType:
 		m.ResetCoinType()
-		return nil
-	case coin.FieldRevenueType:
-		m.ResetRevenueType()
 		return nil
 	case coin.FieldFeeRatio:
 		m.ResetFeeRatio()
@@ -2047,45 +1974,46 @@ func (m *CoinMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Coin edge %s", name)
 }
 
-// FractionMutation represents an operation that mutates the Fraction nodes in the graph.
-type FractionMutation struct {
+// FractionWithdrawalMutation represents an operation that mutates the FractionWithdrawal nodes in the graph.
+type FractionWithdrawalMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *uint32
-	created_at        *uint32
-	addcreated_at     *int32
-	updated_at        *uint32
-	addupdated_at     *int32
-	deleted_at        *uint32
-	adddeleted_at     *int32
-	ent_id            *uuid.UUID
-	app_id            *uuid.UUID
-	user_id           *uuid.UUID
-	order_user_id     *uuid.UUID
-	withdraw_state    *string
-	withdraw_at       *uint32
-	addwithdraw_at    *int32
-	promise_pay_at    *uint32
-	addpromise_pay_at *int32
-	msg               *string
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*Fraction, error)
-	predicates        []predicate.Fraction
+	op                      Op
+	typ                     string
+	id                      *uint32
+	created_at              *uint32
+	addcreated_at           *int32
+	updated_at              *uint32
+	addupdated_at           *int32
+	deleted_at              *uint32
+	adddeleted_at           *int32
+	ent_id                  *uuid.UUID
+	app_id                  *uuid.UUID
+	user_id                 *uuid.UUID
+	order_user_id           *uuid.UUID
+	coin_type_id            *uuid.UUID
+	fraction_withdraw_state *string
+	withdraw_at             *uint32
+	addwithdraw_at          *int32
+	promise_pay_at          *uint32
+	addpromise_pay_at       *int32
+	msg                     *string
+	clearedFields           map[string]struct{}
+	done                    bool
+	oldValue                func(context.Context) (*FractionWithdrawal, error)
+	predicates              []predicate.FractionWithdrawal
 }
 
-var _ ent.Mutation = (*FractionMutation)(nil)
+var _ ent.Mutation = (*FractionWithdrawalMutation)(nil)
 
-// fractionOption allows management of the mutation configuration using functional options.
-type fractionOption func(*FractionMutation)
+// fractionwithdrawalOption allows management of the mutation configuration using functional options.
+type fractionwithdrawalOption func(*FractionWithdrawalMutation)
 
-// newFractionMutation creates new mutation for the Fraction entity.
-func newFractionMutation(c config, op Op, opts ...fractionOption) *FractionMutation {
-	m := &FractionMutation{
+// newFractionWithdrawalMutation creates new mutation for the FractionWithdrawal entity.
+func newFractionWithdrawalMutation(c config, op Op, opts ...fractionwithdrawalOption) *FractionWithdrawalMutation {
+	m := &FractionWithdrawalMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeFraction,
+		typ:           TypeFractionWithdrawal,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -2094,20 +2022,20 @@ func newFractionMutation(c config, op Op, opts ...fractionOption) *FractionMutat
 	return m
 }
 
-// withFractionID sets the ID field of the mutation.
-func withFractionID(id uint32) fractionOption {
-	return func(m *FractionMutation) {
+// withFractionWithdrawalID sets the ID field of the mutation.
+func withFractionWithdrawalID(id uint32) fractionwithdrawalOption {
+	return func(m *FractionWithdrawalMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Fraction
+			value *FractionWithdrawal
 		)
-		m.oldValue = func(ctx context.Context) (*Fraction, error) {
+		m.oldValue = func(ctx context.Context) (*FractionWithdrawal, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Fraction.Get(ctx, id)
+					value, err = m.Client().FractionWithdrawal.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -2116,10 +2044,10 @@ func withFractionID(id uint32) fractionOption {
 	}
 }
 
-// withFraction sets the old Fraction of the mutation.
-func withFraction(node *Fraction) fractionOption {
-	return func(m *FractionMutation) {
-		m.oldValue = func(context.Context) (*Fraction, error) {
+// withFractionWithdrawal sets the old FractionWithdrawal of the mutation.
+func withFractionWithdrawal(node *FractionWithdrawal) fractionwithdrawalOption {
+	return func(m *FractionWithdrawalMutation) {
+		m.oldValue = func(context.Context) (*FractionWithdrawal, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -2128,7 +2056,7 @@ func withFraction(node *Fraction) fractionOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FractionMutation) Client() *Client {
+func (m FractionWithdrawalMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -2136,7 +2064,7 @@ func (m FractionMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m FractionMutation) Tx() (*Tx, error) {
+func (m FractionWithdrawalMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -2146,14 +2074,14 @@ func (m FractionMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Fraction entities.
-func (m *FractionMutation) SetID(id uint32) {
+// operation is only accepted on creation of FractionWithdrawal entities.
+func (m *FractionWithdrawalMutation) SetID(id uint32) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FractionMutation) ID() (id uint32, exists bool) {
+func (m *FractionWithdrawalMutation) ID() (id uint32, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2164,7 +2092,7 @@ func (m *FractionMutation) ID() (id uint32, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FractionMutation) IDs(ctx context.Context) ([]uint32, error) {
+func (m *FractionWithdrawalMutation) IDs(ctx context.Context) ([]uint32, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -2173,20 +2101,20 @@ func (m *FractionMutation) IDs(ctx context.Context) ([]uint32, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Fraction.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().FractionWithdrawal.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *FractionMutation) SetCreatedAt(u uint32) {
+func (m *FractionWithdrawalMutation) SetCreatedAt(u uint32) {
 	m.created_at = &u
 	m.addcreated_at = nil
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *FractionMutation) CreatedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalMutation) CreatedAt() (r uint32, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -2194,10 +2122,10 @@ func (m *FractionMutation) CreatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -2212,7 +2140,7 @@ func (m *FractionMutation) OldCreatedAt(ctx context.Context) (v uint32, err erro
 }
 
 // AddCreatedAt adds u to the "created_at" field.
-func (m *FractionMutation) AddCreatedAt(u int32) {
+func (m *FractionWithdrawalMutation) AddCreatedAt(u int32) {
 	if m.addcreated_at != nil {
 		*m.addcreated_at += u
 	} else {
@@ -2221,7 +2149,7 @@ func (m *FractionMutation) AddCreatedAt(u int32) {
 }
 
 // AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *FractionMutation) AddedCreatedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalMutation) AddedCreatedAt() (r int32, exists bool) {
 	v := m.addcreated_at
 	if v == nil {
 		return
@@ -2230,19 +2158,19 @@ func (m *FractionMutation) AddedCreatedAt() (r int32, exists bool) {
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *FractionMutation) ResetCreatedAt() {
+func (m *FractionWithdrawalMutation) ResetCreatedAt() {
 	m.created_at = nil
 	m.addcreated_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *FractionMutation) SetUpdatedAt(u uint32) {
+func (m *FractionWithdrawalMutation) SetUpdatedAt(u uint32) {
 	m.updated_at = &u
 	m.addupdated_at = nil
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *FractionMutation) UpdatedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalMutation) UpdatedAt() (r uint32, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -2250,10 +2178,10 @@ func (m *FractionMutation) UpdatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -2268,7 +2196,7 @@ func (m *FractionMutation) OldUpdatedAt(ctx context.Context) (v uint32, err erro
 }
 
 // AddUpdatedAt adds u to the "updated_at" field.
-func (m *FractionMutation) AddUpdatedAt(u int32) {
+func (m *FractionWithdrawalMutation) AddUpdatedAt(u int32) {
 	if m.addupdated_at != nil {
 		*m.addupdated_at += u
 	} else {
@@ -2277,7 +2205,7 @@ func (m *FractionMutation) AddUpdatedAt(u int32) {
 }
 
 // AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *FractionMutation) AddedUpdatedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalMutation) AddedUpdatedAt() (r int32, exists bool) {
 	v := m.addupdated_at
 	if v == nil {
 		return
@@ -2286,19 +2214,19 @@ func (m *FractionMutation) AddedUpdatedAt() (r int32, exists bool) {
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *FractionMutation) ResetUpdatedAt() {
+func (m *FractionWithdrawalMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (m *FractionMutation) SetDeletedAt(u uint32) {
+func (m *FractionWithdrawalMutation) SetDeletedAt(u uint32) {
 	m.deleted_at = &u
 	m.adddeleted_at = nil
 }
 
 // DeletedAt returns the value of the "deleted_at" field in the mutation.
-func (m *FractionMutation) DeletedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalMutation) DeletedAt() (r uint32, exists bool) {
 	v := m.deleted_at
 	if v == nil {
 		return
@@ -2306,10 +2234,10 @@ func (m *FractionMutation) DeletedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
 	}
@@ -2324,7 +2252,7 @@ func (m *FractionMutation) OldDeletedAt(ctx context.Context) (v uint32, err erro
 }
 
 // AddDeletedAt adds u to the "deleted_at" field.
-func (m *FractionMutation) AddDeletedAt(u int32) {
+func (m *FractionWithdrawalMutation) AddDeletedAt(u int32) {
 	if m.adddeleted_at != nil {
 		*m.adddeleted_at += u
 	} else {
@@ -2333,7 +2261,7 @@ func (m *FractionMutation) AddDeletedAt(u int32) {
 }
 
 // AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
-func (m *FractionMutation) AddedDeletedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalMutation) AddedDeletedAt() (r int32, exists bool) {
 	v := m.adddeleted_at
 	if v == nil {
 		return
@@ -2342,18 +2270,18 @@ func (m *FractionMutation) AddedDeletedAt() (r int32, exists bool) {
 }
 
 // ResetDeletedAt resets all changes to the "deleted_at" field.
-func (m *FractionMutation) ResetDeletedAt() {
+func (m *FractionWithdrawalMutation) ResetDeletedAt() {
 	m.deleted_at = nil
 	m.adddeleted_at = nil
 }
 
 // SetEntID sets the "ent_id" field.
-func (m *FractionMutation) SetEntID(u uuid.UUID) {
+func (m *FractionWithdrawalMutation) SetEntID(u uuid.UUID) {
 	m.ent_id = &u
 }
 
 // EntID returns the value of the "ent_id" field in the mutation.
-func (m *FractionMutation) EntID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalMutation) EntID() (r uuid.UUID, exists bool) {
 	v := m.ent_id
 	if v == nil {
 		return
@@ -2361,10 +2289,10 @@ func (m *FractionMutation) EntID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldEntID returns the old "ent_id" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldEntID returns the old "ent_id" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
 	}
@@ -2379,17 +2307,17 @@ func (m *FractionMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error
 }
 
 // ResetEntID resets all changes to the "ent_id" field.
-func (m *FractionMutation) ResetEntID() {
+func (m *FractionWithdrawalMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
 // SetAppID sets the "app_id" field.
-func (m *FractionMutation) SetAppID(u uuid.UUID) {
+func (m *FractionWithdrawalMutation) SetAppID(u uuid.UUID) {
 	m.app_id = &u
 }
 
 // AppID returns the value of the "app_id" field in the mutation.
-func (m *FractionMutation) AppID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalMutation) AppID() (r uuid.UUID, exists bool) {
 	v := m.app_id
 	if v == nil {
 		return
@@ -2397,10 +2325,10 @@ func (m *FractionMutation) AppID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldAppID returns the old "app_id" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldAppID returns the old "app_id" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
 	}
@@ -2415,30 +2343,30 @@ func (m *FractionMutation) OldAppID(ctx context.Context) (v uuid.UUID, err error
 }
 
 // ClearAppID clears the value of the "app_id" field.
-func (m *FractionMutation) ClearAppID() {
+func (m *FractionWithdrawalMutation) ClearAppID() {
 	m.app_id = nil
-	m.clearedFields[fraction.FieldAppID] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldAppID] = struct{}{}
 }
 
 // AppIDCleared returns if the "app_id" field was cleared in this mutation.
-func (m *FractionMutation) AppIDCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldAppID]
+func (m *FractionWithdrawalMutation) AppIDCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldAppID]
 	return ok
 }
 
 // ResetAppID resets all changes to the "app_id" field.
-func (m *FractionMutation) ResetAppID() {
+func (m *FractionWithdrawalMutation) ResetAppID() {
 	m.app_id = nil
-	delete(m.clearedFields, fraction.FieldAppID)
+	delete(m.clearedFields, fractionwithdrawal.FieldAppID)
 }
 
 // SetUserID sets the "user_id" field.
-func (m *FractionMutation) SetUserID(u uuid.UUID) {
+func (m *FractionWithdrawalMutation) SetUserID(u uuid.UUID) {
 	m.user_id = &u
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
-func (m *FractionMutation) UserID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalMutation) UserID() (r uuid.UUID, exists bool) {
 	v := m.user_id
 	if v == nil {
 		return
@@ -2446,10 +2374,10 @@ func (m *FractionMutation) UserID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldUserID returns the old "user_id" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalMutation) OldUserID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
 	}
@@ -2464,30 +2392,30 @@ func (m *FractionMutation) OldUserID(ctx context.Context) (v uuid.UUID, err erro
 }
 
 // ClearUserID clears the value of the "user_id" field.
-func (m *FractionMutation) ClearUserID() {
+func (m *FractionWithdrawalMutation) ClearUserID() {
 	m.user_id = nil
-	m.clearedFields[fraction.FieldUserID] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldUserID] = struct{}{}
 }
 
 // UserIDCleared returns if the "user_id" field was cleared in this mutation.
-func (m *FractionMutation) UserIDCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldUserID]
+func (m *FractionWithdrawalMutation) UserIDCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldUserID]
 	return ok
 }
 
 // ResetUserID resets all changes to the "user_id" field.
-func (m *FractionMutation) ResetUserID() {
+func (m *FractionWithdrawalMutation) ResetUserID() {
 	m.user_id = nil
-	delete(m.clearedFields, fraction.FieldUserID)
+	delete(m.clearedFields, fractionwithdrawal.FieldUserID)
 }
 
 // SetOrderUserID sets the "order_user_id" field.
-func (m *FractionMutation) SetOrderUserID(u uuid.UUID) {
+func (m *FractionWithdrawalMutation) SetOrderUserID(u uuid.UUID) {
 	m.order_user_id = &u
 }
 
 // OrderUserID returns the value of the "order_user_id" field in the mutation.
-func (m *FractionMutation) OrderUserID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalMutation) OrderUserID() (r uuid.UUID, exists bool) {
 	v := m.order_user_id
 	if v == nil {
 		return
@@ -2495,10 +2423,10 @@ func (m *FractionMutation) OrderUserID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldOrderUserID returns the old "order_user_id" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldOrderUserID returns the old "order_user_id" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldOrderUserID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalMutation) OldOrderUserID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOrderUserID is only allowed on UpdateOne operations")
 	}
@@ -2513,80 +2441,129 @@ func (m *FractionMutation) OldOrderUserID(ctx context.Context) (v uuid.UUID, err
 }
 
 // ClearOrderUserID clears the value of the "order_user_id" field.
-func (m *FractionMutation) ClearOrderUserID() {
+func (m *FractionWithdrawalMutation) ClearOrderUserID() {
 	m.order_user_id = nil
-	m.clearedFields[fraction.FieldOrderUserID] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldOrderUserID] = struct{}{}
 }
 
 // OrderUserIDCleared returns if the "order_user_id" field was cleared in this mutation.
-func (m *FractionMutation) OrderUserIDCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldOrderUserID]
+func (m *FractionWithdrawalMutation) OrderUserIDCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldOrderUserID]
 	return ok
 }
 
 // ResetOrderUserID resets all changes to the "order_user_id" field.
-func (m *FractionMutation) ResetOrderUserID() {
+func (m *FractionWithdrawalMutation) ResetOrderUserID() {
 	m.order_user_id = nil
-	delete(m.clearedFields, fraction.FieldOrderUserID)
+	delete(m.clearedFields, fractionwithdrawal.FieldOrderUserID)
 }
 
-// SetWithdrawState sets the "withdraw_state" field.
-func (m *FractionMutation) SetWithdrawState(s string) {
-	m.withdraw_state = &s
+// SetCoinTypeID sets the "coin_type_id" field.
+func (m *FractionWithdrawalMutation) SetCoinTypeID(u uuid.UUID) {
+	m.coin_type_id = &u
 }
 
-// WithdrawState returns the value of the "withdraw_state" field in the mutation.
-func (m *FractionMutation) WithdrawState() (r string, exists bool) {
-	v := m.withdraw_state
+// CoinTypeID returns the value of the "coin_type_id" field in the mutation.
+func (m *FractionWithdrawalMutation) CoinTypeID() (r uuid.UUID, exists bool) {
+	v := m.coin_type_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldWithdrawState returns the old "withdraw_state" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldCoinTypeID returns the old "coin_type_id" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldWithdrawState(ctx context.Context) (v string, err error) {
+func (m *FractionWithdrawalMutation) OldCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldWithdrawState is only allowed on UpdateOne operations")
+		return v, errors.New("OldCoinTypeID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldWithdrawState requires an ID field in the mutation")
+		return v, errors.New("OldCoinTypeID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWithdrawState: %w", err)
+		return v, fmt.Errorf("querying old value for OldCoinTypeID: %w", err)
 	}
-	return oldValue.WithdrawState, nil
+	return oldValue.CoinTypeID, nil
 }
 
-// ClearWithdrawState clears the value of the "withdraw_state" field.
-func (m *FractionMutation) ClearWithdrawState() {
-	m.withdraw_state = nil
-	m.clearedFields[fraction.FieldWithdrawState] = struct{}{}
+// ClearCoinTypeID clears the value of the "coin_type_id" field.
+func (m *FractionWithdrawalMutation) ClearCoinTypeID() {
+	m.coin_type_id = nil
+	m.clearedFields[fractionwithdrawal.FieldCoinTypeID] = struct{}{}
 }
 
-// WithdrawStateCleared returns if the "withdraw_state" field was cleared in this mutation.
-func (m *FractionMutation) WithdrawStateCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldWithdrawState]
+// CoinTypeIDCleared returns if the "coin_type_id" field was cleared in this mutation.
+func (m *FractionWithdrawalMutation) CoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldCoinTypeID]
 	return ok
 }
 
-// ResetWithdrawState resets all changes to the "withdraw_state" field.
-func (m *FractionMutation) ResetWithdrawState() {
-	m.withdraw_state = nil
-	delete(m.clearedFields, fraction.FieldWithdrawState)
+// ResetCoinTypeID resets all changes to the "coin_type_id" field.
+func (m *FractionWithdrawalMutation) ResetCoinTypeID() {
+	m.coin_type_id = nil
+	delete(m.clearedFields, fractionwithdrawal.FieldCoinTypeID)
+}
+
+// SetFractionWithdrawState sets the "fraction_withdraw_state" field.
+func (m *FractionWithdrawalMutation) SetFractionWithdrawState(s string) {
+	m.fraction_withdraw_state = &s
+}
+
+// FractionWithdrawState returns the value of the "fraction_withdraw_state" field in the mutation.
+func (m *FractionWithdrawalMutation) FractionWithdrawState() (r string, exists bool) {
+	v := m.fraction_withdraw_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFractionWithdrawState returns the old "fraction_withdraw_state" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionWithdrawalMutation) OldFractionWithdrawState(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFractionWithdrawState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFractionWithdrawState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFractionWithdrawState: %w", err)
+	}
+	return oldValue.FractionWithdrawState, nil
+}
+
+// ClearFractionWithdrawState clears the value of the "fraction_withdraw_state" field.
+func (m *FractionWithdrawalMutation) ClearFractionWithdrawState() {
+	m.fraction_withdraw_state = nil
+	m.clearedFields[fractionwithdrawal.FieldFractionWithdrawState] = struct{}{}
+}
+
+// FractionWithdrawStateCleared returns if the "fraction_withdraw_state" field was cleared in this mutation.
+func (m *FractionWithdrawalMutation) FractionWithdrawStateCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldFractionWithdrawState]
+	return ok
+}
+
+// ResetFractionWithdrawState resets all changes to the "fraction_withdraw_state" field.
+func (m *FractionWithdrawalMutation) ResetFractionWithdrawState() {
+	m.fraction_withdraw_state = nil
+	delete(m.clearedFields, fractionwithdrawal.FieldFractionWithdrawState)
 }
 
 // SetWithdrawAt sets the "withdraw_at" field.
-func (m *FractionMutation) SetWithdrawAt(u uint32) {
+func (m *FractionWithdrawalMutation) SetWithdrawAt(u uint32) {
 	m.withdraw_at = &u
 	m.addwithdraw_at = nil
 }
 
 // WithdrawAt returns the value of the "withdraw_at" field in the mutation.
-func (m *FractionMutation) WithdrawAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalMutation) WithdrawAt() (r uint32, exists bool) {
 	v := m.withdraw_at
 	if v == nil {
 		return
@@ -2594,10 +2571,10 @@ func (m *FractionMutation) WithdrawAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldWithdrawAt returns the old "withdraw_at" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldWithdrawAt returns the old "withdraw_at" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldWithdrawAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalMutation) OldWithdrawAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWithdrawAt is only allowed on UpdateOne operations")
 	}
@@ -2612,7 +2589,7 @@ func (m *FractionMutation) OldWithdrawAt(ctx context.Context) (v uint32, err err
 }
 
 // AddWithdrawAt adds u to the "withdraw_at" field.
-func (m *FractionMutation) AddWithdrawAt(u int32) {
+func (m *FractionWithdrawalMutation) AddWithdrawAt(u int32) {
 	if m.addwithdraw_at != nil {
 		*m.addwithdraw_at += u
 	} else {
@@ -2621,7 +2598,7 @@ func (m *FractionMutation) AddWithdrawAt(u int32) {
 }
 
 // AddedWithdrawAt returns the value that was added to the "withdraw_at" field in this mutation.
-func (m *FractionMutation) AddedWithdrawAt() (r int32, exists bool) {
+func (m *FractionWithdrawalMutation) AddedWithdrawAt() (r int32, exists bool) {
 	v := m.addwithdraw_at
 	if v == nil {
 		return
@@ -2630,33 +2607,33 @@ func (m *FractionMutation) AddedWithdrawAt() (r int32, exists bool) {
 }
 
 // ClearWithdrawAt clears the value of the "withdraw_at" field.
-func (m *FractionMutation) ClearWithdrawAt() {
+func (m *FractionWithdrawalMutation) ClearWithdrawAt() {
 	m.withdraw_at = nil
 	m.addwithdraw_at = nil
-	m.clearedFields[fraction.FieldWithdrawAt] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldWithdrawAt] = struct{}{}
 }
 
 // WithdrawAtCleared returns if the "withdraw_at" field was cleared in this mutation.
-func (m *FractionMutation) WithdrawAtCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldWithdrawAt]
+func (m *FractionWithdrawalMutation) WithdrawAtCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldWithdrawAt]
 	return ok
 }
 
 // ResetWithdrawAt resets all changes to the "withdraw_at" field.
-func (m *FractionMutation) ResetWithdrawAt() {
+func (m *FractionWithdrawalMutation) ResetWithdrawAt() {
 	m.withdraw_at = nil
 	m.addwithdraw_at = nil
-	delete(m.clearedFields, fraction.FieldWithdrawAt)
+	delete(m.clearedFields, fractionwithdrawal.FieldWithdrawAt)
 }
 
 // SetPromisePayAt sets the "promise_pay_at" field.
-func (m *FractionMutation) SetPromisePayAt(u uint32) {
+func (m *FractionWithdrawalMutation) SetPromisePayAt(u uint32) {
 	m.promise_pay_at = &u
 	m.addpromise_pay_at = nil
 }
 
 // PromisePayAt returns the value of the "promise_pay_at" field in the mutation.
-func (m *FractionMutation) PromisePayAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalMutation) PromisePayAt() (r uint32, exists bool) {
 	v := m.promise_pay_at
 	if v == nil {
 		return
@@ -2664,10 +2641,10 @@ func (m *FractionMutation) PromisePayAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldPromisePayAt returns the old "promise_pay_at" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldPromisePayAt returns the old "promise_pay_at" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldPromisePayAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalMutation) OldPromisePayAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPromisePayAt is only allowed on UpdateOne operations")
 	}
@@ -2682,7 +2659,7 @@ func (m *FractionMutation) OldPromisePayAt(ctx context.Context) (v uint32, err e
 }
 
 // AddPromisePayAt adds u to the "promise_pay_at" field.
-func (m *FractionMutation) AddPromisePayAt(u int32) {
+func (m *FractionWithdrawalMutation) AddPromisePayAt(u int32) {
 	if m.addpromise_pay_at != nil {
 		*m.addpromise_pay_at += u
 	} else {
@@ -2691,7 +2668,7 @@ func (m *FractionMutation) AddPromisePayAt(u int32) {
 }
 
 // AddedPromisePayAt returns the value that was added to the "promise_pay_at" field in this mutation.
-func (m *FractionMutation) AddedPromisePayAt() (r int32, exists bool) {
+func (m *FractionWithdrawalMutation) AddedPromisePayAt() (r int32, exists bool) {
 	v := m.addpromise_pay_at
 	if v == nil {
 		return
@@ -2700,32 +2677,32 @@ func (m *FractionMutation) AddedPromisePayAt() (r int32, exists bool) {
 }
 
 // ClearPromisePayAt clears the value of the "promise_pay_at" field.
-func (m *FractionMutation) ClearPromisePayAt() {
+func (m *FractionWithdrawalMutation) ClearPromisePayAt() {
 	m.promise_pay_at = nil
 	m.addpromise_pay_at = nil
-	m.clearedFields[fraction.FieldPromisePayAt] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldPromisePayAt] = struct{}{}
 }
 
 // PromisePayAtCleared returns if the "promise_pay_at" field was cleared in this mutation.
-func (m *FractionMutation) PromisePayAtCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldPromisePayAt]
+func (m *FractionWithdrawalMutation) PromisePayAtCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldPromisePayAt]
 	return ok
 }
 
 // ResetPromisePayAt resets all changes to the "promise_pay_at" field.
-func (m *FractionMutation) ResetPromisePayAt() {
+func (m *FractionWithdrawalMutation) ResetPromisePayAt() {
 	m.promise_pay_at = nil
 	m.addpromise_pay_at = nil
-	delete(m.clearedFields, fraction.FieldPromisePayAt)
+	delete(m.clearedFields, fractionwithdrawal.FieldPromisePayAt)
 }
 
 // SetMsg sets the "msg" field.
-func (m *FractionMutation) SetMsg(s string) {
+func (m *FractionWithdrawalMutation) SetMsg(s string) {
 	m.msg = &s
 }
 
 // Msg returns the value of the "msg" field in the mutation.
-func (m *FractionMutation) Msg() (r string, exists bool) {
+func (m *FractionWithdrawalMutation) Msg() (r string, exists bool) {
 	v := m.msg
 	if v == nil {
 		return
@@ -2733,10 +2710,10 @@ func (m *FractionMutation) Msg() (r string, exists bool) {
 	return *v, true
 }
 
-// OldMsg returns the old "msg" field's value of the Fraction entity.
-// If the Fraction object wasn't provided to the builder, the object is fetched from the database.
+// OldMsg returns the old "msg" field's value of the FractionWithdrawal entity.
+// If the FractionWithdrawal object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionMutation) OldMsg(ctx context.Context) (v string, err error) {
+func (m *FractionWithdrawalMutation) OldMsg(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMsg is only allowed on UpdateOne operations")
 	}
@@ -2751,75 +2728,78 @@ func (m *FractionMutation) OldMsg(ctx context.Context) (v string, err error) {
 }
 
 // ClearMsg clears the value of the "msg" field.
-func (m *FractionMutation) ClearMsg() {
+func (m *FractionWithdrawalMutation) ClearMsg() {
 	m.msg = nil
-	m.clearedFields[fraction.FieldMsg] = struct{}{}
+	m.clearedFields[fractionwithdrawal.FieldMsg] = struct{}{}
 }
 
 // MsgCleared returns if the "msg" field was cleared in this mutation.
-func (m *FractionMutation) MsgCleared() bool {
-	_, ok := m.clearedFields[fraction.FieldMsg]
+func (m *FractionWithdrawalMutation) MsgCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawal.FieldMsg]
 	return ok
 }
 
 // ResetMsg resets all changes to the "msg" field.
-func (m *FractionMutation) ResetMsg() {
+func (m *FractionWithdrawalMutation) ResetMsg() {
 	m.msg = nil
-	delete(m.clearedFields, fraction.FieldMsg)
+	delete(m.clearedFields, fractionwithdrawal.FieldMsg)
 }
 
-// Where appends a list predicates to the FractionMutation builder.
-func (m *FractionMutation) Where(ps ...predicate.Fraction) {
+// Where appends a list predicates to the FractionWithdrawalMutation builder.
+func (m *FractionWithdrawalMutation) Where(ps ...predicate.FractionWithdrawal) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *FractionMutation) Op() Op {
+func (m *FractionWithdrawalMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (Fraction).
-func (m *FractionMutation) Type() string {
+// Type returns the node type of this mutation (FractionWithdrawal).
+func (m *FractionWithdrawalMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *FractionMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+func (m *FractionWithdrawalMutation) Fields() []string {
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
-		fields = append(fields, fraction.FieldCreatedAt)
+		fields = append(fields, fractionwithdrawal.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, fraction.FieldUpdatedAt)
+		fields = append(fields, fractionwithdrawal.FieldUpdatedAt)
 	}
 	if m.deleted_at != nil {
-		fields = append(fields, fraction.FieldDeletedAt)
+		fields = append(fields, fractionwithdrawal.FieldDeletedAt)
 	}
 	if m.ent_id != nil {
-		fields = append(fields, fraction.FieldEntID)
+		fields = append(fields, fractionwithdrawal.FieldEntID)
 	}
 	if m.app_id != nil {
-		fields = append(fields, fraction.FieldAppID)
+		fields = append(fields, fractionwithdrawal.FieldAppID)
 	}
 	if m.user_id != nil {
-		fields = append(fields, fraction.FieldUserID)
+		fields = append(fields, fractionwithdrawal.FieldUserID)
 	}
 	if m.order_user_id != nil {
-		fields = append(fields, fraction.FieldOrderUserID)
+		fields = append(fields, fractionwithdrawal.FieldOrderUserID)
 	}
-	if m.withdraw_state != nil {
-		fields = append(fields, fraction.FieldWithdrawState)
+	if m.coin_type_id != nil {
+		fields = append(fields, fractionwithdrawal.FieldCoinTypeID)
+	}
+	if m.fraction_withdraw_state != nil {
+		fields = append(fields, fractionwithdrawal.FieldFractionWithdrawState)
 	}
 	if m.withdraw_at != nil {
-		fields = append(fields, fraction.FieldWithdrawAt)
+		fields = append(fields, fractionwithdrawal.FieldWithdrawAt)
 	}
 	if m.promise_pay_at != nil {
-		fields = append(fields, fraction.FieldPromisePayAt)
+		fields = append(fields, fractionwithdrawal.FieldPromisePayAt)
 	}
 	if m.msg != nil {
-		fields = append(fields, fraction.FieldMsg)
+		fields = append(fields, fractionwithdrawal.FieldMsg)
 	}
 	return fields
 }
@@ -2827,29 +2807,31 @@ func (m *FractionMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *FractionMutation) Field(name string) (ent.Value, bool) {
+func (m *FractionWithdrawalMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		return m.CreatedAt()
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		return m.DeletedAt()
-	case fraction.FieldEntID:
+	case fractionwithdrawal.FieldEntID:
 		return m.EntID()
-	case fraction.FieldAppID:
+	case fractionwithdrawal.FieldAppID:
 		return m.AppID()
-	case fraction.FieldUserID:
+	case fractionwithdrawal.FieldUserID:
 		return m.UserID()
-	case fraction.FieldOrderUserID:
+	case fractionwithdrawal.FieldOrderUserID:
 		return m.OrderUserID()
-	case fraction.FieldWithdrawState:
-		return m.WithdrawState()
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldCoinTypeID:
+		return m.CoinTypeID()
+	case fractionwithdrawal.FieldFractionWithdrawState:
+		return m.FractionWithdrawState()
+	case fractionwithdrawal.FieldWithdrawAt:
 		return m.WithdrawAt()
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		return m.PromisePayAt()
-	case fraction.FieldMsg:
+	case fractionwithdrawal.FieldMsg:
 		return m.Msg()
 	}
 	return nil, false
@@ -2858,110 +2840,119 @@ func (m *FractionMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *FractionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *FractionWithdrawalMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case fraction.FieldEntID:
+	case fractionwithdrawal.FieldEntID:
 		return m.OldEntID(ctx)
-	case fraction.FieldAppID:
+	case fractionwithdrawal.FieldAppID:
 		return m.OldAppID(ctx)
-	case fraction.FieldUserID:
+	case fractionwithdrawal.FieldUserID:
 		return m.OldUserID(ctx)
-	case fraction.FieldOrderUserID:
+	case fractionwithdrawal.FieldOrderUserID:
 		return m.OldOrderUserID(ctx)
-	case fraction.FieldWithdrawState:
-		return m.OldWithdrawState(ctx)
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldCoinTypeID:
+		return m.OldCoinTypeID(ctx)
+	case fractionwithdrawal.FieldFractionWithdrawState:
+		return m.OldFractionWithdrawState(ctx)
+	case fractionwithdrawal.FieldWithdrawAt:
 		return m.OldWithdrawAt(ctx)
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		return m.OldPromisePayAt(ctx)
-	case fraction.FieldMsg:
+	case fractionwithdrawal.FieldMsg:
 		return m.OldMsg(ctx)
 	}
-	return nil, fmt.Errorf("unknown Fraction field %s", name)
+	return nil, fmt.Errorf("unknown FractionWithdrawal field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FractionMutation) SetField(name string, value ent.Value) error {
+func (m *FractionWithdrawalMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case fraction.FieldEntID:
+	case fractionwithdrawal.FieldEntID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEntID(v)
 		return nil
-	case fraction.FieldAppID:
+	case fractionwithdrawal.FieldAppID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAppID(v)
 		return nil
-	case fraction.FieldUserID:
+	case fractionwithdrawal.FieldUserID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserID(v)
 		return nil
-	case fraction.FieldOrderUserID:
+	case fractionwithdrawal.FieldOrderUserID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOrderUserID(v)
 		return nil
-	case fraction.FieldWithdrawState:
+	case fractionwithdrawal.FieldCoinTypeID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoinTypeID(v)
+		return nil
+	case fractionwithdrawal.FieldFractionWithdrawState:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetWithdrawState(v)
+		m.SetFractionWithdrawState(v)
 		return nil
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldWithdrawAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawAt(v)
 		return nil
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPromisePayAt(v)
 		return nil
-	case fraction.FieldMsg:
+	case fractionwithdrawal.FieldMsg:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -2969,27 +2960,27 @@ func (m *FractionMutation) SetField(name string, value ent.Value) error {
 		m.SetMsg(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Fraction field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawal field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *FractionMutation) AddedFields() []string {
+func (m *FractionWithdrawalMutation) AddedFields() []string {
 	var fields []string
 	if m.addcreated_at != nil {
-		fields = append(fields, fraction.FieldCreatedAt)
+		fields = append(fields, fractionwithdrawal.FieldCreatedAt)
 	}
 	if m.addupdated_at != nil {
-		fields = append(fields, fraction.FieldUpdatedAt)
+		fields = append(fields, fractionwithdrawal.FieldUpdatedAt)
 	}
 	if m.adddeleted_at != nil {
-		fields = append(fields, fraction.FieldDeletedAt)
+		fields = append(fields, fractionwithdrawal.FieldDeletedAt)
 	}
 	if m.addwithdraw_at != nil {
-		fields = append(fields, fraction.FieldWithdrawAt)
+		fields = append(fields, fractionwithdrawal.FieldWithdrawAt)
 	}
 	if m.addpromise_pay_at != nil {
-		fields = append(fields, fraction.FieldPromisePayAt)
+		fields = append(fields, fractionwithdrawal.FieldPromisePayAt)
 	}
 	return fields
 }
@@ -2997,17 +2988,17 @@ func (m *FractionMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *FractionMutation) AddedField(name string) (ent.Value, bool) {
+func (m *FractionWithdrawalMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		return m.AddedCreatedAt()
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldWithdrawAt:
 		return m.AddedWithdrawAt()
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		return m.AddedPromisePayAt()
 	}
 	return nil, false
@@ -3016,37 +3007,37 @@ func (m *FractionMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FractionMutation) AddField(name string, value ent.Value) error {
+func (m *FractionWithdrawalMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedAt(v)
 		return nil
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeletedAt(v)
 		return nil
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldWithdrawAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddWithdrawAt(v)
 		return nil
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -3054,197 +3045,207 @@ func (m *FractionMutation) AddField(name string, value ent.Value) error {
 		m.AddPromisePayAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Fraction numeric field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawal numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *FractionMutation) ClearedFields() []string {
+func (m *FractionWithdrawalMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(fraction.FieldAppID) {
-		fields = append(fields, fraction.FieldAppID)
+	if m.FieldCleared(fractionwithdrawal.FieldAppID) {
+		fields = append(fields, fractionwithdrawal.FieldAppID)
 	}
-	if m.FieldCleared(fraction.FieldUserID) {
-		fields = append(fields, fraction.FieldUserID)
+	if m.FieldCleared(fractionwithdrawal.FieldUserID) {
+		fields = append(fields, fractionwithdrawal.FieldUserID)
 	}
-	if m.FieldCleared(fraction.FieldOrderUserID) {
-		fields = append(fields, fraction.FieldOrderUserID)
+	if m.FieldCleared(fractionwithdrawal.FieldOrderUserID) {
+		fields = append(fields, fractionwithdrawal.FieldOrderUserID)
 	}
-	if m.FieldCleared(fraction.FieldWithdrawState) {
-		fields = append(fields, fraction.FieldWithdrawState)
+	if m.FieldCleared(fractionwithdrawal.FieldCoinTypeID) {
+		fields = append(fields, fractionwithdrawal.FieldCoinTypeID)
 	}
-	if m.FieldCleared(fraction.FieldWithdrawAt) {
-		fields = append(fields, fraction.FieldWithdrawAt)
+	if m.FieldCleared(fractionwithdrawal.FieldFractionWithdrawState) {
+		fields = append(fields, fractionwithdrawal.FieldFractionWithdrawState)
 	}
-	if m.FieldCleared(fraction.FieldPromisePayAt) {
-		fields = append(fields, fraction.FieldPromisePayAt)
+	if m.FieldCleared(fractionwithdrawal.FieldWithdrawAt) {
+		fields = append(fields, fractionwithdrawal.FieldWithdrawAt)
 	}
-	if m.FieldCleared(fraction.FieldMsg) {
-		fields = append(fields, fraction.FieldMsg)
+	if m.FieldCleared(fractionwithdrawal.FieldPromisePayAt) {
+		fields = append(fields, fractionwithdrawal.FieldPromisePayAt)
+	}
+	if m.FieldCleared(fractionwithdrawal.FieldMsg) {
+		fields = append(fields, fractionwithdrawal.FieldMsg)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *FractionMutation) FieldCleared(name string) bool {
+func (m *FractionWithdrawalMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *FractionMutation) ClearField(name string) error {
+func (m *FractionWithdrawalMutation) ClearField(name string) error {
 	switch name {
-	case fraction.FieldAppID:
+	case fractionwithdrawal.FieldAppID:
 		m.ClearAppID()
 		return nil
-	case fraction.FieldUserID:
+	case fractionwithdrawal.FieldUserID:
 		m.ClearUserID()
 		return nil
-	case fraction.FieldOrderUserID:
+	case fractionwithdrawal.FieldOrderUserID:
 		m.ClearOrderUserID()
 		return nil
-	case fraction.FieldWithdrawState:
-		m.ClearWithdrawState()
+	case fractionwithdrawal.FieldCoinTypeID:
+		m.ClearCoinTypeID()
 		return nil
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldFractionWithdrawState:
+		m.ClearFractionWithdrawState()
+		return nil
+	case fractionwithdrawal.FieldWithdrawAt:
 		m.ClearWithdrawAt()
 		return nil
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		m.ClearPromisePayAt()
 		return nil
-	case fraction.FieldMsg:
+	case fractionwithdrawal.FieldMsg:
 		m.ClearMsg()
 		return nil
 	}
-	return fmt.Errorf("unknown Fraction nullable field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawal nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *FractionMutation) ResetField(name string) error {
+func (m *FractionWithdrawalMutation) ResetField(name string) error {
 	switch name {
-	case fraction.FieldCreatedAt:
+	case fractionwithdrawal.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case fraction.FieldUpdatedAt:
+	case fractionwithdrawal.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case fraction.FieldDeletedAt:
+	case fractionwithdrawal.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case fraction.FieldEntID:
+	case fractionwithdrawal.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case fraction.FieldAppID:
+	case fractionwithdrawal.FieldAppID:
 		m.ResetAppID()
 		return nil
-	case fraction.FieldUserID:
+	case fractionwithdrawal.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case fraction.FieldOrderUserID:
+	case fractionwithdrawal.FieldOrderUserID:
 		m.ResetOrderUserID()
 		return nil
-	case fraction.FieldWithdrawState:
-		m.ResetWithdrawState()
+	case fractionwithdrawal.FieldCoinTypeID:
+		m.ResetCoinTypeID()
 		return nil
-	case fraction.FieldWithdrawAt:
+	case fractionwithdrawal.FieldFractionWithdrawState:
+		m.ResetFractionWithdrawState()
+		return nil
+	case fractionwithdrawal.FieldWithdrawAt:
 		m.ResetWithdrawAt()
 		return nil
-	case fraction.FieldPromisePayAt:
+	case fractionwithdrawal.FieldPromisePayAt:
 		m.ResetPromisePayAt()
 		return nil
-	case fraction.FieldMsg:
+	case fractionwithdrawal.FieldMsg:
 		m.ResetMsg()
 		return nil
 	}
-	return fmt.Errorf("unknown Fraction field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawal field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FractionMutation) AddedEdges() []string {
+func (m *FractionWithdrawalMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *FractionMutation) AddedIDs(name string) []ent.Value {
+func (m *FractionWithdrawalMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FractionMutation) RemovedEdges() []string {
+func (m *FractionWithdrawalMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *FractionMutation) RemovedIDs(name string) []ent.Value {
+func (m *FractionWithdrawalMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FractionMutation) ClearedEdges() []string {
+func (m *FractionWithdrawalMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *FractionMutation) EdgeCleared(name string) bool {
+func (m *FractionWithdrawalMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *FractionMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Fraction unique edge %s", name)
+func (m *FractionWithdrawalMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FractionWithdrawal unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *FractionMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Fraction edge %s", name)
+func (m *FractionWithdrawalMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FractionWithdrawal edge %s", name)
 }
 
-// FractionRuleMutation represents an operation that mutates the FractionRule nodes in the graph.
-type FractionRuleMutation struct {
+// FractionWithdrawalRuleMutation represents an operation that mutates the FractionWithdrawalRule nodes in the graph.
+type FractionWithdrawalRuleMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *uint32
-	created_at           *uint32
-	addcreated_at        *int32
-	updated_at           *uint32
-	addupdated_at        *int32
-	deleted_at           *uint32
-	adddeleted_at        *int32
-	ent_id               *uuid.UUID
-	pool_coin_type_id    *uuid.UUID
-	withdraw_interval    *uint32
-	addwithdraw_interval *int32
-	min_amount           *decimal.Decimal
-	withdraw_rate        *decimal.Decimal
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*FractionRule, error)
-	predicates           []predicate.FractionRule
+	op                      Op
+	typ                     string
+	id                      *uint32
+	created_at              *uint32
+	addcreated_at           *int32
+	updated_at              *uint32
+	addupdated_at           *int32
+	deleted_at              *uint32
+	adddeleted_at           *int32
+	ent_id                  *uuid.UUID
+	pool_coin_type_id       *uuid.UUID
+	withdraw_interval       *uint32
+	addwithdraw_interval    *int32
+	least_withdrawal_amount *decimal.Decimal
+	payout_threshold        *decimal.Decimal
+	withdraw_fee            *decimal.Decimal
+	clearedFields           map[string]struct{}
+	done                    bool
+	oldValue                func(context.Context) (*FractionWithdrawalRule, error)
+	predicates              []predicate.FractionWithdrawalRule
 }
 
-var _ ent.Mutation = (*FractionRuleMutation)(nil)
+var _ ent.Mutation = (*FractionWithdrawalRuleMutation)(nil)
 
-// fractionruleOption allows management of the mutation configuration using functional options.
-type fractionruleOption func(*FractionRuleMutation)
+// fractionwithdrawalruleOption allows management of the mutation configuration using functional options.
+type fractionwithdrawalruleOption func(*FractionWithdrawalRuleMutation)
 
-// newFractionRuleMutation creates new mutation for the FractionRule entity.
-func newFractionRuleMutation(c config, op Op, opts ...fractionruleOption) *FractionRuleMutation {
-	m := &FractionRuleMutation{
+// newFractionWithdrawalRuleMutation creates new mutation for the FractionWithdrawalRule entity.
+func newFractionWithdrawalRuleMutation(c config, op Op, opts ...fractionwithdrawalruleOption) *FractionWithdrawalRuleMutation {
+	m := &FractionWithdrawalRuleMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeFractionRule,
+		typ:           TypeFractionWithdrawalRule,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -3253,20 +3254,20 @@ func newFractionRuleMutation(c config, op Op, opts ...fractionruleOption) *Fract
 	return m
 }
 
-// withFractionRuleID sets the ID field of the mutation.
-func withFractionRuleID(id uint32) fractionruleOption {
-	return func(m *FractionRuleMutation) {
+// withFractionWithdrawalRuleID sets the ID field of the mutation.
+func withFractionWithdrawalRuleID(id uint32) fractionwithdrawalruleOption {
+	return func(m *FractionWithdrawalRuleMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *FractionRule
+			value *FractionWithdrawalRule
 		)
-		m.oldValue = func(ctx context.Context) (*FractionRule, error) {
+		m.oldValue = func(ctx context.Context) (*FractionWithdrawalRule, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().FractionRule.Get(ctx, id)
+					value, err = m.Client().FractionWithdrawalRule.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -3275,10 +3276,10 @@ func withFractionRuleID(id uint32) fractionruleOption {
 	}
 }
 
-// withFractionRule sets the old FractionRule of the mutation.
-func withFractionRule(node *FractionRule) fractionruleOption {
-	return func(m *FractionRuleMutation) {
-		m.oldValue = func(context.Context) (*FractionRule, error) {
+// withFractionWithdrawalRule sets the old FractionWithdrawalRule of the mutation.
+func withFractionWithdrawalRule(node *FractionWithdrawalRule) fractionwithdrawalruleOption {
+	return func(m *FractionWithdrawalRuleMutation) {
+		m.oldValue = func(context.Context) (*FractionWithdrawalRule, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -3287,7 +3288,7 @@ func withFractionRule(node *FractionRule) fractionruleOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FractionRuleMutation) Client() *Client {
+func (m FractionWithdrawalRuleMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -3295,7 +3296,7 @@ func (m FractionRuleMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m FractionRuleMutation) Tx() (*Tx, error) {
+func (m FractionWithdrawalRuleMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -3305,14 +3306,14 @@ func (m FractionRuleMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of FractionRule entities.
-func (m *FractionRuleMutation) SetID(id uint32) {
+// operation is only accepted on creation of FractionWithdrawalRule entities.
+func (m *FractionWithdrawalRuleMutation) SetID(id uint32) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FractionRuleMutation) ID() (id uint32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) ID() (id uint32, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3323,7 +3324,7 @@ func (m *FractionRuleMutation) ID() (id uint32, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FractionRuleMutation) IDs(ctx context.Context) ([]uint32, error) {
+func (m *FractionWithdrawalRuleMutation) IDs(ctx context.Context) ([]uint32, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -3332,20 +3333,20 @@ func (m *FractionRuleMutation) IDs(ctx context.Context) ([]uint32, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().FractionRule.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().FractionWithdrawalRule.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *FractionRuleMutation) SetCreatedAt(u uint32) {
+func (m *FractionWithdrawalRuleMutation) SetCreatedAt(u uint32) {
 	m.created_at = &u
 	m.addcreated_at = nil
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *FractionRuleMutation) CreatedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) CreatedAt() (r uint32, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -3353,10 +3354,10 @@ func (m *FractionRuleMutation) CreatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalRuleMutation) OldCreatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -3371,7 +3372,7 @@ func (m *FractionRuleMutation) OldCreatedAt(ctx context.Context) (v uint32, err 
 }
 
 // AddCreatedAt adds u to the "created_at" field.
-func (m *FractionRuleMutation) AddCreatedAt(u int32) {
+func (m *FractionWithdrawalRuleMutation) AddCreatedAt(u int32) {
 	if m.addcreated_at != nil {
 		*m.addcreated_at += u
 	} else {
@@ -3380,7 +3381,7 @@ func (m *FractionRuleMutation) AddCreatedAt(u int32) {
 }
 
 // AddedCreatedAt returns the value that was added to the "created_at" field in this mutation.
-func (m *FractionRuleMutation) AddedCreatedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) AddedCreatedAt() (r int32, exists bool) {
 	v := m.addcreated_at
 	if v == nil {
 		return
@@ -3389,19 +3390,19 @@ func (m *FractionRuleMutation) AddedCreatedAt() (r int32, exists bool) {
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *FractionRuleMutation) ResetCreatedAt() {
+func (m *FractionWithdrawalRuleMutation) ResetCreatedAt() {
 	m.created_at = nil
 	m.addcreated_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *FractionRuleMutation) SetUpdatedAt(u uint32) {
+func (m *FractionWithdrawalRuleMutation) SetUpdatedAt(u uint32) {
 	m.updated_at = &u
 	m.addupdated_at = nil
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *FractionRuleMutation) UpdatedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) UpdatedAt() (r uint32, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -3409,10 +3410,10 @@ func (m *FractionRuleMutation) UpdatedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalRuleMutation) OldUpdatedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -3427,7 +3428,7 @@ func (m *FractionRuleMutation) OldUpdatedAt(ctx context.Context) (v uint32, err 
 }
 
 // AddUpdatedAt adds u to the "updated_at" field.
-func (m *FractionRuleMutation) AddUpdatedAt(u int32) {
+func (m *FractionWithdrawalRuleMutation) AddUpdatedAt(u int32) {
 	if m.addupdated_at != nil {
 		*m.addupdated_at += u
 	} else {
@@ -3436,7 +3437,7 @@ func (m *FractionRuleMutation) AddUpdatedAt(u int32) {
 }
 
 // AddedUpdatedAt returns the value that was added to the "updated_at" field in this mutation.
-func (m *FractionRuleMutation) AddedUpdatedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) AddedUpdatedAt() (r int32, exists bool) {
 	v := m.addupdated_at
 	if v == nil {
 		return
@@ -3445,19 +3446,19 @@ func (m *FractionRuleMutation) AddedUpdatedAt() (r int32, exists bool) {
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *FractionRuleMutation) ResetUpdatedAt() {
+func (m *FractionWithdrawalRuleMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 	m.addupdated_at = nil
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (m *FractionRuleMutation) SetDeletedAt(u uint32) {
+func (m *FractionWithdrawalRuleMutation) SetDeletedAt(u uint32) {
 	m.deleted_at = &u
 	m.adddeleted_at = nil
 }
 
 // DeletedAt returns the value of the "deleted_at" field in the mutation.
-func (m *FractionRuleMutation) DeletedAt() (r uint32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) DeletedAt() (r uint32, exists bool) {
 	v := m.deleted_at
 	if v == nil {
 		return
@@ -3465,10 +3466,10 @@ func (m *FractionRuleMutation) DeletedAt() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldDeletedAt returns the old "deleted_at" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldDeletedAt returns the old "deleted_at" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalRuleMutation) OldDeletedAt(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
 	}
@@ -3483,7 +3484,7 @@ func (m *FractionRuleMutation) OldDeletedAt(ctx context.Context) (v uint32, err 
 }
 
 // AddDeletedAt adds u to the "deleted_at" field.
-func (m *FractionRuleMutation) AddDeletedAt(u int32) {
+func (m *FractionWithdrawalRuleMutation) AddDeletedAt(u int32) {
 	if m.adddeleted_at != nil {
 		*m.adddeleted_at += u
 	} else {
@@ -3492,7 +3493,7 @@ func (m *FractionRuleMutation) AddDeletedAt(u int32) {
 }
 
 // AddedDeletedAt returns the value that was added to the "deleted_at" field in this mutation.
-func (m *FractionRuleMutation) AddedDeletedAt() (r int32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) AddedDeletedAt() (r int32, exists bool) {
 	v := m.adddeleted_at
 	if v == nil {
 		return
@@ -3501,18 +3502,18 @@ func (m *FractionRuleMutation) AddedDeletedAt() (r int32, exists bool) {
 }
 
 // ResetDeletedAt resets all changes to the "deleted_at" field.
-func (m *FractionRuleMutation) ResetDeletedAt() {
+func (m *FractionWithdrawalRuleMutation) ResetDeletedAt() {
 	m.deleted_at = nil
 	m.adddeleted_at = nil
 }
 
 // SetEntID sets the "ent_id" field.
-func (m *FractionRuleMutation) SetEntID(u uuid.UUID) {
+func (m *FractionWithdrawalRuleMutation) SetEntID(u uuid.UUID) {
 	m.ent_id = &u
 }
 
 // EntID returns the value of the "ent_id" field in the mutation.
-func (m *FractionRuleMutation) EntID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalRuleMutation) EntID() (r uuid.UUID, exists bool) {
 	v := m.ent_id
 	if v == nil {
 		return
@@ -3520,10 +3521,10 @@ func (m *FractionRuleMutation) EntID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldEntID returns the old "ent_id" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldEntID returns the old "ent_id" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalRuleMutation) OldEntID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldEntID is only allowed on UpdateOne operations")
 	}
@@ -3538,17 +3539,17 @@ func (m *FractionRuleMutation) OldEntID(ctx context.Context) (v uuid.UUID, err e
 }
 
 // ResetEntID resets all changes to the "ent_id" field.
-func (m *FractionRuleMutation) ResetEntID() {
+func (m *FractionWithdrawalRuleMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
 // SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (m *FractionRuleMutation) SetPoolCoinTypeID(u uuid.UUID) {
+func (m *FractionWithdrawalRuleMutation) SetPoolCoinTypeID(u uuid.UUID) {
 	m.pool_coin_type_id = &u
 }
 
 // PoolCoinTypeID returns the value of the "pool_coin_type_id" field in the mutation.
-func (m *FractionRuleMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
+func (m *FractionWithdrawalRuleMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
 	v := m.pool_coin_type_id
 	if v == nil {
 		return
@@ -3556,10 +3557,10 @@ func (m *FractionRuleMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
 	return *v, true
 }
 
-// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
+func (m *FractionWithdrawalRuleMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPoolCoinTypeID is only allowed on UpdateOne operations")
 	}
@@ -3574,31 +3575,31 @@ func (m *FractionRuleMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UU
 }
 
 // ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (m *FractionRuleMutation) ClearPoolCoinTypeID() {
+func (m *FractionWithdrawalRuleMutation) ClearPoolCoinTypeID() {
 	m.pool_coin_type_id = nil
-	m.clearedFields[fractionrule.FieldPoolCoinTypeID] = struct{}{}
+	m.clearedFields[fractionwithdrawalrule.FieldPoolCoinTypeID] = struct{}{}
 }
 
 // PoolCoinTypeIDCleared returns if the "pool_coin_type_id" field was cleared in this mutation.
-func (m *FractionRuleMutation) PoolCoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldPoolCoinTypeID]
+func (m *FractionWithdrawalRuleMutation) PoolCoinTypeIDCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawalrule.FieldPoolCoinTypeID]
 	return ok
 }
 
 // ResetPoolCoinTypeID resets all changes to the "pool_coin_type_id" field.
-func (m *FractionRuleMutation) ResetPoolCoinTypeID() {
+func (m *FractionWithdrawalRuleMutation) ResetPoolCoinTypeID() {
 	m.pool_coin_type_id = nil
-	delete(m.clearedFields, fractionrule.FieldPoolCoinTypeID)
+	delete(m.clearedFields, fractionwithdrawalrule.FieldPoolCoinTypeID)
 }
 
 // SetWithdrawInterval sets the "withdraw_interval" field.
-func (m *FractionRuleMutation) SetWithdrawInterval(u uint32) {
+func (m *FractionWithdrawalRuleMutation) SetWithdrawInterval(u uint32) {
 	m.withdraw_interval = &u
 	m.addwithdraw_interval = nil
 }
 
 // WithdrawInterval returns the value of the "withdraw_interval" field in the mutation.
-func (m *FractionRuleMutation) WithdrawInterval() (r uint32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) WithdrawInterval() (r uint32, exists bool) {
 	v := m.withdraw_interval
 	if v == nil {
 		return
@@ -3606,10 +3607,10 @@ func (m *FractionRuleMutation) WithdrawInterval() (r uint32, exists bool) {
 	return *v, true
 }
 
-// OldWithdrawInterval returns the old "withdraw_interval" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldWithdrawInterval returns the old "withdraw_interval" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldWithdrawInterval(ctx context.Context) (v uint32, err error) {
+func (m *FractionWithdrawalRuleMutation) OldWithdrawInterval(ctx context.Context) (v uint32, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldWithdrawInterval is only allowed on UpdateOne operations")
 	}
@@ -3624,7 +3625,7 @@ func (m *FractionRuleMutation) OldWithdrawInterval(ctx context.Context) (v uint3
 }
 
 // AddWithdrawInterval adds u to the "withdraw_interval" field.
-func (m *FractionRuleMutation) AddWithdrawInterval(u int32) {
+func (m *FractionWithdrawalRuleMutation) AddWithdrawInterval(u int32) {
 	if m.addwithdraw_interval != nil {
 		*m.addwithdraw_interval += u
 	} else {
@@ -3633,7 +3634,7 @@ func (m *FractionRuleMutation) AddWithdrawInterval(u int32) {
 }
 
 // AddedWithdrawInterval returns the value that was added to the "withdraw_interval" field in this mutation.
-func (m *FractionRuleMutation) AddedWithdrawInterval() (r int32, exists bool) {
+func (m *FractionWithdrawalRuleMutation) AddedWithdrawInterval() (r int32, exists bool) {
 	v := m.addwithdraw_interval
 	if v == nil {
 		return
@@ -3642,166 +3643,218 @@ func (m *FractionRuleMutation) AddedWithdrawInterval() (r int32, exists bool) {
 }
 
 // ClearWithdrawInterval clears the value of the "withdraw_interval" field.
-func (m *FractionRuleMutation) ClearWithdrawInterval() {
+func (m *FractionWithdrawalRuleMutation) ClearWithdrawInterval() {
 	m.withdraw_interval = nil
 	m.addwithdraw_interval = nil
-	m.clearedFields[fractionrule.FieldWithdrawInterval] = struct{}{}
+	m.clearedFields[fractionwithdrawalrule.FieldWithdrawInterval] = struct{}{}
 }
 
 // WithdrawIntervalCleared returns if the "withdraw_interval" field was cleared in this mutation.
-func (m *FractionRuleMutation) WithdrawIntervalCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldWithdrawInterval]
+func (m *FractionWithdrawalRuleMutation) WithdrawIntervalCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawalrule.FieldWithdrawInterval]
 	return ok
 }
 
 // ResetWithdrawInterval resets all changes to the "withdraw_interval" field.
-func (m *FractionRuleMutation) ResetWithdrawInterval() {
+func (m *FractionWithdrawalRuleMutation) ResetWithdrawInterval() {
 	m.withdraw_interval = nil
 	m.addwithdraw_interval = nil
-	delete(m.clearedFields, fractionrule.FieldWithdrawInterval)
+	delete(m.clearedFields, fractionwithdrawalrule.FieldWithdrawInterval)
 }
 
-// SetMinAmount sets the "min_amount" field.
-func (m *FractionRuleMutation) SetMinAmount(d decimal.Decimal) {
-	m.min_amount = &d
+// SetLeastWithdrawalAmount sets the "least_withdrawal_amount" field.
+func (m *FractionWithdrawalRuleMutation) SetLeastWithdrawalAmount(d decimal.Decimal) {
+	m.least_withdrawal_amount = &d
 }
 
-// MinAmount returns the value of the "min_amount" field in the mutation.
-func (m *FractionRuleMutation) MinAmount() (r decimal.Decimal, exists bool) {
-	v := m.min_amount
+// LeastWithdrawalAmount returns the value of the "least_withdrawal_amount" field in the mutation.
+func (m *FractionWithdrawalRuleMutation) LeastWithdrawalAmount() (r decimal.Decimal, exists bool) {
+	v := m.least_withdrawal_amount
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMinAmount returns the old "min_amount" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldLeastWithdrawalAmount returns the old "least_withdrawal_amount" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldMinAmount(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *FractionWithdrawalRuleMutation) OldLeastWithdrawalAmount(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMinAmount is only allowed on UpdateOne operations")
+		return v, errors.New("OldLeastWithdrawalAmount is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMinAmount requires an ID field in the mutation")
+		return v, errors.New("OldLeastWithdrawalAmount requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMinAmount: %w", err)
+		return v, fmt.Errorf("querying old value for OldLeastWithdrawalAmount: %w", err)
 	}
-	return oldValue.MinAmount, nil
+	return oldValue.LeastWithdrawalAmount, nil
 }
 
-// ClearMinAmount clears the value of the "min_amount" field.
-func (m *FractionRuleMutation) ClearMinAmount() {
-	m.min_amount = nil
-	m.clearedFields[fractionrule.FieldMinAmount] = struct{}{}
+// ClearLeastWithdrawalAmount clears the value of the "least_withdrawal_amount" field.
+func (m *FractionWithdrawalRuleMutation) ClearLeastWithdrawalAmount() {
+	m.least_withdrawal_amount = nil
+	m.clearedFields[fractionwithdrawalrule.FieldLeastWithdrawalAmount] = struct{}{}
 }
 
-// MinAmountCleared returns if the "min_amount" field was cleared in this mutation.
-func (m *FractionRuleMutation) MinAmountCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldMinAmount]
+// LeastWithdrawalAmountCleared returns if the "least_withdrawal_amount" field was cleared in this mutation.
+func (m *FractionWithdrawalRuleMutation) LeastWithdrawalAmountCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawalrule.FieldLeastWithdrawalAmount]
 	return ok
 }
 
-// ResetMinAmount resets all changes to the "min_amount" field.
-func (m *FractionRuleMutation) ResetMinAmount() {
-	m.min_amount = nil
-	delete(m.clearedFields, fractionrule.FieldMinAmount)
+// ResetLeastWithdrawalAmount resets all changes to the "least_withdrawal_amount" field.
+func (m *FractionWithdrawalRuleMutation) ResetLeastWithdrawalAmount() {
+	m.least_withdrawal_amount = nil
+	delete(m.clearedFields, fractionwithdrawalrule.FieldLeastWithdrawalAmount)
 }
 
-// SetWithdrawRate sets the "withdraw_rate" field.
-func (m *FractionRuleMutation) SetWithdrawRate(d decimal.Decimal) {
-	m.withdraw_rate = &d
+// SetPayoutThreshold sets the "payout_threshold" field.
+func (m *FractionWithdrawalRuleMutation) SetPayoutThreshold(d decimal.Decimal) {
+	m.payout_threshold = &d
 }
 
-// WithdrawRate returns the value of the "withdraw_rate" field in the mutation.
-func (m *FractionRuleMutation) WithdrawRate() (r decimal.Decimal, exists bool) {
-	v := m.withdraw_rate
+// PayoutThreshold returns the value of the "payout_threshold" field in the mutation.
+func (m *FractionWithdrawalRuleMutation) PayoutThreshold() (r decimal.Decimal, exists bool) {
+	v := m.payout_threshold
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldWithdrawRate returns the old "withdraw_rate" field's value of the FractionRule entity.
-// If the FractionRule object wasn't provided to the builder, the object is fetched from the database.
+// OldPayoutThreshold returns the old "payout_threshold" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FractionRuleMutation) OldWithdrawRate(ctx context.Context) (v decimal.Decimal, err error) {
+func (m *FractionWithdrawalRuleMutation) OldPayoutThreshold(ctx context.Context) (v decimal.Decimal, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldWithdrawRate is only allowed on UpdateOne operations")
+		return v, errors.New("OldPayoutThreshold is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldWithdrawRate requires an ID field in the mutation")
+		return v, errors.New("OldPayoutThreshold requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWithdrawRate: %w", err)
+		return v, fmt.Errorf("querying old value for OldPayoutThreshold: %w", err)
 	}
-	return oldValue.WithdrawRate, nil
+	return oldValue.PayoutThreshold, nil
 }
 
-// ClearWithdrawRate clears the value of the "withdraw_rate" field.
-func (m *FractionRuleMutation) ClearWithdrawRate() {
-	m.withdraw_rate = nil
-	m.clearedFields[fractionrule.FieldWithdrawRate] = struct{}{}
+// ClearPayoutThreshold clears the value of the "payout_threshold" field.
+func (m *FractionWithdrawalRuleMutation) ClearPayoutThreshold() {
+	m.payout_threshold = nil
+	m.clearedFields[fractionwithdrawalrule.FieldPayoutThreshold] = struct{}{}
 }
 
-// WithdrawRateCleared returns if the "withdraw_rate" field was cleared in this mutation.
-func (m *FractionRuleMutation) WithdrawRateCleared() bool {
-	_, ok := m.clearedFields[fractionrule.FieldWithdrawRate]
+// PayoutThresholdCleared returns if the "payout_threshold" field was cleared in this mutation.
+func (m *FractionWithdrawalRuleMutation) PayoutThresholdCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawalrule.FieldPayoutThreshold]
 	return ok
 }
 
-// ResetWithdrawRate resets all changes to the "withdraw_rate" field.
-func (m *FractionRuleMutation) ResetWithdrawRate() {
-	m.withdraw_rate = nil
-	delete(m.clearedFields, fractionrule.FieldWithdrawRate)
+// ResetPayoutThreshold resets all changes to the "payout_threshold" field.
+func (m *FractionWithdrawalRuleMutation) ResetPayoutThreshold() {
+	m.payout_threshold = nil
+	delete(m.clearedFields, fractionwithdrawalrule.FieldPayoutThreshold)
 }
 
-// Where appends a list predicates to the FractionRuleMutation builder.
-func (m *FractionRuleMutation) Where(ps ...predicate.FractionRule) {
+// SetWithdrawFee sets the "withdraw_fee" field.
+func (m *FractionWithdrawalRuleMutation) SetWithdrawFee(d decimal.Decimal) {
+	m.withdraw_fee = &d
+}
+
+// WithdrawFee returns the value of the "withdraw_fee" field in the mutation.
+func (m *FractionWithdrawalRuleMutation) WithdrawFee() (r decimal.Decimal, exists bool) {
+	v := m.withdraw_fee
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWithdrawFee returns the old "withdraw_fee" field's value of the FractionWithdrawalRule entity.
+// If the FractionWithdrawalRule object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FractionWithdrawalRuleMutation) OldWithdrawFee(ctx context.Context) (v decimal.Decimal, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWithdrawFee is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWithdrawFee requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWithdrawFee: %w", err)
+	}
+	return oldValue.WithdrawFee, nil
+}
+
+// ClearWithdrawFee clears the value of the "withdraw_fee" field.
+func (m *FractionWithdrawalRuleMutation) ClearWithdrawFee() {
+	m.withdraw_fee = nil
+	m.clearedFields[fractionwithdrawalrule.FieldWithdrawFee] = struct{}{}
+}
+
+// WithdrawFeeCleared returns if the "withdraw_fee" field was cleared in this mutation.
+func (m *FractionWithdrawalRuleMutation) WithdrawFeeCleared() bool {
+	_, ok := m.clearedFields[fractionwithdrawalrule.FieldWithdrawFee]
+	return ok
+}
+
+// ResetWithdrawFee resets all changes to the "withdraw_fee" field.
+func (m *FractionWithdrawalRuleMutation) ResetWithdrawFee() {
+	m.withdraw_fee = nil
+	delete(m.clearedFields, fractionwithdrawalrule.FieldWithdrawFee)
+}
+
+// Where appends a list predicates to the FractionWithdrawalRuleMutation builder.
+func (m *FractionWithdrawalRuleMutation) Where(ps ...predicate.FractionWithdrawalRule) {
 	m.predicates = append(m.predicates, ps...)
 }
 
 // Op returns the operation name.
-func (m *FractionRuleMutation) Op() Op {
+func (m *FractionWithdrawalRuleMutation) Op() Op {
 	return m.op
 }
 
-// Type returns the node type of this mutation (FractionRule).
-func (m *FractionRuleMutation) Type() string {
+// Type returns the node type of this mutation (FractionWithdrawalRule).
+func (m *FractionWithdrawalRuleMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *FractionRuleMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+func (m *FractionWithdrawalRuleMutation) Fields() []string {
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
-		fields = append(fields, fractionrule.FieldCreatedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldCreatedAt)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, fractionrule.FieldUpdatedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldUpdatedAt)
 	}
 	if m.deleted_at != nil {
-		fields = append(fields, fractionrule.FieldDeletedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldDeletedAt)
 	}
 	if m.ent_id != nil {
-		fields = append(fields, fractionrule.FieldEntID)
+		fields = append(fields, fractionwithdrawalrule.FieldEntID)
 	}
 	if m.pool_coin_type_id != nil {
-		fields = append(fields, fractionrule.FieldPoolCoinTypeID)
+		fields = append(fields, fractionwithdrawalrule.FieldPoolCoinTypeID)
 	}
 	if m.withdraw_interval != nil {
-		fields = append(fields, fractionrule.FieldWithdrawInterval)
+		fields = append(fields, fractionwithdrawalrule.FieldWithdrawInterval)
 	}
-	if m.min_amount != nil {
-		fields = append(fields, fractionrule.FieldMinAmount)
+	if m.least_withdrawal_amount != nil {
+		fields = append(fields, fractionwithdrawalrule.FieldLeastWithdrawalAmount)
 	}
-	if m.withdraw_rate != nil {
-		fields = append(fields, fractionrule.FieldWithdrawRate)
+	if m.payout_threshold != nil {
+		fields = append(fields, fractionwithdrawalrule.FieldPayoutThreshold)
+	}
+	if m.withdraw_fee != nil {
+		fields = append(fields, fractionwithdrawalrule.FieldWithdrawFee)
 	}
 	return fields
 }
@@ -3809,24 +3862,26 @@ func (m *FractionRuleMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *FractionRuleMutation) Field(name string) (ent.Value, bool) {
+func (m *FractionWithdrawalRuleMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		return m.CreatedAt()
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		return m.DeletedAt()
-	case fractionrule.FieldEntID:
+	case fractionwithdrawalrule.FieldEntID:
 		return m.EntID()
-	case fractionrule.FieldPoolCoinTypeID:
+	case fractionwithdrawalrule.FieldPoolCoinTypeID:
 		return m.PoolCoinTypeID()
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		return m.WithdrawInterval()
-	case fractionrule.FieldMinAmount:
-		return m.MinAmount()
-	case fractionrule.FieldWithdrawRate:
-		return m.WithdrawRate()
+	case fractionwithdrawalrule.FieldLeastWithdrawalAmount:
+		return m.LeastWithdrawalAmount()
+	case fractionwithdrawalrule.FieldPayoutThreshold:
+		return m.PayoutThreshold()
+	case fractionwithdrawalrule.FieldWithdrawFee:
+		return m.WithdrawFee()
 	}
 	return nil, false
 }
@@ -3834,108 +3889,117 @@ func (m *FractionRuleMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *FractionRuleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *FractionWithdrawalRuleMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		return m.OldDeletedAt(ctx)
-	case fractionrule.FieldEntID:
+	case fractionwithdrawalrule.FieldEntID:
 		return m.OldEntID(ctx)
-	case fractionrule.FieldPoolCoinTypeID:
+	case fractionwithdrawalrule.FieldPoolCoinTypeID:
 		return m.OldPoolCoinTypeID(ctx)
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		return m.OldWithdrawInterval(ctx)
-	case fractionrule.FieldMinAmount:
-		return m.OldMinAmount(ctx)
-	case fractionrule.FieldWithdrawRate:
-		return m.OldWithdrawRate(ctx)
+	case fractionwithdrawalrule.FieldLeastWithdrawalAmount:
+		return m.OldLeastWithdrawalAmount(ctx)
+	case fractionwithdrawalrule.FieldPayoutThreshold:
+		return m.OldPayoutThreshold(ctx)
+	case fractionwithdrawalrule.FieldWithdrawFee:
+		return m.OldWithdrawFee(ctx)
 	}
-	return nil, fmt.Errorf("unknown FractionRule field %s", name)
+	return nil, fmt.Errorf("unknown FractionWithdrawalRule field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FractionRuleMutation) SetField(name string, value ent.Value) error {
+func (m *FractionWithdrawalRuleMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeletedAt(v)
 		return nil
-	case fractionrule.FieldEntID:
+	case fractionwithdrawalrule.FieldEntID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEntID(v)
 		return nil
-	case fractionrule.FieldPoolCoinTypeID:
+	case fractionwithdrawalrule.FieldPoolCoinTypeID:
 		v, ok := value.(uuid.UUID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPoolCoinTypeID(v)
 		return nil
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		v, ok := value.(uint32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWithdrawInterval(v)
 		return nil
-	case fractionrule.FieldMinAmount:
+	case fractionwithdrawalrule.FieldLeastWithdrawalAmount:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMinAmount(v)
+		m.SetLeastWithdrawalAmount(v)
 		return nil
-	case fractionrule.FieldWithdrawRate:
+	case fractionwithdrawalrule.FieldPayoutThreshold:
 		v, ok := value.(decimal.Decimal)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetWithdrawRate(v)
+		m.SetPayoutThreshold(v)
+		return nil
+	case fractionwithdrawalrule.FieldWithdrawFee:
+		v, ok := value.(decimal.Decimal)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWithdrawFee(v)
 		return nil
 	}
-	return fmt.Errorf("unknown FractionRule field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawalRule field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *FractionRuleMutation) AddedFields() []string {
+func (m *FractionWithdrawalRuleMutation) AddedFields() []string {
 	var fields []string
 	if m.addcreated_at != nil {
-		fields = append(fields, fractionrule.FieldCreatedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldCreatedAt)
 	}
 	if m.addupdated_at != nil {
-		fields = append(fields, fractionrule.FieldUpdatedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldUpdatedAt)
 	}
 	if m.adddeleted_at != nil {
-		fields = append(fields, fractionrule.FieldDeletedAt)
+		fields = append(fields, fractionwithdrawalrule.FieldDeletedAt)
 	}
 	if m.addwithdraw_interval != nil {
-		fields = append(fields, fractionrule.FieldWithdrawInterval)
+		fields = append(fields, fractionwithdrawalrule.FieldWithdrawInterval)
 	}
 	return fields
 }
@@ -3943,15 +4007,15 @@ func (m *FractionRuleMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *FractionRuleMutation) AddedField(name string) (ent.Value, bool) {
+func (m *FractionWithdrawalRuleMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		return m.AddedCreatedAt()
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		return m.AddedUpdatedAt()
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		return m.AddedDeletedAt()
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		return m.AddedWithdrawInterval()
 	}
 	return nil, false
@@ -3960,30 +4024,30 @@ func (m *FractionRuleMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
+func (m *FractionWithdrawalRuleMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddCreatedAt(v)
 		return nil
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUpdatedAt(v)
 		return nil
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDeletedAt(v)
 		return nil
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -3991,156 +4055,164 @@ func (m *FractionRuleMutation) AddField(name string, value ent.Value) error {
 		m.AddWithdrawInterval(v)
 		return nil
 	}
-	return fmt.Errorf("unknown FractionRule numeric field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawalRule numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *FractionRuleMutation) ClearedFields() []string {
+func (m *FractionWithdrawalRuleMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(fractionrule.FieldPoolCoinTypeID) {
-		fields = append(fields, fractionrule.FieldPoolCoinTypeID)
+	if m.FieldCleared(fractionwithdrawalrule.FieldPoolCoinTypeID) {
+		fields = append(fields, fractionwithdrawalrule.FieldPoolCoinTypeID)
 	}
-	if m.FieldCleared(fractionrule.FieldWithdrawInterval) {
-		fields = append(fields, fractionrule.FieldWithdrawInterval)
+	if m.FieldCleared(fractionwithdrawalrule.FieldWithdrawInterval) {
+		fields = append(fields, fractionwithdrawalrule.FieldWithdrawInterval)
 	}
-	if m.FieldCleared(fractionrule.FieldMinAmount) {
-		fields = append(fields, fractionrule.FieldMinAmount)
+	if m.FieldCleared(fractionwithdrawalrule.FieldLeastWithdrawalAmount) {
+		fields = append(fields, fractionwithdrawalrule.FieldLeastWithdrawalAmount)
 	}
-	if m.FieldCleared(fractionrule.FieldWithdrawRate) {
-		fields = append(fields, fractionrule.FieldWithdrawRate)
+	if m.FieldCleared(fractionwithdrawalrule.FieldPayoutThreshold) {
+		fields = append(fields, fractionwithdrawalrule.FieldPayoutThreshold)
+	}
+	if m.FieldCleared(fractionwithdrawalrule.FieldWithdrawFee) {
+		fields = append(fields, fractionwithdrawalrule.FieldWithdrawFee)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *FractionRuleMutation) FieldCleared(name string) bool {
+func (m *FractionWithdrawalRuleMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *FractionRuleMutation) ClearField(name string) error {
+func (m *FractionWithdrawalRuleMutation) ClearField(name string) error {
 	switch name {
-	case fractionrule.FieldPoolCoinTypeID:
+	case fractionwithdrawalrule.FieldPoolCoinTypeID:
 		m.ClearPoolCoinTypeID()
 		return nil
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		m.ClearWithdrawInterval()
 		return nil
-	case fractionrule.FieldMinAmount:
-		m.ClearMinAmount()
+	case fractionwithdrawalrule.FieldLeastWithdrawalAmount:
+		m.ClearLeastWithdrawalAmount()
 		return nil
-	case fractionrule.FieldWithdrawRate:
-		m.ClearWithdrawRate()
+	case fractionwithdrawalrule.FieldPayoutThreshold:
+		m.ClearPayoutThreshold()
+		return nil
+	case fractionwithdrawalrule.FieldWithdrawFee:
+		m.ClearWithdrawFee()
 		return nil
 	}
-	return fmt.Errorf("unknown FractionRule nullable field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawalRule nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *FractionRuleMutation) ResetField(name string) error {
+func (m *FractionWithdrawalRuleMutation) ResetField(name string) error {
 	switch name {
-	case fractionrule.FieldCreatedAt:
+	case fractionwithdrawalrule.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
-	case fractionrule.FieldUpdatedAt:
+	case fractionwithdrawalrule.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case fractionrule.FieldDeletedAt:
+	case fractionwithdrawalrule.FieldDeletedAt:
 		m.ResetDeletedAt()
 		return nil
-	case fractionrule.FieldEntID:
+	case fractionwithdrawalrule.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case fractionrule.FieldPoolCoinTypeID:
+	case fractionwithdrawalrule.FieldPoolCoinTypeID:
 		m.ResetPoolCoinTypeID()
 		return nil
-	case fractionrule.FieldWithdrawInterval:
+	case fractionwithdrawalrule.FieldWithdrawInterval:
 		m.ResetWithdrawInterval()
 		return nil
-	case fractionrule.FieldMinAmount:
-		m.ResetMinAmount()
+	case fractionwithdrawalrule.FieldLeastWithdrawalAmount:
+		m.ResetLeastWithdrawalAmount()
 		return nil
-	case fractionrule.FieldWithdrawRate:
-		m.ResetWithdrawRate()
+	case fractionwithdrawalrule.FieldPayoutThreshold:
+		m.ResetPayoutThreshold()
+		return nil
+	case fractionwithdrawalrule.FieldWithdrawFee:
+		m.ResetWithdrawFee()
 		return nil
 	}
-	return fmt.Errorf("unknown FractionRule field %s", name)
+	return fmt.Errorf("unknown FractionWithdrawalRule field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FractionRuleMutation) AddedEdges() []string {
+func (m *FractionWithdrawalRuleMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *FractionRuleMutation) AddedIDs(name string) []ent.Value {
+func (m *FractionWithdrawalRuleMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FractionRuleMutation) RemovedEdges() []string {
+func (m *FractionWithdrawalRuleMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *FractionRuleMutation) RemovedIDs(name string) []ent.Value {
+func (m *FractionWithdrawalRuleMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FractionRuleMutation) ClearedEdges() []string {
+func (m *FractionWithdrawalRuleMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *FractionRuleMutation) EdgeCleared(name string) bool {
+func (m *FractionWithdrawalRuleMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *FractionRuleMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown FractionRule unique edge %s", name)
+func (m *FractionWithdrawalRuleMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown FractionWithdrawalRule unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *FractionRuleMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown FractionRule edge %s", name)
+func (m *FractionWithdrawalRuleMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown FractionWithdrawalRule edge %s", name)
 }
 
 // GoodUserMutation represents an operation that mutates the GoodUser nodes in the graph.
 type GoodUserMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *uint32
-	created_at        *uint32
-	addcreated_at     *int32
-	updated_at        *uint32
-	addupdated_at     *int32
-	deleted_at        *uint32
-	adddeleted_at     *int32
-	ent_id            *uuid.UUID
-	root_user_id      *uuid.UUID
-	name              *string
-	pool_coin_type_id *uuid.UUID
-	read_page_link    *string
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*GoodUser, error)
-	predicates        []predicate.GoodUser
+	op             Op
+	typ            string
+	id             *uint32
+	created_at     *uint32
+	addcreated_at  *int32
+	updated_at     *uint32
+	addupdated_at  *int32
+	deleted_at     *uint32
+	adddeleted_at  *int32
+	ent_id         *uuid.UUID
+	root_user_id   *uuid.UUID
+	name           *string
+	read_page_link *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*GoodUser, error)
+	predicates     []predicate.GoodUser
 }
 
 var _ ent.Mutation = (*GoodUserMutation)(nil)
@@ -4549,55 +4621,6 @@ func (m *GoodUserMutation) ResetName() {
 	delete(m.clearedFields, gooduser.FieldName)
 }
 
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (m *GoodUserMutation) SetPoolCoinTypeID(u uuid.UUID) {
-	m.pool_coin_type_id = &u
-}
-
-// PoolCoinTypeID returns the value of the "pool_coin_type_id" field in the mutation.
-func (m *GoodUserMutation) PoolCoinTypeID() (r uuid.UUID, exists bool) {
-	v := m.pool_coin_type_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPoolCoinTypeID returns the old "pool_coin_type_id" field's value of the GoodUser entity.
-// If the GoodUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *GoodUserMutation) OldPoolCoinTypeID(ctx context.Context) (v uuid.UUID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPoolCoinTypeID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPoolCoinTypeID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPoolCoinTypeID: %w", err)
-	}
-	return oldValue.PoolCoinTypeID, nil
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (m *GoodUserMutation) ClearPoolCoinTypeID() {
-	m.pool_coin_type_id = nil
-	m.clearedFields[gooduser.FieldPoolCoinTypeID] = struct{}{}
-}
-
-// PoolCoinTypeIDCleared returns if the "pool_coin_type_id" field was cleared in this mutation.
-func (m *GoodUserMutation) PoolCoinTypeIDCleared() bool {
-	_, ok := m.clearedFields[gooduser.FieldPoolCoinTypeID]
-	return ok
-}
-
-// ResetPoolCoinTypeID resets all changes to the "pool_coin_type_id" field.
-func (m *GoodUserMutation) ResetPoolCoinTypeID() {
-	m.pool_coin_type_id = nil
-	delete(m.clearedFields, gooduser.FieldPoolCoinTypeID)
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (m *GoodUserMutation) SetReadPageLink(s string) {
 	m.read_page_link = &s
@@ -4666,7 +4689,7 @@ func (m *GoodUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *GoodUserMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, gooduser.FieldCreatedAt)
 	}
@@ -4684,9 +4707,6 @@ func (m *GoodUserMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, gooduser.FieldName)
-	}
-	if m.pool_coin_type_id != nil {
-		fields = append(fields, gooduser.FieldPoolCoinTypeID)
 	}
 	if m.read_page_link != nil {
 		fields = append(fields, gooduser.FieldReadPageLink)
@@ -4711,8 +4731,6 @@ func (m *GoodUserMutation) Field(name string) (ent.Value, bool) {
 		return m.RootUserID()
 	case gooduser.FieldName:
 		return m.Name()
-	case gooduser.FieldPoolCoinTypeID:
-		return m.PoolCoinTypeID()
 	case gooduser.FieldReadPageLink:
 		return m.ReadPageLink()
 	}
@@ -4736,8 +4754,6 @@ func (m *GoodUserMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRootUserID(ctx)
 	case gooduser.FieldName:
 		return m.OldName(ctx)
-	case gooduser.FieldPoolCoinTypeID:
-		return m.OldPoolCoinTypeID(ctx)
 	case gooduser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
 	}
@@ -4790,13 +4806,6 @@ func (m *GoodUserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		v, ok := value.(uuid.UUID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPoolCoinTypeID(v)
 		return nil
 	case gooduser.FieldReadPageLink:
 		v, ok := value.(string)
@@ -4880,9 +4889,6 @@ func (m *GoodUserMutation) ClearedFields() []string {
 	if m.FieldCleared(gooduser.FieldName) {
 		fields = append(fields, gooduser.FieldName)
 	}
-	if m.FieldCleared(gooduser.FieldPoolCoinTypeID) {
-		fields = append(fields, gooduser.FieldPoolCoinTypeID)
-	}
 	if m.FieldCleared(gooduser.FieldReadPageLink) {
 		fields = append(fields, gooduser.FieldReadPageLink)
 	}
@@ -4905,9 +4911,6 @@ func (m *GoodUserMutation) ClearField(name string) error {
 		return nil
 	case gooduser.FieldName:
 		m.ClearName()
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		m.ClearPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ClearReadPageLink()
@@ -4937,9 +4940,6 @@ func (m *GoodUserMutation) ResetField(name string) error {
 		return nil
 	case gooduser.FieldName:
 		m.ResetName()
-		return nil
-	case gooduser.FieldPoolCoinTypeID:
-		m.ResetPoolCoinTypeID()
 		return nil
 	case gooduser.FieldReadPageLink:
 		m.ResetReadPageLink()
@@ -4999,28 +4999,25 @@ func (m *GoodUserMutation) ResetEdge(name string) error {
 // OrderUserMutation represents an operation that mutates the OrderUser nodes in the graph.
 type OrderUserMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint32
-	created_at      *uint32
-	addcreated_at   *int32
-	updated_at      *uint32
-	addupdated_at   *int32
-	deleted_at      *uint32
-	adddeleted_at   *int32
-	ent_id          *uuid.UUID
-	good_user_id    *uuid.UUID
-	user_id         *uuid.UUID
-	app_id          *uuid.UUID
-	name            *string
-	proportion      *decimal.Decimal
-	revenue_address *string
-	read_page_link  *string
-	auto_pay        *bool
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*OrderUser, error)
-	predicates      []predicate.OrderUser
+	op             Op
+	typ            string
+	id             *uint32
+	created_at     *uint32
+	addcreated_at  *int32
+	updated_at     *uint32
+	addupdated_at  *int32
+	deleted_at     *uint32
+	adddeleted_at  *int32
+	ent_id         *uuid.UUID
+	good_user_id   *uuid.UUID
+	user_id        *uuid.UUID
+	app_id         *uuid.UUID
+	name           *string
+	read_page_link *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*OrderUser, error)
+	predicates     []predicate.OrderUser
 }
 
 var _ ent.Mutation = (*OrderUserMutation)(nil)
@@ -5527,104 +5524,6 @@ func (m *OrderUserMutation) ResetName() {
 	delete(m.clearedFields, orderuser.FieldName)
 }
 
-// SetProportion sets the "proportion" field.
-func (m *OrderUserMutation) SetProportion(d decimal.Decimal) {
-	m.proportion = &d
-}
-
-// Proportion returns the value of the "proportion" field in the mutation.
-func (m *OrderUserMutation) Proportion() (r decimal.Decimal, exists bool) {
-	v := m.proportion
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProportion returns the old "proportion" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldProportion(ctx context.Context) (v decimal.Decimal, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProportion is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProportion requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProportion: %w", err)
-	}
-	return oldValue.Proportion, nil
-}
-
-// ClearProportion clears the value of the "proportion" field.
-func (m *OrderUserMutation) ClearProportion() {
-	m.proportion = nil
-	m.clearedFields[orderuser.FieldProportion] = struct{}{}
-}
-
-// ProportionCleared returns if the "proportion" field was cleared in this mutation.
-func (m *OrderUserMutation) ProportionCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldProportion]
-	return ok
-}
-
-// ResetProportion resets all changes to the "proportion" field.
-func (m *OrderUserMutation) ResetProportion() {
-	m.proportion = nil
-	delete(m.clearedFields, orderuser.FieldProportion)
-}
-
-// SetRevenueAddress sets the "revenue_address" field.
-func (m *OrderUserMutation) SetRevenueAddress(s string) {
-	m.revenue_address = &s
-}
-
-// RevenueAddress returns the value of the "revenue_address" field in the mutation.
-func (m *OrderUserMutation) RevenueAddress() (r string, exists bool) {
-	v := m.revenue_address
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRevenueAddress returns the old "revenue_address" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldRevenueAddress(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRevenueAddress is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRevenueAddress requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRevenueAddress: %w", err)
-	}
-	return oldValue.RevenueAddress, nil
-}
-
-// ClearRevenueAddress clears the value of the "revenue_address" field.
-func (m *OrderUserMutation) ClearRevenueAddress() {
-	m.revenue_address = nil
-	m.clearedFields[orderuser.FieldRevenueAddress] = struct{}{}
-}
-
-// RevenueAddressCleared returns if the "revenue_address" field was cleared in this mutation.
-func (m *OrderUserMutation) RevenueAddressCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldRevenueAddress]
-	return ok
-}
-
-// ResetRevenueAddress resets all changes to the "revenue_address" field.
-func (m *OrderUserMutation) ResetRevenueAddress() {
-	m.revenue_address = nil
-	delete(m.clearedFields, orderuser.FieldRevenueAddress)
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (m *OrderUserMutation) SetReadPageLink(s string) {
 	m.read_page_link = &s
@@ -5674,55 +5573,6 @@ func (m *OrderUserMutation) ResetReadPageLink() {
 	delete(m.clearedFields, orderuser.FieldReadPageLink)
 }
 
-// SetAutoPay sets the "auto_pay" field.
-func (m *OrderUserMutation) SetAutoPay(b bool) {
-	m.auto_pay = &b
-}
-
-// AutoPay returns the value of the "auto_pay" field in the mutation.
-func (m *OrderUserMutation) AutoPay() (r bool, exists bool) {
-	v := m.auto_pay
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAutoPay returns the old "auto_pay" field's value of the OrderUser entity.
-// If the OrderUser object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OrderUserMutation) OldAutoPay(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAutoPay is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAutoPay requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAutoPay: %w", err)
-	}
-	return oldValue.AutoPay, nil
-}
-
-// ClearAutoPay clears the value of the "auto_pay" field.
-func (m *OrderUserMutation) ClearAutoPay() {
-	m.auto_pay = nil
-	m.clearedFields[orderuser.FieldAutoPay] = struct{}{}
-}
-
-// AutoPayCleared returns if the "auto_pay" field was cleared in this mutation.
-func (m *OrderUserMutation) AutoPayCleared() bool {
-	_, ok := m.clearedFields[orderuser.FieldAutoPay]
-	return ok
-}
-
-// ResetAutoPay resets all changes to the "auto_pay" field.
-func (m *OrderUserMutation) ResetAutoPay() {
-	m.auto_pay = nil
-	delete(m.clearedFields, orderuser.FieldAutoPay)
-}
-
 // Where appends a list predicates to the OrderUserMutation builder.
 func (m *OrderUserMutation) Where(ps ...predicate.OrderUser) {
 	m.predicates = append(m.predicates, ps...)
@@ -5742,7 +5592,7 @@ func (m *OrderUserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *OrderUserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, orderuser.FieldCreatedAt)
 	}
@@ -5767,17 +5617,8 @@ func (m *OrderUserMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, orderuser.FieldName)
 	}
-	if m.proportion != nil {
-		fields = append(fields, orderuser.FieldProportion)
-	}
-	if m.revenue_address != nil {
-		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
 	if m.read_page_link != nil {
 		fields = append(fields, orderuser.FieldReadPageLink)
-	}
-	if m.auto_pay != nil {
-		fields = append(fields, orderuser.FieldAutoPay)
 	}
 	return fields
 }
@@ -5803,14 +5644,8 @@ func (m *OrderUserMutation) Field(name string) (ent.Value, bool) {
 		return m.AppID()
 	case orderuser.FieldName:
 		return m.Name()
-	case orderuser.FieldProportion:
-		return m.Proportion()
-	case orderuser.FieldRevenueAddress:
-		return m.RevenueAddress()
 	case orderuser.FieldReadPageLink:
 		return m.ReadPageLink()
-	case orderuser.FieldAutoPay:
-		return m.AutoPay()
 	}
 	return nil, false
 }
@@ -5836,14 +5671,8 @@ func (m *OrderUserMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldAppID(ctx)
 	case orderuser.FieldName:
 		return m.OldName(ctx)
-	case orderuser.FieldProportion:
-		return m.OldProportion(ctx)
-	case orderuser.FieldRevenueAddress:
-		return m.OldRevenueAddress(ctx)
 	case orderuser.FieldReadPageLink:
 		return m.OldReadPageLink(ctx)
-	case orderuser.FieldAutoPay:
-		return m.OldAutoPay(ctx)
 	}
 	return nil, fmt.Errorf("unknown OrderUser field %s", name)
 }
@@ -5909,33 +5738,12 @@ func (m *OrderUserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case orderuser.FieldProportion:
-		v, ok := value.(decimal.Decimal)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProportion(v)
-		return nil
-	case orderuser.FieldRevenueAddress:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRevenueAddress(v)
-		return nil
 	case orderuser.FieldReadPageLink:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetReadPageLink(v)
-		return nil
-	case orderuser.FieldAutoPay:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAutoPay(v)
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser field %s", name)
@@ -6018,17 +5826,8 @@ func (m *OrderUserMutation) ClearedFields() []string {
 	if m.FieldCleared(orderuser.FieldName) {
 		fields = append(fields, orderuser.FieldName)
 	}
-	if m.FieldCleared(orderuser.FieldProportion) {
-		fields = append(fields, orderuser.FieldProportion)
-	}
-	if m.FieldCleared(orderuser.FieldRevenueAddress) {
-		fields = append(fields, orderuser.FieldRevenueAddress)
-	}
 	if m.FieldCleared(orderuser.FieldReadPageLink) {
 		fields = append(fields, orderuser.FieldReadPageLink)
-	}
-	if m.FieldCleared(orderuser.FieldAutoPay) {
-		fields = append(fields, orderuser.FieldAutoPay)
 	}
 	return fields
 }
@@ -6056,17 +5855,8 @@ func (m *OrderUserMutation) ClearField(name string) error {
 	case orderuser.FieldName:
 		m.ClearName()
 		return nil
-	case orderuser.FieldProportion:
-		m.ClearProportion()
-		return nil
-	case orderuser.FieldRevenueAddress:
-		m.ClearRevenueAddress()
-		return nil
 	case orderuser.FieldReadPageLink:
 		m.ClearReadPageLink()
-		return nil
-	case orderuser.FieldAutoPay:
-		m.ClearAutoPay()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser nullable field %s", name)
@@ -6100,17 +5890,8 @@ func (m *OrderUserMutation) ResetField(name string) error {
 	case orderuser.FieldName:
 		m.ResetName()
 		return nil
-	case orderuser.FieldProportion:
-		m.ResetProportion()
-		return nil
-	case orderuser.FieldRevenueAddress:
-		m.ResetRevenueAddress()
-		return nil
 	case orderuser.FieldReadPageLink:
 		m.ResetReadPageLink()
-		return nil
-	case orderuser.FieldAutoPay:
-		m.ResetAutoPay()
 		return nil
 	}
 	return fmt.Errorf("unknown OrderUser field %s", name)
@@ -6167,25 +5948,25 @@ func (m *OrderUserMutation) ResetEdge(name string) error {
 // PoolMutation represents an operation that mutates the Pool nodes in the graph.
 type PoolMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *uint32
-	created_at      *uint32
-	addcreated_at   *int32
-	updated_at      *uint32
-	addupdated_at   *int32
-	deleted_at      *uint32
-	adddeleted_at   *int32
-	ent_id          *uuid.UUID
-	miningpool_type *string
-	name            *string
-	site            *string
-	logo            *string
-	description     *string
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*Pool, error)
-	predicates      []predicate.Pool
+	op               Op
+	typ              string
+	id               *uint32
+	created_at       *uint32
+	addcreated_at    *int32
+	updated_at       *uint32
+	addupdated_at    *int32
+	deleted_at       *uint32
+	adddeleted_at    *int32
+	ent_id           *uuid.UUID
+	mining_pool_type *string
+	name             *string
+	site             *string
+	logo             *string
+	description      *string
+	clearedFields    map[string]struct{}
+	done             bool
+	oldValue         func(context.Context) (*Pool, error)
+	predicates       []predicate.Pool
 }
 
 var _ ent.Mutation = (*PoolMutation)(nil)
@@ -6496,53 +6277,53 @@ func (m *PoolMutation) ResetEntID() {
 	m.ent_id = nil
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (m *PoolMutation) SetMiningpoolType(s string) {
-	m.miningpool_type = &s
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (m *PoolMutation) SetMiningPoolType(s string) {
+	m.mining_pool_type = &s
 }
 
-// MiningpoolType returns the value of the "miningpool_type" field in the mutation.
-func (m *PoolMutation) MiningpoolType() (r string, exists bool) {
-	v := m.miningpool_type
+// MiningPoolType returns the value of the "mining_pool_type" field in the mutation.
+func (m *PoolMutation) MiningPoolType() (r string, exists bool) {
+	v := m.mining_pool_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldMiningpoolType returns the old "miningpool_type" field's value of the Pool entity.
+// OldMiningPoolType returns the old "mining_pool_type" field's value of the Pool entity.
 // If the Pool object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PoolMutation) OldMiningpoolType(ctx context.Context) (v string, err error) {
+func (m *PoolMutation) OldMiningPoolType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMiningpoolType is only allowed on UpdateOne operations")
+		return v, errors.New("OldMiningPoolType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMiningpoolType requires an ID field in the mutation")
+		return v, errors.New("OldMiningPoolType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMiningpoolType: %w", err)
+		return v, fmt.Errorf("querying old value for OldMiningPoolType: %w", err)
 	}
-	return oldValue.MiningpoolType, nil
+	return oldValue.MiningPoolType, nil
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (m *PoolMutation) ClearMiningpoolType() {
-	m.miningpool_type = nil
-	m.clearedFields[pool.FieldMiningpoolType] = struct{}{}
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (m *PoolMutation) ClearMiningPoolType() {
+	m.mining_pool_type = nil
+	m.clearedFields[pool.FieldMiningPoolType] = struct{}{}
 }
 
-// MiningpoolTypeCleared returns if the "miningpool_type" field was cleared in this mutation.
-func (m *PoolMutation) MiningpoolTypeCleared() bool {
-	_, ok := m.clearedFields[pool.FieldMiningpoolType]
+// MiningPoolTypeCleared returns if the "mining_pool_type" field was cleared in this mutation.
+func (m *PoolMutation) MiningPoolTypeCleared() bool {
+	_, ok := m.clearedFields[pool.FieldMiningPoolType]
 	return ok
 }
 
-// ResetMiningpoolType resets all changes to the "miningpool_type" field.
-func (m *PoolMutation) ResetMiningpoolType() {
-	m.miningpool_type = nil
-	delete(m.clearedFields, pool.FieldMiningpoolType)
+// ResetMiningPoolType resets all changes to the "mining_pool_type" field.
+func (m *PoolMutation) ResetMiningPoolType() {
+	m.mining_pool_type = nil
+	delete(m.clearedFields, pool.FieldMiningPoolType)
 }
 
 // SetName sets the "name" field.
@@ -6773,8 +6554,8 @@ func (m *PoolMutation) Fields() []string {
 	if m.ent_id != nil {
 		fields = append(fields, pool.FieldEntID)
 	}
-	if m.miningpool_type != nil {
-		fields = append(fields, pool.FieldMiningpoolType)
+	if m.mining_pool_type != nil {
+		fields = append(fields, pool.FieldMiningPoolType)
 	}
 	if m.name != nil {
 		fields = append(fields, pool.FieldName)
@@ -6804,8 +6585,8 @@ func (m *PoolMutation) Field(name string) (ent.Value, bool) {
 		return m.DeletedAt()
 	case pool.FieldEntID:
 		return m.EntID()
-	case pool.FieldMiningpoolType:
-		return m.MiningpoolType()
+	case pool.FieldMiningPoolType:
+		return m.MiningPoolType()
 	case pool.FieldName:
 		return m.Name()
 	case pool.FieldSite:
@@ -6831,8 +6612,8 @@ func (m *PoolMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldDeletedAt(ctx)
 	case pool.FieldEntID:
 		return m.OldEntID(ctx)
-	case pool.FieldMiningpoolType:
-		return m.OldMiningpoolType(ctx)
+	case pool.FieldMiningPoolType:
+		return m.OldMiningPoolType(ctx)
 	case pool.FieldName:
 		return m.OldName(ctx)
 	case pool.FieldSite:
@@ -6878,12 +6659,12 @@ func (m *PoolMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEntID(v)
 		return nil
-	case pool.FieldMiningpoolType:
+	case pool.FieldMiningPoolType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetMiningpoolType(v)
+		m.SetMiningPoolType(v)
 		return nil
 	case pool.FieldName:
 		v, ok := value.(string)
@@ -6982,8 +6763,8 @@ func (m *PoolMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PoolMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(pool.FieldMiningpoolType) {
-		fields = append(fields, pool.FieldMiningpoolType)
+	if m.FieldCleared(pool.FieldMiningPoolType) {
+		fields = append(fields, pool.FieldMiningPoolType)
 	}
 	if m.FieldCleared(pool.FieldName) {
 		fields = append(fields, pool.FieldName)
@@ -7011,8 +6792,8 @@ func (m *PoolMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PoolMutation) ClearField(name string) error {
 	switch name {
-	case pool.FieldMiningpoolType:
-		m.ClearMiningpoolType()
+	case pool.FieldMiningPoolType:
+		m.ClearMiningPoolType()
 		return nil
 	case pool.FieldName:
 		m.ClearName()
@@ -7046,8 +6827,8 @@ func (m *PoolMutation) ResetField(name string) error {
 	case pool.FieldEntID:
 		m.ResetEntID()
 		return nil
-	case pool.FieldMiningpoolType:
-		m.ResetMiningpoolType()
+	case pool.FieldMiningPoolType:
+		m.ResetMiningPoolType()
 		return nil
 	case pool.FieldName:
 		m.ResetName()

@@ -35,28 +35,28 @@ func (f CoinFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return f(ctx, mv)
 }
 
-// The FractionFunc type is an adapter to allow the use of ordinary
-// function as Fraction mutator.
-type FractionFunc func(context.Context, *ent.FractionMutation) (ent.Value, error)
+// The FractionWithdrawalFunc type is an adapter to allow the use of ordinary
+// function as FractionWithdrawal mutator.
+type FractionWithdrawalFunc func(context.Context, *ent.FractionWithdrawalMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f FractionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.FractionMutation)
+func (f FractionWithdrawalFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FractionWithdrawalMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FractionMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FractionWithdrawalMutation", m)
 	}
 	return f(ctx, mv)
 }
 
-// The FractionRuleFunc type is an adapter to allow the use of ordinary
-// function as FractionRule mutator.
-type FractionRuleFunc func(context.Context, *ent.FractionRuleMutation) (ent.Value, error)
+// The FractionWithdrawalRuleFunc type is an adapter to allow the use of ordinary
+// function as FractionWithdrawalRule mutator.
+type FractionWithdrawalRuleFunc func(context.Context, *ent.FractionWithdrawalRuleMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f FractionRuleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	mv, ok := m.(*ent.FractionRuleMutation)
+func (f FractionWithdrawalRuleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.FractionWithdrawalRuleMutation)
 	if !ok {
-		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FractionRuleMutation", m)
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FractionWithdrawalRuleMutation", m)
 	}
 	return f(ctx, mv)
 }

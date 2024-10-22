@@ -6,13 +6,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondMiningpoolType *basetypes.MiningpoolType
+	BondMiningPoolType *basetypes.MiningPoolType
 	bondVals           map[string]string
 	baseVals           map[string]string
 	idVals             map[string]string
@@ -32,62 +33,62 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldEntID] = string(strBytes)
 	}
-	if h.MiningpoolType != nil {
-		strBytes, err := json.Marshal(h.MiningpoolType.String())
+	if h.MiningPoolType != nil {
+		strBytes, err := json.Marshal(h.MiningPoolType.String())
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
-		h.baseVals[pool.FieldMiningpoolType] = string(strBytes)
-		h.BondMiningpoolType = h.MiningpoolType
+		h.baseVals[pool.FieldMiningPoolType] = string(strBytes)
+		h.BondMiningPoolType = h.MiningPoolType
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldName] = string(strBytes)
 	}
 	if h.Site != nil {
 		strBytes, err := json.Marshal(*h.Site)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldSite] = string(strBytes)
 	}
 	if h.Logo != nil {
 		strBytes, err := json.Marshal(*h.Logo)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldLogo] = string(strBytes)
 	}
 	if h.Description != nil {
 		strBytes, err := json.Marshal(*h.Description)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[pool.FieldDescription] = string(strBytes)
 	}
 
-	if h.BondMiningpoolType == nil {
-		return fmt.Errorf("please give miningpooltype")
+	if h.BondMiningPoolType == nil {
+		return wlog.Errorf("please give miningpooltype")
 	}
-	strBytes, err := json.Marshal(h.BondMiningpoolType.String())
+	strBytes, err := json.Marshal(h.BondMiningPoolType.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
-	h.bondVals[pool.FieldMiningpoolType] = string(strBytes)
+	h.bondVals[pool.FieldMiningPoolType] = string(strBytes)
 	return nil
 }
 
@@ -95,14 +96,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[pool.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[pool.FieldEntID] = string(strBytes)
 	}
@@ -113,7 +114,7 @@ func (h *sqlHandler) idKeys() error {
 func (h *sqlHandler) genCreateSQL() (string, error) {
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, pool.FieldID)
 
@@ -151,13 +152,13 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, pool.FieldID)
 	delete(h.baseVals, pool.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -170,10 +171,10 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 
 	err = h.idKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

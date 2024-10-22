@@ -7,8 +7,8 @@ import (
 
 	apppool "github.com/NpoolPlatform/miningpool-middleware/api/app/pool"
 	coin "github.com/NpoolPlatform/miningpool-middleware/api/coin"
-	fraction "github.com/NpoolPlatform/miningpool-middleware/api/fraction"
-	fractionrule "github.com/NpoolPlatform/miningpool-middleware/api/fractionrule"
+	fractionwithdrawal "github.com/NpoolPlatform/miningpool-middleware/api/fractionwithdrawal"
+	fractionwithdrawalrule "github.com/NpoolPlatform/miningpool-middleware/api/fractionwithdrawalrule"
 	gooduser "github.com/NpoolPlatform/miningpool-middleware/api/gooduser"
 	orderuser "github.com/NpoolPlatform/miningpool-middleware/api/orderuser"
 	pool "github.com/NpoolPlatform/miningpool-middleware/api/pool"
@@ -27,8 +27,8 @@ func Register(server grpc.ServiceRegistrar) {
 	pool.Register(server)
 	coin.Register(server)
 	rootuser.Register(server)
-	fractionrule.Register(server)
-	fraction.Register(server)
+	fractionwithdrawalrule.Register(server)
+	fractionwithdrawal.Register(server)
 	gooduser.Register(server)
 	orderuser.Register(server)
 	apppool.Register(server)
@@ -41,7 +41,7 @@ func RegisterGateway(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOpt
 	if err := pool.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
-	if err := fraction.RegisterGateway(mux, endpoint, opts); err != nil {
+	if err := fractionwithdrawal.RegisterGateway(mux, endpoint, opts); err != nil {
 		return err
 	}
 	if err := orderuser.RegisterGateway(mux, endpoint, opts); err != nil {

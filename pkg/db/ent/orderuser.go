@@ -9,7 +9,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 // OrderUser is the model entity for the OrderUser schema.
@@ -33,14 +32,8 @@ type OrderUser struct {
 	AppID uuid.UUID `json:"app_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Proportion holds the value of the "proportion" field.
-	Proportion decimal.Decimal `json:"proportion,omitempty"`
-	// RevenueAddress holds the value of the "revenue_address" field.
-	RevenueAddress string `json:"revenue_address,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
-	// AutoPay holds the value of the "auto_pay" field.
-	AutoPay bool `json:"auto_pay,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -48,13 +41,9 @@ func (*OrderUser) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case orderuser.FieldProportion:
-			values[i] = new(decimal.Decimal)
-		case orderuser.FieldAutoPay:
-			values[i] = new(sql.NullBool)
 		case orderuser.FieldID, orderuser.FieldCreatedAt, orderuser.FieldUpdatedAt, orderuser.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case orderuser.FieldName, orderuser.FieldRevenueAddress, orderuser.FieldReadPageLink:
+		case orderuser.FieldName, orderuser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
 		case orderuser.FieldEntID, orderuser.FieldGoodUserID, orderuser.FieldUserID, orderuser.FieldAppID:
 			values[i] = new(uuid.UUID)
@@ -127,29 +116,11 @@ func (ou *OrderUser) assignValues(columns []string, values []interface{}) error 
 			} else if value.Valid {
 				ou.Name = value.String
 			}
-		case orderuser.FieldProportion:
-			if value, ok := values[i].(*decimal.Decimal); !ok {
-				return fmt.Errorf("unexpected type %T for field proportion", values[i])
-			} else if value != nil {
-				ou.Proportion = *value
-			}
-		case orderuser.FieldRevenueAddress:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_address", values[i])
-			} else if value.Valid {
-				ou.RevenueAddress = value.String
-			}
 		case orderuser.FieldReadPageLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field read_page_link", values[i])
 			} else if value.Valid {
 				ou.ReadPageLink = value.String
-			}
-		case orderuser.FieldAutoPay:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field auto_pay", values[i])
-			} else if value.Valid {
-				ou.AutoPay = value.Bool
 			}
 		}
 	}
@@ -203,17 +174,8 @@ func (ou *OrderUser) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(ou.Name)
 	builder.WriteString(", ")
-	builder.WriteString("proportion=")
-	builder.WriteString(fmt.Sprintf("%v", ou.Proportion))
-	builder.WriteString(", ")
-	builder.WriteString("revenue_address=")
-	builder.WriteString(ou.RevenueAddress)
-	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(ou.ReadPageLink)
-	builder.WriteString(", ")
-	builder.WriteString("auto_pay=")
-	builder.WriteString(fmt.Sprintf("%v", ou.AutoPay))
 	builder.WriteByte(')')
 	return builder.String()
 }

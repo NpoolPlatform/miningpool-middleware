@@ -7,12 +7,14 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 
+	coinmwpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	apppoolclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/app/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -36,8 +38,7 @@ var ret = &npool.OrderUser{
 	GoodUserID:     goodUserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var req = &npool.OrderUserReq{
@@ -48,7 +49,17 @@ var req = &npool.OrderUserReq{
 }
 
 func createOrderUser(t *testing.T) {
-	err := apppoolclient.CreatePool(context.Background(), &pool.PoolReq{
+	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmwpb.Conds{
+		PoolID: &basetypes.StringVal{Op: cruder.EQ, Value: goodUserRet.PoolID},
+	}, 0, 1)
+	assert.Nil(t, err)
+	if !assert.NotEqual(t, 0, len(coinInfos)) {
+		return
+	}
+
+	req.CoinTypeID = &coinInfos[0].CoinTypeID
+
+	err = apppoolclient.CreatePool(context.Background(), &pool.PoolReq{
 		AppID:  &ret.AppID,
 		PoolID: &goodUserRet.PoolID,
 	})
@@ -62,15 +73,14 @@ func createOrderUser(t *testing.T) {
 		ret.CreatedAt = info.CreatedAt
 		ret.Name = info.Name
 		ret.ReadPageLink = info.ReadPageLink
-		ret.AutoPay = info.AutoPay
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueTypeStr = info.RevenueTypeStr
-		ret.RevenueType = info.RevenueType
+		ret.PoolID = info.PoolID
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
+		ret.MiningPoolName = info.MiningPoolName
+		ret.MiningPoolSite = info.MiningPoolSite
+		ret.MiningPoolLogo = info.MiningPoolLogo
 		ret.RootUserID = info.RootUserID
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
-		ret.Proportion = info.Proportion
 		ret.EntID = info.EntID
 		assert.Equal(t, ret, info)
 	}
@@ -81,8 +91,8 @@ func updateOrderUser(t *testing.T) {
 	dec, err := decimal.NewFromString("50.1")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.String()
-	req.Proportion = &ret.Proportion
+	proportion := dec.String()
+	req.Proportion = &proportion
 	err = UpdateOrderUser(context.Background(), req)
 	assert.Nil(t, err)
 
@@ -95,12 +105,13 @@ func updateOrderUser(t *testing.T) {
 	dec, err = decimal.NewFromString("99")
 	assert.Nil(t, err)
 
-	ret.Proportion = dec.String()
-	req.Proportion = &ret.Proportion
+	proportion = dec.String()
+	req.Proportion = &proportion
 	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
 		ID:         req.ID,
 		EntID:      &ret.EntID,
-		Proportion: &ret.Proportion,
+		Proportion: req.Proportion,
+		CoinTypeID: req.CoinTypeID,
 	})
 	assert.Nil(t, err)
 	info, err = GetOrderUser(context.Background(), *req.EntID)
@@ -108,46 +119,6 @@ func updateOrderUser(t *testing.T) {
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, info, ret)
 	}
-
-	ret.RevenueAddress = "1PWMfNSb3auXwZ1qhu96WRJL7BCgG4mGB4"
-	req.RevenueAddress = &ret.RevenueAddress
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:             req.ID,
-		EntID:          &ret.EntID,
-		RevenueAddress: &ret.RevenueAddress,
-	})
-	assert.Nil(t, err)
-
-	info, err = GetOrderUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		ret.AutoPay = info.AutoPay
-		assert.Equal(t, info, ret)
-	}
-
-	ret.AutoPay = true
-	req.AutoPay = &ret.AutoPay
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:      req.ID,
-		EntID:   &ret.EntID,
-		AutoPay: &ret.AutoPay,
-	})
-	assert.Nil(t, err)
-
-	info, err = GetOrderUser(context.Background(), *req.EntID)
-	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
-	}
-
-	ret.AutoPay = false
-	req.AutoPay = &ret.AutoPay
-	err = UpdateOrderUser(context.Background(), &npool.OrderUserReq{
-		ID:      req.ID,
-		EntID:   &ret.EntID,
-		AutoPay: &ret.AutoPay,
-	})
-	assert.Nil(t, err)
 
 	info, err = GetOrderUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
@@ -204,7 +175,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("createOrderUser", createOrderUser)
@@ -214,5 +185,5 @@ func TestClient(t *testing.T) {
 	t.Run("deleteOrderUser", deleteOrderUser)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

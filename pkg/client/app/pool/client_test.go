@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"github.com/stretchr/testify/assert"
@@ -111,10 +111,10 @@ func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createPool", createPool)
 	t.Run("getPool", getPool)
 	t.Run("getPools", getPools)
 	t.Run("deletePool", deletePool)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

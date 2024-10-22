@@ -18,10 +18,10 @@ type Tx struct {
 	AppPool *AppPoolClient
 	// Coin is the client for interacting with the Coin builders.
 	Coin *CoinClient
-	// Fraction is the client for interacting with the Fraction builders.
-	Fraction *FractionClient
-	// FractionRule is the client for interacting with the FractionRule builders.
-	FractionRule *FractionRuleClient
+	// FractionWithdrawal is the client for interacting with the FractionWithdrawal builders.
+	FractionWithdrawal *FractionWithdrawalClient
+	// FractionWithdrawalRule is the client for interacting with the FractionWithdrawalRule builders.
+	FractionWithdrawalRule *FractionWithdrawalRuleClient
 	// GoodUser is the client for interacting with the GoodUser builders.
 	GoodUser *GoodUserClient
 	// OrderUser is the client for interacting with the OrderUser builders.
@@ -167,8 +167,8 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.AppPool = NewAppPoolClient(tx.config)
 	tx.Coin = NewCoinClient(tx.config)
-	tx.Fraction = NewFractionClient(tx.config)
-	tx.FractionRule = NewFractionRuleClient(tx.config)
+	tx.FractionWithdrawal = NewFractionWithdrawalClient(tx.config)
+	tx.FractionWithdrawalRule = NewFractionWithdrawalRuleClient(tx.config)
 	tx.GoodUser = NewGoodUserClient(tx.config)
 	tx.OrderUser = NewOrderUserClient(tx.config)
 	tx.Pool = NewPoolClient(tx.config)

@@ -23,7 +23,7 @@ func (s *Server) ExistGoodUser(ctx context.Context, in *npool.ExistGoodUserReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistGoodUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistGoodUser(ctx context.Context, in *npool.ExistGoodUserReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistGoodUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistGoodUserResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistGoodUserConds(ctx context.Context, in *npool.ExistGoodUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistGoodUserCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistGoodUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistGoodUserConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistGoodUserConds(ctx context.Context, in *npool.ExistGoodUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistGoodUserCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistGoodUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistGoodUserCondsResponse{

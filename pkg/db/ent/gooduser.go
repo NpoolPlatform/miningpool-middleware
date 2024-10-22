@@ -28,8 +28,6 @@ type GoodUser struct {
 	RootUserID uuid.UUID `json:"root_user_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// PoolCoinTypeID holds the value of the "pool_coin_type_id" field.
-	PoolCoinTypeID uuid.UUID `json:"pool_coin_type_id,omitempty"`
 	// ReadPageLink holds the value of the "read_page_link" field.
 	ReadPageLink string `json:"read_page_link,omitempty"`
 }
@@ -43,7 +41,7 @@ func (*GoodUser) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case gooduser.FieldName, gooduser.FieldReadPageLink:
 			values[i] = new(sql.NullString)
-		case gooduser.FieldEntID, gooduser.FieldRootUserID, gooduser.FieldPoolCoinTypeID:
+		case gooduser.FieldEntID, gooduser.FieldRootUserID:
 			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type GoodUser", columns[i])
@@ -102,12 +100,6 @@ func (gu *GoodUser) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				gu.Name = value.String
 			}
-		case gooduser.FieldPoolCoinTypeID:
-			if value, ok := values[i].(*uuid.UUID); !ok {
-				return fmt.Errorf("unexpected type %T for field pool_coin_type_id", values[i])
-			} else if value != nil {
-				gu.PoolCoinTypeID = *value
-			}
 		case gooduser.FieldReadPageLink:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field read_page_link", values[i])
@@ -159,9 +151,6 @@ func (gu *GoodUser) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(gu.Name)
-	builder.WriteString(", ")
-	builder.WriteString("pool_coin_type_id=")
-	builder.WriteString(fmt.Sprintf("%v", gu.PoolCoinTypeID))
 	builder.WriteString(", ")
 	builder.WriteString("read_page_link=")
 	builder.WriteString(gu.ReadPageLink)

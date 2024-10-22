@@ -129,13 +129,6 @@ func CoinType(v string) predicate.Coin {
 	})
 }
 
-// RevenueType applies equality check predicate on the "revenue_type" field. It's identical to RevenueTypeEQ.
-func RevenueType(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
-	})
-}
-
 // FeeRatio applies equality check predicate on the "fee_ratio" field. It's identical to FeeRatioEQ.
 func FeeRatio(v decimal.Decimal) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
@@ -693,119 +686,6 @@ func CoinTypeEqualFold(v string) predicate.Coin {
 func CoinTypeContainsFold(v string) predicate.Coin {
 	return predicate.Coin(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldCoinType), v))
-	})
-}
-
-// RevenueTypeEQ applies the EQ predicate on the "revenue_type" field.
-func RevenueTypeEQ(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeNEQ applies the NEQ predicate on the "revenue_type" field.
-func RevenueTypeNEQ(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeIn applies the In predicate on the "revenue_type" field.
-func RevenueTypeIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeNotIn applies the NotIn predicate on the "revenue_type" field.
-func RevenueTypeNotIn(vs ...string) predicate.Coin {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRevenueType), v...))
-	})
-}
-
-// RevenueTypeGT applies the GT predicate on the "revenue_type" field.
-func RevenueTypeGT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeGTE applies the GTE predicate on the "revenue_type" field.
-func RevenueTypeGTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLT applies the LT predicate on the "revenue_type" field.
-func RevenueTypeLT(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeLTE applies the LTE predicate on the "revenue_type" field.
-func RevenueTypeLTE(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContains applies the Contains predicate on the "revenue_type" field.
-func RevenueTypeContains(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasPrefix applies the HasPrefix predicate on the "revenue_type" field.
-func RevenueTypeHasPrefix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeHasSuffix applies the HasSuffix predicate on the "revenue_type" field.
-func RevenueTypeHasSuffix(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeIsNil applies the IsNil predicate on the "revenue_type" field.
-func RevenueTypeIsNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueType)))
-	})
-}
-
-// RevenueTypeNotNil applies the NotNil predicate on the "revenue_type" field.
-func RevenueTypeNotNil() predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueType)))
-	})
-}
-
-// RevenueTypeEqualFold applies the EqualFold predicate on the "revenue_type" field.
-func RevenueTypeEqualFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldRevenueType), v))
-	})
-}
-
-// RevenueTypeContainsFold applies the ContainsFold predicate on the "revenue_type" field.
-func RevenueTypeContainsFold(v string) predicate.Coin {
-	return predicate.Coin(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldRevenueType), v))
 	})
 }
 

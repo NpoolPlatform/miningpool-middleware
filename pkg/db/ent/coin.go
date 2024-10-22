@@ -31,8 +31,6 @@ type Coin struct {
 	CoinTypeID uuid.UUID `json:"coin_type_id,omitempty"`
 	// CoinType holds the value of the "coin_type" field.
 	CoinType string `json:"coin_type,omitempty"`
-	// RevenueType holds the value of the "revenue_type" field.
-	RevenueType string `json:"revenue_type,omitempty"`
 	// FeeRatio holds the value of the "fee_ratio" field.
 	FeeRatio decimal.Decimal `json:"fee_ratio,omitempty"`
 	// FixedRevenueAble holds the value of the "fixed_revenue_able" field.
@@ -56,7 +54,7 @@ func (*Coin) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullBool)
 		case coin.FieldID, coin.FieldCreatedAt, coin.FieldUpdatedAt, coin.FieldDeletedAt, coin.FieldBenefitIntervalSeconds:
 			values[i] = new(sql.NullInt64)
-		case coin.FieldCoinType, coin.FieldRevenueType, coin.FieldRemark:
+		case coin.FieldCoinType, coin.FieldRemark:
 			values[i] = new(sql.NullString)
 		case coin.FieldEntID, coin.FieldPoolID, coin.FieldCoinTypeID:
 			values[i] = new(uuid.UUID)
@@ -122,12 +120,6 @@ func (c *Coin) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field coin_type", values[i])
 			} else if value.Valid {
 				c.CoinType = value.String
-			}
-		case coin.FieldRevenueType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field revenue_type", values[i])
-			} else if value.Valid {
-				c.RevenueType = value.String
 			}
 		case coin.FieldFeeRatio:
 			if value, ok := values[i].(*decimal.Decimal); !ok {
@@ -207,9 +199,6 @@ func (c *Coin) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("coin_type=")
 	builder.WriteString(c.CoinType)
-	builder.WriteString(", ")
-	builder.WriteString("revenue_type=")
-	builder.WriteString(c.RevenueType)
 	builder.WriteString(", ")
 	builder.WriteString("fee_ratio=")
 	builder.WriteString(fmt.Sprintf("%v", c.FeeRatio))

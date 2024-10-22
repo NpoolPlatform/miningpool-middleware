@@ -198,52 +198,52 @@ func (f CoinMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) 
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CoinMutation", m)
 }
 
-// The FractionQueryRuleFunc type is an adapter to allow the use of ordinary
+// The FractionWithdrawalQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type FractionQueryRuleFunc func(context.Context, *ent.FractionQuery) error
+type FractionWithdrawalQueryRuleFunc func(context.Context, *ent.FractionWithdrawalQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f FractionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.FractionQuery); ok {
+func (f FractionWithdrawalQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FractionWithdrawalQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FractionQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FractionWithdrawalQuery", q)
 }
 
-// The FractionMutationRuleFunc type is an adapter to allow the use of ordinary
+// The FractionWithdrawalMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type FractionMutationRuleFunc func(context.Context, *ent.FractionMutation) error
+type FractionWithdrawalMutationRuleFunc func(context.Context, *ent.FractionWithdrawalMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f FractionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.FractionMutation); ok {
+func (f FractionWithdrawalMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.FractionWithdrawalMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FractionMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FractionWithdrawalMutation", m)
 }
 
-// The FractionRuleQueryRuleFunc type is an adapter to allow the use of ordinary
+// The FractionWithdrawalRuleQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type FractionRuleQueryRuleFunc func(context.Context, *ent.FractionRuleQuery) error
+type FractionWithdrawalRuleQueryRuleFunc func(context.Context, *ent.FractionWithdrawalRuleQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f FractionRuleQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.FractionRuleQuery); ok {
+func (f FractionWithdrawalRuleQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.FractionWithdrawalRuleQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FractionRuleQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.FractionWithdrawalRuleQuery", q)
 }
 
-// The FractionRuleMutationRuleFunc type is an adapter to allow the use of ordinary
+// The FractionWithdrawalRuleMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type FractionRuleMutationRuleFunc func(context.Context, *ent.FractionRuleMutation) error
+type FractionWithdrawalRuleMutationRuleFunc func(context.Context, *ent.FractionWithdrawalRuleMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f FractionRuleMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.FractionRuleMutation); ok {
+func (f FractionWithdrawalRuleMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.FractionWithdrawalRuleMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FractionRuleMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.FractionWithdrawalRuleMutation", m)
 }
 
 // The GoodUserQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -381,9 +381,9 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.CoinQuery:
 		return q.Filter(), nil
-	case *ent.FractionQuery:
+	case *ent.FractionWithdrawalQuery:
 		return q.Filter(), nil
-	case *ent.FractionRuleQuery:
+	case *ent.FractionWithdrawalRuleQuery:
 		return q.Filter(), nil
 	case *ent.GoodUserQuery:
 		return q.Filter(), nil
@@ -404,9 +404,9 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.CoinMutation:
 		return m.Filter(), nil
-	case *ent.FractionMutation:
+	case *ent.FractionWithdrawalMutation:
 		return m.Filter(), nil
-	case *ent.FractionRuleMutation:
+	case *ent.FractionWithdrawalRuleMutation:
 		return m.Filter(), nil
 	case *ent.GoodUserMutation:
 		return m.Filter(), nil

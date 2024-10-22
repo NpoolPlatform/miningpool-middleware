@@ -33,12 +33,6 @@ func (GoodUser) Fields() []ent.Field {
 		field.
 			String("name").Optional().Default(""),
 		field.
-			UUID("pool_coin_type_id", uuid.UUID{}).
-			Optional().
-			Default(func() uuid.UUID {
-				return uuid.Nil
-			}),
-		field.
 			Text("read_page_link").Optional().Default(""),
 	}
 }

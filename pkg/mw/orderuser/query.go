@@ -2,20 +2,20 @@ package orderuser
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	orderuserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	orderusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/orderuser"
 )
@@ -35,10 +35,7 @@ func (h *queryHandler) selectOrderUser(stm *ent.OrderUserQuery) {
 		orderuserent.FieldGoodUserID,
 		orderuserent.FieldAppID,
 		orderuserent.FieldUserID,
-		orderuserent.FieldProportion,
-		orderuserent.FieldRevenueAddress,
 		orderuserent.FieldReadPageLink,
-		orderuserent.FieldAutoPay,
 		orderuserent.FieldCreatedAt,
 		orderuserent.FieldUpdatedAt,
 	)
@@ -46,7 +43,7 @@ func (h *queryHandler) selectOrderUser(stm *ent.OrderUserQuery) {
 
 func (h *queryHandler) queryOrderUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id or ent_id")
+		return wlog.Errorf("invalid id or ent_id")
 	}
 	stm := cli.OrderUser.Query().Where(orderuserent.DeletedAt(0))
 	if h.ID != nil {
@@ -62,17 +59,17 @@ func (h *queryHandler) queryOrderUser(cli *ent.Client) error {
 func (h *queryHandler) queryOrderUsers(ctx context.Context, cli *ent.Client) error {
 	stm, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	stmCount, err := orderusercrud.SetQueryConds(cli.OrderUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	stmCount.Modify(h.queryJoinCoinAndPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -86,7 +83,7 @@ func (h *queryHandler) queryJoin() {
 
 func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 	guT := sql.Table(gooduser.Table)
-	coinT := sql.Table(coin.Table)
+	ruT := sql.Table(rootuser.Table)
 	poolT := sql.Table(pool.Table)
 
 	s.Join(guT).On(
@@ -94,20 +91,22 @@ func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
 		guT.C(gooduser.FieldEntID),
 	).OnP(
 		sql.EQ(guT.C(gooduser.FieldDeletedAt), 0),
-	).Join(coinT).On(
-		guT.C(gooduser.FieldPoolCoinTypeID),
-		coinT.C(coin.FieldEntID),
+	).Join(ruT).On(
+		guT.C(gooduser.FieldRootUserID),
+		ruT.C(rootuser.FieldEntID),
 	).OnP(
-		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
+		sql.EQ(ruT.C(rootuser.FieldDeletedAt), 0),
 	).Join(poolT).On(
-		coinT.C(coin.FieldPoolID),
+		ruT.C(rootuser.FieldPoolID),
 		poolT.C(pool.FieldEntID),
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		coin.FieldCoinType,
-		coin.FieldRevenueType,
-		pool.FieldMiningpoolType,
+		pool.FieldMiningPoolType,
+		sql.As(poolT.C(pool.FieldName), "mining_pool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "mining_pool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "mining_pool_site"),
+		sql.As(poolT.C(pool.FieldEntID), "pool_id"),
 		gooduser.FieldRootUserID,
 	)
 }
@@ -118,16 +117,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.Proportion = func() string {
-			amount, err := decimal.NewFromString(info.Proportion)
-			if err != nil {
-				return decimal.Zero.String()
-			}
-			return amount.String()
-		}()
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 
@@ -138,7 +128,7 @@ func (h *Handler) GetOrderUser(ctx context.Context) (*npool.OrderUser, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryOrderUser(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -146,13 +136,13 @@ func (h *Handler) GetOrderUser(ctx context.Context) (*npool.OrderUser, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
 	if len(handler.infos) == 0 {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -166,7 +156,7 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryOrderUsers(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.
@@ -176,9 +166,80 @@ func (h *Handler) GetOrderUsers(ctx context.Context) ([]*npool.OrderUser, uint32
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	handler.formalize()
 	return handler.infos, handler.total, nil
+}
+
+func (h *Handler) GetOrderUserProportion(ctx context.Context) (string, error) {
+	info, err := h.GetOrderUser(ctx)
+	zeroStr := decimal.Zero.String()
+	if err != nil {
+		return zeroStr, wlog.WrapError(err)
+	}
+
+	if info == nil {
+		return zeroStr, wlog.Errorf("invalid entid")
+	}
+
+	handle := &baseInfoHandle{Handler: h}
+
+	err = handle.getBaseInfo(ctx)
+	if err != nil {
+		return zeroStr, wlog.WrapError(err)
+	}
+
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	if err != nil {
+		return zeroStr, wlog.WrapError(err)
+	}
+
+	proportion, err := mgr.GetRevenueProportion(ctx, handle.baseInfo.Distributor, handle.baseInfo.Recipient)
+	if err != nil {
+		return zeroStr, wlog.WrapError(err)
+	}
+
+	if proportion == nil {
+		return zeroStr, nil
+	}
+
+	return decimal.NewFromFloat(*proportion).String(), nil
+}
+
+func (h *Handler) GetOrderUserBalance(ctx context.Context) (*npool.BalanceInfo, error) {
+	info, err := h.GetOrderUser(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	if info == nil {
+		return nil, wlog.Errorf("invalid entid")
+	}
+
+	handle := &baseInfoHandle{Handler: h}
+
+	err = handle.getBaseInfo(ctx)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	mgr, err := pools.NewPoolManager(handle.baseInfo.MiningPoolType, &handle.baseInfo.CoinType, handle.baseInfo.AuthToken)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	assetsBalance, err := mgr.GetAssetsBalance(ctx, handle.baseInfo.Recipient)
+	if err != nil {
+		return nil, wlog.WrapError(err)
+	}
+
+	return &npool.BalanceInfo{
+		Balance:              decimal.NewFromFloat(assetsBalance.Balance).String(),
+		Paid:                 decimal.NewFromFloat(assetsBalance.Paid).String(),
+		TotalIncome:          decimal.NewFromFloat(assetsBalance.TotalIncome).String(),
+		YesterdayIncome:      decimal.NewFromFloat(assetsBalance.YesterdayIncome).String(),
+		EstimatedTodayIncome: decimal.NewFromFloat(assetsBalance.EstimatedTodayIncome).String(),
+	}, nil
 }

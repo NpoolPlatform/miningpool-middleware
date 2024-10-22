@@ -23,7 +23,7 @@ func (s *Server) GetCoin(ctx context.Context, in *npool.GetCoinRequest) (*npool.
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetCoin(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetCoin(ctx context.Context, in *npool.GetCoinRequest) (*npool.
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetCoinResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetCoinResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetCoins(ctx context.Context, in *npool.GetCoinsRequest) (*npoo
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetCoinsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetCoinsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetCoins(ctx)
@@ -64,7 +64,7 @@ func (s *Server) GetCoins(ctx context.Context, in *npool.GetCoinsRequest) (*npoo
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetCoinsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetCoinsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetCoinsResponse{

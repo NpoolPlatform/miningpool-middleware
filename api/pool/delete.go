@@ -21,7 +21,7 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeletePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -36,7 +36,7 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeletePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.DeletePool(ctx)
@@ -46,7 +46,7 @@ func (s *Server) DeletePool(ctx context.Context, in *npool.DeletePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeletePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.DeletePoolResponse{}, nil

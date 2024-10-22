@@ -23,7 +23,7 @@ func (s *Server) ExistCoin(ctx context.Context, in *npool.ExistCoinRequest) (*np
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistCoin(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistCoin(ctx context.Context, in *npool.ExistCoinRequest) (*np
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistCoinResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistCoinResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistCoinConds(ctx context.Context, in *npool.ExistCoinCondsReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistCoinCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistCoinCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistCoinConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistCoinConds(ctx context.Context, in *npool.ExistCoinCondsReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistCoinCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistCoinCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistCoinCondsResponse{

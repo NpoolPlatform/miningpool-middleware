@@ -12,7 +12,7 @@ import (
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/rootuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -35,7 +35,8 @@ var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
 	PoolID:         uuid.NewString(),
 	Email:          "gggo@go.go",
-	MiningpoolType: basetype.MiningpoolType_F2Pool,
+	Name:           pools.RandomPoolUserNameForTest(),
+	MiningPoolType: basetype.MiningPoolType_F2Pool,
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
 	Remark:         "asdfaf",
@@ -43,6 +44,7 @@ var ret = &npool.RootUser{
 
 var req = &npool.RootUserReq{
 	EntID:     &ret.EntID,
+	Name:      &ret.Name,
 	PoolID:    &ret.PoolID,
 	Email:     &ret.Email,
 	AuthToken: &ret.AuthToken,
@@ -51,11 +53,6 @@ var req = &npool.RootUserReq{
 }
 
 func create(t *testing.T) {
-	name, err := f2pool.RandomF2PoolUser(8)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
 	handler, err := NewHandler(
 		context.Background(),
 		WithName(req.Name, true),
@@ -70,9 +67,9 @@ func create(t *testing.T) {
 
 	poolH, err := pool.NewHandler(context.Background(),
 		pool.WithConds(&poolmw.Conds{
-			MiningpoolType: &v1.Uint32Val{
+			MiningPoolType: &v1.Uint32Val{
 				Op:    cruder.EQ,
-				Value: uint32(ret.MiningpoolType),
+				Value: uint32(ret.MiningPoolType),
 			},
 		}),
 		pool.WithLimit(2),
@@ -107,7 +104,7 @@ func create(t *testing.T) {
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
 		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
 		ret.AuthToken = info.AuthToken
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -205,9 +202,9 @@ func TestRootUser(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("create", create)
 	t.Run("update", update)
 	t.Run("deleteRow", deleteRow)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

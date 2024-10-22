@@ -13,7 +13,7 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-const serviceName = "Miningpool Middleware"
+const serviceName = "MiningPool Middleware"
 
 func main() {
 	commands := cli.Commands{

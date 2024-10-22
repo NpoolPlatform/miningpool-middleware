@@ -23,7 +23,7 @@ func (Pool) Mixin() []ent.Mixin {
 func (Pool) Fields() []ent.Field {
 	return []ent.Field{
 		field.
-			String("miningpool_type").Optional().Default(""),
+			String("mining_pool_type").Optional().Default(""),
 		field.
 			String("name").Optional().Default(""),
 		field.

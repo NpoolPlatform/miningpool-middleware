@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/predicate"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 // ID filters vertices based on their ID field.
@@ -136,31 +135,10 @@ func Name(v string) predicate.OrderUser {
 	})
 }
 
-// Proportion applies equality check predicate on the "proportion" field. It's identical to ProportionEQ.
-func Proportion(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldProportion), v))
-	})
-}
-
-// RevenueAddress applies equality check predicate on the "revenue_address" field. It's identical to RevenueAddressEQ.
-func RevenueAddress(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueAddress), v))
-	})
-}
-
 // ReadPageLink applies equality check predicate on the "read_page_link" field. It's identical to ReadPageLinkEQ.
 func ReadPageLink(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldReadPageLink), v))
-	})
-}
-
-// AutoPay applies equality check predicate on the "auto_pay" field. It's identical to AutoPayEQ.
-func AutoPay(v bool) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAutoPay), v))
 	})
 }
 
@@ -767,197 +745,6 @@ func NameContainsFold(v string) predicate.OrderUser {
 	})
 }
 
-// ProportionEQ applies the EQ predicate on the "proportion" field.
-func ProportionEQ(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionNEQ applies the NEQ predicate on the "proportion" field.
-func ProportionNEQ(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionIn applies the In predicate on the "proportion" field.
-func ProportionIn(vs ...decimal.Decimal) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldProportion), v...))
-	})
-}
-
-// ProportionNotIn applies the NotIn predicate on the "proportion" field.
-func ProportionNotIn(vs ...decimal.Decimal) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldProportion), v...))
-	})
-}
-
-// ProportionGT applies the GT predicate on the "proportion" field.
-func ProportionGT(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionGTE applies the GTE predicate on the "proportion" field.
-func ProportionGTE(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionLT applies the LT predicate on the "proportion" field.
-func ProportionLT(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionLTE applies the LTE predicate on the "proportion" field.
-func ProportionLTE(v decimal.Decimal) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldProportion), v))
-	})
-}
-
-// ProportionIsNil applies the IsNil predicate on the "proportion" field.
-func ProportionIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldProportion)))
-	})
-}
-
-// ProportionNotNil applies the NotNil predicate on the "proportion" field.
-func ProportionNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldProportion)))
-	})
-}
-
-// RevenueAddressEQ applies the EQ predicate on the "revenue_address" field.
-func RevenueAddressEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressNEQ applies the NEQ predicate on the "revenue_address" field.
-func RevenueAddressNEQ(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressIn applies the In predicate on the "revenue_address" field.
-func RevenueAddressIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldRevenueAddress), v...))
-	})
-}
-
-// RevenueAddressNotIn applies the NotIn predicate on the "revenue_address" field.
-func RevenueAddressNotIn(vs ...string) predicate.OrderUser {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldRevenueAddress), v...))
-	})
-}
-
-// RevenueAddressGT applies the GT predicate on the "revenue_address" field.
-func RevenueAddressGT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressGTE applies the GTE predicate on the "revenue_address" field.
-func RevenueAddressGTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressLT applies the LT predicate on the "revenue_address" field.
-func RevenueAddressLT(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressLTE applies the LTE predicate on the "revenue_address" field.
-func RevenueAddressLTE(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressContains applies the Contains predicate on the "revenue_address" field.
-func RevenueAddressContains(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressHasPrefix applies the HasPrefix predicate on the "revenue_address" field.
-func RevenueAddressHasPrefix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressHasSuffix applies the HasSuffix predicate on the "revenue_address" field.
-func RevenueAddressHasSuffix(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressIsNil applies the IsNil predicate on the "revenue_address" field.
-func RevenueAddressIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldRevenueAddress)))
-	})
-}
-
-// RevenueAddressNotNil applies the NotNil predicate on the "revenue_address" field.
-func RevenueAddressNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldRevenueAddress)))
-	})
-}
-
-// RevenueAddressEqualFold applies the EqualFold predicate on the "revenue_address" field.
-func RevenueAddressEqualFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldRevenueAddress), v))
-	})
-}
-
-// RevenueAddressContainsFold applies the ContainsFold predicate on the "revenue_address" field.
-func RevenueAddressContainsFold(v string) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldRevenueAddress), v))
-	})
-}
-
 // ReadPageLinkEQ applies the EQ predicate on the "read_page_link" field.
 func ReadPageLinkEQ(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
@@ -1068,34 +855,6 @@ func ReadPageLinkEqualFold(v string) predicate.OrderUser {
 func ReadPageLinkContainsFold(v string) predicate.OrderUser {
 	return predicate.OrderUser(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldReadPageLink), v))
-	})
-}
-
-// AutoPayEQ applies the EQ predicate on the "auto_pay" field.
-func AutoPayEQ(v bool) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAutoPay), v))
-	})
-}
-
-// AutoPayNEQ applies the NEQ predicate on the "auto_pay" field.
-func AutoPayNEQ(v bool) predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAutoPay), v))
-	})
-}
-
-// AutoPayIsNil applies the IsNil predicate on the "auto_pay" field.
-func AutoPayIsNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldAutoPay)))
-	})
-}
-
-// AutoPayNotNil applies the NotNil predicate on the "auto_pay" field.
-func AutoPayNotNil() predicate.OrderUser {
-	return predicate.OrderUser(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldAutoPay)))
 	})
 }
 

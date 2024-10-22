@@ -1,6 +1,6 @@
 package servicename
 
 const (
-	ServiceName   = "Miningpool Middleware"
+	ServiceName   = "MiningPool Middleware"
 	ServiceDomain = "miningpool-middleware.npool.top"
 )

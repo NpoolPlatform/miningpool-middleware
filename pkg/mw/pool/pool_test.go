@@ -27,7 +27,7 @@ func init() {
 
 var ret = &npool.Pool{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningPoolType: basetypes.MiningPoolType_F2Pool,
 	Name:           "5.4",
 	Site:           "false.com",
 	Logo:           "false.com",
@@ -36,7 +36,7 @@ var ret = &npool.Pool{
 
 var req = &npool.PoolReq{
 	EntID:          &ret.EntID,
-	MiningpoolType: &ret.MiningpoolType,
+	MiningPoolType: &ret.MiningPoolType,
 	Name:           &ret.Name,
 	Site:           &ret.Site,
 	Description:    &ret.Description,
@@ -56,13 +56,13 @@ func create(t *testing.T) {
 		return
 	}
 
-	ret.MiningpoolType = infos[0].MiningpoolType
-	req.MiningpoolType = &infos[0].MiningpoolType
+	ret.MiningPoolType = infos[0].MiningPoolType
+	req.MiningPoolType = &infos[0].MiningPoolType
 
 	handler, err := NewHandler(
 		context.Background(),
 		WithEntID(req.EntID, true),
-		WithMiningpoolType(req.MiningpoolType, true),
+		WithMiningPoolType(req.MiningPoolType, true),
 		WithName(req.Name, true),
 		WithSite(req.Site, true),
 		WithDescription(req.Description, true),

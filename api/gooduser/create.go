@@ -21,14 +21,14 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 	req := in.GetInfo()
 	handler, err := gooduser.NewHandler(
 		ctx,
 		gooduser.WithEntID(req.EntID, false),
 		gooduser.WithRootUserID(req.RootUserID, true),
-		gooduser.WithPoolCoinTypeID(req.PoolCoinTypeID, true),
+		gooduser.WithCoinTypeIDs(req.CoinTypeIDs, true),
 	)
 	if err != nil {
 		logger.Sugar().Errorw(
@@ -36,7 +36,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	err = handler.CreateGoodUser(ctx)
@@ -46,7 +46,7 @@ func (s *Server) CreateGoodUser(ctx context.Context, in *npool.CreateGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	return &npool.CreateGoodUserResponse{}, nil

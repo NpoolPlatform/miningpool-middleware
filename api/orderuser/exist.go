@@ -23,7 +23,7 @@ func (s *Server) ExistOrderUser(ctx context.Context, in *npool.ExistOrderUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistOrderUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistOrderUser(ctx context.Context, in *npool.ExistOrderUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistOrderUserResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistOrderUserConds(ctx context.Context, in *npool.ExistOrderUs
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistOrderUserCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistOrderUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistOrderUserConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistOrderUserConds(ctx context.Context, in *npool.ExistOrderUs
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistOrderUserCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistOrderUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistOrderUserCondsResponse{

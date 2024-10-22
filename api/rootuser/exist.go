@@ -23,7 +23,7 @@ func (s *Server) ExistRootUser(ctx context.Context, in *npool.ExistRootUserReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistRootUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistRootUser(ctx context.Context, in *npool.ExistRootUserReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistRootUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistRootUserResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistRootUserConds(ctx context.Context, in *npool.ExistRootUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistRootUserCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistRootUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistRootUserConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistRootUserConds(ctx context.Context, in *npool.ExistRootUser
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistRootUserCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistRootUserCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistRootUserCondsResponse{

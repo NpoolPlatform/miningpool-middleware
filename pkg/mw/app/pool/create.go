@@ -2,8 +2,8 @@ package apppool
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/pool"
@@ -14,15 +14,15 @@ func (h *Handler) CreatePool(ctx context.Context) error {
 	poolID := h.PoolID.String()
 	poolH, err := pool.NewHandler(ctx, pool.WithEntID(&poolID, true))
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	exist, err := poolH.ExistPool(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	if !exist {
-		return fmt.Errorf("invalid pool id")
+		return wlog.Errorf("invalid pool id")
 	}
 
 	if h.EntID == nil {
@@ -34,15 +34,15 @@ func (h *Handler) CreatePool(ctx context.Context) error {
 	return db.WithTx(ctx, func(ctx context.Context, tx *ent.Tx) error {
 		sql, err := sqlH.genCreateSQL()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 
 		rc, err := tx.ExecContext(ctx, sql)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if n, err := rc.RowsAffected(); err != nil || n != 1 {
-			return fmt.Errorf("fail create app pool: %v", err)
+			return wlog.Errorf("fail create app pool: %v", err)
 		}
 		return nil
 	})

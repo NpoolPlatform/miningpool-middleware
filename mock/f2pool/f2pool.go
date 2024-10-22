@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool/types"
 	"github.com/google/uuid"
 )
@@ -71,6 +72,10 @@ func init() {
 func mockMiningUserGet() {
 	req := &types.MiningUserGetReq{}
 	httpHandler(types.MiningUserGet, req, func() (interface{}, error) {
+		if pools.IsTestPoolUserName(req.MiningUserName) {
+			users[req.MiningUserName] = struct{}{}
+		}
+
 		if _, ok := users[req.MiningUserName]; !ok {
 			return nil, fmt.Errorf("have no user")
 		}
@@ -279,5 +284,4 @@ func Init(httpPort uint16) {
 	httpServer := fmt.Sprintf(":%v", httpPort)
 	fmt.Printf("start mock f2pool server,address: %v\n", httpServer)
 	http.ListenAndServe(httpServer, nil)
-
 }

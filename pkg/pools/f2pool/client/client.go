@@ -19,7 +19,7 @@ const (
 	defaultLockTimeout  = time.Second / F2PoolRps
 	postTimeout         = time.Second * 3
 	tlsHandshakeTimeout = time.Second * 1
-	maxRetreies         = 3
+	maxRetreies         = 1
 	successStatusCode   = 200
 )
 

@@ -107,10 +107,10 @@ func EntID(v uuid.UUID) predicate.Pool {
 	})
 }
 
-// MiningpoolType applies equality check predicate on the "miningpool_type" field. It's identical to MiningpoolTypeEQ.
-func MiningpoolType(v string) predicate.Pool {
+// MiningPoolType applies equality check predicate on the "mining_pool_type" field. It's identical to MiningPoolTypeEQ.
+func MiningPoolType(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldMiningPoolType), v))
 	})
 }
 
@@ -398,116 +398,116 @@ func EntIDLTE(v uuid.UUID) predicate.Pool {
 	})
 }
 
-// MiningpoolTypeEQ applies the EQ predicate on the "miningpool_type" field.
-func MiningpoolTypeEQ(v string) predicate.Pool {
+// MiningPoolTypeEQ applies the EQ predicate on the "mining_pool_type" field.
+func MiningPoolTypeEQ(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EQ(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeNEQ applies the NEQ predicate on the "miningpool_type" field.
-func MiningpoolTypeNEQ(v string) predicate.Pool {
+// MiningPoolTypeNEQ applies the NEQ predicate on the "mining_pool_type" field.
+func MiningPoolTypeNEQ(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMiningpoolType), v))
+		s.Where(sql.NEQ(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeIn applies the In predicate on the "miningpool_type" field.
-func MiningpoolTypeIn(vs ...string) predicate.Pool {
+// MiningPoolTypeIn applies the In predicate on the "mining_pool_type" field.
+func MiningPoolTypeIn(vs ...string) predicate.Pool {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.In(s.C(FieldMiningPoolType), v...))
 	})
 }
 
-// MiningpoolTypeNotIn applies the NotIn predicate on the "miningpool_type" field.
-func MiningpoolTypeNotIn(vs ...string) predicate.Pool {
+// MiningPoolTypeNotIn applies the NotIn predicate on the "mining_pool_type" field.
+func MiningPoolTypeNotIn(vs ...string) predicate.Pool {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMiningpoolType), v...))
+		s.Where(sql.NotIn(s.C(FieldMiningPoolType), v...))
 	})
 }
 
-// MiningpoolTypeGT applies the GT predicate on the "miningpool_type" field.
-func MiningpoolTypeGT(v string) predicate.Pool {
+// MiningPoolTypeGT applies the GT predicate on the "mining_pool_type" field.
+func MiningPoolTypeGT(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GT(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeGTE applies the GTE predicate on the "miningpool_type" field.
-func MiningpoolTypeGTE(v string) predicate.Pool {
+// MiningPoolTypeGTE applies the GTE predicate on the "mining_pool_type" field.
+func MiningPoolTypeGTE(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.GTE(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeLT applies the LT predicate on the "miningpool_type" field.
-func MiningpoolTypeLT(v string) predicate.Pool {
+// MiningPoolTypeLT applies the LT predicate on the "mining_pool_type" field.
+func MiningPoolTypeLT(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LT(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeLTE applies the LTE predicate on the "miningpool_type" field.
-func MiningpoolTypeLTE(v string) predicate.Pool {
+// MiningPoolTypeLTE applies the LTE predicate on the "mining_pool_type" field.
+func MiningPoolTypeLTE(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMiningpoolType), v))
+		s.Where(sql.LTE(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeContains applies the Contains predicate on the "miningpool_type" field.
-func MiningpoolTypeContains(v string) predicate.Pool {
+// MiningPoolTypeContains applies the Contains predicate on the "mining_pool_type" field.
+func MiningPoolTypeContains(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldMiningpoolType), v))
+		s.Where(sql.Contains(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeHasPrefix applies the HasPrefix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasPrefix(v string) predicate.Pool {
+// MiningPoolTypeHasPrefix applies the HasPrefix predicate on the "mining_pool_type" field.
+func MiningPoolTypeHasPrefix(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldMiningpoolType), v))
+		s.Where(sql.HasPrefix(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeHasSuffix applies the HasSuffix predicate on the "miningpool_type" field.
-func MiningpoolTypeHasSuffix(v string) predicate.Pool {
+// MiningPoolTypeHasSuffix applies the HasSuffix predicate on the "mining_pool_type" field.
+func MiningPoolTypeHasSuffix(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldMiningpoolType), v))
+		s.Where(sql.HasSuffix(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeIsNil applies the IsNil predicate on the "miningpool_type" field.
-func MiningpoolTypeIsNil() predicate.Pool {
+// MiningPoolTypeIsNil applies the IsNil predicate on the "mining_pool_type" field.
+func MiningPoolTypeIsNil() predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMiningpoolType)))
+		s.Where(sql.IsNull(s.C(FieldMiningPoolType)))
 	})
 }
 
-// MiningpoolTypeNotNil applies the NotNil predicate on the "miningpool_type" field.
-func MiningpoolTypeNotNil() predicate.Pool {
+// MiningPoolTypeNotNil applies the NotNil predicate on the "mining_pool_type" field.
+func MiningPoolTypeNotNil() predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMiningpoolType)))
+		s.Where(sql.NotNull(s.C(FieldMiningPoolType)))
 	})
 }
 
-// MiningpoolTypeEqualFold applies the EqualFold predicate on the "miningpool_type" field.
-func MiningpoolTypeEqualFold(v string) predicate.Pool {
+// MiningPoolTypeEqualFold applies the EqualFold predicate on the "mining_pool_type" field.
+func MiningPoolTypeEqualFold(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldMiningpoolType), v))
+		s.Where(sql.EqualFold(s.C(FieldMiningPoolType), v))
 	})
 }
 
-// MiningpoolTypeContainsFold applies the ContainsFold predicate on the "miningpool_type" field.
-func MiningpoolTypeContainsFold(v string) predicate.Pool {
+// MiningPoolTypeContainsFold applies the ContainsFold predicate on the "mining_pool_type" field.
+func MiningPoolTypeContainsFold(v string) predicate.Pool {
 	return predicate.Pool(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldMiningpoolType), v))
+		s.Where(sql.ContainsFold(s.C(FieldMiningPoolType), v))
 	})
 }
 

@@ -78,16 +78,16 @@ func (pc *PoolCreate) SetNillableEntID(u *uuid.UUID) *PoolCreate {
 	return pc
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (pc *PoolCreate) SetMiningpoolType(s string) *PoolCreate {
-	pc.mutation.SetMiningpoolType(s)
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (pc *PoolCreate) SetMiningPoolType(s string) *PoolCreate {
+	pc.mutation.SetMiningPoolType(s)
 	return pc
 }
 
-// SetNillableMiningpoolType sets the "miningpool_type" field if the given value is not nil.
-func (pc *PoolCreate) SetNillableMiningpoolType(s *string) *PoolCreate {
+// SetNillableMiningPoolType sets the "mining_pool_type" field if the given value is not nil.
+func (pc *PoolCreate) SetNillableMiningPoolType(s *string) *PoolCreate {
 	if s != nil {
-		pc.SetMiningpoolType(*s)
+		pc.SetMiningPoolType(*s)
 	}
 	return pc
 }
@@ -261,9 +261,9 @@ func (pc *PoolCreate) defaults() error {
 		v := pool.DefaultEntID()
 		pc.mutation.SetEntID(v)
 	}
-	if _, ok := pc.mutation.MiningpoolType(); !ok {
-		v := pool.DefaultMiningpoolType
-		pc.mutation.SetMiningpoolType(v)
+	if _, ok := pc.mutation.MiningPoolType(); !ok {
+		v := pool.DefaultMiningPoolType
+		pc.mutation.SetMiningPoolType(v)
 	}
 	if _, ok := pc.mutation.Name(); !ok {
 		v := pool.DefaultName
@@ -364,13 +364,13 @@ func (pc *PoolCreate) createSpec() (*Pool, *sqlgraph.CreateSpec) {
 		})
 		_node.EntID = value
 	}
-	if value, ok := pc.mutation.MiningpoolType(); ok {
+	if value, ok := pc.mutation.MiningPoolType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: pool.FieldMiningpoolType,
+			Column: pool.FieldMiningPoolType,
 		})
-		_node.MiningpoolType = value
+		_node.MiningPoolType = value
 	}
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -524,21 +524,21 @@ func (u *PoolUpsert) UpdateEntID() *PoolUpsert {
 	return u
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *PoolUpsert) SetMiningpoolType(v string) *PoolUpsert {
-	u.Set(pool.FieldMiningpoolType, v)
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (u *PoolUpsert) SetMiningPoolType(v string) *PoolUpsert {
+	u.Set(pool.FieldMiningPoolType, v)
 	return u
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *PoolUpsert) UpdateMiningpoolType() *PoolUpsert {
-	u.SetExcluded(pool.FieldMiningpoolType)
+// UpdateMiningPoolType sets the "mining_pool_type" field to the value that was provided on create.
+func (u *PoolUpsert) UpdateMiningPoolType() *PoolUpsert {
+	u.SetExcluded(pool.FieldMiningPoolType)
 	return u
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *PoolUpsert) ClearMiningpoolType() *PoolUpsert {
-	u.SetNull(pool.FieldMiningpoolType)
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (u *PoolUpsert) ClearMiningPoolType() *PoolUpsert {
+	u.SetNull(pool.FieldMiningPoolType)
 	return u
 }
 
@@ -741,24 +741,24 @@ func (u *PoolUpsertOne) UpdateEntID() *PoolUpsertOne {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *PoolUpsertOne) SetMiningpoolType(v string) *PoolUpsertOne {
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (u *PoolUpsertOne) SetMiningPoolType(v string) *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetMiningPoolType(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *PoolUpsertOne) UpdateMiningpoolType() *PoolUpsertOne {
+// UpdateMiningPoolType sets the "mining_pool_type" field to the value that was provided on create.
+func (u *PoolUpsertOne) UpdateMiningPoolType() *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateMiningPoolType()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *PoolUpsertOne) ClearMiningpoolType() *PoolUpsertOne {
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (u *PoolUpsertOne) ClearMiningPoolType() *PoolUpsertOne {
 	return u.Update(func(s *PoolUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearMiningPoolType()
 	})
 }
 
@@ -1138,24 +1138,24 @@ func (u *PoolUpsertBulk) UpdateEntID() *PoolUpsertBulk {
 	})
 }
 
-// SetMiningpoolType sets the "miningpool_type" field.
-func (u *PoolUpsertBulk) SetMiningpoolType(v string) *PoolUpsertBulk {
+// SetMiningPoolType sets the "mining_pool_type" field.
+func (u *PoolUpsertBulk) SetMiningPoolType(v string) *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
-		s.SetMiningpoolType(v)
+		s.SetMiningPoolType(v)
 	})
 }
 
-// UpdateMiningpoolType sets the "miningpool_type" field to the value that was provided on create.
-func (u *PoolUpsertBulk) UpdateMiningpoolType() *PoolUpsertBulk {
+// UpdateMiningPoolType sets the "mining_pool_type" field to the value that was provided on create.
+func (u *PoolUpsertBulk) UpdateMiningPoolType() *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
-		s.UpdateMiningpoolType()
+		s.UpdateMiningPoolType()
 	})
 }
 
-// ClearMiningpoolType clears the value of the "miningpool_type" field.
-func (u *PoolUpsertBulk) ClearMiningpoolType() *PoolUpsertBulk {
+// ClearMiningPoolType clears the value of the "mining_pool_type" field.
+func (u *PoolUpsertBulk) ClearMiningPoolType() *PoolUpsertBulk {
 	return u.Update(func(s *PoolUpsert) {
-		s.ClearMiningpoolType()
+		s.ClearMiningPoolType()
 	})
 }
 

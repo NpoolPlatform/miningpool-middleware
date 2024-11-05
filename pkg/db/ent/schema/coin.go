@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	crudermixin "github.com/NpoolPlatform/libent-cruder/pkg/mixin"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/mixin"
 	"github.com/google/uuid"
@@ -40,8 +41,6 @@ func (Coin) Fields() []ent.Field {
 		field.
 			String("coin_type").Optional().Default(""),
 		field.
-			String("revenue_type").Optional().Default(""),
-		field.
 			Other("fee_ratio", decimal.Decimal{}).
 			SchemaType(map[string]string{
 				dialect.MySQL: "decimal(37,18)",
@@ -67,4 +66,10 @@ func (Coin) Fields() []ent.Field {
 // Edges of the Coin.
 func (Coin) Edges() []ent.Edge {
 	return nil
+}
+
+func (Coin) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("pool_id", "coin_type_id"),
+	}
 }

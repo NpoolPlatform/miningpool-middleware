@@ -23,7 +23,7 @@ func (s *Server) ExistPool(ctx context.Context, in *npool.ExistPoolRequest) (*np
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistPoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistPoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistPool(ctx)
@@ -33,7 +33,7 @@ func (s *Server) ExistPool(ctx context.Context, in *npool.ExistPoolRequest) (*np
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistPoolResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistPoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistPoolResponse{
@@ -52,7 +52,7 @@ func (s *Server) ExistPoolConds(ctx context.Context, in *npool.ExistPoolCondsReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistPoolCondsResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.ExistPoolCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.ExistPoolConds(ctx)
@@ -62,7 +62,7 @@ func (s *Server) ExistPoolConds(ctx context.Context, in *npool.ExistPoolCondsReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.ExistPoolCondsResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.ExistPoolCondsResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.ExistPoolCondsResponse{

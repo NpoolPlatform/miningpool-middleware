@@ -2,18 +2,25 @@ package gooduser
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
+	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
-	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	v1 "github.com/NpoolPlatform/message/npool/basetypes/v1"
+	coinpb "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/gooduser"
+	"github.com/shopspring/decimal"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
 	gooduserent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
+	rootusermw "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/rootuser"
+
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/rootuser"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/mw/coin"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 )
@@ -33,14 +40,13 @@ func (h *queryHandler) selectGoodUser(stm *ent.GoodUserQuery) {
 		gooduserent.FieldEntID,
 		gooduserent.FieldRootUserID,
 		gooduserent.FieldName,
-		gooduserent.FieldPoolCoinTypeID,
 		gooduserent.FieldReadPageLink,
 	)
 }
 
 func (h *queryHandler) queryGoodUser(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return wlog.Errorf("invalid id")
 	}
 	stm := cli.GoodUser.Query().Where(gooduserent.DeletedAt(0))
 	if h.ID != nil {
@@ -56,17 +62,17 @@ func (h *queryHandler) queryGoodUser(cli *ent.Client) error {
 func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) error {
 	stm, err := goodusercrud.SetQueryConds(cli.GoodUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
 	stmCount, err := goodusercrud.SetQueryConds(cli.GoodUser.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
-	stmCount.Modify(h.queryJoinCoinAndPool)
+	stmCount.Modify(h.queryJoinRootUserAndPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -75,28 +81,28 @@ func (h *queryHandler) queryGoodUsers(ctx context.Context, cli *ent.Client) erro
 }
 
 func (h *queryHandler) queryJoin() {
-	h.stm.Modify(h.queryJoinCoinAndPool)
+	h.stm.Modify(h.queryJoinRootUserAndPool)
 }
 
-func (h *queryHandler) queryJoinCoinAndPool(s *sql.Selector) {
-	coinT := sql.Table(coin.Table)
+func (h *queryHandler) queryJoinRootUserAndPool(s *sql.Selector) {
+	ruT := sql.Table(rootuser.Table)
 	poolT := sql.Table(pool.Table)
-	s.Join(coinT).On(
-		s.C(gooduserent.FieldPoolCoinTypeID),
-		coinT.C(coin.FieldEntID),
+	s.Join(ruT).On(
+		s.C(gooduserent.FieldRootUserID),
+		ruT.C(rootuser.FieldEntID),
 	).OnP(
-		sql.EQ(coinT.C(coin.FieldDeletedAt), 0),
+		sql.EQ(ruT.C(rootuser.FieldDeletedAt), 0),
 	).Join(poolT).On(
-		coinT.C(coin.FieldPoolID),
+		ruT.C(rootuser.FieldPoolID),
 		poolT.C(pool.FieldEntID),
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		coinT.C(coin.FieldCoinType),
-		coinT.C(coin.FieldRevenueType),
-		coinT.C(coin.FieldFeeRatio),
-		coinT.C(coin.FieldPoolID),
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
+		ruT.C(rootuser.FieldPoolID),
+		sql.As(poolT.C(pool.FieldName), "mining_pool_name"),
+		sql.As(poolT.C(pool.FieldLogo), "mining_pool_logo"),
+		sql.As(poolT.C(pool.FieldSite), "mining_pool_site"),
 	).Distinct()
 }
 
@@ -106,9 +112,7 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
-		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 	}
 }
 
@@ -119,7 +123,7 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryGoodUser(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -127,13 +131,13 @@ func (h *Handler) GetGoodUser(ctx context.Context) (*npool.GoodUser, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
 	if len(handler.infos) == 0 {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -147,7 +151,7 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryGoodUsers(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.
@@ -157,9 +161,86 @@ func (h *Handler) GetGoodUsers(ctx context.Context) ([]*npool.GoodUser, uint32, 
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	handler.formalize()
 	return handler.infos, handler.total, nil
+}
+
+func (h *Handler) getGoodUserHashRate(ctx context.Context) (string, error) {
+	guInfo, err := h.GetGoodUser(ctx)
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+
+	if guInfo == nil {
+		return "", wlog.Errorf("invalid id or ent_id")
+	}
+
+	rootuserID := guInfo.RootUserID
+	rootuserH, err := rootusermw.NewHandler(ctx, rootusermw.WithEntID(&rootuserID, true))
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+	rootuserToken, err := rootuserH.GetAuthToken(ctx)
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+	if rootuserToken == nil {
+		return "", wlog.Errorf("have no rootuser,entid: %v", rootuserID)
+	}
+
+	coinH, err := coin.NewHandler(ctx,
+		coin.WithConds(&coinpb.Conds{
+			CoinTypeIDs: &v1.StringSliceVal{
+				Op:    cruder.IN,
+				Value: h.CoinTypeIDs,
+			},
+			PoolID: &v1.StringVal{
+				Op:    cruder.EQ,
+				Value: guInfo.PoolID,
+			},
+		}),
+		coin.WithLimit(int32(len(h.CoinTypeIDs))),
+		coin.WithOffset(0))
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+
+	// check if cointypes is suppored by the miningpool
+	coinInfos, _, err := coinH.GetCoins(ctx)
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+
+	coinTypes := []v1.CoinType{}
+	for _, coinTypeID := range h.CoinTypeIDs {
+		existID := false
+		for _, coinInfo := range coinInfos {
+			if coinInfo.CoinTypeID == coinTypeID {
+				coinTypes = append(coinTypes, coinInfo.CoinType)
+				existID = true
+				break
+			}
+		}
+
+		if !existID {
+			return "", wlog.Errorf("cannot support all cointype in cointypeids")
+		}
+	}
+
+	mgr, err := pools.NewPoolManager(guInfo.MiningPoolType, nil, rootuserToken.AuthTokenPlain)
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+	hashRate, err := mgr.GetHashRate(ctx, guInfo.Name, coinTypes)
+	if err != nil {
+		return "", wlog.WrapError(err)
+	}
+	return decimal.NewFromFloat(hashRate).String(), nil
+}
+
+func (h *Handler) GetGoodUserHashRate(ctx context.Context) (string, error) {
+	return h.getGoodUserHashRate(ctx)
 }

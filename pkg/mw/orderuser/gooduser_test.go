@@ -18,8 +18,7 @@ import (
 var gooduserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	RootUserID:     rootuserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
 var gooduserReq = &npool.GoodUserReq{
@@ -30,10 +29,6 @@ var gooduserReq = &npool.GoodUserReq{
 func createGoodUser(t *testing.T) {
 	coinH, err := coin.NewHandler(context.Background(),
 		coin.WithConds(&coinmw.Conds{
-			CoinType: &basetypes.Uint32Val{
-				Op:    cruder.EQ,
-				Value: uint32(gooduserRet.CoinType),
-			},
 			PoolID: &basetypes.StringVal{
 				Op:    cruder.EQ,
 				Value: rootuserRet.PoolID,
@@ -47,18 +42,19 @@ func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coinH.GetCoins(context.Background())
 	assert.Nil(t, err)
 
-	if !assert.NotEqual(t, 0, len(coinInfos)) {
+	if len(coinInfos) == 0 {
 		return
 	}
 
-	gooduserRet.PoolCoinTypeID = coinInfos[0].EntID
-	gooduserReq.PoolCoinTypeID = &coinInfos[0].EntID
+	for _, coinInfo := range coinInfos {
+		gooduserReq.CoinTypeIDs = append(gooduserReq.CoinTypeIDs, coinInfo.CoinTypeID)
+	}
 
 	handler, err := gooduser.NewHandler(
 		context.Background(),
 		gooduser.WithEntID(gooduserReq.EntID, true),
-		gooduser.WithPoolCoinTypeID(gooduserReq.PoolCoinTypeID, true),
 		gooduser.WithRootUserID(gooduserReq.RootUserID, true),
+		gooduser.WithCoinTypeIDs(gooduserReq.CoinTypeIDs, true),
 	)
 	if !assert.Nil(t, err) {
 		return
@@ -74,11 +70,10 @@ func createGoodUser(t *testing.T) {
 		gooduserRet.UpdatedAt = info.UpdatedAt
 		gooduserRet.CreatedAt = info.CreatedAt
 		gooduserRet.PoolID = info.PoolID
-		gooduserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
-		gooduserRet.CoinTypeStr = info.CoinTypeStr
-		gooduserRet.RevenueTypeStr = info.RevenueTypeStr
-		gooduserRet.RevenueType = info.RevenueType
-		gooduserRet.FeeRatio = info.FeeRatio
+		gooduserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		gooduserRet.MiningPoolName = info.MiningPoolName
+		gooduserRet.MiningPoolSite = info.MiningPoolSite
+		gooduserRet.MiningPoolLogo = info.MiningPoolLogo
 		gooduserRet.ID = info.ID
 		gooduserRet.EntID = info.EntID
 		gooduserRet.Name = info.Name

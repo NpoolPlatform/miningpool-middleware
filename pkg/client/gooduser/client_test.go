@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
 
@@ -34,8 +34,7 @@ var ret = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 	ReadPageLink:   "fffff",
 }
 
@@ -48,10 +47,6 @@ var req = &npool.GoodUserReq{
 
 func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmw.Conds{
-		CoinType: &basetypes.Uint32Val{
-			Op:    cruder.EQ,
-			Value: uint32(ret.CoinType),
-		},
 		PoolID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: rootUserRet.PoolID,
@@ -59,9 +54,6 @@ func createGoodUser(t *testing.T) {
 	}, 0, 2)
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, len(coinInfos))
-
-	ret.PoolCoinTypeID = coinInfos[0].EntID
-	req.PoolCoinTypeID = &coinInfos[0].EntID
 
 	err = CreateGoodUser(context.Background(), req)
 	assert.Nil(t, err)
@@ -72,11 +64,10 @@ func createGoodUser(t *testing.T) {
 		ret.ReadPageLink = info.ReadPageLink
 		ret.CreatedAt = info.CreatedAt
 		ret.PoolID = info.PoolID
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueType = info.RevenueType
-		ret.RevenueTypeStr = info.RevenueTypeStr
-		ret.FeeRatio = info.FeeRatio
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
+		ret.MiningPoolName = info.MiningPoolName
+		ret.MiningPoolSite = info.MiningPoolSite
+		ret.MiningPoolLogo = info.MiningPoolLogo
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
 		ret.EntID = info.EntID
@@ -131,12 +122,12 @@ func TestClient(t *testing.T) {
 	if runByGithubAction, err := strconv.ParseBool(os.Getenv("RUN_BY_GITHUB_ACTION")); err == nil && runByGithubAction {
 		return
 	}
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("createGoodUser", createGoodUser)
 	t.Run("getGoodUser", getGoodUser)
 	t.Run("getGoodUsers", getGoodUsers)
 	t.Run("deleteGoodUser", deleteGoodUser)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

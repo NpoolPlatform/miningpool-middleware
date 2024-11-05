@@ -9,7 +9,7 @@ import (
 
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
@@ -34,16 +34,18 @@ func init() {
 
 var ret = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningPoolType: basetypes.MiningPoolType_F2Pool,
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
+	Name:           pools.RandomPoolUserNameForTest(),
 	Remark:         "sdfasdfasdf",
 }
 
 var req = &npool.RootUserReq{
 	EntID:     &ret.EntID,
 	Email:     &ret.Email,
+	Name:      &ret.Name,
 	AuthToken: &ret.AuthToken,
 	Authed:    &ret.Authed,
 	Remark:    &ret.Remark,
@@ -51,9 +53,9 @@ var req = &npool.RootUserReq{
 
 func createRootUser(t *testing.T) {
 	poolInfos, _, err := pool.GetPools(context.Background(), &poolmw.Conds{
-		MiningpoolType: &v1.Uint32Val{
+		MiningPoolType: &v1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(ret.MiningpoolType),
+			Value: uint32(ret.MiningPoolType),
 		},
 	}, 0, 2)
 	assert.Nil(t, err)
@@ -62,19 +64,13 @@ func createRootUser(t *testing.T) {
 	ret.PoolID = poolInfos[0].EntID
 	req.PoolID = &poolInfos[0].EntID
 
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
-
 	err = CreateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
+		ret.MiningPoolTypeStr = info.MiningPoolTypeStr
 		ret.UpdatedAt = info.UpdatedAt
 		ret.ID = info.ID
 		ret.AuthToken = info.AuthToken
@@ -84,20 +80,18 @@ func createRootUser(t *testing.T) {
 }
 
 func updateRootUser(t *testing.T) {
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	ret.Name = name
-	req.Name = &name
 	req.ID = &ret.ID
-	req.AuthToken = nil
+	authToken := "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73"
+	req.AuthToken = &authToken
+	ret.AuthToken = ""
 
-	err = UpdateRootUser(context.Background(), req)
+	err := UpdateRootUser(context.Background(), req)
 	assert.Nil(t, err)
 
 	info, err := GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
 		ret.UpdatedAt = info.UpdatedAt
+		info.AuthToken = ""
 		assert.Equal(t, ret, info)
 	}
 
@@ -108,6 +102,7 @@ func updateRootUser(t *testing.T) {
 
 	info, err = GetRootUser(context.Background(), *req.EntID)
 	if assert.Nil(t, err) {
+		info.AuthToken = ""
 		ret.UpdatedAt = info.UpdatedAt
 		assert.Equal(t, ret, info)
 	}
@@ -116,6 +111,7 @@ func updateRootUser(t *testing.T) {
 func getRootUser(t *testing.T) {
 	info, err := GetRootUser(context.Background(), ret.EntID)
 	if assert.Nil(t, err) {
+		info.AuthToken = ""
 		assert.Equal(t, ret, info)
 	}
 }
@@ -127,6 +123,7 @@ func getRootUsers(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, len(infos), 1)
 		assert.Equal(t, total, uint32(1))
+		infos[0].AuthToken = ""
 		assert.Equal(t, infos[0], ret)
 	}
 }
@@ -161,11 +158,11 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createRootUser", createRootUser)
 	t.Run("updateRootUser", updateRootUser)
 	t.Run("getRootUser", getRootUser)
 	t.Run("getRootUsers", getRootUsers)
 	t.Run("deleteRootUser", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

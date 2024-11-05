@@ -21,8 +21,7 @@ var goodUserRet = &npool.GoodUser{
 	EntID:          uuid.NewString(),
 	Name:           "fffff",
 	RootUserID:     rootUserRet.EntID,
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 	ReadPageLink:   "fffff",
 }
 
@@ -35,10 +34,6 @@ var goodUserReq = &npool.GoodUserReq{
 
 func createGoodUser(t *testing.T) {
 	coinInfos, _, err := coin.GetCoins(context.Background(), &coinmw.Conds{
-		CoinType: &basetypes.Uint32Val{
-			Op:    cruder.EQ,
-			Value: uint32(ret.CoinType),
-		},
 		PoolID: &basetypes.StringVal{
 			Op:    cruder.EQ,
 			Value: rootUserRet.PoolID,
@@ -46,9 +41,6 @@ func createGoodUser(t *testing.T) {
 	}, 0, 2)
 	assert.Nil(t, err)
 	assert.NotEqual(t, 0, len(coinInfos))
-
-	goodUserRet.PoolCoinTypeID = coinInfos[0].EntID
-	goodUserReq.PoolCoinTypeID = &coinInfos[0].EntID
 
 	err = gooduserclient.CreateGoodUser(context.Background(), goodUserReq)
 	assert.Nil(t, err)
@@ -59,12 +51,11 @@ func createGoodUser(t *testing.T) {
 		goodUserRet.ReadPageLink = info.ReadPageLink
 		goodUserRet.CreatedAt = info.CreatedAt
 		goodUserRet.PoolID = info.PoolID
-		goodUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
-		goodUserRet.CoinTypeStr = info.CoinTypeStr
-		goodUserRet.RevenueType = info.RevenueType
-		goodUserRet.RevenueTypeStr = info.RevenueTypeStr
+		goodUserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		goodUserRet.MiningPoolName = info.MiningPoolName
+		goodUserRet.MiningPoolSite = info.MiningPoolSite
+		goodUserRet.MiningPoolLogo = info.MiningPoolLogo
 		goodUserRet.UpdatedAt = info.UpdatedAt
-		goodUserRet.FeeRatio = info.FeeRatio
 		goodUserRet.ID = info.ID
 		goodUserRet.EntID = info.EntID
 		assert.Equal(t, goodUserRet, info)

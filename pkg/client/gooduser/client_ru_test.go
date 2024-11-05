@@ -7,7 +7,7 @@ import (
 	poolmw "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/client/pool"
 	rootuserclient "github.com/NpoolPlatform/miningpool-middleware/pkg/client/rootuser"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/stretchr/testify/assert"
 
 	cruder "github.com/NpoolPlatform/libent-cruder/pkg/cruder"
@@ -20,10 +20,11 @@ import (
 
 var rootUserRet = &npool.RootUser{
 	EntID:          uuid.NewString(),
-	MiningpoolType: basetypes.MiningpoolType_F2Pool,
+	MiningPoolType: basetypes.MiningPoolType_F2Pool,
 	Email:          "sssss@ss.com",
 	AuthToken:      "7ecdq1fosdsfcruypom2otsn7hfr69azmqvh7v3zelol1ntsba85a1yvol66qp73",
 	Authed:         true,
+	Name:           pools.RandomPoolUserNameForTest(),
 	Remark:         "sdfasdfasdf",
 }
 
@@ -32,14 +33,15 @@ var rootUserReq = &npool.RootUserReq{
 	Email:     &rootUserRet.Email,
 	AuthToken: &rootUserRet.AuthToken,
 	Authed:    &rootUserRet.Authed,
+	Name:      &rootUserRet.Name,
 	Remark:    &rootUserRet.Remark,
 }
 
 func createRootUser(t *testing.T) {
 	poolInfos, _, err := pool.GetPools(context.Background(), &poolmw.Conds{
-		MiningpoolType: &v1.Uint32Val{
+		MiningPoolType: &v1.Uint32Val{
 			Op:    cruder.EQ,
-			Value: uint32(ret.MiningpoolType),
+			Value: uint32(ret.MiningPoolType),
 		},
 	}, 0, 2)
 	assert.Nil(t, err)
@@ -48,19 +50,13 @@ func createRootUser(t *testing.T) {
 	rootUserRet.PoolID = poolInfos[0].EntID
 	rootUserReq.PoolID = &poolInfos[0].EntID
 
-	name, err := f2pool.RandomF2PoolUser(7)
-	assert.Nil(t, err)
-
-	rootUserRet.Name = name
-	rootUserReq.Name = &name
-
 	err = rootuserclient.CreateRootUser(context.Background(), rootUserReq)
 	assert.Nil(t, err)
 
 	info, err := rootuserclient.GetRootUser(context.Background(), *rootUserReq.EntID)
 	if assert.Nil(t, err) {
 		rootUserRet.CreatedAt = info.CreatedAt
-		rootUserRet.MiningpoolTypeStr = info.MiningpoolTypeStr
+		rootUserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
 		rootUserRet.UpdatedAt = info.UpdatedAt
 		rootUserRet.ID = info.ID
 		rootUserRet.AuthToken = info.AuthToken

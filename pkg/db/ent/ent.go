@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/coin"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fraction"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionrule"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawal"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/fractionwithdrawalrule"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/pool"
@@ -38,14 +38,14 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		apppool.Table:      apppool.ValidColumn,
-		coin.Table:         coin.ValidColumn,
-		fraction.Table:     fraction.ValidColumn,
-		fractionrule.Table: fractionrule.ValidColumn,
-		gooduser.Table:     gooduser.ValidColumn,
-		orderuser.Table:    orderuser.ValidColumn,
-		pool.Table:         pool.ValidColumn,
-		rootuser.Table:     rootuser.ValidColumn,
+		apppool.Table:                apppool.ValidColumn,
+		coin.Table:                   coin.ValidColumn,
+		fractionwithdrawal.Table:     fractionwithdrawal.ValidColumn,
+		fractionwithdrawalrule.Table: fractionwithdrawalrule.ValidColumn,
+		gooduser.Table:               gooduser.ValidColumn,
+		orderuser.Table:              orderuser.ValidColumn,
+		pool.Table:                   pool.ValidColumn,
+		rootuser.Table:               rootuser.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

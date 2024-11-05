@@ -5,7 +5,6 @@ package orderuser
 import (
 	"entgo.io/ent"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 const (
@@ -29,14 +28,8 @@ const (
 	FieldAppID = "app_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldProportion holds the string denoting the proportion field in the database.
-	FieldProportion = "proportion"
-	// FieldRevenueAddress holds the string denoting the revenue_address field in the database.
-	FieldRevenueAddress = "revenue_address"
 	// FieldReadPageLink holds the string denoting the read_page_link field in the database.
 	FieldReadPageLink = "read_page_link"
-	// FieldAutoPay holds the string denoting the auto_pay field in the database.
-	FieldAutoPay = "auto_pay"
 	// Table holds the table name of the orderuser in the database.
 	Table = "order_users"
 )
@@ -52,10 +45,7 @@ var Columns = []string{
 	FieldUserID,
 	FieldAppID,
 	FieldName,
-	FieldProportion,
-	FieldRevenueAddress,
 	FieldReadPageLink,
-	FieldAutoPay,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -95,12 +85,6 @@ var (
 	DefaultAppID func() uuid.UUID
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
-	// DefaultProportion holds the default value on creation for the "proportion" field.
-	DefaultProportion decimal.Decimal
-	// DefaultRevenueAddress holds the default value on creation for the "revenue_address" field.
-	DefaultRevenueAddress string
 	// DefaultReadPageLink holds the default value on creation for the "read_page_link" field.
 	DefaultReadPageLink string
-	// DefaultAutoPay holds the default value on creation for the "auto_pay" field.
-	DefaultAutoPay bool
 )

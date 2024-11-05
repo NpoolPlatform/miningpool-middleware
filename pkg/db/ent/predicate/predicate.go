@@ -12,11 +12,11 @@ type AppPool func(*sql.Selector)
 // Coin is the predicate function for coin builders.
 type Coin func(*sql.Selector)
 
-// Fraction is the predicate function for fraction builders.
-type Fraction func(*sql.Selector)
+// FractionWithdrawal is the predicate function for fractionwithdrawal builders.
+type FractionWithdrawal func(*sql.Selector)
 
-// FractionRule is the predicate function for fractionrule builders.
-type FractionRule func(*sql.Selector)
+// FractionWithdrawalRule is the predicate function for fractionwithdrawalrule builders.
+type FractionWithdrawalRule func(*sql.Selector)
 
 // GoodUser is the predicate function for gooduser builders.
 type GoodUser func(*sql.Selector)

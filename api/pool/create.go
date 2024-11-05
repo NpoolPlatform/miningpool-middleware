@@ -21,14 +21,14 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
 	handler, err := pool.NewHandler(
 		ctx,
 		pool.WithEntID(req.EntID, false),
-		pool.WithMiningpoolType(req.MiningpoolType, true),
+		pool.WithMiningPoolType(req.MiningPoolType, true),
 		pool.WithName(req.Name, true),
 		pool.WithSite(req.Site, true),
 		pool.WithLogo(req.Logo, true),
@@ -40,7 +40,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreatePool(ctx)
@@ -50,7 +50,7 @@ func (s *Server) CreatePool(ctx context.Context, in *npool.CreatePoolRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreatePoolResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreatePoolResponse{}, nil

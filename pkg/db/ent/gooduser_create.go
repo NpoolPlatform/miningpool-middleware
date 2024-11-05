@@ -106,20 +106,6 @@ func (guc *GoodUserCreate) SetNillableName(s *string) *GoodUserCreate {
 	return guc
 }
 
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (guc *GoodUserCreate) SetPoolCoinTypeID(u uuid.UUID) *GoodUserCreate {
-	guc.mutation.SetPoolCoinTypeID(u)
-	return guc
-}
-
-// SetNillablePoolCoinTypeID sets the "pool_coin_type_id" field if the given value is not nil.
-func (guc *GoodUserCreate) SetNillablePoolCoinTypeID(u *uuid.UUID) *GoodUserCreate {
-	if u != nil {
-		guc.SetPoolCoinTypeID(*u)
-	}
-	return guc
-}
-
 // SetReadPageLink sets the "read_page_link" field.
 func (guc *GoodUserCreate) SetReadPageLink(s string) *GoodUserCreate {
 	guc.mutation.SetReadPageLink(s)
@@ -258,13 +244,6 @@ func (guc *GoodUserCreate) defaults() error {
 		v := gooduser.DefaultName
 		guc.mutation.SetName(v)
 	}
-	if _, ok := guc.mutation.PoolCoinTypeID(); !ok {
-		if gooduser.DefaultPoolCoinTypeID == nil {
-			return fmt.Errorf("ent: uninitialized gooduser.DefaultPoolCoinTypeID (forgotten import ent/runtime?)")
-		}
-		v := gooduser.DefaultPoolCoinTypeID()
-		guc.mutation.SetPoolCoinTypeID(v)
-	}
 	if _, ok := guc.mutation.ReadPageLink(); !ok {
 		v := gooduser.DefaultReadPageLink
 		guc.mutation.SetReadPageLink(v)
@@ -367,14 +346,6 @@ func (guc *GoodUserCreate) createSpec() (*GoodUser, *sqlgraph.CreateSpec) {
 			Column: gooduser.FieldName,
 		})
 		_node.Name = value
-	}
-	if value, ok := guc.mutation.PoolCoinTypeID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUUID,
-			Value:  value,
-			Column: gooduser.FieldPoolCoinTypeID,
-		})
-		_node.PoolCoinTypeID = value
 	}
 	if value, ok := guc.mutation.ReadPageLink(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -537,24 +508,6 @@ func (u *GoodUserUpsert) UpdateName() *GoodUserUpsert {
 // ClearName clears the value of the "name" field.
 func (u *GoodUserUpsert) ClearName() *GoodUserUpsert {
 	u.SetNull(gooduser.FieldName)
-	return u
-}
-
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (u *GoodUserUpsert) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsert {
-	u.Set(gooduser.FieldPoolCoinTypeID, v)
-	return u
-}
-
-// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
-func (u *GoodUserUpsert) UpdatePoolCoinTypeID() *GoodUserUpsert {
-	u.SetExcluded(gooduser.FieldPoolCoinTypeID)
-	return u
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (u *GoodUserUpsert) ClearPoolCoinTypeID() *GoodUserUpsert {
-	u.SetNull(gooduser.FieldPoolCoinTypeID)
 	return u
 }
 
@@ -742,27 +695,6 @@ func (u *GoodUserUpsertOne) UpdateName() *GoodUserUpsertOne {
 func (u *GoodUserUpsertOne) ClearName() *GoodUserUpsertOne {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearName()
-	})
-}
-
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (u *GoodUserUpsertOne) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetPoolCoinTypeID(v)
-	})
-}
-
-// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
-func (u *GoodUserUpsertOne) UpdatePoolCoinTypeID() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdatePoolCoinTypeID()
-	})
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (u *GoodUserUpsertOne) ClearPoolCoinTypeID() *GoodUserUpsertOne {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearPoolCoinTypeID()
 	})
 }
 
@@ -1118,27 +1050,6 @@ func (u *GoodUserUpsertBulk) UpdateName() *GoodUserUpsertBulk {
 func (u *GoodUserUpsertBulk) ClearName() *GoodUserUpsertBulk {
 	return u.Update(func(s *GoodUserUpsert) {
 		s.ClearName()
-	})
-}
-
-// SetPoolCoinTypeID sets the "pool_coin_type_id" field.
-func (u *GoodUserUpsertBulk) SetPoolCoinTypeID(v uuid.UUID) *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.SetPoolCoinTypeID(v)
-	})
-}
-
-// UpdatePoolCoinTypeID sets the "pool_coin_type_id" field to the value that was provided on create.
-func (u *GoodUserUpsertBulk) UpdatePoolCoinTypeID() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.UpdatePoolCoinTypeID()
-	})
-}
-
-// ClearPoolCoinTypeID clears the value of the "pool_coin_type_id" field.
-func (u *GoodUserUpsertBulk) ClearPoolCoinTypeID() *GoodUserUpsertBulk {
-	return u.Update(func(s *GoodUserUpsert) {
-		s.ClearPoolCoinTypeID()
 	})
 }
 

@@ -28,14 +28,14 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
-	AppPool      []ent.Hook
-	Coin         []ent.Hook
-	Fraction     []ent.Hook
-	FractionRule []ent.Hook
-	GoodUser     []ent.Hook
-	OrderUser    []ent.Hook
-	Pool         []ent.Hook
-	RootUser     []ent.Hook
+	AppPool                []ent.Hook
+	Coin                   []ent.Hook
+	FractionWithdrawal     []ent.Hook
+	FractionWithdrawalRule []ent.Hook
+	GoodUser               []ent.Hook
+	OrderUser              []ent.Hook
+	Pool                   []ent.Hook
+	RootUser               []ent.Hook
 }
 
 // Options applies the options on the config object.

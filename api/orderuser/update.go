@@ -21,13 +21,14 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 	req := in.GetInfo()
 	handler, err := orderuser.NewHandler(
 		ctx,
 		orderuser.WithID(req.ID, false),
 		orderuser.WithEntID(req.EntID, false),
+		orderuser.WithCoinTypeID(req.CoinTypeID, false),
 		orderuser.WithProportion(req.Proportion, false),
 		orderuser.WithRevenueAddress(req.RevenueAddress, false),
 		orderuser.WithAutoPay(req.AutoPay, false),
@@ -38,7 +39,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	err = handler.UpdateOrderUser(ctx)
@@ -48,7 +49,7 @@ func (s *Server) UpdateOrderUser(ctx context.Context, in *npool.UpdateOrderUserR
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.UpdateOrderUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	return &npool.UpdateOrderUserResponse{}, nil

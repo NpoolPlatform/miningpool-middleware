@@ -21,7 +21,7 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -36,7 +36,7 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteCoinResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.DeleteCoin(ctx)
@@ -46,7 +46,7 @@ func (s *Server) DeleteCoin(ctx context.Context, in *npool.DeleteCoinRequest) (*
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteCoinResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.DeleteCoinResponse{}, nil

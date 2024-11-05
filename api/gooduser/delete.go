@@ -22,7 +22,7 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	req := in.GetInfo()
@@ -37,7 +37,7 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteGoodUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	err = handler.DeleteGoodUser(ctx)
@@ -47,7 +47,7 @@ func (s *Server) DeleteGoodUser(ctx context.Context, in *npool.DeleteGoodUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.DeleteGoodUserResponse{}, status.Error(codes.Aborted, "aborted err")
 	}
 
 	return &npool.DeleteGoodUserResponse{}, nil

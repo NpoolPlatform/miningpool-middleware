@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ func init() {
 
 var ret = &npool.Coin{
 	EntID:               uuid.NewString(),
-	MiningpoolType:      mpbasetypes.MiningpoolType_F2Pool,
+	MiningPoolType:      mpbasetypes.MiningPoolType_F2Pool,
 	CoinType:            basetypes.CoinType_CoinTypeBitCoin,
 	FixedRevenueAble:    false,
 	LeastTransferAmount: "3.0",
@@ -52,7 +52,7 @@ func createCoin(t *testing.T) {
 		return
 	}
 
-	ret.MiningpoolType = infos[0].MiningpoolType
+	ret.MiningPoolType = infos[0].MiningPoolType
 	ret.CoinType = infos[0].CoinType
 	req.CoinType = &infos[0].CoinType
 
@@ -70,7 +70,7 @@ func TestClient(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("createCoin", createCoin)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }

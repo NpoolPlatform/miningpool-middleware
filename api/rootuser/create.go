@@ -21,7 +21,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -40,7 +40,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.CreateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.CreateRootUser(ctx)
@@ -50,7 +50,7 @@ func (s *Server) CreateRootUser(ctx context.Context, in *npool.CreateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.CreateRootUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.CreateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.CreateRootUserResponse{}, nil

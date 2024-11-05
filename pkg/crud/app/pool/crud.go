@@ -1,8 +1,7 @@
 package apppool
 
 import (
-	"fmt"
-
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
 	apppoolent "github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/apppool"
@@ -54,66 +53,66 @@ type Conds struct {
 
 func SetQueryConds(q *ent.AppPoolQuery, conds *Conds) (*ent.AppPoolQuery, error) { //nolint
 	if conds == nil {
-		return nil, fmt.Errorf("have no any conds")
+		return nil, wlog.Errorf("have no any conds")
 	}
 	if conds.ID != nil {
 		id, ok := conds.ID.Val.(uint32)
 		if !ok {
-			return nil, fmt.Errorf("invalid id")
+			return nil, wlog.Errorf("invalid id")
 		}
 		switch conds.ID.Op {
 		case cruder.EQ:
 			q.Where(apppoolent.ID(id))
 		default:
-			return nil, fmt.Errorf("invalid id field")
+			return nil, wlog.Errorf("invalid id field")
 		}
 	}
 	if conds.EntID != nil {
 		id, ok := conds.EntID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entid")
+			return nil, wlog.Errorf("invalid entid")
 		}
 		switch conds.EntID.Op {
 		case cruder.EQ:
 			q.Where(apppoolent.EntID(id))
 		default:
-			return nil, fmt.Errorf("invalid entid field")
+			return nil, wlog.Errorf("invalid entid field")
 		}
 	}
 	if conds.EntIDs != nil {
 		ids, ok := conds.EntIDs.Val.([]uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid entids")
+			return nil, wlog.Errorf("invalid entids")
 		}
 		switch conds.EntIDs.Op {
 		case cruder.IN:
 			q.Where(apppoolent.EntIDIn(ids...))
 		default:
-			return nil, fmt.Errorf("invalid entids field")
+			return nil, wlog.Errorf("invalid entids field")
 		}
 	}
 	if conds.AppID != nil {
 		id, ok := conds.AppID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid appid")
+			return nil, wlog.Errorf("invalid appid")
 		}
 		switch conds.AppID.Op {
 		case cruder.EQ:
 			q.Where(apppoolent.AppID(id))
 		default:
-			return nil, fmt.Errorf("invalid appid field")
+			return nil, wlog.Errorf("invalid appid field")
 		}
 	}
 	if conds.PoolID != nil {
 		id, ok := conds.PoolID.Val.(uuid.UUID)
 		if !ok {
-			return nil, fmt.Errorf("invalid poolid")
+			return nil, wlog.Errorf("invalid poolid")
 		}
 		switch conds.PoolID.Op {
 		case cruder.EQ:
 			q.Where(apppoolent.PoolID(id))
 		default:
-			return nil, fmt.Errorf("invalid poolid field")
+			return nil, wlog.Errorf("invalid poolid field")
 		}
 	}
 	return q, nil

@@ -82,6 +82,40 @@ func GetOrderUsers(ctx context.Context, conds *npool.Conds, offset, limit int32)
 	return infos.([]*npool.OrderUser), total, nil
 }
 
+func GetOrderUserProportion(ctx context.Context, id, cointypeid string) (string, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.GetOrderUserProportion(ctx, &npool.GetOrderUserProportionRequest{
+			EntID:      id,
+			CoinTypeID: cointypeid,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Proportion, nil
+	})
+	if err != nil {
+		return "", err
+	}
+	return info.(string), nil
+}
+
+func GetOrderUserBalance(ctx context.Context, id, cointypeid string) (*npool.BalanceInfo, error) {
+	info, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
+		resp, err := cli.GetOrderUserBalance(ctx, &npool.GetOrderUserBalanceRequest{
+			EntID:      id,
+			CoinTypeID: cointypeid,
+		})
+		if err != nil {
+			return nil, err
+		}
+		return resp.Info, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return info.(*npool.BalanceInfo), nil
+}
+
 func UpdateOrderUser(ctx context.Context, in *npool.OrderUserReq) error {
 	_, err := do(ctx, func(_ctx context.Context, cli npool.MiddlewareClient) (cruder.Any, error) {
 		_, err := cli.UpdateOrderUser(ctx, &npool.UpdateOrderUserRequest{

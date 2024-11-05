@@ -6,17 +6,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/gooduser"
-	"github.com/google/uuid"
 )
 
 type sqlHandler struct {
 	*Handler
-	BondPoolCoinTypeID *uuid.UUID
-	BondName           *string
-	bondVals           map[string]string
-	baseVals           map[string]string
-	idVals             map[string]string
+	BondName *string
+	bondVals map[string]string
+	baseVals map[string]string
+	idVals   map[string]string
 }
 
 func (h *Handler) newSQLHandler() *sqlHandler {
@@ -33,29 +32,21 @@ func (h *sqlHandler) baseKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[gooduser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[gooduser.FieldEntID] = string(strBytes)
-	}
-	if h.PoolCoinTypeID != nil {
-		strBytes, err := json.Marshal(h.PoolCoinTypeID.String())
-		if err != nil {
-			return err
-		}
-		h.baseVals[gooduser.FieldPoolCoinTypeID] = string(strBytes)
-		h.BondPoolCoinTypeID = h.PoolCoinTypeID
 	}
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[gooduser.FieldName] = string(strBytes)
 		h.BondName = h.Name
@@ -63,33 +54,24 @@ func (h *sqlHandler) baseKeys() error {
 	if h.RootUserID != nil {
 		strBytes, err := json.Marshal(*h.RootUserID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[gooduser.FieldRootUserID] = string(strBytes)
 	}
 	if h.ReadPageLink != nil {
 		strBytes, err := json.Marshal(*h.ReadPageLink)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[gooduser.FieldReadPageLink] = string(strBytes)
 	}
 
-	if h.BondPoolCoinTypeID == nil {
-		return fmt.Errorf("please give poolcointypeid")
-	}
-	strBytes, err := json.Marshal(h.BondPoolCoinTypeID.String())
-	if err != nil {
-		return err
-	}
-	h.bondVals[gooduser.FieldPoolCoinTypeID] = string(strBytes)
-
 	if h.BondName == nil {
-		return fmt.Errorf("please give name")
+		return wlog.Errorf("please give name")
 	}
-	strBytes, err = json.Marshal(*h.BondName)
+	strBytes, err := json.Marshal(*h.BondName)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[gooduser.FieldName] = string(strBytes)
 	return nil
@@ -99,14 +81,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[gooduser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[gooduser.FieldEntID] = string(strBytes)
 	}
@@ -117,7 +99,7 @@ func (h *sqlHandler) idKeys() error {
 func (h *sqlHandler) genCreateSQL() (string, error) {
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, gooduser.FieldID)
 
@@ -155,13 +137,13 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
 	err := h.baseKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, gooduser.FieldID)
 	delete(h.baseVals, gooduser.FieldEntID)
 
 	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
+		return "", wlog.Errorf("update nothing")
 	}
 
 	now := uint32(time.Now().Unix())
@@ -174,10 +156,10 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 
 	err = h.idKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds

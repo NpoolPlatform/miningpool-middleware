@@ -2,8 +2,8 @@ package pool
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/pool"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
@@ -25,7 +25,7 @@ func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) 
 	handler := &Handler{}
 	for _, opt := range options {
 		if err := opt(ctx, handler); err != nil {
-			return nil, err
+			return nil, wlog.WrapError(err)
 		}
 	}
 	return handler, nil
@@ -35,7 +35,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -48,31 +48,31 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
 	}
 }
 
-func WithMiningpoolType(miningpooltype *basetypes.MiningpoolType, must bool) func(context.Context, *Handler) error {
+func WithMiningPoolType(miningpooltype *basetypes.MiningPoolType, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if miningpooltype == nil {
 			if must {
-				return fmt.Errorf("invalid miningpooltype")
+				return wlog.Errorf("invalid miningpooltype")
 			}
 			return nil
 		}
-		if *miningpooltype == basetypes.MiningpoolType_DefaultMiningpoolType {
-			return fmt.Errorf("invalid miningpooltype,not allow be default type")
+		if *miningpooltype == basetypes.MiningPoolType_DefaultMiningPoolType {
+			return wlog.Errorf("invalid miningpooltype,not allow be default type")
 		}
-		h.MiningpoolType = miningpooltype
+		h.MiningPoolType = miningpooltype
 
 		return nil
 	}
@@ -82,7 +82,7 @@ func WithName(name *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if name == nil {
 			if must {
-				return fmt.Errorf("invalid name")
+				return wlog.Errorf("invalid name")
 			}
 			return nil
 		}
@@ -95,7 +95,7 @@ func WithSite(site *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if site == nil {
 			if must {
-				return fmt.Errorf("invalid site")
+				return wlog.Errorf("invalid site")
 			}
 			return nil
 		}
@@ -108,7 +108,7 @@ func WithLogo(logo *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if logo == nil {
 			if must {
-				return fmt.Errorf("invalid logo")
+				return wlog.Errorf("invalid logo")
 			}
 			return nil
 		}
@@ -121,7 +121,7 @@ func WithDescription(description *string, must bool) func(context.Context, *Hand
 	return func(ctx context.Context, h *Handler) error {
 		if description == nil {
 			if must {
-				return fmt.Errorf("invalid description")
+				return wlog.Errorf("invalid description")
 			}
 			return nil
 		}
@@ -146,7 +146,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -158,7 +158,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}
@@ -167,10 +167,10 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 				Val: ids,
 			}
 		}
-		if conds.MiningpoolType != nil {
-			h.Conds.MiningpoolType = &cruder.Cond{
-				Op:  conds.GetMiningpoolType().GetOp(),
-				Val: basetypes.MiningpoolType(conds.GetMiningpoolType().GetValue()),
+		if conds.MiningPoolType != nil {
+			h.Conds.MiningPoolType = &cruder.Cond{
+				Op:  conds.GetMiningPoolType().GetOp(),
+				Val: basetypes.MiningPoolType(conds.GetMiningPoolType().GetValue()),
 			}
 		}
 		if conds.Name != nil {

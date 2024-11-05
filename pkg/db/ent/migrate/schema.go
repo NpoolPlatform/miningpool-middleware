@@ -41,7 +41,6 @@ var (
 		{Name: "pool_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "coin_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "revenue_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "fee_ratio", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 		{Name: "fixed_revenue_able", Type: field.TypeBool, Nullable: true, Default: false},
 		{Name: "least_transfer_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
@@ -59,10 +58,15 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{CoinsColumns[4]},
 			},
+			{
+				Name:    "coin_pool_id_coin_type_id",
+				Unique:  false,
+				Columns: []*schema.Column{CoinsColumns[5], CoinsColumns[6]},
+			},
 		},
 	}
-	// FractionsColumns holds the columns for the "fractions" table.
-	FractionsColumns = []*schema.Column{
+	// FractionWithdrawalsColumns holds the columns for the "fraction_withdrawals" table.
+	FractionWithdrawalsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
@@ -71,31 +75,32 @@ var (
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "order_user_id", Type: field.TypeUUID, Nullable: true},
-		{Name: "withdraw_state", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "coin_type_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "fraction_withdraw_state", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "withdraw_at", Type: field.TypeUint32, Nullable: true, Default: 0},
 		{Name: "promise_pay_at", Type: field.TypeUint32, Nullable: true, Default: 0},
-		{Name: "msg", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "msg", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 	}
-	// FractionsTable holds the schema information for the "fractions" table.
-	FractionsTable = &schema.Table{
-		Name:       "fractions",
-		Columns:    FractionsColumns,
-		PrimaryKey: []*schema.Column{FractionsColumns[0]},
+	// FractionWithdrawalsTable holds the schema information for the "fraction_withdrawals" table.
+	FractionWithdrawalsTable = &schema.Table{
+		Name:       "fraction_withdrawals",
+		Columns:    FractionWithdrawalsColumns,
+		PrimaryKey: []*schema.Column{FractionWithdrawalsColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "fraction_ent_id",
+				Name:    "fractionwithdrawal_ent_id",
 				Unique:  true,
-				Columns: []*schema.Column{FractionsColumns[4]},
+				Columns: []*schema.Column{FractionWithdrawalsColumns[4]},
 			},
 			{
-				Name:    "fraction_app_id_user_id",
+				Name:    "fractionwithdrawal_app_id_user_id",
 				Unique:  false,
-				Columns: []*schema.Column{FractionsColumns[5], FractionsColumns[6]},
+				Columns: []*schema.Column{FractionWithdrawalsColumns[5], FractionWithdrawalsColumns[6]},
 			},
 		},
 	}
-	// FractionRulesColumns holds the columns for the "fraction_rules" table.
-	FractionRulesColumns = []*schema.Column{
+	// FractionWithdrawalRulesColumns holds the columns for the "fraction_withdrawal_rules" table.
+	FractionWithdrawalRulesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint32, Increment: true},
 		{Name: "created_at", Type: field.TypeUint32},
 		{Name: "updated_at", Type: field.TypeUint32},
@@ -103,19 +108,20 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "withdraw_interval", Type: field.TypeUint32, Nullable: true, Default: 0},
-		{Name: "min_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-		{Name: "withdraw_rate", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "least_withdrawal_amount", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "payout_threshold", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
+		{Name: "withdraw_fee", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
 	}
-	// FractionRulesTable holds the schema information for the "fraction_rules" table.
-	FractionRulesTable = &schema.Table{
-		Name:       "fraction_rules",
-		Columns:    FractionRulesColumns,
-		PrimaryKey: []*schema.Column{FractionRulesColumns[0]},
+	// FractionWithdrawalRulesTable holds the schema information for the "fraction_withdrawal_rules" table.
+	FractionWithdrawalRulesTable = &schema.Table{
+		Name:       "fraction_withdrawal_rules",
+		Columns:    FractionWithdrawalRulesColumns,
+		PrimaryKey: []*schema.Column{FractionWithdrawalRulesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "fractionrule_ent_id",
+				Name:    "fractionwithdrawalrule_ent_id",
 				Unique:  true,
-				Columns: []*schema.Column{FractionRulesColumns[4]},
+				Columns: []*schema.Column{FractionWithdrawalRulesColumns[4]},
 			},
 		},
 	}
@@ -128,7 +134,6 @@ var (
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
 		{Name: "root_user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "pool_coin_type_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
 	}
 	// GoodUsersTable holds the schema information for the "good_users" table.
@@ -160,10 +165,7 @@ var (
 		{Name: "user_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "app_id", Type: field.TypeUUID, Nullable: true},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "proportion", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"mysql": "decimal(37,18)"}},
-		{Name: "revenue_address", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "read_page_link", Type: field.TypeString, Nullable: true, Size: 2147483647, Default: ""},
-		{Name: "auto_pay", Type: field.TypeBool, Nullable: true, Default: false},
 	}
 	// OrderUsersTable holds the schema information for the "order_users" table.
 	OrderUsersTable = &schema.Table{
@@ -195,7 +197,7 @@ var (
 		{Name: "updated_at", Type: field.TypeUint32},
 		{Name: "deleted_at", Type: field.TypeUint32},
 		{Name: "ent_id", Type: field.TypeUUID, Unique: true},
-		{Name: "miningpool_type", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "mining_pool_type", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "name", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "site", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "logo", Type: field.TypeString, Nullable: true, Default: ""},
@@ -246,8 +248,8 @@ var (
 	Tables = []*schema.Table{
 		AppPoolsTable,
 		CoinsTable,
-		FractionsTable,
-		FractionRulesTable,
+		FractionWithdrawalsTable,
+		FractionWithdrawalRulesTable,
 		GoodUsersTable,
 		OrderUsersTable,
 		PoolsTable,

@@ -159,26 +159,6 @@ func (cu *CoinUpdate) ClearCoinType() *CoinUpdate {
 	return cu
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cu *CoinUpdate) SetRevenueType(s string) *CoinUpdate {
-	cu.mutation.SetRevenueType(s)
-	return cu
-}
-
-// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
-func (cu *CoinUpdate) SetNillableRevenueType(s *string) *CoinUpdate {
-	if s != nil {
-		cu.SetRevenueType(*s)
-	}
-	return cu
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (cu *CoinUpdate) ClearRevenueType() *CoinUpdate {
-	cu.mutation.ClearRevenueType()
-	return cu
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (cu *CoinUpdate) SetFeeRatio(d decimal.Decimal) *CoinUpdate {
 	cu.mutation.SetFeeRatio(d)
@@ -472,19 +452,6 @@ func (cu *CoinUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: coin.FieldCoinType,
 		})
 	}
-	if value, ok := cu.mutation.RevenueType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldRevenueType,
-		})
-	}
-	if cu.mutation.RevenueTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldRevenueType,
-		})
-	}
 	if value, ok := cu.mutation.FeeRatio(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeOther,
@@ -704,26 +671,6 @@ func (cuo *CoinUpdateOne) SetNillableCoinType(s *string) *CoinUpdateOne {
 // ClearCoinType clears the value of the "coin_type" field.
 func (cuo *CoinUpdateOne) ClearCoinType() *CoinUpdateOne {
 	cuo.mutation.ClearCoinType()
-	return cuo
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (cuo *CoinUpdateOne) SetRevenueType(s string) *CoinUpdateOne {
-	cuo.mutation.SetRevenueType(s)
-	return cuo
-}
-
-// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
-func (cuo *CoinUpdateOne) SetNillableRevenueType(s *string) *CoinUpdateOne {
-	if s != nil {
-		cuo.SetRevenueType(*s)
-	}
-	return cuo
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (cuo *CoinUpdateOne) ClearRevenueType() *CoinUpdateOne {
-	cuo.mutation.ClearRevenueType()
 	return cuo
 }
 
@@ -1048,19 +995,6 @@ func (cuo *CoinUpdateOne) sqlSave(ctx context.Context) (_node *Coin, err error) 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Column: coin.FieldCoinType,
-		})
-	}
-	if value, ok := cuo.mutation.RevenueType(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldRevenueType,
-		})
-	}
-	if cuo.mutation.RevenueTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: coin.FieldRevenueType,
 		})
 	}
 	if value, ok := cuo.mutation.FeeRatio(); ok {

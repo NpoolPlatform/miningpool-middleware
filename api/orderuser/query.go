@@ -23,7 +23,7 @@ func (s *Server) GetOrderUser(ctx context.Context, in *npool.GetOrderUserRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	info, err := handler.GetOrderUser(ctx)
@@ -33,7 +33,7 @@ func (s *Server) GetOrderUser(ctx context.Context, in *npool.GetOrderUserRequest
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUserResponse{
@@ -54,7 +54,7 @@ func (s *Server) GetOrderUsers(ctx context.Context, in *npool.GetOrderUsersReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUsersResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	infos, total, err := handler.GetOrderUsers(ctx)
@@ -64,11 +64,77 @@ func (s *Server) GetOrderUsers(ctx context.Context, in *npool.GetOrderUsersReque
 			"In", in,
 			"Error", err,
 		)
-		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.GetOrderUsersResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.GetOrderUsersResponse{
 		Infos: infos,
 		Total: total,
+	}, nil
+}
+
+func (s *Server) GetOrderUserProportion(ctx context.Context, in *npool.GetOrderUserProportionRequest) (*npool.GetOrderUserProportionResponse, error) {
+	handler, err := orderuser.NewHandler(
+		ctx,
+		orderuser.WithEntID(&in.EntID, true),
+		orderuser.WithCoinTypeID(&in.CoinTypeID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserProportion",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, "internal server err")
+	}
+
+	proportion, err := handler.GetOrderUserProportion(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserProportion",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserProportionResponse{}, status.Error(codes.Internal, "internal server err")
+	}
+
+	return &npool.GetOrderUserProportionResponse{
+		Proportion: proportion,
+	}, nil
+}
+
+func (s *Server) GetOrderUserBalance(ctx context.Context, in *npool.GetOrderUserBalanceRequest) (*npool.GetOrderUserBalanceResponse, error) {
+	handler, err := orderuser.NewHandler(
+		ctx,
+		orderuser.WithEntID(&in.EntID, true),
+		orderuser.WithCoinTypeID(&in.CoinTypeID, true),
+	)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserBalance",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, "internal server err")
+	}
+
+	assetsBalance, err := handler.GetOrderUserBalance(ctx)
+	if err != nil {
+		logger.Sugar().Errorw(
+			"GetOrderUserBalance",
+			"In", in,
+			"Error", err,
+		)
+		return &npool.GetOrderUserBalanceResponse{}, status.Error(codes.Internal, "internal server err")
+	}
+
+	return &npool.GetOrderUserBalanceResponse{
+		Info: &npool.BalanceInfo{
+			Balance:              assetsBalance.Balance,
+			Paid:                 assetsBalance.Paid,
+			TotalIncome:          assetsBalance.TotalIncome,
+			YesterdayIncome:      assetsBalance.YesterdayIncome,
+			EstimatedTodayIncome: assetsBalance.EstimatedTodayIncome,
+		},
 	}, nil
 }

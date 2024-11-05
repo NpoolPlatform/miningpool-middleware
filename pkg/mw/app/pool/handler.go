@@ -2,8 +2,8 @@ package apppool
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/app/pool"
 	constant "github.com/NpoolPlatform/miningpool-middleware/pkg/const"
 	apppoolcrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/app/pool"
@@ -29,7 +29,7 @@ func NewHandler(ctx context.Context, options ...func(context.Context, *Handler) 
 	handler := &Handler{}
 	for _, opt := range options {
 		if err := opt(ctx, handler); err != nil {
-			return nil, err
+			return nil, wlog.WrapError(err)
 		}
 	}
 	return handler, nil
@@ -39,7 +39,7 @@ func WithID(u *uint32, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if u == nil {
 			if must {
-				return fmt.Errorf("invalid id")
+				return wlog.Errorf("invalid id")
 			}
 			return nil
 		}
@@ -52,13 +52,13 @@ func WithEntID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid entid")
+				return wlog.Errorf("invalid entid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &_id
 		return nil
@@ -69,13 +69,13 @@ func WithAppID(id *string, must bool) func(context.Context, *Handler) error {
 	return func(ctx context.Context, h *Handler) error {
 		if id == nil {
 			if must {
-				return fmt.Errorf("invalid appid")
+				return wlog.Errorf("invalid appid")
 			}
 			return nil
 		}
 		_id, err := uuid.Parse(*id)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.AppID = &_id
 		return nil
@@ -86,20 +86,20 @@ func WithPoolID(poolid *string, must bool) func(context.Context, *Handler) error
 	return func(ctx context.Context, h *Handler) error {
 		if poolid == nil {
 			if must {
-				return fmt.Errorf("invalid poolid")
+				return wlog.Errorf("invalid poolid")
 			}
 			return nil
 		}
 		poolH, err := pool.NewHandler(ctx, pool.WithEntID(poolid, true))
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err := poolH.ExistPool(ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		if !exist {
-			return fmt.Errorf("invalid poolid")
+			return wlog.Errorf("invalid poolid")
 		}
 		h.PoolID = poolH.EntID
 		return nil
@@ -122,7 +122,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.EntID != nil {
 			id, err := uuid.Parse(conds.GetEntID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.EntID = &cruder.Cond{
 				Op:  conds.GetEntID().GetOp(),
@@ -134,7 +134,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 			for _, id := range conds.GetEntIDs().GetValue() {
 				_id, err := uuid.Parse(id)
 				if err != nil {
-					return err
+					return wlog.WrapError(err)
 				}
 				ids = append(ids, _id)
 			}
@@ -146,7 +146,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.AppID != nil {
 			id, err := uuid.Parse(conds.GetAppID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.AppID = &cruder.Cond{
 				Op:  conds.GetAppID().GetOp(),
@@ -156,7 +156,7 @@ func WithConds(conds *npool.Conds) func(context.Context, *Handler) error {
 		if conds.PoolID != nil {
 			id, err := uuid.Parse(conds.GetPoolID().GetValue())
 			if err != nil {
-				return err
+				return wlog.WrapError(err)
 			}
 			h.Conds.PoolID = &cruder.Cond{
 				Op:  conds.GetPoolID().GetOp(),

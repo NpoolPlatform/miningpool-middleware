@@ -3,6 +3,7 @@ package gooduser
 import (
 	"context"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	goodusercrud "github.com/NpoolPlatform/miningpool-middleware/pkg/crud/gooduser"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent"
@@ -23,12 +24,12 @@ func (h *Handler) ExistGoodUser(ctx context.Context) (bool, error) {
 			).
 			Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }
@@ -38,16 +39,16 @@ func (h *Handler) ExistGoodUserConds(ctx context.Context) (bool, error) {
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		stm, err := goodusercrud.SetQueryConds(cli.GoodUser.Query(), h.Conds)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		exist, err = stm.Exist(_ctx)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		return nil
 	})
 	if err != nil {
-		return false, err
+		return false, wlog.WrapError(err)
 	}
 	return exist, nil
 }

@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: Always
           volumeMounts:
             - name: service-config
-              mountPath: /etc/MiningpoolMiddleware
+              mountPath: /etc/MiningPoolMiddleware
           env:
             - name: ENV_ENVIRONMENT_TARGET
               valueFrom:
@@ -53,7 +53,7 @@ spec:
             name: miningpool-middleware-config
             items:
               - key: service-conf
-                path: MiningpoolMiddleware.viper.yaml
+                path: MiningPoolMiddleware.viper.yaml
 ---
 apiVersion: v1
 kind: Service

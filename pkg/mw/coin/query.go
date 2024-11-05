@@ -2,9 +2,9 @@ package coin
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/coin"
@@ -33,7 +33,6 @@ func (h *queryHandler) selectCoin(stm *ent.CoinQuery) {
 		coinent.FieldPoolID,
 		coinent.FieldCoinTypeID,
 		coinent.FieldCoinType,
-		coinent.FieldRevenueType,
 		coinent.FieldFeeRatio,
 		coinent.FieldFixedRevenueAble,
 		coinent.FieldLeastTransferAmount,
@@ -44,7 +43,7 @@ func (h *queryHandler) selectCoin(stm *ent.CoinQuery) {
 
 func (h *queryHandler) queryCoin(cli *ent.Client) error {
 	if h.ID == nil && h.EntID == nil {
-		return fmt.Errorf("invalid id")
+		return wlog.Errorf("invalid id")
 	}
 	stm := cli.Coin.Query().Where(coinent.DeletedAt(0))
 	if h.ID != nil {
@@ -60,17 +59,18 @@ func (h *queryHandler) queryCoin(cli *ent.Client) error {
 func (h *queryHandler) queryCoins(ctx context.Context, cli *ent.Client) error {
 	stm, err := coincrud.SetQueryConds(cli.Coin.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 
+	// just for count
 	stmCount, err := coincrud.SetQueryConds(cli.Coin.Query(), h.Conds)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	stmCount.Modify(h.queryJoinPool)
 	total, err := stmCount.Count(ctx)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.total = uint32(total)
 
@@ -92,12 +92,12 @@ func (h *queryHandler) queryJoinPool(s *sql.Selector) {
 	).OnP(
 		sql.EQ(poolT.C(pool.FieldDeletedAt), 0),
 	).AppendSelect(
-		poolT.C(pool.FieldMiningpoolType),
+		poolT.C(pool.FieldMiningPoolType),
 	)
 
-	if h.Conds != nil && h.Conds.MiningpoolType != nil {
-		if miningpooltype, ok := h.Conds.MiningpoolType.Val.(mpbasetypes.MiningpoolType); ok {
-			s.Where(sql.EQ(poolT.C(pool.FieldMiningpoolType), miningpooltype))
+	if h.Conds != nil && h.Conds.MiningPoolType != nil {
+		if miningpooltype, ok := h.Conds.MiningPoolType.Val.(mpbasetypes.MiningPoolType); ok {
+			s.Where(sql.EQ(poolT.C(pool.FieldMiningPoolType), miningpooltype.String()))
 		}
 	}
 }
@@ -108,9 +108,8 @@ func (h *queryHandler) scan(ctx context.Context) error {
 
 func (h *queryHandler) formalize() {
 	for _, info := range h.infos {
-		info.MiningpoolType = mpbasetypes.MiningpoolType(mpbasetypes.MiningpoolType_value[info.MiningpoolTypeStr])
+		info.MiningPoolType = mpbasetypes.MiningPoolType(mpbasetypes.MiningPoolType_value[info.MiningPoolTypeStr])
 		info.CoinType = basetypes.CoinType(basetypes.CoinType_value[info.CoinTypeStr])
-		info.RevenueType = mpbasetypes.RevenueType(mpbasetypes.RevenueType_value[info.RevenueTypeStr])
 	}
 }
 
@@ -121,7 +120,7 @@ func (h *Handler) GetCoin(ctx context.Context) (*npool.Coin, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryCoin(cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		const singleRowLimit = 2
@@ -129,13 +128,14 @@ func (h *Handler) GetCoin(ctx context.Context) (*npool.Coin, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, err
+		return nil, wlog.WrapError(err)
 	}
+
 	if len(handler.infos) == 0 {
 		return nil, nil
 	}
 	if len(handler.infos) > 1 {
-		return nil, fmt.Errorf("too many record")
+		return nil, wlog.Errorf("too many record")
 	}
 
 	handler.formalize()
@@ -149,7 +149,7 @@ func (h *Handler) GetCoins(ctx context.Context) ([]*npool.Coin, uint32, error) {
 
 	err := db.WithClient(ctx, func(_ctx context.Context, cli *ent.Client) error {
 		if err := handler.queryCoins(ctx, cli); err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		handler.queryJoin()
 		handler.stm.
@@ -159,7 +159,7 @@ func (h *Handler) GetCoins(ctx context.Context) ([]*npool.Coin, uint32, error) {
 		return handler.scan(_ctx)
 	})
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, wlog.WrapError(err)
 	}
 
 	handler.formalize()

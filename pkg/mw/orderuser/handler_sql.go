@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/NpoolPlatform/go-service-framework/pkg/wlog"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/db/ent/orderuser"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 )
 
 type sqlHandler struct {
@@ -34,12 +34,9 @@ func (h *sqlHandler) baseKeysDefault() error {
 	if h.EntID == nil {
 		entID, err := uuid.NewUUID()
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.EntID = &entID
-	}
-	if h.Proportion == nil {
-		h.Proportion = &decimal.Decimal{}
 	}
 	return nil
 }
@@ -49,35 +46,35 @@ func (h *sqlHandler) baseKeysFiled() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldEntID] = string(strBytes)
 	}
 	if h.AppID != nil {
 		strBytes, err := json.Marshal(*h.AppID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldAppID] = string(strBytes)
 	}
 	if h.UserID != nil {
 		strBytes, err := json.Marshal(*h.UserID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldUserID] = string(strBytes)
 	}
 	if h.GoodUserID != nil {
 		strBytes, err := json.Marshal(*h.GoodUserID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldGoodUserID] = string(strBytes)
 		h.BondGoodUserID = h.GoodUserID
@@ -85,56 +82,33 @@ func (h *sqlHandler) baseKeysFiled() error {
 	if h.Name != nil {
 		strBytes, err := json.Marshal(*h.Name)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldName] = string(strBytes)
 		h.BondName = h.Name
 	}
-
-	if h.Proportion != nil {
-		strBytes, err := json.Marshal(*h.Proportion)
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldProportion] = string(strBytes)
-	}
-	if h.RevenueAddress != nil {
-		strBytes, err := json.Marshal(*h.RevenueAddress)
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldRevenueAddress] = string(strBytes)
-	}
 	if h.ReadPageLink != nil {
 		strBytes, err := json.Marshal(*h.ReadPageLink)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.baseVals[orderuser.FieldReadPageLink] = string(strBytes)
 	}
-	if h.AutoPay != nil {
-		strBytes, err := json.Marshal(*h.AutoPay)
-		if err != nil {
-			return err
-		}
-		h.baseVals[orderuser.FieldAutoPay] = string(strBytes)
-	}
-
 	if h.BondGoodUserID == nil {
-		return fmt.Errorf("please give gooduserid")
+		return wlog.Errorf("please give gooduserid")
 	}
 	strBytes, err := json.Marshal(h.BondGoodUserID.String())
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[orderuser.FieldGoodUserID] = string(strBytes)
 
 	if h.BondName == nil {
-		return fmt.Errorf("please give name")
+		return wlog.Errorf("please give name")
 	}
 	strBytes, err = json.Marshal(*h.BondName)
 	if err != nil {
-		return err
+		return wlog.WrapError(err)
 	}
 	h.bondVals[orderuser.FieldName] = string(strBytes)
 	return nil
@@ -144,14 +118,14 @@ func (h *sqlHandler) idKeys() error {
 	if h.ID != nil {
 		strBytes, err := json.Marshal(*h.ID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[orderuser.FieldID] = string(strBytes)
 	}
 	if h.EntID != nil {
 		strBytes, err := json.Marshal(*h.EntID)
 		if err != nil {
-			return err
+			return wlog.WrapError(err)
 		}
 		h.idVals[orderuser.FieldEntID] = string(strBytes)
 	}
@@ -162,11 +136,11 @@ func (h *sqlHandler) idKeys() error {
 func (h *sqlHandler) genCreateSQL() (string, error) {
 	err := h.baseKeysDefault()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	err = h.baseKeysFiled()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, orderuser.FieldID)
 
@@ -190,7 +164,8 @@ func (h *sqlHandler) genCreateSQL() (string, error) {
 
 	sql := fmt.Sprintf("insert into %v (%v) select * from (select %v) as tmp "+
 		"where not exists (select * from %v where %v and deleted_at=0)"+
-		"and exists (select * from good_users A left join coins B on A.pool_coin_type_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v');",
+		"and exists "+
+		"(select * from good_users A left join root_users B on A.root_user_id=B.ent_id left join app_pools C on B.pool_id=C.pool_id where A.ent_id='%v' and C.app_id='%v' and A.deleted_at=0 and B.deleted_at=0 and C.deleted_at=0);",
 		orderuser.Table,
 		strings.Join(keys, ","),
 		strings.Join(selectVals, ","),
@@ -208,17 +183,17 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 	// get normal feilds
 	err := h.baseKeysFiled()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	delete(h.baseVals, orderuser.FieldID)
 	delete(h.baseVals, orderuser.FieldEntID)
 
-	if len(h.baseVals) == 0 {
-		return "", fmt.Errorf("update nothing")
-	}
-
 	now := uint32(time.Now().Unix())
 	h.baseVals[orderuser.FieldUpdatedAt] = fmt.Sprintf("%v", now)
+
+	if len(h.baseVals) == 0 {
+		return "", wlog.Errorf("update nothing")
+	}
 
 	keys := []string{}
 	for k, v := range h.baseVals {
@@ -227,10 +202,10 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 
 	err = h.idKeys()
 	if err != nil {
-		return "", err
+		return "", wlog.WrapError(err)
 	}
 	if len(h.idVals) == 0 {
-		return "", fmt.Errorf("have neither id and ent_id")
+		return "", wlog.Errorf("have neither id and ent_id")
 	}
 
 	// get id and ent_id feilds
@@ -253,5 +228,6 @@ func (h *sqlHandler) genUpdateSQL() (string, error) {
 		orderuser.Table,
 		strings.Join(bondVals, " AND "),
 	)
+
 	return sql, nil
 }

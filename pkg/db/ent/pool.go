@@ -24,8 +24,8 @@ type Pool struct {
 	DeletedAt uint32 `json:"deleted_at,omitempty"`
 	// EntID holds the value of the "ent_id" field.
 	EntID uuid.UUID `json:"ent_id,omitempty"`
-	// MiningpoolType holds the value of the "miningpool_type" field.
-	MiningpoolType string `json:"miningpool_type,omitempty"`
+	// MiningPoolType holds the value of the "mining_pool_type" field.
+	MiningPoolType string `json:"mining_pool_type,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Site holds the value of the "site" field.
@@ -43,7 +43,7 @@ func (*Pool) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case pool.FieldID, pool.FieldCreatedAt, pool.FieldUpdatedAt, pool.FieldDeletedAt:
 			values[i] = new(sql.NullInt64)
-		case pool.FieldMiningpoolType, pool.FieldName, pool.FieldSite, pool.FieldLogo, pool.FieldDescription:
+		case pool.FieldMiningPoolType, pool.FieldName, pool.FieldSite, pool.FieldLogo, pool.FieldDescription:
 			values[i] = new(sql.NullString)
 		case pool.FieldEntID:
 			values[i] = new(uuid.UUID)
@@ -92,11 +92,11 @@ func (po *Pool) assignValues(columns []string, values []interface{}) error {
 			} else if value != nil {
 				po.EntID = *value
 			}
-		case pool.FieldMiningpoolType:
+		case pool.FieldMiningPoolType:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field miningpool_type", values[i])
+				return fmt.Errorf("unexpected type %T for field mining_pool_type", values[i])
 			} else if value.Valid {
-				po.MiningpoolType = value.String
+				po.MiningPoolType = value.String
 			}
 		case pool.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -162,8 +162,8 @@ func (po *Pool) String() string {
 	builder.WriteString("ent_id=")
 	builder.WriteString(fmt.Sprintf("%v", po.EntID))
 	builder.WriteString(", ")
-	builder.WriteString("miningpool_type=")
-	builder.WriteString(po.MiningpoolType)
+	builder.WriteString("mining_pool_type=")
+	builder.WriteString(po.MiningPoolType)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(po.Name)

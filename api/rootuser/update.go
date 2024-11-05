@@ -21,7 +21,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	req := in.GetInfo()
@@ -40,7 +40,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateRootUserResponse{}, status.Error(codes.InvalidArgument, err.Error())
+		return &npool.UpdateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	err = handler.UpdateRootUser(ctx)
@@ -50,7 +50,7 @@ func (s *Server) UpdateRootUser(ctx context.Context, in *npool.UpdateRootUserReq
 			"In", in,
 			"Error", err,
 		)
-		return &npool.UpdateRootUserResponse{}, status.Error(codes.Internal, err.Error())
+		return &npool.UpdateRootUserResponse{}, status.Error(codes.Internal, "internal server err")
 	}
 
 	return &npool.UpdateRootUserResponse{}, nil

@@ -121,20 +121,6 @@ func (cc *CoinCreate) SetNillableCoinType(s *string) *CoinCreate {
 	return cc
 }
 
-// SetRevenueType sets the "revenue_type" field.
-func (cc *CoinCreate) SetRevenueType(s string) *CoinCreate {
-	cc.mutation.SetRevenueType(s)
-	return cc
-}
-
-// SetNillableRevenueType sets the "revenue_type" field if the given value is not nil.
-func (cc *CoinCreate) SetNillableRevenueType(s *string) *CoinCreate {
-	if s != nil {
-		cc.SetRevenueType(*s)
-	}
-	return cc
-}
-
 // SetFeeRatio sets the "fee_ratio" field.
 func (cc *CoinCreate) SetFeeRatio(d decimal.Decimal) *CoinCreate {
 	cc.mutation.SetFeeRatio(d)
@@ -336,10 +322,6 @@ func (cc *CoinCreate) defaults() error {
 		v := coin.DefaultCoinType
 		cc.mutation.SetCoinType(v)
 	}
-	if _, ok := cc.mutation.RevenueType(); !ok {
-		v := coin.DefaultRevenueType
-		cc.mutation.SetRevenueType(v)
-	}
 	if _, ok := cc.mutation.FeeRatio(); !ok {
 		v := coin.DefaultFeeRatio
 		cc.mutation.SetFeeRatio(v)
@@ -466,14 +448,6 @@ func (cc *CoinCreate) createSpec() (*Coin, *sqlgraph.CreateSpec) {
 			Column: coin.FieldCoinType,
 		})
 		_node.CoinType = value
-	}
-	if value, ok := cc.mutation.RevenueType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: coin.FieldRevenueType,
-		})
-		_node.RevenueType = value
 	}
 	if value, ok := cc.mutation.FeeRatio(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -686,24 +660,6 @@ func (u *CoinUpsert) UpdateCoinType() *CoinUpsert {
 // ClearCoinType clears the value of the "coin_type" field.
 func (u *CoinUpsert) ClearCoinType() *CoinUpsert {
 	u.SetNull(coin.FieldCoinType)
-	return u
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsert) SetRevenueType(v string) *CoinUpsert {
-	u.Set(coin.FieldRevenueType, v)
-	return u
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsert) UpdateRevenueType() *CoinUpsert {
-	u.SetExcluded(coin.FieldRevenueType)
-	return u
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsert) ClearRevenueType() *CoinUpsert {
-	u.SetNull(coin.FieldRevenueType)
 	return u
 }
 
@@ -990,27 +946,6 @@ func (u *CoinUpsertOne) UpdateCoinType() *CoinUpsertOne {
 func (u *CoinUpsertOne) ClearCoinType() *CoinUpsertOne {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearCoinType()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertOne) SetRevenueType(v string) *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertOne) UpdateRevenueType() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsertOne) ClearRevenueType() *CoinUpsertOne {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueType()
 	})
 }
 
@@ -1478,27 +1413,6 @@ func (u *CoinUpsertBulk) UpdateCoinType() *CoinUpsertBulk {
 func (u *CoinUpsertBulk) ClearCoinType() *CoinUpsertBulk {
 	return u.Update(func(s *CoinUpsert) {
 		s.ClearCoinType()
-	})
-}
-
-// SetRevenueType sets the "revenue_type" field.
-func (u *CoinUpsertBulk) SetRevenueType(v string) *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.SetRevenueType(v)
-	})
-}
-
-// UpdateRevenueType sets the "revenue_type" field to the value that was provided on create.
-func (u *CoinUpsertBulk) UpdateRevenueType() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.UpdateRevenueType()
-	})
-}
-
-// ClearRevenueType clears the value of the "revenue_type" field.
-func (u *CoinUpsertBulk) ClearRevenueType() *CoinUpsertBulk {
-	return u.Update(func(s *CoinUpsert) {
-		s.ClearRevenueType()
 	})
 }
 

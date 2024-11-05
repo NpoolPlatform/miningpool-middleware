@@ -10,11 +10,10 @@ import (
 	"github.com/NpoolPlatform/libent-cruder/pkg/cruder"
 	npool "github.com/NpoolPlatform/message/npool/miningpool/mw/v1/orderuser"
 	apppool "github.com/NpoolPlatform/miningpool-middleware/pkg/mw/app/pool"
-	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools"
 	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/f2pool"
+	"github.com/NpoolPlatform/miningpool-middleware/pkg/pools/registetestinfo"
 	testinit "github.com/NpoolPlatform/miningpool-middleware/pkg/testinit"
 	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
 
 	mpbasetypes "github.com/NpoolPlatform/message/npool/basetypes/miningpool/v1"
 	basetypes "github.com/NpoolPlatform/message/npool/basetypes/v1"
@@ -31,30 +30,27 @@ func init() {
 	}
 }
 
-var ret = &npool.OrderUser{
+var orderuserRet = &npool.OrderUser{
 	EntID:          uuid.NewString(),
 	GoodUserID:     gooduserRet.EntID,
 	AppID:          uuid.NewString(),
 	UserID:         uuid.NewString(),
-	MiningpoolType: mpbasetypes.MiningpoolType_F2Pool,
-	CoinType:       basetypes.CoinType_CoinTypeBitCoin,
-	RevenueAddress: "sssss",
-	AutoPay:        false,
+	MiningPoolType: mpbasetypes.MiningPoolType_F2Pool,
 }
 
-var req = &npool.OrderUserReq{
-	EntID:          &ret.EntID,
-	GoodUserID:     &ret.GoodUserID,
-	AppID:          &ret.AppID,
-	UserID:         &ret.UserID,
-	RevenueAddress: &ret.RevenueAddress,
-	AutoPay:        &ret.AutoPay,
+var orderuserReq = &npool.OrderUserReq{
+	EntID:      &orderuserRet.EntID,
+	GoodUserID: &orderuserRet.GoodUserID,
+	AppID:      &orderuserRet.AppID,
+	UserID:     &orderuserRet.UserID,
 }
 
 func create(t *testing.T) {
+	orderuserReq.CoinTypeID = &gooduserReq.CoinTypeIDs[0]
+
 	apppoolH, err := apppool.NewHandler(
 		context.Background(),
-		apppool.WithAppID(&ret.AppID, true),
+		apppool.WithAppID(&orderuserRet.AppID, true),
 		apppool.WithPoolID(&gooduserRet.PoolID, true),
 	)
 	assert.Nil(t, err)
@@ -65,18 +61,14 @@ func create(t *testing.T) {
 	if !assert.Nil(t, err) {
 		return
 	}
-	ret.Name = name
-	req.Name = &name
+	orderuserRet.Name = name
 
 	handler, err := NewHandler(
 		context.Background(),
-		WithName(req.Name, true),
-		WithEntID(req.EntID, true),
-		WithGoodUserID(req.GoodUserID, true),
-		WithAppID(req.AppID, true),
-		WithUserID(req.UserID, true),
-		WithRevenueAddress(req.RevenueAddress, true),
-		WithAutoPay(req.AutoPay, true),
+		WithEntID(orderuserReq.EntID, true),
+		WithGoodUserID(orderuserReq.GoodUserID, true),
+		WithAppID(orderuserReq.AppID, true),
+		WithUserID(orderuserReq.UserID, true),
 	)
 	assert.Nil(t, err)
 
@@ -85,32 +77,39 @@ func create(t *testing.T) {
 
 	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
-		ret.UpdatedAt = info.UpdatedAt
-		ret.CreatedAt = info.CreatedAt
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.RevenueTypeStr = info.RevenueTypeStr
-		ret.RevenueType = info.RevenueType
-		ret.Proportion = info.Proportion
-		ret.RootUserID = info.RootUserID
-		ret.ID = info.ID
-		ret.EntID = info.EntID
-		ret.Name = info.Name
-		ret.ReadPageLink = info.ReadPageLink
-		assert.Equal(t, info, ret)
+		orderuserRet.UpdatedAt = info.UpdatedAt
+		orderuserRet.CreatedAt = info.CreatedAt
+		orderuserRet.PoolID = info.PoolID
+		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		orderuserRet.MiningPoolName = info.MiningPoolName
+		orderuserRet.MiningPoolSite = info.MiningPoolSite
+		orderuserRet.MiningPoolLogo = info.MiningPoolLogo
+		orderuserRet.RootUserID = info.RootUserID
+		orderuserRet.ID = info.ID
+		orderuserRet.EntID = info.EntID
+		orderuserRet.Name = info.Name
+		orderuserRet.ReadPageLink = info.ReadPageLink
+		assert.Equal(t, info, orderuserRet)
 	}
 }
 
 func update(t *testing.T) {
-	ret.MiningpoolType = mpbasetypes.MiningpoolType_F2Pool
-	ret.CoinType = basetypes.CoinType_CoinTypeBitCoin
-	ret.Proportion = decimal.NewFromFloat(66).String()
+	orderuserRet.MiningPoolType = mpbasetypes.MiningPoolType_F2Pool
+	revenueAddress := "ffffffff"
+	autoPay := true
+	proportion := "0.5"
+
+	orderuserReq.RevenueAddress = &revenueAddress
+	orderuserReq.AutoPay = &autoPay
+	orderuserReq.Proportion = &proportion
 
 	handler, err := NewHandler(
 		context.Background(),
-		WithID(&ret.ID, true),
-		WithProportion(&ret.Proportion, false),
-		WithRevenueAddress(nil, false),
+		WithID(&orderuserRet.ID, true),
+		WithRevenueAddress(orderuserReq.RevenueAddress, true),
+		WithAutoPay(orderuserReq.AutoPay, true),
+		WithCoinTypeID(orderuserReq.CoinTypeID, true),
+		WithProportion(orderuserReq.Proportion, true),
 	)
 	assert.Nil(t, err)
 
@@ -119,10 +118,9 @@ func update(t *testing.T) {
 
 	info, err := handler.GetOrderUser(context.Background())
 	if assert.Nil(t, err) {
-		ret.MiningpoolTypeStr = info.MiningpoolTypeStr
-		ret.CoinTypeStr = info.CoinTypeStr
-		ret.UpdatedAt = info.UpdatedAt
-		assert.Equal(t, info, ret)
+		orderuserRet.MiningPoolTypeStr = info.MiningPoolTypeStr
+		orderuserRet.UpdatedAt = info.UpdatedAt
+		assert.Equal(t, info, orderuserRet)
 	}
 }
 
@@ -130,13 +128,13 @@ func deleteRow(t *testing.T) {
 	conds := &npool.Conds{
 		EntID: &basetypes.StringVal{
 			Op:    cruder.EQ,
-			Value: ret.EntID,
+			Value: orderuserRet.EntID,
 		},
 	}
 	handler, err := NewHandler(
 		context.Background(),
 		WithConds(conds),
-		WithID(&ret.ID, true),
+		WithID(&orderuserRet.ID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -145,16 +143,15 @@ func deleteRow(t *testing.T) {
 	infos, total, err := handler.GetOrderUsers(context.Background())
 	if assert.Nil(t, err) {
 		assert.Equal(t, uint32(1), total)
-		ret.MiningpoolTypeStr = infos[0].MiningpoolTypeStr
-		ret.CoinTypeStr = infos[0].CoinTypeStr
-		ret.UpdatedAt = infos[0].UpdatedAt
-		assert.Equal(t, infos[0], ret)
+		orderuserRet.MiningPoolTypeStr = infos[0].MiningPoolTypeStr
+		orderuserRet.UpdatedAt = infos[0].UpdatedAt
+		assert.Equal(t, infos[0], orderuserRet)
 	}
 
-	ret.EntID = infos[0].EntID
+	orderuserRet.EntID = infos[0].EntID
 	handler, err = NewHandler(
 		context.Background(),
-		WithEntID(&ret.EntID, true),
+		WithEntID(&orderuserRet.EntID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -167,7 +164,7 @@ func deleteRow(t *testing.T) {
 
 	handler, err = NewHandler(
 		context.Background(),
-		WithID(&ret.ID, true),
+		WithID(&orderuserRet.ID, true),
 		WithOffset(0),
 		WithLimit(2),
 	)
@@ -180,7 +177,7 @@ func deleteRow(t *testing.T) {
 		WithConds(&npool.Conds{
 			EntID: &basetypes.StringVal{
 				Op:    cruder.EQ,
-				Value: ret.EntID,
+				Value: orderuserRet.EntID,
 			},
 		}),
 	)
@@ -197,7 +194,7 @@ func TestOrderUser(t *testing.T) {
 		return
 	}
 
-	pools.InitTestInfo(context.Background())
+	registetestinfo.InitTestInfo(context.Background())
 	t.Run("create", createRootUser)
 	t.Run("create", createGoodUser)
 	t.Run("create", create)
@@ -205,5 +202,5 @@ func TestOrderUser(t *testing.T) {
 	t.Run("deleteRow", deleteRow)
 	t.Run("deleteRow", deleteGoodUser)
 	t.Run("deleteRow", deleteRootUser)
-	pools.CleanTestInfo(context.Background())
+	registetestinfo.CleanTestInfo(context.Background())
 }
